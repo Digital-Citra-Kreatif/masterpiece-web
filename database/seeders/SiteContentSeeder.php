@@ -166,7 +166,7 @@ class SiteContentSeeder extends Seeder
      * The Project blueprint (title and slug are the entry's own): the project's
      * Global Style and its WhatsApp floating button.
      *
-     * Font files uploaded here are moved to the media folder Fonts / {slug}
+     * Font files (.woff2, .woff, .ttf, .otf, or a ZIP of a family: unpacked, the regular one chosen) uploaded here are moved to the media folder Fonts / {slug}
      * (App\Support\ProjectFonts). Colours are hex codes: the CMS has no colour field.
      *
      * @return array<string, mixed>
@@ -180,9 +180,7 @@ class SiteContentSeeder extends Seeder
             'validation' => ['regex:/^#[0-9A-Fa-f]{6}$/'],
             ...$extra,
         ]);
-        $font = fn (string $handle, string $label): array => $this->field($handle, 'media', [], [
-            'label' => $label, 'translatable' => false, 'width' => 33, 'instructions' => 'File .woff2, .woff, .ttf, atau .otf.', ...$whenActive,
-        ]);
+        $font = fn (string $handle, string $label): array => $this->field($handle, 'media', [], ['label' => $label, 'translatable' => false, 'width' => 33]);
         $image = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'media', ['types' => ['image']], [
             'label' => $label, 'translatable' => false, ...$extra,
         ]);
@@ -197,9 +195,11 @@ class SiteContentSeeder extends Seeder
                     ...$whenActive,
                     'fields' => collect(range(1, 8))->map(fn (int $number): array => $hex("color_{$number}", "Warna {$number}", ['width' => 25]))->all(),
                 ]),
-                $font('font_heading', 'Font heading'),
-                $font('font_description', 'Font deskripsi'),
-                $font('font_button', 'Font tombol'),
+                $this->field('fonts', 'group', [], [
+                    'label' => 'Font',
+                    ...$whenActive,
+                    'fields' => [$font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol')],
+                ]),
                 $hex('marker_color', 'Warna penanda', ['width' => 50, ...$whenActive]),
                 $this->field('marker_shape', 'select', ['options' => [
                     ['value' => 'circle', 'label' => 'Lingkaran'],
