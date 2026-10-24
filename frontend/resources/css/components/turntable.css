@@ -1,0 +1,215 @@
+/* WebRotate 360 turntable. */
+
+.tt {
+  --tt-bg: var(--room-2);
+  color: var(--room-ink);
+  /* WebRotate never upscales frames past their native width. */
+  max-width: var(--native);
+  margin-inline: auto;
+}
+
+.tt--black {
+  --tt-bg: #000;
+}
+
+.tt__stage {
+  position: relative;
+  width: 100%;
+  background: var(--tt-bg);
+  overflow: hidden;
+}
+
+.tt__poster,
+.tt__viewer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tt__poster {
+  object-fit: cover;
+  transition: opacity 0.4s var(--ease);
+}
+
+.tt.is-ready .tt__poster {
+  opacity: 0;
+}
+
+.tt__viewer {
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.tt__viewer:active {
+  cursor: grabbing;
+}
+
+.tt__viewer:focus-visible {
+  outline-offset: -3px;
+}
+
+/* WebRotate injects .wr360_player; keep it transparent and full-size. */
+.tt .wr360_player {
+  background: transparent !important;
+}
+
+.tt__loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: opacity 0.4s;
+}
+
+.tt__loading span {
+  display: block;
+  height: 100%;
+  width: var(--progress, 0%);
+  background: var(--accent);
+  transition: width 0.2s linear;
+}
+
+.tt.is-ready .tt__loading {
+  opacity: 0;
+}
+
+.tt__locked {
+  display: none;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  margin: 0;
+  padding: 10px 14px;
+  background: rgba(11, 13, 15, 0.82);
+  color: var(--room-ink);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.tt.is-locked .tt__locked {
+  display: block;
+}
+
+.tt.is-locked .tt__loading {
+  visibility: hidden;
+}
+
+.tt.is-locked .tt__viewer {
+  cursor: default;
+}
+
+.tt__step:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.tt__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.tt__hud {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.tt__step:hover {
+  background: var(--room-ink);
+  color: var(--room);
+}
+
+.tt__dial {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tt__dial svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  opacity: 0.8;
+}
+
+.tt__needle {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  transform-origin: 20px 20px;
+  transform: rotate(var(--deg, 0deg));
+}
+
+.tt__deg {
+  min-width: 4ch;
+  font-family: var(--label);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.tt__spacer {
+  flex: 1;
+}
+
+.tt__spots {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.tt__spots button {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 18px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  background: none;
+  text-align: left;
+  font-size: 15px;
+  transition: color 0.2s, padding 0.3s var(--ease);
+}
+
+.tt__spots button:hover {
+  color: var(--accent);
+  padding-left: 6px;
+}
+
+.tt__spot-no {
+  font-family: var(--label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+@media (min-width: 761px) {
+  .tt__spots li:not(:last-child) button {
+    margin-right: 24px;
+  }
+  .tt__spots li {
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .tt__hud {
+    gap: 10px;
+  }
+}

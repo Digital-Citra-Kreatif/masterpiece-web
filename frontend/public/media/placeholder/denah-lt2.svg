@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800" font-family="Helvetica, Arial, sans-serif">
+  <rect width="600" height="800" fill="#fbfbfa"/>
+  <rect x="60" y="80" width="480" height="620" fill="none" stroke="#1b1f23" stroke-width="10"/>
+  <rect x="60" y="80" width="280" height="300" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="200" y="237" text-anchor="middle" font-size="20" fill="#1b1f23">K. TIDUR 1</text><rect x="340" y="80" width="200" height="300" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="440" y="237" text-anchor="middle" font-size="20" fill="#1b1f23">K. TIDUR 2</text><rect x="60" y="380" width="280" height="320" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="200" y="547" text-anchor="middle" font-size="20" fill="#1b1f23">RUANG KELUARGA</text><rect x="340" y="380" width="200" height="150" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="440" y="462" text-anchor="middle" font-size="20" fill="#1b1f23">KM</text><rect x="340" y="530" width="200" height="170" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="440" y="622" text-anchor="middle" font-size="20" fill="#1b1f23">TANGGA</text>
+  <text x="300" y="50" text-anchor="middle" font-size="24" font-weight="700" letter-spacing="4" fill="#1b1f23">LANTAI 2</text>
+</svg>

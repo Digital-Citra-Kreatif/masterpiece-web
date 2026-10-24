@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800" font-family="Helvetica, Arial, sans-serif">
+  <rect width="600" height="800" fill="#fbfbfa"/>
+  <rect x="60" y="80" width="480" height="620" fill="none" stroke="#1b1f23" stroke-width="10"/>
+  <rect x="60" y="80" width="480" height="360" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="300" y="267" text-anchor="middle" font-size="20" fill="#1b1f23">AREA USAHA</text><rect x="60" y="440" width="240" height="260" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="180" y="577" text-anchor="middle" font-size="20" fill="#1b1f23">DAPUR</text><rect x="300" y="440" width="120" height="130" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="360" y="512" text-anchor="middle" font-size="20" fill="#1b1f23">KM</text><rect x="300" y="570" width="240" height="130" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="420" y="642" text-anchor="middle" font-size="20" fill="#1b1f23">TANGGA</text><rect x="420" y="440" width="120" height="130" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="480" y="512" text-anchor="middle" font-size="20" fill="#1b1f23">GUDANG</text>
+  <text x="300" y="50" text-anchor="middle" font-size="24" font-weight="700" letter-spacing="4" fill="#1b1f23">LANTAI 1</text>
+</svg>

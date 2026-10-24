@@ -1,0 +1,40 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Handle X-XSRF-Token Header
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+AddType video/mp4 .mp4
+AddType image/svg+xml .svg
+AddType application/json .json
+
+# Vite build assets are hashed and never change; media files keep their names, so cache them shorter.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    <FilesMatch "\.(js|css|woff2?)$">
+        ExpiresDefault "access plus 1 year"
+    </FilesMatch>
+    <FilesMatch "\.(jpe?g|png|webp|svg|mp4|json|xml)$">
+        ExpiresDefault "access plus 7 days"
+    </FilesMatch>
+</IfModule>

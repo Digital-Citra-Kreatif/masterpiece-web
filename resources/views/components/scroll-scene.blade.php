@@ -1,0 +1,135 @@
+{{--
+  A pinned, full-screen scene whose image sequence scrubs with page scroll
+  (after malinowskiego.com). Used for Kawasan and Cluster on the homepage.
+
+  With `masterplan`, the scene opens on the Masterplan composition: the orbit
+  video (the same orbit as the frames; without one, the scene's first frame) in a
+  portrait frame, the title over its left edge and the text by its right.
+  Scrolling moves the title out to the left and the text to the right while the
+  frame grows to fill the screen ([data-zoom-end]); the video keeps looping full
+  screen for a stretch of scroll. Scrolling on ([data-intro-end]), the canvas
+  picks up at the frame the video is showing, the section panel and markers fade
+  in and the orbit scrubs on. Without `masterplan`, the panel and markers show
+  from the start.
+
+  Opening a hotspot (marker or list) fast-forwards the orbit to the hotspot's
+  default angle while zooming in on it, with its info in place of the section
+  panel. Back, Esc, or scrolling on returns to the orbit.
+
+  scene:      { base, startFrame?, placeholder? }
+  hotspots:   { key: { track, frame?, title, short?, text } }
+  masterplan: { title, text, video? }
+
+  Logic in resources/js/scroll-scene.js (orbit) and resources/js/masterplan.js (opening).
+--}}
+@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null])
+
+@php
+  $spots = collect($hotspots)->map(fn ($h, $key) => [
+      'key' => $key,
+      'short' => ($h['short'] ?? null) ?: $h['title'],
+      'content' => ['track' => $h['track'], 'frame' => $h['frame'] ?? null, 'title' => $h['title'], 'text' => $h['text']],
+  ])->values();
+  $base = rtrim(asset($scene['base']), '/').'/';
+  $firstFrame = $base.'lg/f_'.sprintf('%03d', $scene['startFrame'] ?? 0).'.jpg';
+@endphp
+
+<section
+  @class(['scene', 'scene--masterplan' => $masterplan])
+  data-scene
+  data-base="{{ $base }}"
+  data-start="{{ $scene['startFrame'] ?? 0 }}"
+  data-spots="{{ json_encode($spots->pluck('content', 'key')) }}"
+  aria-labelledby="{{ $id }}-title"
+>
+  <span id="{{ $id }}" class="scene__anchor" aria-hidden="true"></span>
+  @if ($masterplan)
+    <span class="scene__zoom-end" data-zoom-end aria-hidden="true"></span>
+    <span class="scene__intro-end" data-intro-end aria-hidden="true"></span>
+  @endif
+
+  <div class="scene__stage">
+    <canvas class="scene__media scene__canvas" aria-hidden="true"></canvas>
+    <div class="scene__shade" aria-hidden="true"></div>
+
+    <div class="scene__markers">
+      @foreach ($spots as $s)
+        <button class="spot" type="button" data-spot="{{ $s['key'] }}" tabindex="-1" hidden>
+          <span class="spot__dot">{{ $loop->iteration }}</span>
+          <span class="spot__label">{{ $s['short'] }}</span>
+        </button>
+      @endforeach
+    </div>
+
+    @if ($site['showPlaceholderBadges'] && ($scene['placeholder'] ?? false))
+      <span class="badge scene__badge" data-phase="area">Sekuens contoh</span>
+    @endif
+
+    @if ($masterplan)
+      <div class="mp" data-masterplan>
+        {{-- 1280 × 720: the frames' and the video's proportions, for the cover-fit maths in masterplan.js. --}}
+        <div class="mp__frame" data-mp-frame>
+          @if ($masterplan['video'] ?? null)
+            <video
+              class="mp__img scene__video"
+              muted
+              loop
+              playsinline
+              preload="auto"
+              poster="{{ $firstFrame }}"
+              data-src="{{ asset($masterplan['video']) }}"
+              data-mp-img
+              data-w="1280"
+              data-h="720"
+              aria-hidden="true"
+            ></video>
+          @else
+            <img class="mp__img" src="{{ $firstFrame }}" alt="" width="1280" height="720" data-mp-img data-w="1280" data-h="720" />
+          @endif
+        </div>
+        <span class="mp__box" data-mp-box aria-hidden="true"></span>
+        <h2 class="display mp__title" data-mp-title>{{ $masterplan['title'] }}</h2>
+        @if ($masterplan['text'])
+          <p class="mp__text" data-mp-text>{!! nl2br(e($masterplan['text']), false) !!}</p>
+        @endif
+      </div>
+    @endif
+
+    <div class="scene__area wrap" data-phase="area">
+      <h2 class="display scene__area-title" id="{{ $id }}-title">{{ $title }}</h2>
+      @if ($intro)
+        <p class="scene__intro">{{ $intro }}</p>
+      @endif
+      <ol class="scene__list">
+        @foreach ($spots as $s)
+          <li>
+            <button type="button" data-spot-open="{{ $s['key'] }}">
+              <span>{{ sprintf('%02d', $loop->iteration) }}</span>
+              {{ $s['content']['title'] }}
+            </button>
+          </li>
+        @endforeach
+      </ol>
+    </div>
+
+    <!-- Location view: shown in place of the panel while a hotspot is open -->
+    <div class="scene__loc wrap" role="group" aria-labelledby="{{ $id }}-loc-title" hidden>
+      <button class="scene__back" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M19 12H5M11 6l-6 6 6 6"></path>
+        </svg>
+        Kembali ke {{ Str::lower($title) }}
+      </button>
+      <h3 class="display scene__loc-title" id="{{ $id }}-loc-title" tabindex="-1"></h3>
+      <p class="scene__loc-text"></p>
+      <div class="scene__loc-nav">
+        <button class="icon-btn" type="button" data-loc-step="-1" aria-label="Lokasi sebelumnya">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 5l-7 7 7 7"></path></svg>
+        </button>
+        <button class="icon-btn" type="button" data-loc-step="1" aria-label="Lokasi berikutnya">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,331 @@
+:root {
+  --paper: #f3f4f2; /* cool concrete */
+  --paper-2: #e6e8e5;
+  --card: #fbfbfa;
+  --ink: #0e1113;
+  --ink-2: #3c4247;
+  --muted: #5f666c; /* 4.7:1 on --paper-2, the darkest light surface it sits on */
+  --rule: #d2d5d3;
+  --room: #0b0d0f; /* dark bands for full-screen scenes */
+  --room-2: #14171a;
+  --room-ink: #eef0f1;
+  --room-muted: #8a9199;
+  --accent: #34425e; /* deep slate navy */
+  --accent-ink: #232e44;
+  --accent-light: #bcc5d6; /* pale steel, accent on dark */
+
+  --sold: #e0442e;
+  --reserved: #f0b400;
+  --available: #1f9a57;
+
+  /* DM Sans everywhere, as in the "Hero utama" preview. */
+  --sans: 'DM Sans Variable', 'Helvetica Neue', Arial, sans-serif;
+  --display: var(--sans);
+  --label: var(--sans); /* small tracked uppercase: buttons, specs */
+
+  --gutter: clamp(16px, 4vw, 56px);
+  --max: 1440px;
+  --header-h: 88px;
+  /* Section headings (h2): a step below the hero headline (h1, up to 84px). */
+  --h2: clamp(36px, 4.4vw, 64px);
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --header-h: 64px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Lenis (resources/js/smooth-scroll.js) does the easing once it runs. */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 380;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+/* Media protection (resources/js/protect-media.js): no long-press "Save image" on phones, no drag. */
+[data-protect-media] :is(img, video, canvas) {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 3px;
+}
+
+/* The navy ring is 1.9:1 on the dark surfaces; pale steel is 11:1 there. */
+.scene,
+.room,
+.ov,
+.tt__stage {
+  --focus: var(--accent-light);
+}
+
+.ov.is-info {
+  --focus: var(--accent);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Letter roll (components/roll-text): on hover of .roll-host each letter slides
+   up, one after another, and a copy (its text-shadow) rises into place. */
+.roll {
+  display: inline-block;
+  height: 1.25em;
+  line-height: 1.25;
+  overflow: hidden;
+  vertical-align: top;
+  white-space: pre;
+}
+
+.roll__char {
+  display: inline-block;
+  text-shadow: 0 1.25em currentColor;
+  transition: transform 0.5s var(--ease) calc(var(--i) * 22ms);
+}
+
+.roll-host:hover .roll__char,
+.roll-host:focus-visible .roll__char {
+  transform: translateY(-1.25em);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roll__char {
+    transition-delay: 0s;
+  }
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---------------------------------------------------------------- type */
+
+.eyebrow {
+  font-family: var(--label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em; /* the one tracking every small label uses */
+  text-transform: uppercase;
+}
+
+.display {
+  font-family: var(--display);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Section headings: as thin as the hero headline, a size below it. */
+h2,
+h2.display {
+  font-size: var(--h2);
+  font-weight: 200;
+}
+
+/* Section header styled like a drawing-sheet title block. */
+.sheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px 48px;
+  align-items: end;
+  padding-block: clamp(56px, 9vw, 120px) clamp(28px, 4vw, 48px);
+}
+
+.sheet__title {
+  margin: 0;
+  font-size: var(--h2);
+}
+
+.sheet__intro {
+  margin: 0;
+  max-width: 40ch;
+  padding-top: 14px;
+  border-top: 2px solid var(--accent);
+  color: var(--ink-2);
+  justify-self: end;
+}
+
+@media (max-width: 760px) {
+  .sheet {
+    grid-template-columns: 1fr;
+  }
+  .sheet__intro {
+    justify-self: start;
+  }
+}
+
+.room {
+  background: var(--room);
+  color: var(--room-ink);
+}
+
+.room .sheet__intro {
+  color: var(--room-muted);
+}
+
+/* ---------------------------------------------------------------- buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.btn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.btn--solid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.btn--solid:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn--light {
+  color: #fff;
+}
+
+.btn--light:hover {
+  background: #fff;
+  border-color: #fff;
+  color: var(--ink);
+}
+
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Placeholder badge: marks stand-in media/data. */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 0;
+  background: repeating-linear-gradient(-45deg, #ffe45c 0 6px, #f5d63a 6px 12px);
+  color: #1a1a0a;
+  font-family: var(--label);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------- reveal */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}

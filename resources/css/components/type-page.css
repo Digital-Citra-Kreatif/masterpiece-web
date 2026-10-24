@@ -1,0 +1,412 @@
+/* Type page: pinned viewer, fixed panel, dock on narrow screens. */
+
+.tp {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(320px, 28vw, 400px);
+  gap: clamp(32px, 4vw, 64px);
+  padding-top: var(--header-h); /* the header sits here, then scrolls away */
+}
+
+/* ---- left: one viewer, pinned to the top of the screen while the page scrolls through the parts */
+.tp__track {
+  position: relative;
+  height: calc(var(--parts) * 100vh);
+  height: calc(var(--parts) * 100svh);
+}
+
+/* One screen of scroll per part; the part list links land on these. */
+.tp__step {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--i) * 100svh);
+  height: 100svh;
+  pointer-events: none;
+}
+
+.viewer {
+  /* Width that keeps the head, sequence, controls and info inside one screen. */
+  --stage-w: calc((100svh - 360px) * var(--ratio));
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding-block: 28px;
+}
+
+.viewer__head,
+.viewer__info {
+  width: 100%;
+  max-width: max(var(--stage-w), min(100%, 320px));
+}
+
+.viewer__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.viewer__title {
+  margin: 0;
+  font-size: var(--h2);
+}
+
+.viewer__dots {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 4px;
+}
+
+/* A 3px bar inside a 44px-tall tap target; the negative margin keeps the head's height. */
+.viewer__dots a {
+  display: block;
+  width: 22px;
+  padding-block: 22px;
+  margin-block: -12px;
+  background: linear-gradient(var(--rule), var(--rule)) center / 100% 3px no-repeat;
+  transition: width 0.4s var(--ease);
+}
+
+.viewer__dots a:hover {
+  background-image: linear-gradient(var(--muted), var(--muted));
+}
+
+.viewer__dots a.is-active {
+  width: 40px;
+  background-image: linear-gradient(var(--accent), var(--accent));
+}
+
+.viewer__stage {
+  width: 100%;
+  max-width: var(--stage-w);
+  min-width: min(100%, 320px);
+}
+
+.viewer__stage .tt {
+  color: var(--ink);
+  margin-inline: 0;
+}
+
+.viewer__stage .tt__step:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.viewer__info {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  min-height: 84px;
+}
+
+.viewer__text {
+  flex: 1;
+  max-width: 56ch;
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.viewer__denah {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  font-family: var(--label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: border-color 0.2s;
+}
+
+.viewer__denah:hover {
+  border-color: var(--ink);
+}
+
+.viewer__denah img {
+  width: 54px;
+  height: 72px;
+  object-fit: cover;
+}
+
+/* ---- right: fixed panel */
+.tp__panel {
+  position: relative;
+}
+
+.panel {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  max-height: 100svh;
+  overflow-y: auto;
+  padding-block: 40px 0;
+  scrollbar-width: thin;
+}
+
+.panel__name {
+  margin: 0;
+  font-size: clamp(52px, 5.4vw, 80px);
+}
+
+.panel__label {
+  margin: 4px 0 0;
+  color: var(--accent);
+}
+
+.panel__facts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 24px 0 0;
+  border-block: 1px solid var(--ink);
+}
+
+.panel__facts div {
+  padding: 12px 0;
+}
+
+.panel__facts div + div {
+  padding-left: 12px;
+  border-left: 1px solid var(--rule);
+}
+
+.panel__facts dt,
+.panel__info dt {
+  font-family: var(--label);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel__facts dd {
+  margin: 2px 0 0;
+  font-size: 17px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.panel__intro {
+  margin: 20px 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+.panel__info {
+  margin: 0;
+}
+
+.panel__info div {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+}
+
+.panel__info dd {
+  margin: 0;
+  font-weight: 400;
+}
+
+.panel__floors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0;
+}
+
+.panel__floors a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 8px;
+  padding: 7px 14px;
+  border: 1px solid var(--rule);
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+  transition: background 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s;
+}
+
+.panel__floors a span {
+  color: var(--accent);
+  font-family: var(--label);
+  font-size: 12px;
+}
+
+.panel__floors a.is-active span {
+  color: var(--accent-light);
+}
+
+.panel__floors a:hover {
+  border-color: var(--ink);
+}
+
+.panel__floors a.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.panel__denah ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.panel__denah button {
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  text-align: left;
+  transition: border-color 0.2s, transform 0.3s var(--ease);
+}
+
+.panel__denah button:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.panel__denah img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.panel__denah span {
+  display: block;
+  padding: 6px 8px;
+  font-family: var(--label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-top: 1px solid var(--rule);
+}
+
+/* Pinned to the bottom of the panel so Gallery and VR stay on screen even
+   when the panel itself has to scroll on short viewports. */
+.panel__actions {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 24px;
+  padding-block: 14px 20px;
+  background: var(--paper);
+  box-shadow: 0 -1px 0 var(--rule), 0 -16px 16px -8px var(--paper);
+}
+
+.panel__actions .btn:not(.btn--solid):not(:hover) {
+  background: var(--paper);
+}
+
+.panel__actions .btn {
+  justify-content: center;
+}
+
+/* ---- dock (narrow screens) */
+.dock {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .tp {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .tp__panel {
+    order: -1;
+  }
+
+  .panel {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-bottom: 8px;
+  }
+
+  .panel__actions {
+    display: none;
+  }
+
+  .viewer {
+    /* leave room for the bottom dock */
+    height: calc(100svh - 72px);
+    gap: 14px;
+    padding-block: 16px;
+  }
+
+  .viewer {
+    --stage-w: calc((100svh - 72px - 330px) * var(--ratio));
+  }
+
+  .viewer__info {
+    min-height: 0;
+  }
+
+  .viewer__text {
+    font-size: 14px;
+  }
+
+  .dock {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(243, 244, 242, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 -1px 0 var(--rule);
+  }
+
+  .dock__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .dock__info strong {
+    font-size: 22px;
+  }
+
+  .dock__info span {
+    font-size: 11px;
+    color: var(--ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dock .btn {
+    min-height: 44px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  /* Room for the dock (10 + 44 + 10px, plus the safe area), so it never covers the footer. */
+  body.is-type .ft {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}

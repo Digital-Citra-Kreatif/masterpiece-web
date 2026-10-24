@@ -1,0 +1,477 @@
+/* Pinned scroll scenes (Kawasan, Cluster) with the Masterplan opening and hotspots. */
+
+.scene {
+  --range: 400vh; /* scroll distance for one full orbit */
+  position: relative;
+  height: calc(100vh + var(--range));
+  height: calc(100svh + var(--range));
+  background: var(--room);
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .scene {
+    --range: 300vh;
+  }
+}
+
+/* Section links land exactly on the pinned view. */
+.scene__anchor {
+  position: absolute;
+  top: 0;
+}
+
+/* With the Masterplan opening, the section link lands where the panel has faded in. */
+.scene--masterplan .scene__anchor {
+  top: calc(var(--intro) + var(--range) * 0.04);
+}
+
+.scene__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.scene__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scene__canvas {
+  opacity: 0;
+}
+
+.scene.is-scrub .scene__canvas,
+.scene--masterplan .scene__canvas {
+  opacity: 1;
+}
+
+/* ---- go to a location: the camera is drawn inside the canvas by
+   scroll-scene.js, so nothing to style here. */
+
+/* Orbit UI steps aside while a location is open. */
+.scene.is-flying [data-phase],
+.scene.is-flying .scene__markers {
+  transition: opacity 0.4s ease;
+}
+
+.scene.is-place [data-phase],
+.scene.is-place .scene__markers {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.scene__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 10, 12, 0.55) 0%, rgba(8, 10, 12, 0) 26%),
+    linear-gradient(0deg, rgba(8, 10, 12, 0.8) 0%, rgba(8, 10, 12, 0.12) 52%);
+}
+
+/* Extra shade behind the section panel, faded in with it. */
+.scene__shade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(8, 10, 12, 0.72) 0%, rgba(8, 10, 12, 0.5) max(40%, 540px), rgba(8, 10, 12, 0) max(64%, 780px));
+  opacity: var(--p-area, 0);
+}
+
+@media (max-width: 760px) {
+  .scene__shade::after {
+    background: linear-gradient(0deg, rgba(8, 10, 12, 0.78) 0%, rgba(8, 10, 12, 0.55) 45%, rgba(8, 10, 12, 0) 75%);
+  }
+}
+
+.scene__badge {
+  position: absolute;
+  top: calc(var(--header-h) + 12px + env(safe-area-inset-top, 0px));
+  left: var(--gutter);
+}
+
+/* Phases fade by scroll; scroll-scene.js sets --p-area (0..1). */
+[data-phase='area'] {
+  opacity: var(--p-area, 0);
+  transform: translateY(calc((1 - var(--p-area, 0)) * 40px));
+  visibility: var(--v-area, hidden);
+}
+
+/* ---- Masterplan opening (layout from the "Home" preview, drawn at 969 wide).
+   masterplan.js grows the frame (the looping orbit video) to the full stage and
+   moves the copy out over the first var(--zoom) of scroll; the video then loops
+   full screen until var(--intro), where the orbit's range starts (scroll-scene.js). */
+
+.scene--masterplan {
+  --zoom: 120vh;
+  --intro: calc(var(--zoom) + 70vh);
+  height: calc(100vh + var(--intro) + var(--range));
+  height: calc(100svh + var(--intro) + var(--range));
+}
+
+.scene__zoom-end,
+.scene__intro-end {
+  position: absolute;
+}
+
+.scene__zoom-end {
+  top: var(--zoom);
+}
+
+.scene__intro-end {
+  top: var(--intro);
+}
+
+.scene__video {
+  object-fit: cover;
+}
+
+/* The scene's own shade comes in with the panel, after the frame has filled the screen. */
+.scene--masterplan .scene__shade {
+  opacity: var(--p-area, 0);
+}
+
+.mp {
+  /* The frame: a tall portrait rectangle, 2:3, two thirds of the screen high
+     (narrower on screens that are less wide than that allows). */
+  --mp-h: min(66svh, 28vw * 1.5);
+  --mp-w: calc(var(--mp-h) * 2 / 3);
+  position: absolute;
+  inset: 0;
+  background: var(--room);
+  pointer-events: none;
+}
+
+/* The frame covers the stage and is cut down to the box; masterplan.js
+   opens the cut and scales the picture up with it (clip-path and transform only,
+   so the zoom never lays the page out again). */
+.mp__frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  clip-path: inset(calc(50% - var(--mp-h) / 2) calc(50% - var(--mp-w) / 2));
+}
+
+/* Cover-fit and centred, as the canvas draws the frame: at scale 1 the two match. */
+.mp__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 50%;
+}
+
+/* Once the canvas has taken over from the video, the layer (video and copy) fades
+   out over it. Both show the same frame, but the video's encoding is a little
+   darker and softer than the frames, so a cut would show as a jump. Coming back,
+   the layer returns at once: the canvas hides at once too, and a fade would show
+   the dark stage between them. */
+.scene.is-scrub .mp {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0s 0.5s;
+}
+
+/* The box itself, measured by masterplan.js; the copy is placed around it. */
+.mp__box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--mp-w);
+  height: var(--mp-h);
+  translate: -50% -50%;
+  visibility: hidden;
+}
+
+/* Over the frame's top-left edge, starting 41% of its width to the left of it. */
+.mp__title {
+  position: absolute;
+  left: calc(50% - var(--mp-w) * 0.91);
+  top: calc(50% - var(--mp-h) / 2 + var(--mp-h) * 0.02);
+  margin: 0;
+  font-size: var(--h2);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* By the frame's bottom-right edge, starting just inside it. */
+.mp__text {
+  position: absolute;
+  left: calc(50% + var(--mp-w) * 0.41);
+  bottom: calc(50% - var(--mp-h) / 2 + var(--mp-h) * 0.065);
+  margin: 0;
+  font-size: clamp(14px, 1.55vw, 17px);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .mp {
+    --mp-h: min(56svh, (100vw - 2 * var(--gutter)) * 1.5);
+  }
+
+  .mp__title {
+    left: var(--gutter);
+    top: calc(50% - var(--mp-h) / 2 - 0.6em);
+  }
+
+  .mp__text {
+    left: auto;
+    right: var(--gutter);
+    bottom: auto;
+    top: calc(50% + var(--mp-h) / 2 + 16px);
+    text-align: right;
+    white-space: normal;
+  }
+}
+
+/* ---- section panel */
+.scene__area {
+  position: absolute;
+  inset: auto 0 0;
+  padding-bottom: clamp(40px, 8vh, 96px);
+  pointer-events: none;
+}
+
+.scene__area > * {
+  max-width: 460px;
+}
+
+.scene__area-title {
+  margin: 0 0 16px;
+  font-size: var(--h2);
+}
+
+.scene__intro {
+  margin: 0 0 20px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.scene__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: auto;
+}
+
+.scene__list button {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: none;
+  color: #fff;
+  text-align: left;
+  font-size: 15px;
+  transition: color 0.2s, padding 0.3s var(--ease);
+}
+
+.scene__list button span {
+  font-family: var(--label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--accent-light);
+}
+
+.scene__list button:hover {
+  color: var(--accent-light);
+  padding-left: 6px;
+}
+
+/* ---- location panel */
+.scene__loc {
+  position: absolute;
+  inset: auto 0 0;
+  padding-bottom: clamp(40px, 8vh, 96px);
+  animation: loc-in 0.7s var(--ease) 0.15s both;
+}
+
+.scene__loc > * {
+  max-width: 520px;
+}
+
+@keyframes loc-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.scene__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  min-height: 44px;
+  padding: 8px 16px 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(11, 13, 15, 0.55);
+  color: #fff;
+  font-family: var(--label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: background 0.2s, color 0.2s;
+}
+
+.scene__back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.scene__back:hover {
+  background: #fff;
+  color: var(--ink);
+}
+
+.scene__loc-title {
+  margin: 0 0 14px;
+  font-size: clamp(44px, 6.5vw, 96px);
+  outline: none;
+}
+
+.scene__loc-text {
+  margin: 0;
+  font-size: 17px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.scene__loc-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.scene__loc-nav .icon-btn {
+  color: #fff;
+  background: rgba(11, 13, 15, 0.55);
+}
+
+.scene__loc-nav .icon-btn:hover {
+  background: #fff;
+  color: var(--ink);
+}
+
+/* ---- hotspot markers */
+.scene__markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--p-area, 0);
+}
+
+.spot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+/* Grows the 34px marker to a 44px tap target without changing its look. */
+.spot::before {
+  content: '';
+  position: absolute;
+  inset: -22px -5px -5px -22px;
+}
+
+.spot--flip::before {
+  inset: -22px -22px -5px -5px;
+}
+
+.spot__dot {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  background: rgba(11, 13, 15, 0.65);
+  border: 1.5px solid #fff;
+  font-family: var(--label);
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, transform 0.3s var(--ease);
+}
+
+.spot__dot::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border: 1.5px solid #fff;
+  /* A few pings to show the markers can be opened, then they rest. */
+  animation: spot-ping 2.4s var(--ease) 3;
+  animation-fill-mode: forwards;
+}
+
+@keyframes spot-ping {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.spot__label {
+  margin-top: -17px;
+  padding: 5px 10px;
+  background: rgba(11, 13, 15, 0.72);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.spot--flip {
+  flex-direction: row-reverse;
+}
+
+.spot--flip .spot__dot {
+  margin: -17px -17px 0 0;
+}
+
+.spot:hover .spot__dot,
+.spot:focus-visible .spot__dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .spot__label {
+    display: none;
+  }
+  .scene__list button {
+    min-height: 44px;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 760px) and (max-height: 700px) {
+  .scene__intro {
+    display: none;
+  }
+}

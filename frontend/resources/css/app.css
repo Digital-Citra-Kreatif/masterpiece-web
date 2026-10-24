@@ -1,0 +1,18 @@
+/* One stylesheet for every page. base.css holds tokens, type and shared
+   pieces (buttons, badges, section headers); each file in components/ belongs to
+   one Blade component or page and must come after base.css so it can override it. */
+
+@import '@fontsource-variable/dm-sans';
+@import './base.css';
+
+@import './components/header.css';
+@import './components/footer.css';
+@import './components/overlay.css';
+@import './components/scroll-scene.css';
+@import './components/area-map.css';
+@import './components/facilities.css';
+@import './components/type-grid.css';
+@import './components/unit-update.css';
+@import './components/turntable.css';
+@import './components/type-page.css';
+@import './components/not-found.css';

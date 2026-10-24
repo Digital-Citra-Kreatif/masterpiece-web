@@ -1,0 +1,45 @@
+{
+  "area": {
+    "scene": {
+      "base": "/media/scroll/kawasan/"
+    },
+    "hotspots": {
+      "area-plaza": {
+        "track": "plaza",
+        "frame": 30
+      },
+      "area-commercial": {
+        "track": "commercial",
+        "frame": 111
+      },
+      "area-offices": {
+        "track": "offices",
+        "frame": 3
+      },
+      "area-lakeside": {
+        "track": "lakeside",
+        "frame": 81
+      }
+    }
+  },
+  "cluster": {
+    "scene": {
+      "base": "/media/scroll/kawasan/",
+      "placeholder": true
+    },
+    "hotspots": {
+      "cluster-plaza": {
+        "track": "plaza",
+        "frame": 30
+      },
+      "cluster-lakeside": {
+        "track": "lakeside",
+        "frame": 81
+      },
+      "cluster-commercial": {
+        "track": "commercial",
+        "frame": 111
+      }
+    }
+  }
+}

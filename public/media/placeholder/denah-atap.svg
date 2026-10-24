@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800" font-family="Helvetica, Arial, sans-serif">
+  <rect width="600" height="800" fill="#fbfbfa"/>
+  <rect x="60" y="80" width="480" height="620" fill="none" stroke="#1b1f23" stroke-width="10"/>
+  <rect x="60" y="80" width="480" height="440" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="300" y="307" text-anchor="middle" font-size="20" fill="#1b1f23">ROOF DECK</text><rect x="60" y="520" width="240" height="180" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="180" y="617" text-anchor="middle" font-size="20" fill="#1b1f23">TANGGA</text><rect x="300" y="520" width="240" height="180" fill="none" stroke="#1b1f23" stroke-width="4"/>
+    <text x="420" y="617" text-anchor="middle" font-size="20" fill="#1b1f23">TOREN</text>
+  <text x="300" y="50" text-anchor="middle" font-size="24" font-weight="700" letter-spacing="4" fill="#1b1f23">ATAP</text>
+</svg>

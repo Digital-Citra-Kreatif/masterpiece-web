@@ -1,0 +1,162 @@
+/* Unit update: siteplan with status dots and legend. */
+
+.units {
+  padding-block: clamp(64px, 8vw, 112px) clamp(72px, 10vw, 140px);
+  background: var(--paper-2);
+}
+
+/* Siteplan on the left from the top; heading and legend share the side column. */
+.units__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-areas:
+    'plan head'
+    'plan legend';
+  grid-template-rows: auto 1fr;
+  gap: 0 clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+
+.units__head {
+  grid-area: head;
+  padding-bottom: 32px;
+}
+
+.units__title {
+  margin: 0;
+  font-size: clamp(40px, 4.4vw, 64px);
+}
+
+.units__intro {
+  margin: 20px 0 0;
+  padding-top: 14px;
+  border-top: 2px solid var(--accent);
+  color: var(--ink-2);
+}
+
+.units__plan {
+  grid-area: plan;
+  overflow-x: auto;
+}
+
+@media (max-width: 900px) {
+  .units__layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'head'
+      'plan'
+      'legend';
+    grid-template-rows: auto;
+    gap: 24px;
+  }
+  .units__head {
+    padding-bottom: 0;
+  }
+}
+
+.units__frame {
+  position: relative;
+  min-width: 560px;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+.units__frame img {
+  width: 100%;
+  height: 100%;
+}
+
+.units__dots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dot {
+  position: absolute;
+  width: clamp(10px, 1.1vw, 16px);
+  height: clamp(10px, 1.1vw, 16px);
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: var(--c);
+  /* The dark hairline gives every status, yellow included, an edge that reads on the light plan. */
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px rgba(14, 17, 19, 0.6);
+}
+
+.dot--static {
+  position: static;
+  translate: none;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+}
+
+/* Each status has its own mark as well as its colour, so red and green stay
+   apart for colour-blind visitors: available is solid, reserved a ring, sold
+   struck through. The legend uses the same marks. */
+.dot--sold {
+  --c: var(--sold);
+  background: linear-gradient(45deg, var(--c) 0 40%, var(--paper) 40% 60%, var(--c) 60%);
+}
+.dot--reserved {
+  --c: var(--reserved);
+  background: radial-gradient(circle, var(--paper) 0 28%, var(--c) 30%);
+}
+.dot--available {
+  --c: var(--available);
+}
+
+.units__badge {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
+.units__legend {
+  grid-area: legend;
+  position: sticky;
+  top: 24px;
+}
+
+.units__legend ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.units__legend li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.units__label {
+  flex: 1;
+  font-weight: 400;
+}
+
+.units__count {
+  font-size: 40px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.units__bar {
+  display: flex;
+  height: 6px;
+  margin-top: 20px;
+  overflow: hidden;
+  gap: 2px;
+}
+
+.units__seg--available {
+  background: var(--available);
+}
+.units__seg--reserved {
+  background: var(--reserved);
+}
+.units__seg--sold {
+  background: var(--sold);
+}

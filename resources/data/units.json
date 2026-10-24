@@ -1,0 +1,386 @@
+[
+  {
+    "id": "A-01",
+    "x": 8.67,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "A-02",
+    "x": 11.02,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "A-03",
+    "x": 13.36,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "A-04",
+    "x": 15.7,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "A-05",
+    "x": 18.05,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "A-06",
+    "x": 20.39,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "A-07",
+    "x": 22.73,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "A-08",
+    "x": 25.08,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "B-01",
+    "x": 28.67,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "B-02",
+    "x": 31.02,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "B-03",
+    "x": 33.36,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "B-04",
+    "x": 35.7,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "B-05",
+    "x": 38.05,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "B-06",
+    "x": 40.39,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "B-07",
+    "x": 42.73,
+    "y": 28.85,
+    "status": "reserved"
+  },
+  {
+    "id": "B-08",
+    "x": 45.08,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "C-01",
+    "x": 54.92,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "C-02",
+    "x": 57.27,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "C-03",
+    "x": 59.61,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "C-04",
+    "x": 61.95,
+    "y": 28.85,
+    "status": "reserved"
+  },
+  {
+    "id": "C-05",
+    "x": 64.3,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "C-06",
+    "x": 66.64,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "C-07",
+    "x": 68.98,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "C-08",
+    "x": 71.33,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "D-01",
+    "x": 74.92,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "D-02",
+    "x": 77.27,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "D-03",
+    "x": 79.61,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "D-04",
+    "x": 81.95,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "D-05",
+    "x": 84.3,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "D-06",
+    "x": 86.64,
+    "y": 28.85,
+    "status": "available"
+  },
+  {
+    "id": "D-07",
+    "x": 88.98,
+    "y": 28.85,
+    "status": "reserved"
+  },
+  {
+    "id": "D-08",
+    "x": 91.33,
+    "y": 28.85,
+    "status": "sold"
+  },
+  {
+    "id": "E-01",
+    "x": 8.67,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "E-02",
+    "x": 11.02,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "E-03",
+    "x": 13.36,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "E-04",
+    "x": 15.7,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "E-05",
+    "x": 18.05,
+    "y": 49.15,
+    "status": "reserved"
+  },
+  {
+    "id": "E-06",
+    "x": 20.39,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "E-07",
+    "x": 22.73,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "E-08",
+    "x": 25.08,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "F-01",
+    "x": 28.67,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "F-02",
+    "x": 31.02,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "F-03",
+    "x": 33.36,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "F-04",
+    "x": 35.7,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "F-05",
+    "x": 38.05,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "F-06",
+    "x": 40.39,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "F-07",
+    "x": 42.73,
+    "y": 49.15,
+    "status": "reserved"
+  },
+  {
+    "id": "F-08",
+    "x": 45.08,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "G-01",
+    "x": 54.92,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "G-02",
+    "x": 57.27,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "G-03",
+    "x": 59.61,
+    "y": 49.15,
+    "status": "reserved"
+  },
+  {
+    "id": "G-04",
+    "x": 61.95,
+    "y": 49.15,
+    "status": "reserved"
+  },
+  {
+    "id": "G-05",
+    "x": 64.3,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "G-06",
+    "x": 66.64,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "G-07",
+    "x": 68.98,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "G-08",
+    "x": 71.33,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "H-01",
+    "x": 74.92,
+    "y": 49.15,
+    "status": "reserved"
+  },
+  {
+    "id": "H-02",
+    "x": 77.27,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "H-03",
+    "x": 79.61,
+    "y": 49.15,
+    "status": "reserved"
+  },
+  {
+    "id": "H-04",
+    "x": 81.95,
+    "y": 49.15,
+    "status": "reserved"
+  },
+  {
+    "id": "H-05",
+    "x": 84.3,
+    "y": 49.15,
+    "status": "sold"
+  },
+  {
+    "id": "H-06",
+    "x": 86.64,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "H-07",
+    "x": 88.98,
+    "y": 49.15,
+    "status": "available"
+  },
+  {
+    "id": "H-08",
+    "x": 91.33,
+    "y": 49.15,
+    "status": "sold"
+  }
+]
