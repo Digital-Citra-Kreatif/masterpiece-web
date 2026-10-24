@@ -87,7 +87,7 @@ return [
         'allowed_extensions' => [
             'jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'svg', 'ico',
             'pdf', 'txt', 'csv', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'odt', 'ods', 'odp', 'rtf',
-            'zip', 'mp4', 'webm', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'woff', 'woff2', 'json',
+            'zip', 'mp4', 'webm', 'mov', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'woff', 'woff2', 'ttf', 'otf', 'json',
         ],
 
         // Smaller copies made of every image: name => [width, height, mode].

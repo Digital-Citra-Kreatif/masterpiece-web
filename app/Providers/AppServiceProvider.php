@@ -3,9 +3,13 @@
 namespace App\Providers;
 
 use App\Support\Content;
+use App\Support\ProjectFonts;
+use Illuminate\Foundation\Http\Events\RequestHandled;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\View as ViewInstance;
+use Sunrice\Cms\Models\EntryTranslation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +29,8 @@ class AppServiceProvider extends ServiceProvider
         View::composer(['pages.*', 'components.*', 'errors.404'], function (ViewInstance $view): void {
             $view->with('site', Content::site());
         });
+
+        EntryTranslation::saved(fn (EntryTranslation $translation) => app(ProjectFonts::class)->handle($translation));
+        Event::listen(RequestHandled::class, fn (RequestHandled $event) => app(ProjectFonts::class)->handleRequest($event->request));
     }
 }

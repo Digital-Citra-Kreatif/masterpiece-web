@@ -150,8 +150,7 @@ class SiteContentSeeder extends Seeder
                         'fields' => [$textarea('text', ['required' => true])],
                     ]),
                 ]],
-                // Global Style: the section's fields are set up in the admin.
-                ['handle' => 'project', 'title' => 'Project', 'fields' => [$this->field('global_style', 'group', [], ['label' => 'Global Style', 'fields' => []])]],
+                $this->projectBlueprint(),
             ],
             'collections' => [
                 ['handle' => 'pages', 'title' => 'Pages', 'blueprint' => 'page', 'blueprints' => ['homepage'], 'hierarchical' => true, 'ordered' => true, 'route' => '/{slug}'],
@@ -161,6 +160,79 @@ class SiteContentSeeder extends Seeder
                 ['handle' => 'projects', 'title' => 'Projects', 'blueprint' => 'project', 'ordered' => true, 'route' => '/projects/{slug}'],
             ],
         ];
+    }
+
+    /**
+     * The Project blueprint (title and slug are the entry's own): the project's
+     * Global Style and its WhatsApp floating button.
+     *
+     * Font files uploaded here are moved to the media folder Fonts / {slug}
+     * (App\Support\ProjectFonts). Colours are hex codes: the CMS has no colour field.
+     *
+     * @return array<string, mixed>
+     */
+    private function projectBlueprint(): array
+    {
+        $whenActive = ['condition' => ['field' => 'active', 'operator' => 'equals', 'value' => true]];
+        $hex = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'text', ['placeholder' => '#000000'], [
+            'label' => $label,
+            'translatable' => false,
+            'validation' => ['regex:/^#[0-9A-Fa-f]{6}$/'],
+            ...$extra,
+        ]);
+        $font = fn (string $handle, string $label): array => $this->field($handle, 'media', [], [
+            'label' => $label, 'translatable' => false, 'width' => 33, 'instructions' => 'File .woff2, .woff, .ttf, atau .otf.', ...$whenActive,
+        ]);
+        $image = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'media', ['types' => ['image']], [
+            'label' => $label, 'translatable' => false, ...$extra,
+        ]);
+        $text = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'text', [], ['label' => $label, ...$extra]);
+
+        return ['handle' => 'project', 'title' => 'Project', 'fields' => [
+            $this->field('global_style', 'group', [], ['label' => 'Global Style', 'fields' => [
+                $this->field('active', 'toggle', ['default' => false], ['label' => 'Aktif', 'translatable' => false, 'instructions' => 'Aktif: tampilan project mengikuti Global Style.']),
+                $image('logo', 'Logo', $whenActive),
+                $this->field('palette', 'group', [], [
+                    'label' => 'Palet warna',
+                    ...$whenActive,
+                    'fields' => collect(range(1, 8))->map(fn (int $number): array => $hex("color_{$number}", "Warna {$number}", ['width' => 25]))->all(),
+                ]),
+                $font('font_heading', 'Font heading'),
+                $font('font_description', 'Font deskripsi'),
+                $font('font_button', 'Font tombol'),
+                $hex('marker_color', 'Warna penanda', ['width' => 50, ...$whenActive]),
+                $this->field('marker_shape', 'select', ['options' => [
+                    ['value' => 'circle', 'label' => 'Lingkaran'],
+                    ['value' => 'square', 'label' => 'Kotak'],
+                    ['value' => 'diamond', 'label' => 'Belah ketupat'],
+                    ['value' => 'pin', 'label' => 'Pin'],
+                ], 'default' => 'circle'], ['label' => 'Bentuk penanda', 'translatable' => false, 'width' => 50, ...$whenActive]),
+                $image('background', 'Background tema', $whenActive),
+                $this->field('corner_style', 'select', ['options' => [
+                    ['value' => 'rounded', 'label' => 'Membulat'],
+                    ['value' => 'chamfer', 'label' => 'Chamfer'],
+                ], 'default' => 'rounded'], ['label' => 'Bentuk sudut', 'translatable' => false, 'width' => 50, ...$whenActive]),
+                $this->field('corner_size', 'number', ['min' => 0, 'step' => 1, 'suffix' => 'px'], ['label' => 'Ukuran sudut', 'translatable' => false, 'width' => 50, ...$whenActive]),
+            ]]),
+            $this->field('whatsapp', 'group', [], ['label' => 'WhatsApp Floating', 'fields' => [
+                $image('image', 'Gambar'),
+                $text('label', 'Label', ['width' => 50]),
+                $text('heading', 'Heading', ['width' => 50]),
+                $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat']),
+                $this->field('show_button', 'toggle', [], ['label' => 'Tampilkan tombol', 'translatable' => false]),
+                $this->field('contacts', 'repeater', [], ['label' => 'Kontak WhatsApp', 'fields' => [
+                    $image('avatar', 'Avatar', ['width' => 50]),
+                    $text('title', 'Judul', ['width' => 50]),
+                    $text('number', 'Nomor WhatsApp', [
+                        'required' => true,
+                        'translatable' => false,
+                        'validation' => ['regex:/^[0-9]{8,15}$/'],
+                        'instructions' => 'Angka saja, diawali kode negara: 6281234567890.',
+                    ]),
+                    $this->field('message', 'textarea', [], ['label' => 'Pesan']),
+                ]]),
+            ]]),
+        ]];
     }
 
     /**
