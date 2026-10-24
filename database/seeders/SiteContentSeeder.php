@@ -189,9 +189,10 @@ class SiteContentSeeder extends Seeder
         return ['handle' => 'project', 'title' => 'Project', 'fields' => [
             $this->field('global_style', 'group', [], ['label' => 'Global Style', 'fields' => [
                 $this->field('active', 'toggle', ['default' => false], ['label' => 'Aktif', 'translatable' => false, 'instructions' => 'Aktif: tampilan project mengikuti Global Style.']),
-                $image('logo', 'Logo', $whenActive),
+                $image('logo', 'Logo', ['width' => 25, ...$whenActive]),
                 $this->field('palette', 'group', [], [
-                    'label' => 'Palet warna',
+                    'label' => 'Warna',
+                    'width' => 75,
                     ...$whenActive,
                     'fields' => collect(range(1, 8))->map(fn (int $number): array => $hex("color_{$number}", "Warna {$number}", ['width' => 25]))->all(),
                 ]),
@@ -200,19 +201,37 @@ class SiteContentSeeder extends Seeder
                     ...$whenActive,
                     'fields' => [$font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol')],
                 ]),
-                $hex('marker_color', 'Warna penanda', ['width' => 50, ...$whenActive]),
-                $this->field('marker_shape', 'select', ['options' => [
-                    ['value' => 'circle', 'label' => 'Lingkaran'],
-                    ['value' => 'square', 'label' => 'Kotak'],
-                    ['value' => 'diamond', 'label' => 'Belah ketupat'],
-                    ['value' => 'pin', 'label' => 'Pin'],
-                ], 'default' => 'circle'], ['label' => 'Bentuk penanda', 'translatable' => false, 'width' => 50, ...$whenActive]),
+                // A marker is drawn (colour and shape) or an uploaded image/SVG: one or the other.
+                $this->field('marker', 'group', [], [
+                    'label' => 'Penanda',
+                    ...$whenActive,
+                    'fields' => [
+                        $this->field('type', 'select', ['options' => [
+                            ['value' => 'shape', 'label' => 'Warna & bentuk'],
+                            ['value' => 'image', 'label' => 'Gambar / SVG'],
+                        ], 'default' => 'shape'], ['label' => 'Jenis', 'required' => true, 'translatable' => false, 'width' => 33]),
+                        $hex('color', 'Warna', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'not_equals', 'value' => 'image']]),
+                        $this->field('shape', 'select', ['options' => [
+                            ['value' => 'circle', 'label' => 'Lingkaran'],
+                            ['value' => 'square', 'label' => 'Kotak'],
+                            ['value' => 'diamond', 'label' => 'Belah ketupat'],
+                            ['value' => 'pin', 'label' => 'Pin'],
+                        ], 'default' => 'circle'], ['label' => 'Bentuk', 'required' => true, 'translatable' => false, 'width' => 33, 'condition' => ['field' => 'type', 'operator' => 'not_equals', 'value' => 'image']]),
+                        $image('image', 'Gambar / SVG', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'equals', 'value' => 'image']]),
+                    ],
+                ]),
+                $this->field('corner', 'group', [], [
+                    'label' => 'Sudut',
+                    ...$whenActive,
+                    'fields' => [
+                        $this->field('style', 'select', ['options' => [
+                            ['value' => 'rounded', 'label' => 'Membulat'],
+                            ['value' => 'chamfer', 'label' => 'Chamfer'],
+                        ], 'default' => 'rounded'], ['label' => 'Bentuk', 'translatable' => false, 'width' => 50]),
+                        $this->field('size', 'number', ['min' => 0, 'step' => 1, 'suffix' => 'px'], ['label' => 'Ukuran', 'translatable' => false]),
+                    ],
+                ]),
                 $image('background', 'Background tema', $whenActive),
-                $this->field('corner_style', 'select', ['options' => [
-                    ['value' => 'rounded', 'label' => 'Membulat'],
-                    ['value' => 'chamfer', 'label' => 'Chamfer'],
-                ], 'default' => 'rounded'], ['label' => 'Bentuk sudut', 'translatable' => false, 'width' => 50, ...$whenActive]),
-                $this->field('corner_size', 'number', ['min' => 0, 'step' => 1, 'suffix' => 'px'], ['label' => 'Ukuran sudut', 'translatable' => false, 'width' => 50, ...$whenActive]),
             ]]),
             $this->field('whatsapp', 'group', [], ['label' => 'WhatsApp Floating', 'fields' => [
                 $image('image', 'Gambar'),

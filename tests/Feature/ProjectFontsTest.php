@@ -32,7 +32,7 @@ test('a project\'s font files move to the media folder Fonts / {slug}', function
 
     $translation = app(CreateEntry::class)->handle($this->projects, [
         'title' => 'Project One', 'slug' => 'project-one', 'locale' => 'id',
-        'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $heading, 'button' => $button]]],
+        'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $heading, 'button' => $button]]],
     ]);
 
     $root = MediaFolder::query()->whereNull('parent_id')->where('name', 'Fonts')->firstOrFail();
@@ -51,7 +51,7 @@ test('a project\'s font files move to the media folder Fonts / {slug}', function
         'version' => $translation->fresh()->version,
         'title' => 'Project One',
         'slug' => 'project-one',
-        'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $heading, 'description' => $description, 'button' => $button]]],
+        'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $heading, 'description' => $description, 'button' => $button]]],
     ])->assertSessionHasNoErrors();
 
     expect($folder->media()->count())->toBe(3)
@@ -63,8 +63,8 @@ test('fonts of different projects get their own folders, other media stays put',
     $second = uploadFont('second.woff2');
     $other = uploadFont('other.woff2');
 
-    app(CreateEntry::class)->handle($this->projects, ['title' => 'A', 'slug' => 'project-a', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $first]]]]);
-    app(CreateEntry::class)->handle($this->projects, ['title' => 'B', 'slug' => 'project-b', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $second]]]]);
+    app(CreateEntry::class)->handle($this->projects, ['title' => 'A', 'slug' => 'project-a', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $first]]]]);
+    app(CreateEntry::class)->handle($this->projects, ['title' => 'B', 'slug' => 'project-b', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $second]]]]);
 
     expect(MediaFolder::query()->where('name', 'project-a')->firstOrFail()->media()->pluck('id')->all())->toBe([$first])
         ->and(MediaFolder::query()->where('name', 'project-b')->firstOrFail()->media()->pluck('id')->all())->toBe([$second])
@@ -84,7 +84,7 @@ test('a ZIP in a font field is unpacked: the regular font takes its place, the o
 
     $translation = app(CreateEntry::class)->handle($this->projects, [
         'title' => 'Project Zip', 'slug' => 'project-zip', 'locale' => 'id',
-        'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $zipId]]],
+        'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $zipId]]],
     ]);
 
     $heading = $translation->fresh()->draft_data['global_style']['fonts']['heading'];
@@ -100,7 +100,7 @@ test('changing a project\'s slug renames its font folder instead of making a sec
     $heading = uploadFont('heading.woff2');
     $translation = app(CreateEntry::class)->handle($this->projects, [
         'title' => 'Old', 'slug' => 'old-name', 'locale' => 'id',
-        'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $heading]]],
+        'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $heading]]],
     ]);
     $folder = MediaFolder::query()->where('name', 'old-name')->firstOrFail();
 
@@ -115,7 +115,7 @@ test('renaming in the admin while swapping the font still keeps one folder, rena
     $old = uploadFont('old.woff2');
     $translation = app(CreateEntry::class)->handle($this->projects, [
         'title' => 'Ruko', 'slug' => 'ruko', 'locale' => 'id',
-        'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $old]]],
+        'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $old]]],
     ]);
     app(PublishEntry::class)->handle($translation->fresh());
     $folder = MediaFolder::query()->where('name', 'ruko')->firstOrFail();
@@ -130,7 +130,7 @@ test('renaming in the admin while swapping the font still keeps one folder, rena
         'version' => $translation->fresh()->version,
         'title' => 'Ruko 2',
         'slug' => 'ruko-2',
-        'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $new]]],
+        'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $new]]],
         'publish' => true,
     ])->assertSessionHasNoErrors();
 
@@ -141,10 +141,10 @@ test('renaming in the admin while swapping the font still keeps one folder, rena
 
 test('a font picked from another project\'s folder stays there, and that folder keeps its name', function () {
     $shared = uploadFont('shared.woff2');
-    app(CreateEntry::class)->handle($this->projects, ['title' => 'A', 'slug' => 'project-a', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $shared]]]]);
+    app(CreateEntry::class)->handle($this->projects, ['title' => 'A', 'slug' => 'project-a', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $shared]]]]);
     $folderA = MediaFolder::query()->where('name', 'project-a')->firstOrFail();
 
-    app(CreateEntry::class)->handle($this->projects, ['title' => 'B', 'slug' => 'project-b', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'fonts' => ['heading' => $shared]]]]);
+    app(CreateEntry::class)->handle($this->projects, ['title' => 'B', 'slug' => 'project-b', 'locale' => 'id', 'data' => ['global_style' => ['active' => true, 'marker' => ['type' => 'shape', 'shape' => 'circle'], 'fonts' => ['heading' => $shared]]]]);
 
     expect($folderA->fresh()->name)->toBe('project-a')
         ->and(Media::find($shared)->folder_id)->toBe($folderA->id);
