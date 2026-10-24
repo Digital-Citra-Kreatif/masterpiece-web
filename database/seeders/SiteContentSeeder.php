@@ -150,12 +150,15 @@ class SiteContentSeeder extends Seeder
                         'fields' => [$textarea('text', ['required' => true])],
                     ]),
                 ]],
+                // Global Style: the section's fields are set up in the admin.
+                ['handle' => 'project', 'title' => 'Project', 'fields' => [$this->field('global_style', 'group', [], ['label' => 'Global Style', 'fields' => []])]],
             ],
             'collections' => [
-                ['handle' => 'pages', 'title' => 'Halaman', 'blueprint' => 'page', 'blueprints' => ['homepage'], 'hierarchical' => true, 'ordered' => true, 'route' => '/{slug}'],
-                ['handle' => 'types', 'title' => 'Tipe', 'blueprint' => 'tipe', 'ordered' => true, 'route' => '/tipe/{slug}'],
-                ['handle' => 'facilities', 'title' => 'Fasilitas', 'blueprint' => 'fasilitas', 'ordered' => true],
-                ['handle' => 'units', 'title' => 'Unit', 'blueprint' => 'unit'],
+                ['handle' => 'pages', 'title' => 'Pages', 'blueprint' => 'page', 'blueprints' => ['homepage'], 'hierarchical' => true, 'ordered' => true, 'route' => '/{slug}'],
+                ['handle' => 'types', 'title' => 'Types', 'blueprint' => 'tipe', 'ordered' => true, 'route' => '/tipe/{slug}'],
+                ['handle' => 'facilities', 'title' => 'Facilities', 'blueprint' => 'fasilitas', 'ordered' => true],
+                ['handle' => 'units', 'title' => 'Units', 'blueprint' => 'unit'],
+                ['handle' => 'projects', 'title' => 'Projects', 'blueprint' => 'project', 'ordered' => true, 'route' => '/projects/{slug}'],
             ],
         ];
     }
