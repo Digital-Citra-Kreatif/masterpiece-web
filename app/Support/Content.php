@@ -23,7 +23,7 @@ final class Content
     /**
      * Site-wide data every page shares as `$site` (Globals → Situs and Settings → Site).
      *
-     * @return array{lang: string, fullName: string, description: string, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string}>, statusLabels: array<string, string>, siteplan: array{image: ?string, width: int, height: int, placeholder: bool}}
+     * @return array{lang: string, fullName: string, description: string, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>, siteplan: array{image: ?string, width: int, height: int, placeholder: bool}}
      */
     public static function site(): array
     {
@@ -39,10 +39,7 @@ final class Content
                 'protectMedia' => (bool) ($settings['protect_media'] ?? false),
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...config('site.logo'), 'alt' => Cms::site()->name()],
-                'nav' => collect($settings['nav'] ?? [])
-                    ->map(fn (array $item): array => ['href' => '#'.$item['section'], 'label' => $item['label']])
-                    ->values()
-                    ->all(),
+                'nav' => self::nav($settings),
                 'statusLabels' => [
                     'sold' => $labels['sold'] ?? 'Terjual',
                     'reserved' => $labels['reserved'] ?? 'Dipesan',
@@ -56,6 +53,27 @@ final class Content
                 ],
             ];
         });
+    }
+
+    /**
+     * The header's links: the CMS menu (config site.menu), or, while it has
+     * none, the homepage sections from Globals → Situs.
+     *
+     * @param  array<string, mixed>  $settings
+     * @return list<array{href: string, label: string, active: bool, newTab: bool}>
+     */
+    private static function nav(array $settings): array
+    {
+        $menu = collect(Cms::menu((string) config('site.menu')))
+            ->map(fn (array $item): array => ['href' => $item['url'], 'label' => $item['label'], 'active' => $item['active'], 'newTab' => $item['new_tab']]);
+        if ($menu->isNotEmpty()) {
+            return $menu->values()->all();
+        }
+
+        return collect($settings['nav'] ?? [])
+            ->map(fn (array $item): array => ['href' => '#'.$item['section'], 'label' => $item['label'], 'active' => false, 'newTab' => false])
+            ->values()
+            ->all();
     }
 
     /**

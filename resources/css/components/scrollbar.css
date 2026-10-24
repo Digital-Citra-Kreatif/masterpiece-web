@@ -1,0 +1,39 @@
+/* The page's scrollbar, drawn over the page so its track is truly
+   transparent: a 3px black thumb at 30%, square, no arrows.
+   Logic in resources/js/scrollbar.js. */
+
+.scrollbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  width: 3px;
+  pointer-events: none;
+}
+
+.scrollbar[hidden] {
+  display: none;
+}
+
+.scrollbar__thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgb(0 0 0 / 0.3);
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+
+/* A wider hit area than the 3px it shows, so the thumb is easy to drag. */
+.scrollbar__thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 -9px;
+}
+
+.scrollbar__thumb.is-dragging {
+  cursor: grabbing;
+}

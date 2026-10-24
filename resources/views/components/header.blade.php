@@ -1,5 +1,6 @@
 {{--
-  'home': transparent over the hero, section links.
+  'home': transparent over the hero, the CMS menu (config site.menu; without
+  links there, the homepage sections).
   'type': solid, with a back link to the Unit update section.
   Not sticky: it sits at the top of the page and scrolls away.
 --}}
@@ -20,9 +21,14 @@
     </a>
 
     @if ($variant === 'home')
-      <nav class="hd__nav" aria-label="Bagian halaman">
+      <nav class="hd__nav" aria-label="Menu utama">
         @foreach ($site['nav'] as $item)
-          <a class="roll-host" href="{{ $item['href'] }}"><x-roll-text :text="$item['label']" /></a>
+          <a
+            class="roll-host"
+            href="{{ $item['href'] }}"
+            @if ($item['active']) aria-current="page" @endif
+            @if ($item['newTab']) target="_blank" rel="noopener" @endif
+          ><x-roll-text :text="$item['label']" /></a>
         @endforeach
       </nav>
     @else

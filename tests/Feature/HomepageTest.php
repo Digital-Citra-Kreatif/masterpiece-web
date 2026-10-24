@@ -3,7 +3,9 @@
 use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Sunrice\Cms\Actions\Menus\SaveMenu;
 use Sunrice\Cms\Models\EntryTranslation;
+use Sunrice\Cms\Models\Menu;
 
 uses(RefreshDatabase::class);
 
@@ -101,4 +103,24 @@ test('an unknown address shows the site\'s not found page', function () {
     $this->get('/tipe/tidak-ada')
         ->assertNotFound()
         ->assertSee('Halaman tidak ditemukan');
+});
+
+test('the home header lists the homepage sections while the CMS menu has no links', function () {
+    $this->get('/')
+        ->assertSee('<nav class="hd__nav" aria-label="Menu utama">', false)
+        ->assertSee('href="#kawasan"', false);
+});
+
+test('the home header shows the CMS menu', function () {
+    $menu = Menu::query()->create(['handle' => 'primary_menu', 'title' => 'Primary Menu']);
+    app(SaveMenu::class)->handle($menu, [
+        ['url' => '/kontak', 'labels' => ['id' => 'Kontak']],
+        ['url' => 'https://example.com', 'labels' => ['id' => 'Brosur'], 'new_tab' => true],
+    ]);
+
+    $this->get('/')
+        ->assertSee('Kontak')
+        ->assertSee('href="/kontak"', false)
+        ->assertSee('target="_blank" rel="noopener"', false)
+        ->assertDontSee('href="#kawasan"', false);
 });

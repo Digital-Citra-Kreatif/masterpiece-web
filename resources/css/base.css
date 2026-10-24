@@ -48,6 +48,54 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Minimal scrollbars: a 3px black thumb at 30%, square, on a transparent
+   track, no arrow buttons. Chrome, Edge and Safari draw them from the
+   -webkit- rules (exact width); setting scrollbar-width there would make
+   Chrome ignore them, so only Firefox gets the standard properties
+   (thin: its own width, it has no arrows).
+
+   The page's own scrollbar can't be transparent: it takes a strip beside
+   the page, not over it. So once resources/js/scrollbar.js runs it's hidden
+   and drawn over the page instead (components/scrollbar.css); these rules
+   are for the scroll areas inside the page. */
+html.has-scrollbar {
+  scrollbar-width: none;
+}
+
+html.has-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background: rgb(0 0 0 / 0.3);
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html:not(.has-scrollbar),
+  body * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(0 0 0 / 0.3) transparent;
+  }
+}
+
 /* Lenis (resources/js/smooth-scroll.js) does the easing once it runs. */
 html.lenis {
   scroll-behavior: auto;

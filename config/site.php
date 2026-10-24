@@ -13,6 +13,12 @@ return [
     'placeholder_badges' => (bool) env('SITE_PLACEHOLDER_BADGES', false),
 
     /*
+     * The CMS menu (Content → Menus) the home header shows, by handle. Without
+     * links there, the header lists the homepage sections (Globals → Situs).
+     */
+    'menu' => 'primary_menu',
+
+    /*
      * The header logo: one for the transparent header over the hero, one for the solid header.
      *
      * @var array{light: string, dark: string, width: int, height: int}
