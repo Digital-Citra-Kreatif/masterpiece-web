@@ -91,9 +91,7 @@
 
     @isset($s['types'])
       @php($ty = $s['types'])
-      @if ($ty['heroImage'])
-        <x-project.band :image="$ty['heroImage']" />
-      @endif
+      {{-- The cutaway band above Type (Tipe → Gambar potongan, components/project/band) is off for now. --}}
       <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]" />
     @endisset
 

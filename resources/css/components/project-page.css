@@ -1054,29 +1054,32 @@ button.pj-frame:focus-visible {
 
 /* ---------------------------------------------------------------- band */
 
-/* The shophouse render across the page, fading into the paper below it. */
+/* The shophouse cutaway across the page. The render ends in a black band of
+   ground under the buildings: the picture is laid out 147% the height of its
+   frame and pinned to the top, so its lower third (the ground) is always cut
+   off, whatever the frame's shape; no fade into the paper. Taller on phones,
+   where its middle (the two shophouses) shows. */
 .pj-band {
   position: relative;
   margin: 0;
+  aspect-ratio: 6000 / 1700;
+  max-height: 80svh;
+  overflow: hidden;
   background: var(--paper);
 }
 
 .pj-band img {
   display: block;
   width: 100%;
-  height: auto;
-  max-height: 80svh;
+  height: 147%;
   object-fit: cover;
+  object-position: 50% 0;
 }
 
-.pj-band::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 22%;
-  background: linear-gradient(0deg, var(--paper), transparent);
+@media (max-width: 760px) {
+  .pj-band {
+    aspect-ratio: 4 / 3;
+  }
 }
 
 /* ---------------------------------------------------------------- availability */

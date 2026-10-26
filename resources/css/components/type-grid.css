@@ -148,8 +148,9 @@ article.card {
    the render on the paper, a white body with the size beside the name, a
    rule, then the facts in one row as "LT: 45 m²". */
 
+/* A full-width rule between Facilities and it, in the weight of the page's side lines. */
 .types--project {
-  border-top: 0;
+  border-top: 1px solid var(--line, var(--rule));
 }
 
 .types--project .sheet__title {
