@@ -157,14 +157,18 @@
   background: var(--ink);
 }
 
-/* Ends at the content's right edge, so the last card in view is never cut by
-   it; Swiper sizes the cards to fill the column (facilities-swiper.js). Two
-   classes, so Swiper's own .swiper margins (loaded later) don't undo it, and
-   min-width 0 so the slides can't widen the grid column. */
+/* Runs off to the right edge of the screen, past the page's gutter and line,
+   the last card cut by it. Two classes, so Swiper's own .swiper margins
+   (loaded later) don't undo it, and min-width 0 so the slides can't widen the
+   grid column. */
 .fac--split .fac__rail.swiper {
   min-width: 0;
-  margin: 0;
+  margin: 0 calc(-1 * max(var(--gutter), (100vw - var(--max)) / 2 + var(--gutter))) 0 0;
   overflow: hidden;
+}
+
+.fac--split .fac__slide {
+  width: clamp(240px, 24vw, 340px);
 }
 
 .fac--split .fac__track {

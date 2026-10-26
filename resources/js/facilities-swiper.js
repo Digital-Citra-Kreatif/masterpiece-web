@@ -10,13 +10,9 @@ for (const el of document.querySelectorAll('[data-fac-swiper]')) {
   const section = el.closest('section');
   new Swiper(el, {
     modules: [A11y, Keyboard, Navigation],
-    // Whole cards only, filling the column edge to edge: never one cut off at the right.
-    slidesPerView: 1.15,
-    spaceBetween: 8,
-    breakpoints: {
-      561: { slidesPerView: 2 },
-      961: { slidesPerView: 3 },
-    },
+    // Cards of their own width (facilities.css), running off the right edge of the screen.
+    slidesPerView: 'auto',
+    spaceBetween: 16,
     grabCursor: true,
     loop: true,
     keyboard: { enabled: true, onlyInViewport: true },
