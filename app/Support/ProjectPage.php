@@ -342,13 +342,14 @@ final class ProjectPage
      * The points with a position as scroll-scene hotspots (x, y %), keyed {prefix}-{n}.
      *
      * @param  list<array<string, mixed>>  $points
-     * @return array<string, array{x: float, y: float, title: string, short: string, text: string, image: ?string}>
+     * @return array<string, array{number: ?string, x: float, y: float, title: string, short: string, text: string, image: ?string}>
      */
     private static function hotspots(array $points, string $prefix): array
     {
         return collect($points)
             ->filter(fn (array $point): bool => $point['x'] !== null && $point['y'] !== null)
             ->mapWithKeys(fn (array $point, int $index): array => ["{$prefix}-".($index + 1) => [
+                'number' => $point['number'] ?? null,
                 'x' => $point['x'],
                 'y' => $point['y'],
                 'title' => $point['name'],

@@ -45,6 +45,7 @@
   $still = $scene['still'] ?? null;
   $spots = collect($hotspots)->map(fn ($h, $key) => [
       'key' => $key,
+      'number' => $h['number'] ?? null,
       'short' => ($h['short'] ?? null) ?: $h['title'],
       'content' => [
           'track' => $h['track'] ?? $key,
@@ -92,6 +93,7 @@
           <span class="spot__dot">
             @if ($marker && ! $project)
               <x-project.marker :marker="$marker" />
+              <span class="spot__no">{{ $s['number'] ?? $loop->iteration }}</span>
             @elseif ($project && $pin)
               <img src="{{ $pin }}" alt="" />
             @else

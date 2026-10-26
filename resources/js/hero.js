@@ -1,12 +1,21 @@
 // Hero: the looping teaser video, or the slider. Both run while on screen and
 // stay still (poster, first slide) for visitors who prefer reduced motion.
+import { release, resume } from './video-hold.js';
+
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const onScreen = (el, cb) => new IntersectionObserver(([e]) => cb(e.isIntersecting)).observe(el);
 
 for (const video of document.querySelectorAll('.hero__video')) {
   video.src = video.dataset.src;
   if (reduced) continue;
-  onScreen(video, (visible) => (visible ? video.play().catch(() => {}) : video.pause()));
+  onScreen(video, (visible) => {
+    if (visible) {
+      resume(video);
+      video.play().catch(() => {});
+    } else {
+      release(video);
+    }
+  });
 }
 
 // An image slide shows for 6s; a video slide until it ends. A lone video loops.
@@ -30,8 +39,9 @@ for (const root of document.querySelectorAll('[data-hero-slides]')) {
     clearTimeout(timer);
     const video = videoOf(slides[current]);
     if (video) {
-      video.src ||= video.dataset.src;
+      if (visible) resume(video);
       if (visible && !reduced) video.play().catch(() => {});
+      else if (!visible) release(video);
       else video.pause();
     } else if (visible && !reduced && slides.length > 1) {
       timer = setTimeout(() => show(current + 1), IMAGE_MS);

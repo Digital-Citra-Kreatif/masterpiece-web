@@ -33,6 +33,8 @@ const smooth = (v, a, b) => {
   return t * t * (3 - 2 * t);
 };
 
+import { release, resume } from './video-hold.js';
+
 // ---- frame sets, loaded coarse-to-fine so any scroll position has something close
 const sets = new Map();
 
@@ -566,7 +568,7 @@ async function init(root) {
     current = offset;
     drawn = NaN;
     mode = 'scrub';
-    video.pause();
+    release(video);
   };
 
   async function openPlace(key) {
@@ -640,12 +642,16 @@ async function init(root) {
       // Back at the start of the range and settled: hand the orbit back to the video at the same frame.
       mode = 'video';
       shownTime = null;
+      resume(video);
       video.currentTime = frameToVideo(current);
       root.classList.remove('is-scrub');
       placeMarkers(0, false);
     }
 
-    if (mode === 'video' && video.paused && !reduced) video.play().catch(() => {});
+    if (mode === 'video' && video.paused && !reduced) {
+      resume(video);
+      video.play().catch(() => {});
+    }
 
     if (hasVideo && p > 0 && mode === 'video') handOver();
 
@@ -718,7 +724,7 @@ async function init(root) {
   // Pause the video when the scene is off screen.
   if (hasVideo) {
     new IntersectionObserver(([e]) => {
-      if (mode === 'video' && !e.isIntersecting) video.pause();
+      if (mode === 'video' && !e.isIntersecting) release(video);
       else requestTick();
     }).observe(root);
   }
