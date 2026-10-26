@@ -3,7 +3,9 @@
   turns behind the headline, the lead and the "Play Full Video" card. The
   Masterplan section follows it.
 
-  hero: { title, subtitle, background: 'video'|'slider', slides: [{ type, src, alt }], teaser, full, cover, fullThumb }
+  hero: { title, subtitle, background: 'video'|'slider'|'none', slides: [{ type, src, alt }], teaser, full, cover, fullThumb }
+  Without `full` there is no "Play Full Video" card; without it and a subtitle,
+  no bottom row at all (lead, scroll-cue rule); 'none' leaves the dark band alone.
 
   Logic in resources/js/hero.js.
 --}}
@@ -28,7 +30,7 @@
         </div>
       @endforeach
     </div>
-  @else
+  @elseif ($hero['background'] === 'video')
     <video
       class="hero__video"
       muted
@@ -44,9 +46,11 @@
 
   <div class="hero__body wrap">
     <h1 class="hero__title" id="hero-title">{!! nl2br(e($hero['title']), false) !!}</h1>
+    @if (filled($hero['subtitle']) || ! empty($hero['full']))
     <div class="hero__foot">
       <span class="hero__rule" aria-hidden="true"></span>
       <p class="hero__lead">{!! nl2br(e($hero['subtitle']), false) !!}</p>
+      @if (! empty($hero['full']))
       <button
         class="hero__play"
         type="button"
@@ -59,6 +63,8 @@
           <svg viewBox="0 0 24 24"><path d="M9 6.5v11l9-5.5z" fill="currentColor" /></svg>
         </span>
       </button>
+      @endif
     </div>
+    @endif
   </div>
 </section>

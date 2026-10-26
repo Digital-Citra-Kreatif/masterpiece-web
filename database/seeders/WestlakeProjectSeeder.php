@@ -1,0 +1,321 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Http\UploadedFile;
+use Sunrice\Admin\Actions\Media\SaveMediaFolder;
+use Sunrice\Admin\Actions\Media\UploadMedia;
+use Sunrice\Admin\Media\Media;
+use Sunrice\Admin\Media\MediaFolder;
+use Sunrice\Cms\Actions\Entries\PublishEntry;
+use Sunrice\Cms\Actions\Entries\SaveDraft;
+use Sunrice\Cms\Models\EntryTranslation;
+use Sunrice\Cms\Structure\StructureImporter;
+
+/**
+ * The Project fields (SiteContentSeeder::projectBlueprint()) and the content of
+ * Ruko Westlake Village, from the client's material in project-one/ (not in git):
+ * Urutan.txt, the web layout and presentation PDFs, and their photos.
+ *
+ * Only the Project, Fasilitas and Tipe blueprints are imported, so other blueprints
+ * edited in the admin stay as they are. The project's facilities and unit types are
+ * entries of the Facilities and Types collections (slugs westlake-…), picked in the
+ * project. Sections the entry already has are left alone, and so are Global Style
+ * and WhatsApp Floating. Photos go to the media folder Projects / {slug};
+ * a file already in the library (same name and size, or same content) isn't uploaded again.
+ *
+ * Some photos are larger than the CLI's default upload limit, so run it with:
+ * php -d upload_max_filesize=25M -d post_max_size=25M -d memory_limit=1G artisan db:seed --class=WestlakeProjectSeeder
+ */
+class WestlakeProjectSeeder extends Seeder
+{
+    private const SLUG = 'ruko-westlake-village';
+
+    private const SOURCE = 'project-one/Data & Image';
+
+    /** @var array<string, int> file content hash => media id */
+    private array $uploaded = [];
+
+    private ?MediaFolder $folder = null;
+
+    /**
+     * Run the database seeds.
+     */
+    public function run(StructureImporter $importer, SaveDraft $saveDraft, PublishEntry $publish): void
+    {
+        $definitions = app(SiteContentSeeder::class);
+        $importer->import(['blueprints' => [$definitions->blueprint('fasilitas'), $definitions->blueprint('tipe')]]);
+        // Forced: facilities and unit types used to be rows of the project itself, they are entry pickers now.
+        $importer->import(['blueprints' => [$definitions->blueprint('project')]], force: true);
+        $importer->import(['entries' => [...$this->facilityEntries(), ...$this->typeEntries()]]);
+
+        $translation = EntryTranslation::query()->where('slug', self::SLUG)->where('locale', 'id')->firstOrFail();
+        $stored = array_filter($translation->draft_data ?? []);
+        $missing = array_filter(
+            $this->sections(),
+            fn (callable $section, string $handle): bool => ! isset($stored[$handle]) || self::isOutdated($handle, $stored[$handle]),
+            ARRAY_FILTER_USE_BOTH,
+        );
+        if ($missing === []) {
+            return;
+        }
+
+        $data = collect($missing)->map(fn (callable $section): array => $section())->all();
+        $publish->handle($saveDraft->handle($translation, ['data' => $data, 'version' => $translation->version]));
+    }
+
+    /**
+     * Each section's content, made only when the entry lacks that section.
+     *
+     * @return array<string, callable(): array<string, mixed>>
+     */
+    private function sections(): array
+    {
+        return [
+            'hero' => fn (): array => [
+                'heading' => 'A New Landmark by the Lake',
+                'description' => 'Introducing a new lakeside community park in the heart of West Village Business District, BSD City.',
+                'media' => [$this->image('Image Westlake/Rk West LS BEV 1.jpg'), $this->image('Image Westlake/Rk West LS Danau Far.jpg')],
+            ],
+            'masterplan' => fn (): array => [
+                'title' => 'Masterplan',
+                'description' => 'Perfectly positioned in the heart of West Village Business District, surrounded by residentials, communities, business hubs, and lifestyle destinations.',
+                'points' => $this->rows([
+                    ['01', 'West Lakeside', 'Data Masterplan/West-Lakeside-BSD-Position.webp'],
+                    ['02', 'West Village Business Park 1', 'Data Masterplan/West Village 1.jpg'],
+                    ['03', 'West Village Business Park 2', 'Data Masterplan/West Village 2.jpg'],
+                    ['04', 'Genesis Global Community School', 'Data Masterplan/Genesis Global Community School.png'],
+                    ['05', 'Office & Hotel', null],
+                    ['06', 'JX Hometown', null],
+                    ['07', 'Ikan Bakar Cianjur', 'Data Masterplan/Ikan Bakar Cianjur.jpeg'],
+                    ['08', 'All Fresh Supermarket', 'Data Masterplan/All Fresh.jpeg'],
+                    ['09', 'Grandlucky Superstore', 'Data Masterplan/Grand Lucky.png'],
+                    ['10', 'The Barn', 'Data Masterplan/The Barn.png'],
+                    ['11', 'SPBU BP', 'Data Masterplan/Pom Bensin BP.png'],
+                ], fn (array $point): array => ['number' => $point[0], 'name' => $point[1], 'image' => $this->image($point[2]), 'gallery' => []]),
+            ],
+            'location' => fn (): array => [
+                'title' => 'Location',
+                'description' => 'Direct access to the toll road, with residential, education and public facilities within a 1–3 km range.',
+                'maps' => [$this->image('Data Location/Maps Westlake.png'), $this->image('Data Location/Maps_page-0001.jpg')],
+                'stats' => $this->rows([
+                    ['500K+', 'Population in BSD City'],
+                    ['145K+', 'Students'],
+                    ['10K+', 'Employees'],
+                    ['15M+', 'Total annual visitors in mall'],
+                ], fn (array $stat): array => ['value' => $stat[0], 'label' => $stat[1]]),
+            ],
+            'cluster' => fn (): array => [
+                'title' => 'Cluster',
+                'description' => 'The first walkable lakefront destination for business & lifestyle.',
+                'points' => $this->rows([
+                    ['01', 'Lakeview Units', 'Uninterrupted lake views create a unique destination, enhancing every visit with a relaxing waterfront ambience.', 'Image Westlake/Ruko Hadap Danau.jpg'],
+                    ['02', 'Streetview Units', 'Position your business at the front of West Lakeside, with ROW 20–24 providing strong visibility and easy access for customers.', 'Image Westlake/Rk West LS Frontal Boulevard 1.jpg'],
+                    ['03', 'Main Plaza', 'The main entrance to the promenade area: integrated pedestrian shortcuts provide immediate and convenient access to the Lakeside Social Deck.', 'Image Westlake/Rk West LS Plaza.jpg'],
+                    ['04', 'Lakeside Social Deck', '4 public social decks ranging from 90–120 sqm, designed for events, gatherings, and pop-up activities, overlooking the lake.', 'Image Westlake/Rk West LS Deck.jpg'],
+                    ['05', 'Lakeside Jogging Track', 'A scenic lakeside jogging track lined with cafes and shops, seamlessly blending fitness with vibrant social spaces.', 'Image Westlake/Rk West LS Jogging Track.jpg'],
+                    ['06', 'Lakefront Pods', '', null],
+                ], fn (array $point): array => ['number' => $point[0], 'name' => $point[1], 'description' => $point[2], 'image' => $this->image($point[3])]),
+            ],
+            'facilities' => fn (): array => [
+                'title' => 'Facilities',
+                'description' => 'Where lifestyle creates opportunity: a destination designed to elevate customer experiences while supporting thriving businesses.',
+                'items' => self::entryIds('facilities', array_column($this->facilityEntries(), 'slug')),
+            ],
+            'types' => fn (): array => [
+                'title' => 'Type',
+                'description' => 'Choose your view, depending on your business. Every unit is designed for maximum visibility & business exposure.',
+                'hero_image' => $this->image('Data Type Unit/Rk West LS Potongan.jpg'),
+                'advantages' => $this->rows([
+                    ['Multiple Facade', 'Designed with multiple frontages to maximize visibility, accessibility, and business exposure from different directions.', 'Image Westlake/Rk West LS Frontal Boulevard 2.jpg'],
+                    ['Seamless Parking', 'Well-planned parking areas provide easy access and a seamless arrival experience for every visitor.', 'Data Facilities/Seamless Parking.jpg'],
+                    ['Spacious Balconies', 'Lake-facing units feature ±3-meter balconies, extending usable space while capturing uninterrupted lake views.', 'Image Westlake/Rk West LS Balcony.jpg'],
+                    ['Alfresco Dining', 'Designed for breakfast to dinner experiences, with outdoor seating that engages directly with the lakeside atmosphere.', 'Image Westlake/Rk West LS Coffee Shop.jpg'],
+                ], fn (array $item): array => ['name' => $item[0], 'description' => $item[1], 'image' => $this->image($item[2])]),
+                'views' => $this->rows([
+                    ['streetview', 'Street View', 'Suitable for businesses seeking maximum exposure: directly facing crowd-generating facilities, with parking at the front and rear of the shophouse.', "Clinic\nPilates Studio\nMinimarket\nRetail\nPharmacy\nOffice"],
+                    ['lakeview', 'Lake View', 'Suitable for customer-experience based businesses: lakeview balconies, alfresco dining and the lakeside jogging track.', "Cafe\nRestaurant\nArtisan Tea Shop\nWellness\nFamily Dining"],
+                ], fn (array $view): array => ['view' => $view[0], 'name' => $view[1], 'description' => $view[2], 'businesses' => $view[3]]),
+                'units' => self::entryIds('types', array_column($this->typeEntries(), 'slug')),
+                'specifications' => $this->rows([
+                    ['Foundation', 'Mini pile'],
+                    ['Main structure', 'Reinforced concrete'],
+                    ['Wall', 'Aerated Autoclaved Concrete (AAC) with plaster & paint'],
+                    ['Ceiling', 'Gypsum board'],
+                    ['Roof', 'Corrugated zincalume with lightweight steel structure & insulation'],
+                    ['Floor', "Terrace: homogenous tile\nIndoor area: non-slip homogenous tile\nToilet: non-slip homogenous tile"],
+                    ['Door & window', "Main entrance door: aluminium frame with glass\nWindow: aluminium frame with glass"],
+                    ['Facade', 'Plaster wall with paint finish, aluminium frame with glass'],
+                    ['Sanitary', 'Standard set'],
+                    ['Electricity', '3500 VA'],
+                    ['Internet network', 'Fiber optic'],
+                    ['Water supply', 'PAM'],
+                ], fn (array $spec): array => ['label' => $spec[0], 'value' => $spec[1]]),
+            ],
+            'availability' => fn (): array => [
+                'title' => 'Unit Availability',
+                'description' => 'Siteplan and block plans of every block. Status: available, reserved, sold.',
+                'siteplan' => $this->image('Data Unit/Unit Avalability.png'),
+                'blocks' => $this->rows(
+                    collect(range('A', 'H'))->map(fn (string $block): array => [$block, $block <= 'D' ? 'streetview' : 'lakeview'])->all(),
+                    fn (array $block): array => ['name' => "Blok {$block[0]}", 'view' => $block[1], 'image' => $this->image("Data Unit/Blockplan_Blok {$block[0]}.jpg")],
+                ),
+            ],
+        ];
+    }
+
+    /**
+     * The project's four facilities, as entries of the Facilities collection.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function facilityEntries(): array
+    {
+        return collect([
+            ['Lakeside Social Deck', '4 public social decks ranging from 90–120 sqm, designed for events, gatherings, and pop-up activities, overlooking the lake.', 'Data Facilities/Lakeside Social Deck.jpg'],
+            ['Walkable Neighborhood', 'A fully connected pedestrian network encouraging movement, exploration, and longer dwell time.', 'Data Facilities/Walkable Neighborhood.jpg'],
+            ['Prime Location in 10,5 Ha Area', '10,5 Ha area inside West Village Business District, ensuring that your business is in the spotlight.', 'Data Facilities/Prime Location In 10,5 Ha Area.jpg'],
+            ['Stunning Sunset View', 'Selected lake-facing units are designed with private balconies, offering panoramic waterfront views and an elevated customer experience.', 'Data Facilities/Stunning Sunset View.jpg'],
+        ])
+            ->map(fn (array $facility): array => self::entry('facilities', 'westlake-'.str($facility[0])->slug(), $facility[0], [
+                'image' => $this->image($facility[2]),
+                'description' => $facility[1],
+            ]))
+            ->all();
+    }
+
+    /**
+     * The six unit types (Urutan.txt), Street View then Lake View, as entries of the
+     * Types collection. The floor plan images show both floors in one.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function typeEntries(): array
+    {
+        $sizes = [
+            'A' => ['Ruko Hook', '4,5 x 10 m', 45, 93],
+            'BCD' => ['Ruko Standard', '4 x 10 m', 40, 82],
+            'E' => ['Ruko Hook', '5 x 10 m', 50, 103],
+        ];
+        $views = ['streetview' => 'Streetview', 'lakeview' => 'Lakeview'];
+
+        return collect($views)
+            ->flatMap(fn (string $prefix, string $view): array => collect($sizes)->map(fn (array $size, string $type): array => self::entry(
+                'types',
+                'westlake-'.str("{$prefix} type {$type}")->slug(),
+                $prefix.' '.($type === 'BCD' ? 'Type B/C/D' : "Type {$type}"),
+                [
+                    'label' => $size[0],
+                    'view' => $view,
+                    'dimensions' => $size[1],
+                    'image' => $this->image("Data Type Unit/{$prefix} Type {$type}.png"),
+                    'lt' => $size[2],
+                    'lb' => $size[3],
+                    'floors' => 2,
+                    'floor_plans' => [['label' => 'Lantai 1 & 2', 'image' => $this->image("Data Type Unit/Denah {$prefix} Type {$type} - LT LB.webp")]],
+                    'gallery' => [],
+                    'real_facade' => false,
+                    'placeholder' => false,
+                ],
+            ))->values()->all())
+            ->all();
+    }
+
+    /**
+     * A published entry in the site's language (Indonesian), as StructureImporter takes it.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array{collection: string, slug: string, translations: array<string, array<string, mixed>>}
+     */
+    private static function entry(string $collection, string $slug, string $title, array $data): array
+    {
+        return [
+            'collection' => $collection,
+            'slug' => $slug,
+            'translations' => ['id' => ['title' => $title, 'slug' => $slug, 'published' => true, 'data' => $data]],
+        ];
+    }
+
+    /**
+     * The ids of a collection's entries, in the order of the slugs given.
+     *
+     * @param  list<string>  $slugs
+     * @return list<int>
+     */
+    private static function entryIds(string $collection, array $slugs): array
+    {
+        $ids = EntryTranslation::query()
+            ->whereRelation('entry.collection', 'handle', $collection)
+            ->where('locale', 'id')
+            ->whereIn('slug', $slugs)
+            ->pluck('entry_id', 'slug');
+
+        return collect($slugs)->map(fn (string $slug): int => $ids[$slug])->all();
+    }
+
+    /**
+     * Whether a section was stored in an older shape of the blueprint: a hero heading
+     * on several lines, or facilities and unit types as rows instead of picked entries.
+     */
+    private static function isOutdated(string $handle, mixed $stored): bool
+    {
+        return match ($handle) {
+            'hero' => str_contains((string) ($stored['heading'] ?? ''), "\n"),
+            'facilities' => collect($stored['items'] ?? [])->contains(fn (mixed $item): bool => ! is_int($item)),
+            'types' => collect($stored['units'] ?? [])->contains(fn (mixed $unit): bool => ! is_int($unit)),
+            default => false,
+        };
+    }
+
+    /**
+     * @param  list<array<int, mixed>>  $items
+     * @param  callable(array<int, mixed>): array<string, mixed>  $row
+     * @return list<array<string, mixed>>
+     */
+    private function rows(array $items, callable $row): array
+    {
+        return array_map($row, $items);
+    }
+
+    /**
+     * The media library id of a photo in the client's material, uploading it the
+     * first time. File names are matched case-insensitively (Windows and macOS exports differ).
+     */
+    private function image(?string $path): ?int
+    {
+        if ($path === null) {
+            return null;
+        }
+
+        $source = collect(glob(base_path(self::SOURCE.'/'.dirname($path)).'/*'))
+            ->first(fn (string $file): bool => strcasecmp(basename($file), basename($path)) === 0)
+            ?? throw new \RuntimeException("Missing in the client's material: {$path}");
+        $hash = md5_file($source);
+
+        if (isset($this->uploaded[$hash])) {
+            return $this->uploaded[$hash];
+        }
+
+        $existing = Media::query()->where('filename', basename($source))->where('size', filesize($source))->first();
+
+        return $this->uploaded[$hash] = ($existing ?? app(UploadMedia::class)->handle(
+            new UploadedFile($source, basename($source), null, null, true),
+            ['folder_id' => $this->folder()->id, 'alt' => pathinfo($source, PATHINFO_FILENAME)],
+        ))->id;
+    }
+
+    /** The folder Projects / {slug}, created when missing. */
+    private function folder(): MediaFolder
+    {
+        if ($this->folder !== null) {
+            return $this->folder;
+        }
+
+        $saveFolder = app(SaveMediaFolder::class);
+        $root = MediaFolder::query()->whereNull('parent_id')->where('name', 'Projects')->first() ?? $saveFolder->handle('Projects');
+
+        return $this->folder = MediaFolder::query()->where('parent_id', $root->id)->where('name', self::SLUG)->first()
+            ?? $saveFolder->handle(self::SLUG, $root);
+    }
+}

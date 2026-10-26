@@ -93,3 +93,107 @@
   background: var(--accent);
   transition: width 0.2s linear;
 }
+
+/* ---- variant 'split' (project pages, after design-project.pdf): the heading
+   column with two square arrows on the left, the cards running off the right
+   edge, captions in the dark colour. */
+
+.fac--split {
+  padding-block: clamp(64px, 9vw, 128px);
+  overflow: hidden;
+}
+
+.fac__split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  gap: 24px;
+}
+
+.fac__head {
+  display: flex;
+  flex-direction: column;
+}
+
+.fac__title {
+  margin: 0;
+  color: var(--room);
+  font-size: clamp(40px, 4.6vw, 64px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.fac__intro {
+  margin: 16px 0 0;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.fac__arrows {
+  display: flex;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.fac__arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius, 0);
+  background: var(--room);
+  color: var(--room-ink);
+}
+
+.fac__arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fac__arrow:hover {
+  background: var(--ink);
+}
+
+/* Runs off to the right edge of the screen, past the page's gutter. Two
+   classes, so Swiper's own .swiper margins (loaded later) don't undo it, and
+   min-width 0 so the slides can't widen the grid column. */
+.fac--split .fac__rail.swiper {
+  min-width: 0;
+  margin: 0 calc(-1 * max(var(--gutter), (100vw - var(--max)) / 2 + var(--gutter))) 0 0;
+  overflow: hidden;
+}
+
+.fac--split .fac__track {
+  display: flex;
+  padding: 0;
+  overflow: visible;
+}
+
+.fac--split .fac__slide {
+  width: clamp(240px, 25vw, 300px);
+}
+
+.fac__arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.fac--split .fac__img {
+  aspect-ratio: 4 / 5;
+}
+
+.fac--split .fac__slide figcaption {
+  padding-top: 14px;
+  color: var(--room);
+  font-size: 18px;
+}
+
+
+@media (max-width: 760px) {
+  .fac__split {
+    grid-template-columns: 1fr;
+  }
+}

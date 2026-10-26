@@ -16,6 +16,12 @@
 // panel. Back, Esc, or scrolling on turns and zooms back out to the orbit.
 //
 // Scenes that share a frame folder share one download (see frameSet).
+//
+// Still scenes ([data-still]): until a project has its sequence, one picture
+// stands in for it (stillSet). It counts as STILL_FRAMES frames: over the scroll
+// range it turns one way and back by up to [data-sweep] degrees, scaled up just
+// enough to keep covering the stage, and the hotspots (x/y % of the picture)
+// turn with it, so the scrub, the markers and the hotspot moves work unchanged.
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const size = Math.min(window.innerWidth, 1600) * Math.min(devicePixelRatio || 1, 2) > 1100 ? 'lg' : 'sm';
@@ -93,6 +99,28 @@ function frameSet(base) {
   return set;
 }
 
+// ---- a still picture standing in for a sequence
+const STILL_FRAMES = 120;
+
+function stillSet(src) {
+  const set = {
+    listeners: new Set(),
+    ready: new Promise((resolve) => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        set.m = { count: STILL_FRAMES, width: img.naturalWidth, height: img.naturalHeight, step: 1, hotspots: {} };
+        set.frames = new Array(STILL_FRAMES).fill(img);
+        set.still = img;
+        resolve(set);
+      };
+      img.src = src;
+    }),
+    nearest: () => set.still,
+  };
+  return set;
+}
+
 // ---- one scene
 async function init(root) {
   const stage = root.querySelector('.scene__stage');
@@ -133,15 +161,33 @@ async function init(root) {
     }
   }
 
-  const set = await frameSet(root.dataset.base).ready;
+  const set = await (root.dataset.still ? stillSet(root.dataset.still) : frameSet(root.dataset.base)).ready;
   const { m } = set;
   const N = m.count;
+
+  // Still scenes: the picture's turn at frame position fw (radians), the scale
+  // that keeps it covering the stage at that angle, and the hotspots in picture px.
+  const sweep = ((Number(root.dataset.sweep) || 0) * Math.PI) / 180;
+  const turn = (fw) => {
+    const a = sweep * Math.sin((2 * Math.PI * fw) / N);
+    const c = Math.abs(Math.cos(a));
+    const sn = Math.abs(Math.sin(a));
+    const dw = m.width * scale;
+    const dh = m.height * scale;
+    return { a, s: Math.max(1, (W * c + H * sn) / dw, (W * sn + H * c) / dh) };
+  };
+  const stillPoints = {};
+  if (set.still) {
+    for (const spot of Object.values(spots)) {
+      if (spot.point) stillPoints[spot.track] = [(spot.point[0] / 100) * m.width, (spot.point[1] / 100) * m.height];
+    }
+  }
 
   // Video time <-> scene frame. Video frame k = render frame k*video.step;
   // scene frame f = render frame f*step.
   const perSecond = hasVideo ? (m.video.fps * m.video.step) / m.step : 0;
-  // Not rounded: the canvas picks up exactly where the (interpolated) video is,
-  // blending the two nearest frames, so the hand-over doesn't jump.
+  // Not rounded: the scrub carries on from exactly where the (interpolated) video
+  // is, the canvas showing the nearest frame, so the hand-over doesn't jump.
   const videoToFrame = (t) => (Math.floor(t * m.video.fps + 0.01) * (m.video.step / m.step)) % N;
   const frameToVideo = (f) => (((f % N) + N) % N) / perSecond;
 
@@ -167,6 +213,10 @@ async function init(root) {
       w: el.offsetWidth,
       h: el.offsetHeight,
     }));
+    // Other boxes on the stage the markers must not cover (a project scene's card).
+    for (const el of root.querySelectorAll('[data-scene-avoid]')) {
+      avoid.push({ x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
+    }
   };
   const covered = (x, y) => avoid.some((r) => x > r.x - 28 && x < r.x + r.w + 28 && y > r.y - 28 && y < r.y + r.h + 28);
   const resize = () => {
@@ -203,30 +253,29 @@ async function init(root) {
     const fw = ((f % N) + N) % N;
     shownF = fw;
     shownIndex = Math.round(fw) % N;
-    if (!(Math.abs(fw - drawn) < 0.002) && draw(fw)) {
-      drawn = fw;
-      root.classList.add('is-scrub');
+    // A sequence shows whole frames, so it only redraws when the nearest one changes; a still turns smoothly.
+    const key = set.still ? fw : shownIndex;
+    if (!(Math.abs(key - drawn) < 0.002) && draw(fw)) {
+      drawn = key;
+      // Without a video the Masterplan opening shows its picture until the orbit's range (see tick).
+      if (!(hasIntro && !hasVideo)) root.classList.add('is-scrub');
     }
     return fw;
   }
 
-  // Draw frame position fw through the camera. Between two frames the next one is
-  // laid over the previous at the fraction reached, so the orbit flows instead of
-  // stepping 3° at a time; at rest the scrub settles on a whole frame (see tick),
-  // which is drawn alone and sharp. The zoom happens here, from the source image,
-  // so zoomed views keep the source's resolution (a CSS zoom would enlarge the
-  // screen-sized canvas instead). Resting on a frame while zoomed, its detail
+  // Draw frame position fw through the camera: always the nearest whole frame,
+  // never two laid over each other. The frames are 3° apart, so a blend of two
+  // showed buildings near the camera twice (a ghost) while scrolling; at 120
+  // frames a turn the orbit still flows. The zoom happens here, from the source
+  // image, so zoomed views keep the source's resolution (a CSS zoom would enlarge
+  // the screen-sized canvas instead). Resting on a frame while zoomed, its detail
   // frame is used if there is one.
   function draw(fw) {
-    const base = Math.floor(fw) % N;
-    const next = (base + 1) % N;
     const t = fw - Math.floor(fw);
-    const near = t < 0.5 ? base : next;
+    const near = Math.round(fw) % N;
     const whole = t < 0.01 || t > 0.99;
-    const a = set.frames[base];
-    const b = set.frames[next];
-    const img = (cam && whole && set.detail?.get(near)) || (whole || !a || !b ? set.frames[near] || set.nearest(near) : null);
-    if (!img && !(a && b)) return false;
+    const img = (cam && whole && set.detail?.get(near)) || set.frames[near] || set.nearest(near);
+    if (!img) return false;
     const k = cam ? W / cam[2] : 1;
     const tx = cam ? W / 2 - cam[0] * k : 0;
     const ty = cam ? H / 2 - cam[1] * k : 0;
@@ -235,20 +284,28 @@ async function init(root) {
     ctx.imageSmoothingQuality = 'high';
     const dw = m.width * scale;
     const dh = m.height * scale;
-    if (img) {
-      ctx.drawImage(img, ox, oy, dw, dh);
-    } else {
-      ctx.globalAlpha = 1;
-      ctx.drawImage(a, ox, oy, dw, dh);
-      ctx.globalAlpha = t;
-      ctx.drawImage(b, ox, oy, dw, dh);
-      ctx.globalAlpha = 1;
+    if (set.still) {
+      const { a, s } = turn(fw);
+      ctx.translate(ox + dw / 2, oy + dh / 2);
+      ctx.rotate(a);
+      ctx.scale(s, s);
+      ctx.drawImage(set.still, -dw / 2, -dh / 2, dw, dh);
+      return true;
     }
+    ctx.drawImage(img, ox, oy, dw, dh);
     return true;
   }
 
   // A tracked point at frame position fw, between the two nearest frames' points.
   const trackAt = (track, fw) => {
+    if (set.still) {
+      const p = stillPoints[track];
+      if (!p) return null;
+      const { a, s } = turn(fw);
+      const dx = p[0] - m.width / 2;
+      const dy = p[1] - m.height / 2;
+      return [m.width / 2 + s * (dx * Math.cos(a) - dy * Math.sin(a)), m.height / 2 + s * (dx * Math.sin(a) + dy * Math.cos(a))];
+    }
     const pts = m.hotspots[track];
     if (!pts) return null;
     const base = Math.floor(fw) % N;
@@ -372,10 +429,23 @@ async function init(root) {
     return { done, ms };
   }
 
+  // A project scene shows the open hotspot's picture: on its card (the last one
+  // opened stays there), or in the location panel.
+  const picture = root.querySelector('[data-scene-card]');
+  const panelImg = root.querySelector('.scene__loc-img');
   const fillPanel = (key) => {
     const c = spots[key];
     place.title.textContent = c.title;
     place.text.textContent = c.text;
+    if (picture && c.image) {
+      picture.hidden = false;
+      picture.querySelector('img').src = c.image;
+      picture.querySelector('img').alt = c.title;
+    }
+    if (panelImg) {
+      panelImg.hidden = !c.image;
+      if (c.image) panelImg.src = c.image;
+    }
   };
   const showPanel = (key) => {
     fillPanel(key);
@@ -440,6 +510,7 @@ async function init(root) {
     root.style.setProperty('--p-area', areaIn.toFixed(3));
     root.style.setProperty('--v-area', areaIn > 0 ? 'visible' : 'hidden');
     root.style.setProperty('--progress', p.toFixed(4));
+    if (hasIntro && !hasVideo) root.classList.toggle('is-scrub', p > 0);
 
     if (hasVideo && p <= 0 && mode === 'scrub' && Math.abs(current - offset) < 0.05) {
       // Back at the start of the range and settled: hand the orbit back to the video at the same frame.

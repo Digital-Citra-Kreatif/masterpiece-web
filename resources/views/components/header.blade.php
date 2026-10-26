@@ -1,14 +1,18 @@
 {{--
   'home': transparent over the hero, the CMS menu (config site.menu; without
   links there, the homepage sections).
+  'project': like 'home', with the page's own links (`nav`) and, when given, its own `logo` ({ src, width, height }).
   'type': solid, with a back link to the Unit update section.
   Not sticky: it sits at the top of the page and scrolls away.
 --}}
-@props(['variant' => 'home'])
+@props(['variant' => 'home', 'nav' => null, 'logo' => null])
 
 <header class="hd hd--{{ $variant }}">
   <div class="hd__inner wrap">
     <a class="hd__mark" href="{{ url('/') }}" aria-label="{{ $site['logo']['alt'] }}, beranda">
+      @if ($logo)
+        <img class="hd__logo hd__logo--own" src="{{ $logo['src'] }}" alt="" @if ($logo['width']) width="{{ $logo['width'] }}" height="{{ $logo['height'] }}" @endif />
+      @else
       @foreach (['light', 'dark'] as $tone)
         <img
           class="hd__logo hd__logo--{{ $tone }}"
@@ -18,11 +22,12 @@
           height="{{ $site['logo']['height'] }}"
         />
       @endforeach
+      @endif
     </a>
 
-    @if ($variant === 'home')
+    @if ($variant === 'home' || $variant === 'project')
       <nav class="hd__nav" aria-label="Menu utama">
-        @foreach ($site['nav'] as $item)
+        @foreach ($nav ?? $site['nav'] as $item)
           <a
             class="roll-host"
             href="{{ $item['href'] }}"

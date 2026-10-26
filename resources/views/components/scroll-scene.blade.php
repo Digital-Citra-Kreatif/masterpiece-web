@@ -16,28 +16,55 @@
   default angle while zooming in on it, with its info in place of the section
   panel. Back, Esc, or scrolling on returns to the orbit.
 
-  scene:      { base, startFrame?, placeholder? }
-  hotspots:   { key: { track, frame?, title, short?, text } }
+  scene:      { base, startFrame?, placeholder? } (a frame sequence), or
+              { still: { src, width, height, sweep? } } (one picture: scroll-scene.js
+              turns it back and forth by up to `sweep`°, the pins turning with it,
+              until the sequence exists; the rest works the same)
+  hotspots:   { key: { track, frame?, title, short?, text } }, or with a still
+              { key: { x, y, title, short?, text } } (% of the picture)
   masterplan: { title, text, video? }
+
+  variant 'project' (project pages, after design-project.pdf; the same
+  interaction): the picture unshaded, the pins the project's logo in a cream
+  drop (`pin`), the panel a green box on the `side` ('left' or 'right') with its
+  points in columns, the location panel the same box. `card` adds the open (or
+  first) hotspot's picture on the other side; without it the open hotspot's
+  picture shows in its panel. Hotspots may carry an `image` for these.
 
   Logic in resources/js/scroll-scene.js (orbit) and resources/js/masterplan.js (opening).
 --}}
-@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null])
+@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false])
 
 @php
+  $still = $scene['still'] ?? null;
   $spots = collect($hotspots)->map(fn ($h, $key) => [
       'key' => $key,
       'short' => ($h['short'] ?? null) ?: $h['title'],
-      'content' => ['track' => $h['track'], 'frame' => $h['frame'] ?? null, 'title' => $h['title'], 'text' => $h['text']],
+      'content' => [
+          'track' => $h['track'] ?? $key,
+          'point' => isset($h['x'], $h['y']) ? [$h['x'], $h['y']] : null,
+          'frame' => $h['frame'] ?? null,
+          'title' => $h['title'],
+          'text' => $h['text'],
+          'image' => $h['image'] ?? null,
+      ],
   ])->values();
-  $base = rtrim(asset($scene['base']), '/').'/';
-  $firstFrame = $base.'lg/f_'.sprintf('%03d', $scene['startFrame'] ?? 0).'.jpg';
+  $project = $variant === 'project';
+  $first = $spots->first(fn (array $s): bool => $s['content']['image'] !== null || $s['content']['text'] !== '');
+  $base = $still ? null : rtrim(asset($scene['base']), '/').'/';
+  $firstFrame = $still ? $still['src'] : $base.'lg/f_'.sprintf('%03d', $scene['startFrame'] ?? 0).'.jpg';
+  [$frameW, $frameH] = $still ? [$still['width'], $still['height']] : [1280, 720];
 @endphp
 
 <section
-  @class(['scene', 'scene--masterplan' => $masterplan])
+  @class(['scene', 'scene--masterplan' => $masterplan, 'scene--project' => $project, "scene--{$side}" => $project])
   data-scene
-  data-base="{{ $base }}"
+  @if ($still)
+    data-still="{{ $still['src'] }}"
+    data-sweep="{{ $still['sweep'] ?? 12 }}"
+  @else
+    data-base="{{ $base }}"
+  @endif
   data-start="{{ $scene['startFrame'] ?? 0 }}"
   data-spots="{{ json_encode($spots->pluck('content', 'key')) }}"
   aria-labelledby="{{ $id }}-title"
@@ -55,7 +82,13 @@
     <div class="scene__markers">
       @foreach ($spots as $s)
         <button class="spot" type="button" data-spot="{{ $s['key'] }}" tabindex="-1" hidden>
-          <span class="spot__dot">{{ $loop->iteration }}</span>
+          <span class="spot__dot">
+            @if ($project && $pin)
+              <img src="{{ $pin }}" alt="" />
+            @else
+              {{ $loop->iteration }}
+            @endif
+          </span>
           <span class="spot__label">{{ $s['short'] }}</span>
         </button>
       @endforeach
@@ -67,7 +100,7 @@
 
     @if ($masterplan)
       <div class="mp" data-masterplan>
-        {{-- 1280 × 720: the frames' and the video's proportions, for the cover-fit maths in masterplan.js. --}}
+        {{-- The frames' and the video's proportions (1280 × 720, or the still's), for the cover-fit maths in masterplan.js. --}}
         <div class="mp__frame" data-mp-frame>
           @if ($masterplan['video'] ?? null)
             <video
@@ -79,12 +112,12 @@
               poster="{{ $firstFrame }}"
               data-src="{{ asset($masterplan['video']) }}"
               data-mp-img
-              data-w="1280"
-              data-h="720"
+              data-w="{{ $frameW }}"
+              data-h="{{ $frameH }}"
               aria-hidden="true"
             ></video>
           @else
-            <img class="mp__img" src="{{ $firstFrame }}" alt="" width="1280" height="720" data-mp-img data-w="1280" data-h="720" />
+            <img class="mp__img" src="{{ $firstFrame }}" alt="" width="{{ $frameW }}" height="{{ $frameH }}" data-mp-img data-w="{{ $frameW }}" data-h="{{ $frameH }}" />
           @endif
         </div>
         <span class="mp__box" data-mp-box aria-hidden="true"></span>
@@ -96,6 +129,9 @@
     @endif
 
     <div class="scene__area wrap" data-phase="area">
+      @if ($project)
+        <div class="scene__box">
+      @endif
       <h2 class="display scene__area-title" id="{{ $id }}-title">{{ $title }}</h2>
       @if ($intro)
         <p class="scene__intro">{{ $intro }}</p>
@@ -110,7 +146,18 @@
           </li>
         @endforeach
       </ol>
+      @if ($project)
+        </div>
+      @endif
+
     </div>
+
+    @if ($card && $first)
+      <!-- The open (or first) hotspot's picture, filled in by scroll-scene.js -->
+      <figure class="scene__card" data-scene-card data-scene-avoid @unless ($first['content']['image']) hidden @endunless>
+        <img class="scene__card-img" src="{{ $first['content']['image'] }}" alt="{{ $first['content']['title'] }}" />
+      </figure>
+    @endif
 
     <!-- Location view: shown in place of the panel while a hotspot is open -->
     <div class="scene__loc wrap" role="group" aria-labelledby="{{ $id }}-loc-title" hidden>
@@ -120,6 +167,9 @@
         </svg>
         Kembali ke {{ Str::lower($title) }}
       </button>
+      @if ($project && ! $card)
+        <img class="scene__loc-img" alt="" hidden />
+      @endif
       <h3 class="display scene__loc-title" id="{{ $id }}-loc-title" tabindex="-1"></h3>
       <p class="scene__loc-text"></p>
       <div class="scene__loc-nav">

@@ -2,7 +2,10 @@
 
 use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Sunrice\Admin\Actions\Media\UploadMedia;
+use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Actions\Menus\SaveMenu;
 use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Models\Menu;
@@ -123,4 +126,17 @@ test('the home header shows the CMS menu', function () {
         ->assertSee('href="/kontak"', false)
         ->assertSee('target="_blank" rel="noopener"', false)
         ->assertDontSee('href="#kawasan"', false);
+});
+
+test('the browser icon is the built-in one while Settings → Branding has none', function () {
+    $this->get('/')->assertSee('<link rel="icon" href="data:image/svg+xml,', false);
+});
+
+test('the browser icon is the one chosen in Settings → Branding', function () {
+    $favicon = app(UploadMedia::class)->handle(UploadedFile::fake()->image('favicon.png', 32, 32));
+    app(BrandingSettings::class)->fill(['favicon' => $favicon->id])->save();
+
+    $this->get('/')
+        ->assertSee('<link rel="icon" href="'.e($favicon->url()).'" type="image/png" />', false)
+        ->assertDontSee('<link rel="icon" href="data:image/svg+xml,', false);
 });

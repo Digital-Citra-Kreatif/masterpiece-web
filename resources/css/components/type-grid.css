@@ -122,3 +122,111 @@
   font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
+
+/* A card that opens its type's sheet: the name is the button, its hit area
+   stretched over the whole card. */
+article.card {
+  position: relative;
+}
+
+.card__sheet {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.card__sheet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* ---- variant 'project' (after design-project.pdf): the title in capitals,
+   the render on the paper, a white body with the size beside the name, a
+   rule, then the facts in one row as "LT: 45 m²". */
+
+.types--project {
+  border-top: 0;
+}
+
+.types--project .sheet__title {
+  color: var(--room);
+  text-transform: uppercase;
+}
+
+.types--project .types__grid {
+  gap: 24px 20px;
+}
+
+.types--project .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.types--project .card__img {
+  aspect-ratio: 36 / 25;
+  background: var(--paper-2);
+}
+
+.types--project .card__open {
+  display: none;
+}
+
+.types--project .card__body {
+  flex: 1;
+  padding: 16px 20px 18px;
+  background: #fff;
+}
+
+.types--project .card__head {
+  padding: 0 0 14px;
+  border-bottom-color: var(--rule);
+}
+
+.types--project .card__name {
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+/* Still: no zoom on the render, no underline on the name. */
+.types--project .card:hover .card__img img {
+  transform: none;
+}
+
+.types--project .card__size {
+  flex: none;
+  font-size: 14px;
+}
+
+.types--project .card__specs {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-content: stretch;
+  padding-top: 14px;
+}
+
+.types--project .card__specs div {
+  display: flex;
+  gap: 4px;
+}
+
+.types--project .card__specs dt {
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.types--project .card__specs dt::after {
+  content: ':';
+}
+
+.types--project .card__specs dd {
+  margin: 0;
+  font-size: 14px;
+}

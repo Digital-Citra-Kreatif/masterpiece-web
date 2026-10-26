@@ -97,13 +97,18 @@ class SiteContentSeeder extends Seeder
                 ]],
                 ['handle' => 'tipe', 'title' => 'Tipe', 'fields' => [
                     $text('label', ['instructions' => 'Baris kecil di bawah nama, misalnya "Ruko Hook".']),
+                    $this->field('view', 'select', ['options' => [
+                        ['value' => 'lakeview', 'label' => 'Lake View'],
+                        ['value' => 'streetview', 'label' => 'Street View'],
+                    ]], ['translatable' => false, 'width' => 50, 'instructions' => 'Untuk project dengan pilihan view.']),
+                    $text('dimensions', ['translatable' => false, 'width' => 50, 'instructions' => 'Misalnya "4,5 x 10 m".']),
                     $image('image', ['required' => true, 'instructions' => 'Gambar kartu di beranda, rasio 6:5.']),
                     $number('lt'),
                     $number('lb'),
-                    $number('bedrooms', ['step' => 1]),
-                    $number('bathrooms', ['step' => 1]),
+                    $this->field('bedrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25, 'instructions' => 'Kosongkan untuk ruko tanpa kamar tidur.']),
+                    $this->field('bathrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('floors', 'number', ['min' => 1, 'step' => 1], ['required' => true, 'instructions' => 'Satu bagian per lantai di halaman tipe.']),
-                    $textarea('intro', ['required' => true]),
+                    $textarea('intro'),
                     $this->field('info_rows', 'repeater', [], [
                         'instructions' => 'Info tambahan selain luas, lantai, dan kamar (yang sudah diambil dari isian di atas).',
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $text('value', ['required' => true, 'width' => 50])],
@@ -117,7 +122,7 @@ class SiteContentSeeder extends Seeder
                     $this->field('real_facade', 'toggle', [], ['instructions' => 'Sekuens 360° sudah render tipe ini sendiri.']),
                     $this->field('placeholder', 'toggle', [], ['instructions' => 'Data contoh, belum dari klien.']),
                 ]],
-                ['handle' => 'fasilitas', 'title' => 'Fasilitas', 'fields' => [$image('image', ['required' => true])]],
+                ['handle' => 'fasilitas', 'title' => 'Fasilitas', 'fields' => [$image('image', ['required' => true]), $textarea('description')]],
                 ['handle' => 'unit', 'title' => 'Unit', 'fields' => [
                     $this->field('x', 'number', ['min' => 0, 'max' => 100], ['required' => true, 'width' => 33, 'instructions' => '% dari lebar siteplan.']),
                     $this->field('y', 'number', ['min' => 0, 'max' => 100], ['required' => true, 'width' => 33, 'instructions' => '% dari tinggi siteplan.']),
@@ -163,8 +168,18 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
+     * One blueprint's definition, to import it alone (other blueprints may have been changed in the admin).
+     *
+     * @return array<string, mixed>
+     */
+    public function blueprint(string $handle): array
+    {
+        return collect($this->structure()['blueprints'])->firstOrFail(fn (array $blueprint): bool => $blueprint['handle'] === $handle);
+    }
+
+    /**
      * The Project blueprint (title and slug are the entry's own): the project's
-     * Global Style and its WhatsApp floating button.
+     * Global Style, its page sections and its WhatsApp floating button.
      *
      * Font files (.woff2, .woff, .ttf, .otf, or a ZIP of a family: unpacked, the regular one chosen) uploaded here are moved to the media folder Fonts / {slug}
      * (App\Support\ProjectFonts). Colours are hex codes: the CMS has no colour field.
@@ -194,7 +209,17 @@ class SiteContentSeeder extends Seeder
                     'label' => 'Warna',
                     'width' => 75,
                     ...$whenActive,
-                    'fields' => collect(range(1, 8))->map(fn (int $number): array => $hex("color_{$number}", "Warna {$number}", ['width' => 25]))->all(),
+                    // Each colour replaces one of the site's tokens (App\Support\ProjectPage::PALETTE); empty keeps the homepage's.
+                    'fields' => collect([
+                        1 => 'Warna utama',
+                        2 => 'Warna utama gelap',
+                        3 => 'Warna utama terang',
+                        4 => 'Latar halaman',
+                        5 => 'Latar sekunder',
+                        6 => 'Teks',
+                        7 => 'Latar gelap',
+                        8 => 'Teks di latar gelap',
+                    ])->map(fn (string $label, int $number): array => $hex("color_{$number}", $label, ['width' => 25]))->values()->all(),
                 ]),
                 $this->field('fonts', 'group', [], [
                     'label' => 'Font',
@@ -233,6 +258,7 @@ class SiteContentSeeder extends Seeder
                 ]),
                 $image('background', 'Background tema', $whenActive),
             ]]),
+            ...$this->projectSections(),
             $this->field('whatsapp', 'group', [], ['label' => 'WhatsApp Floating', 'fields' => [
                 $image('image', 'Gambar'),
                 $text('label', 'Label', ['width' => 50]),
@@ -252,6 +278,119 @@ class SiteContentSeeder extends Seeder
                 ]]),
             ]]),
         ]];
+    }
+
+    /**
+     * The project's own content, one group per section of its page, in the
+     * client's order: Hero, Masterplan, Lokasi, Cluster, Fasilitas, Tipe, Ketersediaan.
+     *
+     * Every section starts with its title and description; rows read the same way
+     * everywhere (number and name, then image and description). Facilities and
+     * unit types are entries of the Facilities and Types collections, picked here.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function projectSections(): array
+    {
+        $text = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'text', [], ['label' => $label, ...$extra]);
+        $textarea = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'textarea', [], ['label' => $label, ...$extra]);
+        $image = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'media', ['types' => ['image']], [
+            'label' => $label, 'translatable' => false, ...$extra,
+        ]);
+        $gallery = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'media', ['types' => ['image'], 'multiple' => true], [
+            'label' => $label, 'translatable' => false, ...$extra,
+        ]);
+        $entries = fn (string $handle, string $label, string $collection, string $menu): array => $this->field($handle, 'entries', ['collections' => [$collection], 'multiple' => true], [
+            'label' => $label,
+            'translatable' => false,
+            'instructions' => "Pilih dari {$menu}; urutan pilihan jadi urutan tampil.",
+        ]);
+        $view = fn (array $extra = []): array => $this->field('view', 'select', ['options' => [
+            ['value' => 'lakeview', 'label' => 'Lake View'],
+            ['value' => 'streetview', 'label' => 'Street View'],
+        ]], ['label' => 'View', 'required' => true, 'translatable' => false, ...$extra]);
+        $section = fn (string $handle, string $label, array $fields): array => $this->field($handle, 'group', [], ['label' => $label, 'fields' => [
+            $text('title', 'Judul'),
+            $textarea('description', 'Deskripsi'),
+            ...$fields,
+        ]]);
+        $percent = fn (string $handle, string $label, string $instructions): array => $this->field($handle, 'number', ['min' => 0, 'max' => 100], [
+            'label' => $label, 'translatable' => false, 'width' => 50, 'instructions' => $instructions,
+        ]);
+        $points = fn (string $label, array $fields): array => $this->field('points', 'repeater', [], ['label' => $label, 'fields' => [
+            $text('number', 'Nomor', ['translatable' => false, 'width' => 25]),
+            $text('name', 'Nama', ['required' => true, 'width' => 75]),
+            ...$fields,
+        ]]);
+
+        return [
+            $this->field('hero', 'group', [], ['label' => 'Hero', 'fields' => [
+                $text('heading', 'Heading'),
+                $textarea('description', 'Deskripsi'),
+                $this->field('media', 'media', ['types' => ['image', 'video'], 'multiple' => true, 'max' => 6], [
+                    'label' => 'Media',
+                    'translatable' => false,
+                    'instructions' => 'Gambar/video 1920×1080. Lebih dari 1 file = slider.',
+                ]),
+            ]]),
+            $section('masterplan', 'Masterplan', [
+                $image('map', 'Peta', ['instructions' => 'Foto aerial kawasan; titik di bawah ditempatkan di atas gambar ini.']),
+                $points('Titik kawasan', [
+                    $image('image', 'Gambar', ['width' => 50]),
+                    $gallery('gallery', 'Gallery', ['width' => 50, 'instructions' => 'Opsional.']),
+                    $percent('x', 'Posisi X (%)', 'Dari kiri peta. Kosong: titik hanya tampil di daftar.'),
+                    $percent('y', 'Posisi Y (%)', 'Dari atas peta.'),
+                ]),
+            ]),
+            $section('location', 'Lokasi', [
+                $gallery('maps', 'Peta', ['instructions' => 'Peta lokasi; tandai akses jalan tol.']),
+                $this->field('pins', 'repeater', [], ['label' => 'Titik peta', 'instructions' => 'Titik di peta pertama; namanya tampil saat titik disorot.', 'fields' => [
+                    $text('name', 'Nama', ['required' => true]),
+                    $percent('x', 'Posisi X (%)', 'Dari kiri peta.'),
+                    $percent('y', 'Posisi Y (%)', 'Dari atas peta.'),
+                ]]),
+                $this->field('stats', 'repeater', [], ['label' => 'Angka kawasan', 'fields' => [
+                    $text('value', 'Angka', ['required' => true, 'width' => 25]),
+                    $text('label', 'Keterangan', ['required' => true, 'width' => 75]),
+                ]]),
+            ]),
+            $section('cluster', 'Cluster', [
+                $points('Titik cluster', [
+                    $image('image', 'Gambar', ['width' => 50]),
+                    $textarea('description', 'Deskripsi', ['width' => 50]),
+                ]),
+            ]),
+            $section('facilities', 'Fasilitas', [
+                $entries('items', 'Fasilitas', 'facilities', 'Facilities'),
+            ]),
+            $section('types', 'Tipe', [
+                $image('hero_image', 'Gambar potongan', ['instructions' => 'Gambar hero di atas keunggulan unit.']),
+                $this->field('advantages', 'repeater', [], ['label' => 'Keunggulan', 'fields' => [
+                    $text('name', 'Nama', ['required' => true]),
+                    $image('image', 'Gambar', ['width' => 50]),
+                    $textarea('description', 'Deskripsi', ['width' => 50]),
+                ]]),
+                $this->field('views', 'repeater', [], ['label' => 'Pilihan view', 'fields' => [
+                    $view(['width' => 25]),
+                    $text('name', 'Nama', ['required' => true, 'width' => 75]),
+                    $textarea('description', 'Deskripsi', ['width' => 50]),
+                    $textarea('businesses', 'Cocok untuk usaha', ['width' => 50, 'instructions' => 'Satu jenis usaha per baris.']),
+                ]]),
+                $entries('units', 'Tipe unit', 'types', 'Types'),
+                $this->field('specifications', 'repeater', [], ['label' => 'Spesifikasi bangunan', 'fields' => [
+                    $text('label', 'Bagian', ['required' => true, 'width' => 25]),
+                    $textarea('value', 'Spesifikasi', ['required' => true, 'width' => 75]),
+                ]]),
+            ]),
+            $section('availability', 'Ketersediaan unit', [
+                $image('siteplan', 'Siteplan'),
+                $this->field('blocks', 'repeater', [], ['label' => 'Blok', 'fields' => [
+                    $text('name', 'Nama', ['required' => true, 'width' => 25]),
+                    $view(['width' => 25]),
+                    $image('image', 'Blockplan', ['width' => 50]),
+                ]]),
+            ]),
+        ];
     }
 
     /**

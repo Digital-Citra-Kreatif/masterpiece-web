@@ -22,6 +22,7 @@
   --sans: 'DM Sans Variable', 'Helvetica Neue', Arial, sans-serif;
   --display: var(--sans);
   --label: var(--sans); /* small tracked uppercase: buttons, specs */
+  --button: var(--label); /* buttons only: a project's Global Style sets its own */
 
   --gutter: clamp(16px, 4vw, 56px);
   --max: 1440px;
@@ -131,7 +132,8 @@ video {
 }
 
 /* Media protection (resources/js/protect-media.js): no long-press "Save image" on phones, no drag. */
-[data-protect-media] :is(img, video, canvas) {
+[data-protect-media] :is(img, video, canvas),
+[data-protect] :is(img, video, canvas) {
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   user-select: none;
@@ -288,7 +290,7 @@ h2.display {
   border: 1px solid currentColor;
   border-radius: 0;
   background: transparent;
-  font-family: var(--label);
+  font-family: var(--button);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.16em;

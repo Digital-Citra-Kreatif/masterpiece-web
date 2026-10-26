@@ -1,0 +1,886 @@
+/* Project page (pages/project.blade.php), after design-project.pdf, with the
+   homepage's overlay and tokens. The project's Global Style overrides the tokens from an inline
+   <style> (App\Support\ProjectPage::style()); --radius and --frame-clip (corners)
+   and --theme-bg exist only there, so every rule here falls back to the
+   homepage's square, flat look. */
+
+body.is-project {
+  background-color: var(--paper);
+  background-image: var(--theme-bg, none);
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+}
+
+/* Corners: on picture frames (rounded or cut), on buttons rounded only, so a
+   chamfer never clips their focus ring. */
+.pj-frame {
+  border-radius: var(--radius, 0);
+  overflow: hidden;
+  clip-path: var(--frame-clip, none);
+}
+
+/* A frame that is also a button keeps its focus ring inside the corners. */
+button.pj-frame:focus-visible {
+  outline-offset: -4px;
+}
+
+.is-project :is(.btn, .icon-btn:not(.ov__close)) {
+  border-radius: var(--radius, 0);
+}
+
+/* ---------------------------------------------------------------- shared */
+/* Laid out after design-project.pdf: paper sections with titles in the dark
+   colour (--room, Global Style → Latar gelap), green panels and bands in it,
+   white cards. Fonts stay the Global Style's (--display for titles). */
+
+.pj-title {
+  margin: 0;
+  color: var(--room);
+  font-size: clamp(40px, 4.6vw, 64px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+/* A dark square button, as the facilities' arrows in the design. */
+.pj-square {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius, 0);
+  background: var(--room);
+  color: var(--room-ink);
+}
+
+.pj-square svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pj-square:hover {
+  background: var(--ink);
+}
+
+/* ---------------------------------------------------------------- header */
+/* Header: transparent over the hero, as on the homepage (white links), with
+   the project's logo on a white emblem hanging from the top edge of the screen. */
+
+.hd--project .hd__inner {
+  align-items: flex-start;
+}
+
+.hd--project .hd__mark {
+  align-self: flex-start;
+  padding: 14px 16px 16px;
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px)); /* flush with the screen's top edge */
+  border-radius: 0 0 var(--radius, 6px) var(--radius, 6px);
+  background: #fff;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); /* lifts the emblem off the picture behind it */
+}
+
+.hd--project .hd__logo--own {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+}
+
+.hd--project .hd__nav {
+  position: relative; /* keeps the links' screen-reader copies inside the scrolling nav */
+  min-width: 0;
+  align-self: center;
+}
+
+.hd--project .hd__nav a {
+  flex: none;
+  font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  .hd--project .hd__inner {
+    gap: 16px;
+  }
+
+  .hd--project .hd__mark {
+    padding: 10px 12px 12px;
+  }
+
+  .hd--project .hd__nav {
+    gap: 18px;
+  }
+
+  .hd--project .hd__nav a {
+    font-size: 14px;
+  }
+
+  .hd--project .hd__logo--own {
+    height: 44px;
+  }
+}
+
+/* ---------------------------------------------------------------- hero */
+/* The homepage's hero banner sets its headline in the body font; a project's
+   is in its heading font (Global Style → Font → Heading, --display), which is
+   narrow, so a regular weight and a little tracking keep it from crowding. */
+
+/* The headline sits at the bottom of the hero, as the copy's only line; it
+   still clears the project's logo emblem (padding + logo) on short screens. */
+.is-project .hero {
+  --emblem-h: 94px;
+}
+
+.is-project .hero__body {
+  justify-content: flex-end;
+  padding-top: calc(var(--emblem-h) + 40px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(clamp(48px, 10vh, 112px) + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 640px) {
+  .is-project .hero {
+    --emblem-h: 66px;
+  }
+}
+
+/* The hero's overlay in the project's dark colour (--room, Global Style → Latar
+   gelap) instead of the homepage's near-black, eased over many stops so it has no
+   bands: light at the top for the emblem and links, clear through the middle,
+   deepening under the copy and ending in --room, where the Masterplan scene
+   below fades in from the same colour (.scene--left .scene__shade). */
+.is-project .hero__shade {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--room) 50%, transparent) 0%,
+    color-mix(in srgb, var(--room) 34%, transparent) 12%,
+    color-mix(in srgb, var(--room) 14%, transparent) 30%,
+    color-mix(in srgb, var(--room) 8%, transparent) 46%,
+    color-mix(in srgb, var(--room) 18%, transparent) 60%,
+    color-mix(in srgb, var(--room) 42%, transparent) 74%,
+    color-mix(in srgb, var(--room) 72%, transparent) 86%,
+    color-mix(in srgb, var(--room) 92%, transparent) 95%,
+    var(--room) 100%
+  );
+}
+
+.is-project .hero__title {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto; /* .hero__body lets clicks through to the slides; the headline takes them, so it can be selected and copied */
+  user-select: text;
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* ---------------------------------------------------------------- scenes */
+/* Masterplan and Cluster are the homepage's scroll scenes (components/scroll-scene,
+   variant 'project'): the same pinned orbit, pins and hotspot moves, drawn as
+   design-project.pdf. The aerial unshaded; the panel a green box at the bottom
+   (left for Masterplan, right for Cluster) with the points in columns, low
+   enough to leave the hotspots in view; the open hotspot's panel the same box,
+   with the point's picture (Cluster: on the card at the bottom left).
+   Masterplan's aerial runs down into the dark colour of Location below it. */
+
+.scene--project {
+  background: var(--paper);
+}
+
+.scene--project .scene__shade {
+  display: none;
+}
+
+.scene--project.scene--left .scene__shade {
+  display: block;
+  background:
+    linear-gradient(180deg, var(--room) 0%, color-mix(in srgb, var(--room) 70%, transparent) 8%, color-mix(in srgb, var(--room) 30%, transparent) 18%, transparent 30%),
+    linear-gradient(0deg, var(--room) 0%, color-mix(in srgb, var(--room) 60%, transparent) 14%, transparent 34%);
+}
+
+.scene--project.scene--left .scene__shade::after {
+  display: none;
+}
+
+.scene--project .scene__area {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding-bottom: 0;
+}
+
+.scene--project .scene__area > * {
+  max-width: none;
+}
+
+.scene--right .scene__area {
+  justify-content: flex-end;
+  padding-bottom: clamp(24px, 5vh, 56px);
+}
+
+.scene__box {
+  flex: none;
+  width: max-content; /* as wide as the points on one line each */
+  max-width: 100%;
+  padding: clamp(20px, 2vw, 28px);
+  border-radius: var(--radius, 0);
+  background: var(--room);
+  color: var(--room-ink);
+  pointer-events: auto;
+}
+
+.scene--project .scene__area-title {
+  margin: 0 0 8px;
+  font-size: clamp(32px, 3.4vw, 44px);
+}
+
+.scene--project .scene__intro {
+  margin: 0 0 12px;
+  color: inherit;
+  font-size: 15px;
+  opacity: 0.86;
+}
+
+.scene--project .scene__list {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 0 40px;
+  border-top: 0;
+}
+
+.scene--project .scene__list button {
+  min-height: 44px;
+  padding: 6px 0;
+  white-space: nowrap;
+  border-bottom: 0;
+  color: inherit;
+  font-size: 16px;
+}
+
+.scene--project .scene__list button span {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.scene--project .scene__list button:hover {
+  padding-left: 0;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* The open hotspot: its panel in the same green box, in the same place. */
+.scene--project .scene__loc {
+  width: min(520px, 100% - 2 * var(--gutter));
+  max-width: none;
+  margin: 0;
+  padding: clamp(24px, 2.4vw, 32px);
+  border-radius: var(--radius, 0);
+  background: var(--room);
+  color: var(--room-ink);
+}
+
+.scene--left .scene__loc {
+  inset: auto auto 0 max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
+}
+
+.scene--right .scene__loc {
+  inset: auto max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter))) clamp(24px, 5vh, 56px) auto;
+}
+
+.scene--project .scene__loc > * {
+  max-width: none;
+}
+
+.scene--project .scene__back {
+  margin-bottom: 16px;
+  border-color: currentColor;
+  background: none;
+  color: inherit;
+}
+
+.scene--project .scene__back:hover {
+  background: var(--room-ink);
+  color: var(--room);
+}
+
+.scene__loc-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 16px;
+  object-fit: cover;
+  border-radius: var(--radius, 0);
+}
+
+.scene--project .scene__loc-title {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 3vw, 40px);
+}
+
+.scene--project .scene__loc-text {
+  color: inherit;
+  font-size: 15px;
+  opacity: 0.86;
+}
+
+.scene--project .scene__loc-nav .icon-btn {
+  background: none;
+  color: inherit;
+}
+
+/* Cluster's card: the open (or first) hotspot's picture, bottom left. */
+.scene__card {
+  position: absolute;
+  left: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
+  bottom: clamp(24px, 5vh, 56px);
+  width: min(320px, 100% - 2 * var(--gutter));
+  margin: 0;
+  border-radius: var(--radius, 0);
+  overflow: hidden;
+  background: #fff;
+}
+
+.scene__card-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+/* Pins: the logo in a cream drop, its tip on the spot; the name over it on hover. */
+.scene--project .spot__dot,
+.scene--project .spot--flip .spot__dot {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin: -70px 0 0 -28px;
+  padding: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: #f6f1e4;
+  color: var(--room);
+  font-size: 14px;
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.28); /* lifts the pin off the aerial */
+}
+
+.scene--project .spot__dot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.scene--project .spot__dot::after {
+  inset: auto;
+  left: 50%;
+  top: calc(100% - 4px);
+  translate: -50% 0;
+  border: 9px solid transparent;
+  border-top: 14px solid #f6f1e4;
+  border-bottom: 0;
+  animation: none;
+}
+
+.scene--project .spot:hover .spot__dot,
+.scene--project .spot:focus-visible .spot__dot {
+  background: #fff;
+  color: var(--room);
+}
+
+.scene--project .spot__label {
+  position: absolute;
+  left: 0;
+  top: -112px;
+  translate: -50% 0;
+  margin: 0;
+  background: var(--room);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene--project .spot:hover .spot__label,
+.scene--project .spot:focus-visible .spot__label {
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  .scene--project .scene__area {
+    flex-direction: column;
+    align-items: stretch;
+    padding-bottom: 16px;
+  }
+
+  .scene__box {
+    width: 100%;
+  }
+
+  .scene--project .scene__list {
+    grid-template-columns: 1fr;
+  }
+
+  .scene--project .scene__list button {
+    white-space: normal;
+  }
+
+  .scene__card {
+    display: none;
+  }
+
+  .scene--project .spot__dot,
+  .scene--project .spot--flip .spot__dot {
+    width: 40px;
+    height: 40px;
+    margin: -52px 0 0 -20px;
+    padding: 6px;
+  }
+}
+
+/* The Masterplan opening (the homepage's: the orbit in a portrait frame that
+   grows to fill the screen, then the scrub). Its backdrop is the project's dark
+   colour, where the hero ends, and its title is in the heading font. */
+.is-project .mp__title {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* ---------------------------------------------------------------- points */
+/* components/project/points: Masterplan or Cluster before its aerial is set. */
+
+.pj-points {
+  padding-bottom: clamp(64px, 9vw, 120px);
+}
+
+.pj-points__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2 260px;
+  column-gap: clamp(24px, 3vw, 48px);
+}
+
+.pj-points__list li {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  break-inside: avoid;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.pj-points__no {
+  min-width: 2.4em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.86;
+}
+
+/* ---------------------------------------------------------------- location */
+/* components/project/location */
+
+.pj-loc {
+  background: var(--room);
+  color: var(--room-ink);
+}
+
+.pj-loc__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(32px, 4vw, 64px);
+  align-items: start;
+  padding-block: clamp(64px, 9vw, 128px);
+}
+
+.pj-loc .pj-title {
+  color: var(--room-ink);
+}
+
+.pj-loc__intro {
+  margin: 20px 0 0;
+  max-width: 36ch;
+  line-height: 1.6;
+  opacity: 0.86;
+}
+
+.pj-loc__stage {
+  position: relative;
+  flex: 1 1 100%;
+}
+
+/* A spot on the map: a marker on its point, its name over it on hover or focus. */
+.pj-loc__pin {
+  position: absolute;
+  width: 44px; /* tap target */
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  translate: -50% -50%;
+}
+
+.pj-loc__pin::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  translate: -50% -50%;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--marker, #d8322a);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.35); /* keeps the marker apart from the map's roads */
+}
+
+.pj-loc__pin-name {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 4px);
+  translate: -50% 0;
+  padding: 6px 10px;
+  border-radius: var(--radius, 0);
+  background: var(--paper);
+  color: var(--room);
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pj-loc__pin:hover .pj-loc__pin-name,
+.pj-loc__pin:focus-visible .pj-loc__pin-name {
+  opacity: 1;
+}
+
+.pj-loc__maps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.pj-loc__map {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.pj-loc__map img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pj-loc__map.is-main {
+  flex: 1 1 100%;
+}
+
+.pj-loc__map:not(.is-main) {
+  width: 160px;
+  border: 1px solid rgb(255 255 255 / 0.24);
+}
+
+@media (max-width: 760px) {
+  .pj-loc__inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- band */
+
+/* The shophouse render across the page, fading into the paper below it. */
+.pj-band {
+  position: relative;
+  margin: 0;
+  background: var(--paper);
+}
+
+.pj-band img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 80svh;
+  object-fit: cover;
+}
+
+.pj-band::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  background: linear-gradient(0deg, var(--paper), transparent);
+}
+
+/* ---------------------------------------------------------------- availability */
+/* White section: the siteplan large on the left, the block plans in a grey
+   panel on the right, as in the design. */
+
+.pj-av {
+  background: #fff;
+  padding-block: clamp(64px, 9vw, 128px);
+}
+
+.pj-av__intro {
+  max-width: 60ch;
+  margin: 16px 0 0;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.pj-av__grid {
+  display: grid;
+  gap: 24px;
+  margin-top: clamp(28px, 4vw, 48px);
+  align-items: start;
+}
+
+.pj-av__grid.has-blocks {
+  grid-template-columns: minmax(0, 3.2fr) minmax(0, 1fr);
+}
+
+.pj-av__siteplan {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: var(--paper-2);
+}
+
+.pj-av__siteplan img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pj-av__side {
+  list-style: none;
+  margin: 0;
+  padding: 24px;
+  border-radius: var(--radius, 0);
+  background: var(--paper);
+}
+
+.pj-block {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  background: none;
+  color: var(--ink);
+  font-size: 16px;
+  text-align: left;
+}
+
+.pj-block:hover .pj-block__name {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.pj-block__view {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .pj-av__grid.has-blocks {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------- marker */
+
+.pj-marker {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+  background: var(--marker, var(--accent-light));
+  vertical-align: 0.05em;
+}
+
+.pj-marker--circle {
+  border-radius: 50%;
+}
+
+.pj-marker--diamond {
+  transform: rotate(45deg) scale(0.85);
+}
+
+.pj-marker--pin {
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+}
+
+.pj-marker--image {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  background: none;
+  vertical-align: -0.15em;
+}
+
+/* ---------------------------------------------------------------- unit sheet */
+
+.pj-sheet__body {
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.pj-sheet__img {
+  aspect-ratio: 6 / 5;
+  margin-bottom: 20px;
+  background: #000;
+}
+
+.pj-sheet__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pj-sheet__name {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 40px);
+}
+
+.pj-sheet__label {
+  margin: 8px 0 0;
+  color: var(--accent);
+}
+
+.pj-sheet__facts {
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+}
+
+.pj-sheet__plans {
+  margin-top: 24px;
+}
+
+.pj-sheet__plans .eyebrow {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+
+.pj-sheet__plans ul {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.pj-sheet__plans img {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #fff;
+}
+
+.pj-sheet__actions {
+  position: static;
+  margin-top: 24px;
+}
+
+/* ---------------------------------------------------------------- WhatsApp */
+
+.wa {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: grid;
+  justify-items: end;
+  gap: 12px;
+}
+
+.wa__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 18px 10px 14px;
+  border: 0;
+  border-radius: var(--radius, 0);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--button);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.22); /* it floats over every section */
+  transition: background 0.25s var(--ease);
+}
+
+.wa__toggle:hover {
+  background: var(--accent);
+}
+
+.wa__toggle svg {
+  width: 22px;
+  height: 22px;
+}
+
+.wa__panel {
+  width: min(320px, calc(100vw - 32px));
+  max-height: calc(100svh - 120px);
+  overflow-y: auto;
+  padding: 18px;
+  border-radius: var(--radius, 0);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 0 0 1px var(--rule), 0 16px 40px rgb(0 0 0 / 0.18);
+}
+
+.wa__img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 14px;
+}
+
+.wa__heading {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.wa__text {
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+.wa__contacts {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.wa__contacts a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 6px 0;
+  border-top: 1px solid var(--rule);
+  text-decoration: none;
+}
+
+.wa__contacts a:hover span:last-child {
+  text-decoration: underline;
+}
+
+.wa__contacts img,
+.wa__initial {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.wa__initial {
+  display: grid;
+  place-items: center;
+  background: var(--paper-2);
+  font-weight: 500;
+}

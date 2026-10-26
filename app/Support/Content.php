@@ -4,6 +4,7 @@ namespace App\Support;
 
 use Illuminate\Support\Collection;
 use Sunrice\Admin\Media\Media;
+use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Content as Cms;
 use Sunrice\Cms\Models\EntryTranslation;
 
@@ -21,9 +22,9 @@ final class Content
     public const STATUSES = ['available', 'reserved', 'sold'];
 
     /**
-     * Site-wide data every page shares as `$site` (Globals → Situs and Settings → Site).
+     * Site-wide data every page shares as `$site` (Globals → Situs, Settings → Site and Settings → Branding).
      *
-     * @return array{lang: string, fullName: string, description: string, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>, siteplan: array{image: ?string, width: int, height: int, placeholder: bool}}
+     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>, siteplan: array{image: ?string, width: int, height: int, placeholder: bool}}
      */
     public static function site(): array
     {
@@ -36,6 +37,7 @@ final class Content
                 'lang' => str_replace('_', '-', app()->getLocale()),
                 'fullName' => Cms::site()->name(),
                 'description' => Cms::site()->descriptionIn(),
+                'favicon' => self::favicon(),
                 'protectMedia' => (bool) ($settings['protect_media'] ?? false),
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...config('site.logo'), 'alt' => Cms::site()->name()],
@@ -53,6 +55,24 @@ final class Content
                 ],
             ];
         });
+    }
+
+    /**
+     * The browser icon chosen in Settings → Branding, or null while none is
+     * chosen (or it is no longer an image in the library), so the layout
+     * keeps its built-in one.
+     *
+     * @return array{href: string, type: string}|null
+     */
+    private static function favicon(): ?array
+    {
+        $id = app(BrandingSettings::class)->favicon;
+        $media = $id === null ? null : Media::query()->find($id);
+        if (! $media instanceof Media || ! $media->isImage()) {
+            return null;
+        }
+
+        return ['href' => $media->url(), 'type' => $media->mime_type];
     }
 
     /**
@@ -162,6 +182,22 @@ final class Content
     }
 
     /**
+     * The homepage's Kawasan scene: its frame sequence, its four tracked
+     * hotspots (marked as a stand-in) and the orbit video its Masterplan opening plays. A project's Masterplan shows it until the
+     * project has its own sequence (App\Support\ProjectPage::masterplan()).
+     *
+     * @return array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video: string}
+     */
+    public static function sampleArea(): array
+    {
+        $values = require resource_path('data/home.php');
+        $scenes = json_decode((string) file_get_contents(resource_path('data/area.json')), true);
+        $area = self::scene($values['kawasan'], $scenes['area']);
+
+        return ['scene' => [...$area['scene'], 'placeholder' => true], 'hotspots' => $area['hotspots'], 'video' => $values['hero']['teaser']];
+    }
+
+    /**
      * A section's title and intro: the CMS group's (title and description) once its
      * title is filled in, otherwise the hardcoded ones.
      *
@@ -216,8 +252,9 @@ final class Content
                 ['Luas tanah', "{$card['lt']} m²"],
                 ['Luas bangunan', "{$card['lb']} m²"],
                 ['Jumlah lantai', (string) $floors],
-                ['Kamar tidur', (string) $card['bedrooms']],
-                ['Kamar mandi', (string) $card['bathrooms']],
+                // Optional since shophouse types (a project's) have no rooms to count.
+                ...filled($values['bedrooms'] ?? null) ? [['Kamar tidur', (string) $card['bedrooms']]] : [],
+                ...filled($values['bathrooms'] ?? null) ? [['Kamar mandi', (string) $card['bathrooms']]] : [],
                 ...collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
             ],
             'sequence' => [...$sequence, 'placeholder' => ! ($values['real_facade'] ?? false)],
