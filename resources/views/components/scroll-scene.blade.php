@@ -22,7 +22,10 @@
               until the sequence exists; the rest works the same)
   hotspots:   { key: { track, frame?, title, short?, text } }, or with a still
               { key: { x, y, title, short?, text } } (% of the picture)
-  masterplan: { title, text, video? }
+  masterplan: { title, text, video?, panel? }: panel 'zoom' brings the section
+  panel and shade in as soon as the frame fills the screen, over the video, and
+  an open hotspot then shows its picture (`image`) on the right, with no back
+  button (Esc, scrolling on or the arrows go on).
 
   marker: { shape, image } (a project's Global Style → Penanda): the markers are
   that shape (its colour --marker) or that image instead of numbered squares.
@@ -62,6 +65,7 @@
 <section
   @class(['scene', 'scene--masterplan' => $masterplan, 'scene--project' => $project, "scene--{$side}" => $project])
   data-scene
+  @if (($masterplan['panel'] ?? null) === 'zoom') data-panel="zoom" @endif
   @if ($still)
     data-still="{{ $still['src'] }}"
     data-sweep="{{ $still['sweep'] ?? 12 }}"
@@ -161,6 +165,13 @@
       <!-- The open (or first) hotspot's picture, filled in by scroll-scene.js -->
       <figure class="scene__card" data-scene-card data-scene-avoid @unless ($first['content']['image']) hidden @endunless>
         <img class="scene__card-img" src="{{ $first['content']['image'] }}" alt="{{ $first['content']['title'] }}" />
+      </figure>
+    @endif
+
+    @if (($masterplan['panel'] ?? null) === 'zoom')
+      <!-- The open hotspot's picture, on the right (filled in by scroll-scene.js) -->
+      <figure class="scene__place-figure" data-place-figure hidden>
+        <img alt="" />
       </figure>
     @endif
 

@@ -327,6 +327,10 @@ async function init(root) {
   // Scroll into the scene in px, and the length of the Masterplan opening before the orbit's range.
   const scrolled = () => -root.getBoundingClientRect().top;
   const introLength = () => (hasIntro ? introEnd.offsetTop : 0);
+  // [data-panel="zoom"]: the panel and shade come in as soon as the frame has
+  // filled the screen, over the looping video, instead of where the orbit starts.
+  const zoomEnd = root.querySelector('[data-zoom-end]');
+  const panelFrom = () => (root.dataset.panel === 'zoom' && zoomEnd ? zoomEnd.offsetTop : introLength());
   const progress = () => {
     const intro = introLength();
     const range = root.offsetHeight - stage.clientHeight - intro;
@@ -522,6 +526,14 @@ async function init(root) {
   // opened stays there), or in the location panel.
   const picture = root.querySelector('[data-scene-card]');
   const panelImg = root.querySelector('.scene__loc-img');
+  const figure = root.querySelector('[data-place-figure]');
+  // Its pictures are fetched up front, so an open point's shows at once instead
+  // of waiting behind the frames and video still coming in.
+  if (figure) {
+    for (const { image } of Object.values(spots)) {
+      if (image) Object.assign(new Image(), { fetchPriority: 'high', src: image });
+    }
+  }
   const fillPanel = (key) => {
     const c = spots[key];
     place.title.textContent = c.title;
@@ -539,10 +551,30 @@ async function init(root) {
   const showPanel = (key) => {
     fillPanel(key);
     place.panel.hidden = false;
+    if (figure) {
+      const { image, title } = spots[key];
+      figure.hidden = !image;
+      // Ahead of the frames still coming in, so it doesn't wait behind them.
+      if (image) Object.assign(figure.querySelector('img'), { fetchPriority: 'high', src: image, alt: title });
+    }
     place.title.focus({ preventScroll: true });
   };
 
+  // From the looping video to the frames, at the frame the video is showing.
+  const handOver = () => {
+    offset = videoToFrame(shownTime ?? video.currentTime);
+    current = offset;
+    drawn = NaN;
+    mode = 'scrub';
+    video.pause();
+  };
+
   async function openPlace(key) {
+    // With the panel in over the video, a point opened there takes over from it first.
+    if (mode === 'video' && hasVideo && root.dataset.panel === 'zoom') {
+      handOver();
+      showFrame(current);
+    }
     if (mode !== 'scrub' || !spots[key] || key === placeKey) return;
     set.loadDetail?.();
     const id = ++run;
@@ -550,6 +582,7 @@ async function init(root) {
     placeKey = key;
     placeY = window.scrollY;
     place.panel.hidden = true;
+    if (figure) figure.hidden = true;
     flying();
     root.classList.add('is-place');
     const toFrame = spots[key].frame ?? shownIndex;
@@ -564,6 +597,7 @@ async function init(root) {
     const key = placeKey;
     placeKey = null;
     place.panel.hidden = true;
+    if (figure) figure.hidden = true;
     flying();
     if (root.contains(document.activeElement) || document.activeElement === document.body) {
       root.querySelector(`[data-spot-open="${key}"]`)?.focus({ preventScroll: true });
@@ -595,13 +629,14 @@ async function init(root) {
     // Phases. Masterplan scene: once the frame has filled the stage, the panel comes in,
     // eased, over the next third of a screen.
     const intro = introLength();
-    const areaIn = hasIntro ? smooth(scrolled(), intro, intro + H * 0.3) : 1;
+    const from = panelFrom();
+    const areaIn = hasIntro ? smooth(scrolled(), from, from + H * 0.3) : 1;
     root.style.setProperty('--p-area', areaIn.toFixed(3));
     root.style.setProperty('--v-area', areaIn > 0 ? 'visible' : 'hidden');
     root.style.setProperty('--progress', p.toFixed(4));
     if (hasIntro && !hasVideo) root.classList.toggle('is-scrub', p > 0);
 
-    if (hasVideo && p <= 0 && mode === 'scrub' && Math.abs(current - offset) < 0.05) {
+    if (hasVideo && p <= 0 && mode === 'scrub' && !placeKey && override === null && Math.abs(current - offset) < 0.05) {
       // Back at the start of the range and settled: hand the orbit back to the video at the same frame.
       mode = 'video';
       shownTime = null;
@@ -612,13 +647,7 @@ async function init(root) {
 
     if (mode === 'video' && video.paused && !reduced) video.play().catch(() => {});
 
-    if (hasVideo && p > 0 && mode === 'video') {
-      offset = videoToFrame(shownTime ?? video.currentTime);
-      current = offset;
-      drawn = NaN;
-      mode = 'scrub';
-      video.pause();
-    }
+    if (hasVideo && p > 0 && mode === 'video') handOver();
 
     if (mode !== 'scrub') return;
 

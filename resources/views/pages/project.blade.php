@@ -50,7 +50,7 @@
           :intro="null"
           :scene="$mp['scene']['scene']"
           :hotspots="$mp['scene']['hotspots']"
-          :masterplan="['title' => $mp['title'], 'text' => $mp['intro'], 'video' => $mp['scene']['video'] ?? null]"
+          :masterplan="['title' => $mp['title'], 'text' => $mp['intro'], 'video' => $mp['scene']['video'] ?? null, 'panel' => 'zoom']"
           :marker="$marker"
         />
       @else

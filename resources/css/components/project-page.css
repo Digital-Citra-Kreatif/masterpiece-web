@@ -11,6 +11,12 @@ body.is-project {
   background-repeat: repeat-y;
 }
 
+/* Headings in the project's heading font keep its own spacing: none of the
+   homepage's tightening (.display, the hero and scene titles). */
+.is-project :is(h1, h2, h3, h4, .display, .mp__title) {
+  letter-spacing: normal;
+}
+
 /* Corners: on picture frames (rounded or cut), on buttons rounded only, so a
    chamfer never clips their focus ring. */
 .pj-frame {
@@ -273,7 +279,6 @@ button.pj-frame:focus-visible {
   user-select: text;
   font-family: var(--display);
   font-weight: 400;
-  letter-spacing: 0.01em;
 }
 
 /* The hero's two thin white lines carry on down the Masterplan scene, over
@@ -311,6 +316,16 @@ button.pj-frame:focus-visible {
   z-index: 1;
   background: #000;
   opacity: calc(var(--cover, 0) * 0.6);
+  pointer-events: none;
+}
+
+/* The Masterplan stage's darkening as Location covers it (project-page.js). */
+.cover-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #000;
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -583,10 +598,70 @@ button.pj-frame:focus-visible {
 /* The Masterplan opening (the homepage's: the orbit in a portrait frame that
    grows to fill the screen, then the scrub). Its backdrop is the project's dark
    colour, where the hero ends, and its title is in the heading font. */
+/* With the panel in over the opening's video ([data-panel="zoom"]), the
+   scene's shade lies over the video too, and the panel and markers above it. */
+.scene[data-panel='zoom'] .scene__shade {
+  z-index: 1;
+}
+
+.scene[data-panel='zoom'] :is(.scene__area, .scene__loc, .scene__markers) {
+  z-index: 2;
+}
+
+/* An open point: no back button (Esc, scrolling on or the arrows go on), and
+   its picture (Masterplan → Titik kawasan → Gambar) on the right, level with the panel. */
+.scene[data-panel='zoom'] .scene__back {
+  display: none;
+}
+
+/* Smaller copy on an open point than the homepage's, beside the picture. */
+.scene[data-panel='zoom'] .scene__loc-title {
+  font-size: clamp(32px, 3.6vw, 56px);
+}
+
+.scene[data-panel='zoom'] .scene__loc-text {
+  font-size: 15px;
+}
+
+.scene__place-figure {
+  position: absolute;
+  z-index: 2;
+  right: calc(max(0px, (100% - var(--max)) / 2) + var(--gutter));
+  bottom: clamp(40px, 8vh, 96px);
+  width: min(36vw, 520px);
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius, 0);
+  background: var(--room-2);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35); /* lifts the picture off the zoomed aerial */
+  animation: loc-in 0.7s var(--ease) 0.15s both;
+}
+
+.scene__place-figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 760px) {
+  .scene__place-figure {
+    display: none;
+  }
+}
+
+/* The opening's frame is landscape (4:3) on a project instead of the homepage's
+   portrait 2:3, a little lower so the title beside it stays on screen; phones keep the homepage's. */
+@media (min-width: 761px) {
+  .is-project .mp {
+    --mp-h: min(56svh, 30vw);
+    --mp-w: calc(var(--mp-h) * 4 / 3);
+  }
+}
+
 .is-project .mp__title {
   font-family: var(--display);
   font-weight: 400;
-  letter-spacing: 0.01em;
 }
 
 /* The homepage sets its opening line in short lines that never wrap; a
@@ -721,6 +796,12 @@ button.pj-frame:focus-visible {
 .pj-loc__stage {
   position: relative;
   flex: 1 1 100%;
+}
+
+/* The map fills its stage (as a lone flex item it would shrink to nothing,
+   and a lazy image with no box never loads). */
+.pj-loc__stage .pj-loc__map {
+  width: 100%;
 }
 
 /* A spot on the map: a marker on its point, its name over it on hover or focus. */
