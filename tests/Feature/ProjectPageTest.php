@@ -165,6 +165,9 @@ test('a project page shows each section with content and skips the empty ones', 
         'availability' => ['title' => 'Unit Availability', 'siteplan' => projectImage('siteplan.jpg'), 'blocks' => [
             ['name' => 'Blok A', 'view' => 'streetview', 'image' => projectImage('blok-a.jpg')],
             ['name' => 'Blok B', 'view' => 'streetview', 'image' => null],
+        ], 'units' => [
+            ['code' => 'A-1', 'status' => 'sold', 'x' => 5.97, 'y' => 66],
+            ['code' => 'A-2', 'status' => 'available', 'x' => 7.2, 'y' => 66],
         ]],
         'whatsapp' => ['contacts' => []],
     ]);
@@ -192,8 +195,11 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertSee('93 m²')
         ->assertDontSee('id="type-lakeview"', false)
         ->assertDontSee('Bored pile')
-        ->assertSee('Blok A')
-        ->assertDontSee('Blok B')
+        // Unit availability: the homepage's status dots over the siteplan (Units), not the block plans.
+        ->assertSee('<section id="unit" class="units"', false)
+        ->assertSee('style="left: 5.97%; top: 66%"', false)
+        ->assertSee('title="A-1 · Terjual"', false)
+        ->assertDontSee('pj-block', false)
         ->assertDontSee('id="location"', false)
         ->assertDontSee('href="#location"', false);
 

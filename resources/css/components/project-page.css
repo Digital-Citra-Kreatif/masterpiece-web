@@ -288,7 +288,7 @@ button.pj-frame:focus-visible {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
 }
 
-.is-project :is(.pj-loc, .fac, .types, .pj-av, .pj-points, .ft) {
+.is-project :is(.pj-loc, .fac, .types, .pj-av, .units, .pj-points, .ft) {
   --line: rgb(14 17 19 / 0.12);
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
   background-size: 1px 100%;
@@ -1370,4 +1370,13 @@ button.pj-frame:focus-visible {
   font-size: 15px;
   text-align: center;
   pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- unit dots */
+/* A project's siteplan shows every shophouse, about 1.2% of its width each:
+   smaller dots than the homepage's, so neighbours don't overlap. */
+.is-project .units__dots .dot {
+  width: clamp(6px, 0.6vw, 10px);
+  height: clamp(6px, 0.6vw, 10px);
+  box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px rgba(14, 17, 19, 0.5);
 }

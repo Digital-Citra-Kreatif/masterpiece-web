@@ -391,6 +391,16 @@ class SiteContentSeeder extends Seeder
                     $view(['width' => 25]),
                     $image('image', 'Blockplan', ['width' => 50]),
                 ]]),
+                $this->field('units', 'repeater', [], ['label' => 'Unit', 'instructions' => 'Titik status di siteplan; posisi dalam % dari gambar Siteplan.', 'fields' => [
+                    $text('code', 'Kode', ['required' => true, 'translatable' => false, 'width' => 25, 'instructions' => 'Misalnya "A-1".']),
+                    $this->field('status', 'select', ['options' => [
+                        ['value' => 'available', 'label' => 'Tersedia'],
+                        ['value' => 'reserved', 'label' => 'Dipesan'],
+                        ['value' => 'sold', 'label' => 'Terjual'],
+                    ], 'default' => 'available'], ['label' => 'Status', 'required' => true, 'translatable' => false, 'width' => 25]),
+                    $this->field('x', 'number', ['min' => 0, 'max' => 100], ['label' => 'Posisi X (%)', 'required' => true, 'translatable' => false, 'width' => 25]),
+                    $this->field('y', 'number', ['min' => 0, 'max' => 100], ['label' => 'Posisi Y (%)', 'required' => true, 'translatable' => false, 'width' => 25]),
+                ]]),
             ]),
         ];
     }

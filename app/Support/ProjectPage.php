@@ -490,7 +490,19 @@ final class ProjectPage
             ->values()
             ->all();
 
-        return self::section($section, ['siteplan' => $siteplan, 'blocks' => $blocks], $siteplan !== null || $blocks !== []);
+        // The units' status dots on the siteplan (the homepage's Unit update), and how many of each.
+        $units = collect($section['units'] ?? [])
+            ->filter(fn (mixed $row): bool => is_array($row) && filled($row['code'] ?? null) && is_numeric($row['x'] ?? null) && is_numeric($row['y'] ?? null))
+            ->map(fn (array $row): array => [
+                'id' => (string) $row['code'],
+                'x' => (float) $row['x'],
+                'y' => (float) $row['y'],
+                'status' => in_array($row['status'] ?? null, Content::STATUSES, true) ? $row['status'] : 'available',
+            ])
+            ->values();
+        $counts = collect(Content::STATUSES)->mapWithKeys(fn (string $status): array => [$status => $units->where('status', $status)->count()])->all();
+
+        return self::section($section, ['siteplan' => $siteplan, 'blocks' => $blocks, 'units' => $units->all(), 'counts' => $counts], $siteplan !== null || $blocks !== []);
     }
 
     /**

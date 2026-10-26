@@ -96,7 +96,10 @@
     @endisset
 
     @isset($s['availability'])
-      <x-project.availability :av="$s['availability']" :id="$sectionId('availability')" :gallery="$gallery" />
+      {{-- The homepage's Unit update: the project's siteplan with a status dot per unit (Ketersediaan unit → Unit) and the legend; the block plans stay in the CMS. --}}
+      <x-home.unit-update :id="$sectionId('availability')" :units="$s['availability']['units']" :counts="$s['availability']['counts']" :heading="['title' => $s['availability']['title'], 'intro' => $s['availability']['intro']]"
+        :siteplan="$s['availability']['siteplan'] ? ['image' => $s['availability']['siteplan']['full'], 'width' => $s['availability']['siteplan']['width'] ?: 1600, 'height' => $s['availability']['siteplan']['height'] ?: 1000, 'placeholder' => false] : null"
+      />
     @endisset
   </main>
 
