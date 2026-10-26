@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Jobs\TrackProjectPoints;
 use App\Support\Content;
 use App\Support\ProjectFonts;
 use Illuminate\Foundation\Http\Events\RequestHandled;
@@ -31,6 +32,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         EntryTranslation::saved(fn (EntryTranslation $translation) => app(ProjectFonts::class)->handle($translation));
+        // A project published with changed data: make its Masterplan and Cluster point paths again (on the queue).
+        EntryTranslation::saved(function (EntryTranslation $translation): void {
+            if ($translation->wasChanged('data') && $translation->entry?->collection?->handle === 'projects') {
+                TrackProjectPoints::dispatch($translation->id)->afterCommit();
+            }
+        });
         Event::listen(RequestHandled::class, fn (RequestHandled $event) => app(ProjectFonts::class)->handleRequest($event->request));
     }
 }

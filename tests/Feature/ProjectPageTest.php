@@ -3,6 +3,7 @@
 use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Media\Media;
@@ -14,6 +15,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Queue::fake(); // no point tracking (scripts/track-points.mjs) on every publish
     Storage::fake('public');
     $this->seed(SiteContentSeeder::class);
     $this->projects = Collection::query()->where('handle', 'projects')->firstOrFail();

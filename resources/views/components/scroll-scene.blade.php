@@ -27,6 +27,9 @@
   an open hotspot then shows its picture (`image`) on the right, with no back
   button (Esc, scrolling on or the arrows go on).
 
+  tracks: { hotspot key: [[x, y] | null, …per frame] }: paths for hotspots placed
+  by `point` (App\Support\ProjectTracks); without one such a hotspot stays put.
+
   marker: { shape, image } (a project's Global Style → Penanda): the markers are
   that shape (its colour --marker) or that image instead of numbered squares.
 
@@ -39,7 +42,7 @@
 
   Logic in resources/js/scroll-scene.js (orbit) and resources/js/masterplan.js (opening).
 --}}
-@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false, 'marker' => null])
+@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false, 'marker' => null, 'tracks' => null])
 
 @php
   $still = $scene['still'] ?? null;
@@ -66,6 +69,7 @@
 <section
   @class(['scene', 'scene--masterplan' => $masterplan, 'scene--project' => $project, "scene--{$side}" => $project])
   data-scene
+  @if ($tracks) data-tracks="{{ json_encode($tracks) }}" @endif
   @if (($masterplan['panel'] ?? null) === 'zoom') data-panel="zoom" @endif
   @if ($still)
     data-still="{{ $still['src'] }}"

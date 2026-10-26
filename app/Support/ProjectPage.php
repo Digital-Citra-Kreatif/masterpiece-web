@@ -87,6 +87,14 @@ final class ProjectPage
             'availability' => self::availability(self::group($values, 'availability')),
         ]);
 
+        // The points' paths through the orbit, once made for their current places (ProjectTracks).
+        foreach (array_keys(ProjectTracks::sections()) as $handle) {
+            if (isset($sections[$handle]['scene'])) {
+                $placed = ProjectTracks::placed($sections[$handle]['points'], $handle);
+                $sections[$handle]['scene']['tracks'] = ProjectTracks::for((string) $entry->slug, $handle, $placed);
+            }
+        }
+
         return [
             'title' => (string) $entry->title,
             'style' => self::style(self::group($values, 'global_style')),
