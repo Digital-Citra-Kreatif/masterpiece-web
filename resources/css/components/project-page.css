@@ -1,8 +1,4 @@
-/* Project page (pages/project.blade.php), after design-project.pdf, with the
-   homepage's overlay and tokens. The project's Global Style overrides the tokens from an inline
-   <style> (App\Support\ProjectPage::style()); --radius and --frame-clip (corners)
-   and --theme-bg exist only there, so every rule here falls back to the
-   homepage's square, flat look. */
+/* Halaman proyek */
 
 body.is-project {
   background-color: var(--paper);
@@ -11,21 +7,19 @@ body.is-project {
   background-repeat: repeat-y;
 }
 
-/* Headings in the project's heading font keep its own spacing: none of the
-   homepage's tightening (.display, the hero and scene titles). */
+/* Spasi judul proyek */
 .is-project :is(h1, h2, h3, h4, .display, .mp__title) {
   letter-spacing: normal;
 }
 
-/* Corners: on picture frames (rounded or cut), on buttons rounded only, so a
-   chamfer never clips their focus ring. */
+/* Sudut bingkai */
 .pj-frame {
   border-radius: var(--radius, 0);
   overflow: hidden;
   clip-path: var(--frame-clip, none);
 }
 
-/* A frame that is also a button keeps its focus ring inside the corners. */
+/* Fokus bingkai tombol */
 button.pj-frame:focus-visible {
   outline-offset: -4px;
 }
@@ -35,9 +29,7 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- shared */
-/* Laid out after design-project.pdf: paper sections with titles in the dark
-   colour (--room, Global Style → Latar gelap), green panels and bands in it,
-   white cards. Fonts stay the Global Style's (--display for titles). */
+/* Tata letak umum */
 
 .pj-title {
   margin: 0;
@@ -47,7 +39,7 @@ button.pj-frame:focus-visible {
   line-height: 1.05;
 }
 
-/* A dark square button, as the facilities' arrows in the design. */
+/* Tombol persegi gelap */
 .pj-square {
   display: inline-grid;
   place-items: center;
@@ -70,8 +62,7 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- header */
-/* Header: transparent over the hero, as on the homepage (white links), with
-   the project's logo on a white emblem hanging from the top edge of the screen. */
+/* Header transparan */
 
 .hd--project .hd__inner {
   align-items: flex-start;
@@ -80,10 +71,10 @@ button.pj-frame:focus-visible {
 .hd--project .hd__mark {
   align-self: flex-start;
   padding: 14px 16px 16px;
-  margin-top: calc(-1 * env(safe-area-inset-top, 0px)); /* flush with the screen's top edge */
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px)); /* Rata atas layar */
   border-radius: 0 0 var(--radius, 6px) var(--radius, 6px);
   background: #fff;
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); /* lifts the emblem off the picture behind it */
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); /* Bayangan emblem */
 }
 
 .hd--project .hd__logo--own {
@@ -93,7 +84,7 @@ button.pj-frame:focus-visible {
 }
 
 .hd--project .hd__nav {
-  position: relative; /* keeps the links' screen-reader copies inside the scrolling nav */
+  position: relative; /* Wadah teks pembaca */
   min-width: 0;
   align-self: center;
 }
@@ -103,9 +94,7 @@ button.pj-frame:focus-visible {
   font-size: 16px;
 }
 
-/* Wide screens: the links span the hero headline's box (10em of its size,
-   hero.css), from where the headline starts to where its box ends, so the
-   menu lines up with it. */
+/* Menu layar lebar */
 @media (min-width: 761px) {
   .hd--project .hd__nav {
     width: min(calc(clamp(40px, 5.2vw, 84px) * 10), 100%);
@@ -137,12 +126,9 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- hero */
-/* The homepage's hero banner sets its headline in the body font; a project's
-   is in its heading font (Global Style → Font → Heading, --display), which is
-   narrow, so a regular weight and a little tracking keep it from crowding. */
+/* Judul hero */
 
-/* The headline sits at the bottom of the hero, as the copy's only line; it
-   still clears the project's logo emblem (padding + logo) on short screens. */
+/* Posisi judul hero */
 .is-project .hero {
   --emblem-h: 94px;
 }
@@ -159,13 +145,12 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* The hero's overlay: one even black veil at 30%, no gradient. */
+/* Lapisan gelap hero */
 .is-project .hero__shade {
   background: rgb(0 0 0 / 0.3);
 }
 
-/* Wider than the homepage's 700px, so the project's headline runs in two
-   balanced lines; in em, so it stays two lines as the type scales with the screen. */
+/* Lebar judul hero */
 @media (min-width: 761px) {
   .is-project .hero__title {
     max-width: 14em;
@@ -173,9 +158,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Two thin white lines down the hero, 40px outside the content's edges (the
-   content keeps the page's width, aligned with the header), framing it. On
-   narrow screens, where the gutter has no room for that, they keep to 8px from the edge. */
+/* Garis tipis hero */
 .is-project .hero__body::before,
 .is-project .hero__body::after {
   content: '';
@@ -195,9 +178,7 @@ button.pj-frame:focus-visible {
   right: max(8px, calc(var(--gutter) - 40px));
 }
 
-/* The project's name and the headline at either end of the row: the name on
-   the left, level with the headline's first line, the headline against the
-   right edge; stacked on phones. */
+/* Nama dan judul */
 @media (min-width: 761px) {
   .is-project .hero__body {
     display: grid;
@@ -206,8 +187,7 @@ button.pj-frame:focus-visible {
     column-gap: clamp(24px, 4vw, 64px);
   }
 
-  /* The headline stays left-aligned; its box is about as wide as its longest
-     line (10em fits "The New Landmark Lakeside"), so the block sits at the right edge. */
+  /* Judul rata kiri */
   .is-project .hero__title {
     justify-self: end;
     max-width: 10em;
@@ -215,12 +195,11 @@ button.pj-frame:focus-visible {
 
   .is-project .hero__eyebrow {
     margin: 0;
-    padding-top: 0.9em; /* level with the headline's first line */
+    padding-top: 0.9em; /* Sejajar baris pertama */
   }
 }
 
-/* A small "Scroll Down" under the headline, blinking slowly (still for
-   visitors who prefer reduced motion). Decorative: hidden from screen readers. */
+/* Petunjuk gulir */
 .hero__cue {
   position: relative;
   margin: clamp(16px, 2vw, 28px) 0 0;
@@ -232,7 +211,7 @@ button.pj-frame:focus-visible {
   animation: cue-blink 1.6s ease-in-out infinite;
 }
 
-/* Between 0.7 at most and 0.2. */
+/* Kedipan opasitas */
 @keyframes cue-blink {
   0%,
   100% {
@@ -251,8 +230,7 @@ button.pj-frame:focus-visible {
 }
 
 @media (min-width: 761px) {
-  /* Under the headline, in its column, as wide as its box (10em of the
-     headline's size, hero.css) and left-aligned, so it starts where the headline does. */
+  /* Posisi petunjuk gulir */
   .is-project .hero__cue {
     grid-column: 2;
     justify-self: end;
@@ -261,7 +239,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* The project's name, small, beside (or on phones above) the headline. */
+/* Nama proyek kecil */
 .hero__eyebrow {
   position: relative;
   margin: 0 0 clamp(12px, 1.6vw, 20px);
@@ -275,15 +253,13 @@ button.pj-frame:focus-visible {
 .is-project .hero__title {
   position: relative;
   z-index: 1;
-  pointer-events: auto; /* .hero__body lets clicks through to the slides; the headline takes them, so it can be selected and copied */
+  pointer-events: auto; /* Judul bisa diklik */
   user-select: text;
   font-family: var(--display);
   font-weight: 400;
 }
 
-/* The hero's two thin lines carry on down every section, at the same place:
-   40px outside the content (--line-x from each edge of the full-width section).
-   White on the dark bands and scenes, dark on the light ones. */
+/* Garis antar section */
 .is-project {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
 }
@@ -300,7 +276,7 @@ button.pj-frame:focus-visible {
   --line: rgb(255 255 255 / 0.2);
 }
 
-/* Over a scene's pinned stage (full width), so they stay put while it's pinned. */
+/* Garis di scene */
 .is-project .scene .scene__stage::before,
 .is-project .scene .scene__stage::after {
   content: '';
@@ -321,8 +297,7 @@ button.pj-frame:focus-visible {
   right: var(--line-x);
 }
 
-/* Hero parallax (project-page.js): the hero sinks behind the sections after
-   it, which slide up over it; it darkens as it goes (--cover, 0 to 1). */
+/* Parallax hero */
 [data-hero-parallax] .hero {
   will-change: transform;
 }
@@ -337,7 +312,7 @@ button.pj-frame:focus-visible {
   pointer-events: none;
 }
 
-/* The Masterplan stage's darkening as Location covers it (project-page.js). */
+/* Gelap Masterplan */
 .cover-veil {
   position: absolute;
   inset: 0;
@@ -353,13 +328,7 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- scenes */
-/* Masterplan and Cluster are the homepage's scroll scenes (components/scroll-scene,
-   variant 'project'): the same pinned orbit, pins and hotspot moves, drawn as
-   design-project.pdf. The aerial unshaded; the panel a green box at the bottom
-   (left for Masterplan, right for Cluster) with the points in columns, low
-   enough to leave the hotspots in view; the open hotspot's panel the same box,
-   with the point's picture (Cluster: on the card at the bottom left).
-   Masterplan's aerial runs down into the dark colour of Location below it. */
+/* Scene proyek */
 
 .scene--project {
   background: var(--paper);
@@ -398,7 +367,7 @@ button.pj-frame:focus-visible {
 
 .scene__box {
   flex: none;
-  width: max-content; /* as wide as the points on one line each */
+  width: max-content; /* Selebar daftar titik */
   max-width: 100%;
   padding: clamp(20px, 2vw, 28px);
   border-radius: var(--radius, 0);
@@ -447,7 +416,7 @@ button.pj-frame:focus-visible {
   text-underline-offset: 4px;
 }
 
-/* The open hotspot: its panel in the same green box, in the same place. */
+/* Hotspot terbuka */
 .scene--project .scene__loc {
   width: min(520px, 100% - 2 * var(--gutter));
   max-width: none;
@@ -507,7 +476,7 @@ button.pj-frame:focus-visible {
   color: inherit;
 }
 
-/* Cluster's card: the open (or first) hotspot's picture, bottom left. */
+/* Kartu Cluster */
 .scene__card {
   position: absolute;
   left: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
@@ -526,7 +495,7 @@ button.pj-frame:focus-visible {
   object-fit: cover;
 }
 
-/* Pins: the logo in a cream drop, its tip on the spot; the name over it on hover. */
+/* Pin logo */
 .scene--project .spot__dot,
 .scene--project .spot--flip .spot__dot {
   position: relative;
@@ -539,7 +508,7 @@ button.pj-frame:focus-visible {
   background: #f6f1e4;
   color: var(--room);
   font-size: 14px;
-  box-shadow: 0 6px 14px rgb(0 0 0 / 0.28); /* lifts the pin off the aerial */
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.28); /* Bayangan pin */
 }
 
 .scene--project .spot__dot img {
@@ -613,11 +582,8 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* The Masterplan opening (the homepage's: the orbit in a portrait frame that
-   grows to fill the screen, then the scrub). Its backdrop is the project's dark
-   colour, where the hero ends, and its title is in the heading font. */
-/* With the panel in over the opening's video ([data-panel="zoom"]), the
-   scene's shade lies over the video too, and the panel and markers above it. */
+/* Pembuka Masterplan */
+/* Panel di video */
 .scene[data-panel='zoom'] .scene__shade {
   z-index: 1;
 }
@@ -626,13 +592,12 @@ button.pj-frame:focus-visible {
   z-index: 2;
 }
 
-/* An open point: no back button (Esc, scrolling on or the arrows go on), and
-   its picture (Masterplan → Titik kawasan → Gambar) on the right, level with the panel. */
+/* Titik terbuka */
 .scene[data-panel='zoom'] .scene__back {
   display: none;
 }
 
-/* Smaller copy on an open point than the homepage's, beside the picture. */
+/* Teks titik terbuka */
 .scene[data-panel='zoom'] .scene__loc-title {
   font-size: clamp(32px, 3.6vw, 56px);
 }
@@ -652,7 +617,7 @@ button.pj-frame:focus-visible {
   overflow: hidden;
   border-radius: var(--radius, 0);
   background: var(--room-2);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35); /* lifts the picture off the zoomed aerial */
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35); /* Bayangan gambar */
   animation: loc-in 0.7s var(--ease) 0.15s both;
 }
 
@@ -668,8 +633,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* The opening's frame is landscape (4:3) on a project instead of the homepage's
-   portrait 2:3, a little lower so the title beside it stays on screen; phones keep the homepage's. */
+/* Bingkai pembuka lanskap */
 @media (min-width: 761px) {
   .is-project .mp {
     --mp-h: min(56svh, 30vw);
@@ -682,9 +646,7 @@ button.pj-frame:focus-visible {
   font-weight: 400;
 }
 
-/* The homepage sets its opening line in short lines that never wrap; a
-   project's is the CMS's Masterplan → Deskripsi, a sentence or two, so it wraps
-   within the room beside the frame. */
+/* Deskripsi pembuka */
 @media (min-width: 761px) {
   .is-project .mp__text {
     width: min(32ch, calc(50% - var(--mp-w) * 0.41 - var(--gutter)));
@@ -692,10 +654,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* The Masterplan list: the CMS has many points (the homepage four), so on
-   wide screens they run across the content's width in four short columns,
-   filled down then across, instead of piling up in one or two tall ones. A row
-   points out by its colour only (no shift). */
+/* Daftar Masterplan */
 @media (min-width: 761px) {
   .is-project .scene--masterplan .scene__area > * {
     max-width: none;
@@ -724,13 +683,7 @@ button.pj-frame:focus-visible {
   color: var(--accent-light);
 }
 
-/* Masterplan and Cluster pins: the project's Penanda (Global Style; its
-   shape, its colour --marker, else the dark colour --room) as the head of a
-   pin standing on its spot: a short stem down to the ground, a shadow at its
-   foot, the point's number in white on the head, and the name beside it on a
-   white tag. While the orbit turns the pin leans the way it turns and its
-   shadow slides the other way (--spin, -1..1, scroll-scene.js). The dot keeps
-   a 44px tap target (.spot::before). */
+/* Pin penanda */
 .spot--marker {
   --head: 30px;
   --stem: 12px;
@@ -752,7 +705,7 @@ button.pj-frame:focus-visible {
   margin: calc(-1 * (var(--head) + var(--stem))) calc(var(--head) / -2) 0 0;
 }
 
-/* The stem. */
+/* Batang pin */
 .spot--marker .spot__dot::after {
   content: '';
   position: absolute;
@@ -769,7 +722,7 @@ button.pj-frame:focus-visible {
   transform: none;
 }
 
-/* The shadow at its foot. */
+/* Bayangan pin */
 .spot--marker .spot__dot::before {
   content: '';
   position: absolute;
@@ -790,7 +743,7 @@ button.pj-frame:focus-visible {
   height: 100%;
   margin: 0;
   background: var(--marker, var(--room));
-  box-shadow: 0 0 0 2px #fff, 0 4px 12px rgb(0 0 0 / 0.35); /* a white ring keeps it apart from the aerial */
+  box-shadow: 0 0 0 2px #fff, 0 4px 12px rgb(0 0 0 / 0.35); /* Cincin putih */
 }
 
 .spot--marker .pj-marker--image {
@@ -811,8 +764,7 @@ button.pj-frame:focus-visible {
   pointer-events: none;
 }
 
-/* The name on a white tag, level with the head: hidden until the pin is
-   pointed at or focused (or its row in the list is), then it slides in. */
+/* Label nama pin */
 .spot--marker .spot__label {
   margin: calc(-1 * (var(--head) / 2 + var(--stem))) 0 0 10px;
   translate: 0 -50%;
@@ -864,7 +816,7 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- points */
-/* components/project/points: Masterplan or Cluster before its aerial is set. */
+/* Titik tanpa aerial */
 
 .pj-points {
   padding-bottom: clamp(64px, 9vw, 120px);
@@ -893,16 +845,14 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- location */
-/* components/project/location */
+/* Komponen lokasi */
 
 .pj-loc {
   background: #fff;
   color: var(--ink);
 }
 
-/* Two columns: the title over its intro on the left, the map on the right,
-   both centred on each other, the map touching the section's top and bottom
-   (no padding); stacked on phones, where the copy gets its own room. */
+/* Dua kolom lokasi */
 .pj-loc__inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
@@ -910,7 +860,7 @@ button.pj-frame:focus-visible {
   align-items: center;
   min-height: 100vh;
   min-height: 100svh;
-  /* The map runs to the section's right line (--line-x) and stops there. */
+  /* Batas kanan peta */
   padding-right: calc(max(8px, var(--gutter) - 40px) + 1px);
 }
 
@@ -930,11 +880,10 @@ button.pj-frame:focus-visible {
   position: relative;
   flex: 1 1 100%;
   overflow: hidden;
-  border-left: 1px solid var(--line, var(--rule)); /* the same weight as the section's lines */
+  border-left: 1px solid var(--line, var(--rule)); /* Tebal garis sama */
 }
 
-/* Wide screens: the map fills the right column from the section's top to its
-   bottom (the screen's height), cut at the edges like object-fit: cover. */
+/* Peta layar lebar */
 @media (min-width: 761px) {
   .pj-loc__maps,
   .pj-loc__stage {
@@ -967,16 +916,15 @@ button.pj-frame:focus-visible {
   position: relative;
 }
 
-/* The map fills its stage (as a lone flex item it would shrink to nothing,
-   and a lazy image with no box never loads). */
+/* Peta isi stage */
 .pj-loc__stage .pj-loc__map {
   width: 100%;
 }
 
-/* A spot on the map: a marker on its point, its name over it on hover or focus. */
+/* Titik peta */
 .pj-loc__pin {
   position: absolute;
-  width: 44px; /* tap target */
+  width: 44px; /* Area sentuh */
   height: 44px;
   padding: 0;
   border: 0;
@@ -995,7 +943,7 @@ button.pj-frame:focus-visible {
   border: 3px solid #fff;
   border-radius: 50%;
   background: var(--marker, #d8322a);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.35); /* keeps the marker apart from the map's roads */
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.35); /* Bayangan penanda */
 }
 
 .pj-loc__pin-name {
@@ -1054,11 +1002,7 @@ button.pj-frame:focus-visible {
 
 /* ---------------------------------------------------------------- band */
 
-/* The shophouse cutaway across the page. The render ends in a black band of
-   ground under the buildings: the picture is laid out 147% the height of its
-   frame and pinned to the top, so its lower third (the ground) is always cut
-   off, whatever the frame's shape; no fade into the paper. Taller on phones,
-   where its middle (the two shophouses) shows. */
+/* Potongan ruko */
 .pj-band {
   position: relative;
   margin: 0;
@@ -1083,8 +1027,7 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- availability */
-/* White section: the siteplan large on the left, the block plans in a grey
-   panel on the right, as in the design. */
+/* Section ketersediaan */
 
 .pj-av {
   background: #fff;
@@ -1279,7 +1222,7 @@ button.pj-frame:focus-visible {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.08em;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.22); /* it floats over every section */
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.22); /* Melayang di atas */
   transition: background 0.25s var(--ease);
 }
 
@@ -1359,7 +1302,7 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- lightbox */
-/* PhotoSwipe (resources/js/lightbox.js): its caption, under the picture. */
+/* Caption PhotoSwipe */
 .pswp__caption {
   position: absolute;
   left: 0;
@@ -1373,8 +1316,7 @@ button.pj-frame:focus-visible {
 }
 
 /* ---------------------------------------------------------------- unit dots */
-/* A project's siteplan shows every shophouse, about 1.2% of its width each:
-   smaller dots than the homepage's, so neighbours don't overlap. */
+/* Titik unit kecil */
 .is-project .units__dots .dot {
   width: clamp(6px, 0.6vw, 10px);
   height: clamp(6px, 0.6vw, 10px);

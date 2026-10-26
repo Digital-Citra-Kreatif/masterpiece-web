@@ -123,8 +123,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* A card that opens its type's sheet: the name is the button, its hit area
-   stretched over the whole card. */
+/* Kartu buka sheet */
 article.card {
   position: relative;
 }
@@ -144,11 +143,9 @@ article.card {
   inset: 0;
 }
 
-/* ---- variant 'project' (after design-project.pdf): the title in capitals,
-   the render on the paper, a white body with the size beside the name, a
-   rule, then the facts in one row as "LT: 45 m²". */
+/* ---- variant 'project' */
 
-/* A full-width rule between Facilities and it, in the weight of the page's side lines. */
+/* Garis pemisah penuh */
 .types--project {
   border-top: 1px solid var(--line, var(--rule));
 }
@@ -194,7 +191,7 @@ article.card {
   font-weight: 400;
 }
 
-/* Still: no zoom on the render, no underline on the name. */
+/* Tanpa zoom render */
 .types--project .card:hover .card__img img {
   transform: none;
 }

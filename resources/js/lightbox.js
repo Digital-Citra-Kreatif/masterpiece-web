@@ -1,11 +1,8 @@
-// Project pages: picture galleries ([data-open="gallery"], the payload
-// overlay.js reads: { title, items: [{ src, alt, caption }], index }) open in
-// PhotoSwipe instead: pinch and wheel zoom, swipe, keys. It takes the click
-// before overlay.js (capture), which keeps videos, VR and hotspot info.
+// Lightbox galeri
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import 'photoswipe/style.css';
 
-// PhotoSwipe needs each picture's size: read it from the file itself.
+// Ukuran gambar
 const sizes = new Map();
 const sizeOf = (src) => {
   if (!sizes.has(src)) {
@@ -30,7 +27,7 @@ const lightbox = new PhotoSwipeLightbox({
   errorMsg: 'Gambar tidak bisa dimuat.',
 });
 
-// The caption (or the alt text) under each picture.
+// Caption gambar
 lightbox.on('uiRegister', () => {
   lightbox.pswp.ui.registerElement({
     name: 'caption',

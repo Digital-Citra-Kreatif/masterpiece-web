@@ -1,11 +1,4 @@
-{{--
-  Location (after design-project.pdf): on the dark colour, the title and its
-  intro on the left, the location map large on the right with its spots
-  (Lokasi → Titik peta), each naming itself on hover or focus; further maps
-  as small thumbnails under it. Maps open in the overlay.
-
-  loc: App\Support\ProjectPage::location(); gallery: the page's gallery payload builder.
---}}
+{{-- Section lokasi --}}
 @props(['loc', 'id', 'gallery'])
 
 <section id="{{ $id }}" class="pj-loc" aria-labelledby="{{ $id }}-title">
@@ -21,7 +14,7 @@
       @foreach ($loc['maps'] as $map)
         @if ($loop->first)
           <div class="pj-loc__stage" @if ($map['width']) style="--ratio: {{ $map['width'] }} / {{ $map['height'] }}" @endif>
-            {{-- The map and its spots on one plane that covers the stage, so a spot at x/y % stays on its place when the edges are cut. --}}
+            {{-- Bidang peta --}}
             <div class="pj-loc__plane">
             <button class="pj-loc__map is-main" type="button" data-open="gallery" data-payload="{{ $gallery($loc['title'], $loc['maps']) }}" aria-label="Perbesar peta">
               <x-project.img :image="$map" sizes="(min-width: 960px) 66vw, 100vw" :alt="$map['alt'] ?: 'Peta lokasi'" />

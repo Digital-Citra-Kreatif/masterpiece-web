@@ -1,24 +1,12 @@
-// Tracks points through a scroll scene's frame sequence, so a project's
-// Masterplan and Cluster pins stay on their place while the orbit turns.
-//
-// Each point (its place on frame 0, in frame pixels) is followed frame by frame
-// with normalised cross-correlation of a small block, forwards and backwards
-// round the orbit, and the two runs are blended (each trusted more the nearer
-// the frame is to its start). A point that leaves the frame, or whose block no
-// longer matches, is lost (null) until the other run picks it up. Tested on the
-// homepage's four sample tracks: 11 to 19 px off on average.
-//
-// Usage: node scripts/track-points.mjs <frames dir> < {"points": {"key": [x, y], …}}
-// Output (stdout): {"key": [[x, y] | null, …one per frame], …}
-// Run by App\Jobs\TrackProjectPoints.
+// Lacak titik scene
 
 import sharp from 'sharp';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
-const PATCH = 16; // half-size of the matched block
-const SEARCH = 40; // half-size of the per-frame search window (frames are 3° apart)
-const MIN_MATCH = 0.3; // below this correlation the point counts as lost
+const PATCH = 16; // Setengah ukuran blok
+const SEARCH = 40; // Jendela pencarian
+const MIN_MATCH = 0.3; // Batas korelasi
 
 const dir = process.argv[2];
 const manifest = JSON.parse(readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
@@ -34,7 +22,7 @@ for (let i = 0; i < N; i++) {
 const W = frames[0].w;
 const H = frames[0].h;
 
-// The block around (cx, cy), less its mean.
+// Blok tanpa rerata
 function block(frame, cx, cy) {
   const n = PATCH * 2 + 1;
   const out = new Float32Array(n * n);
@@ -65,7 +53,7 @@ function correlation(frame, tpl, cx, cy) {
   return s / Math.sqrt(a2 * b2 + 1e-6);
 }
 
-// The best match near (px, py): a coarse search every 2 px, then 1 px around it.
+// Cari kecocokan terbaik
 function match(frame, tpl, px, py) {
   let best = -Infinity;
   let bx = px;

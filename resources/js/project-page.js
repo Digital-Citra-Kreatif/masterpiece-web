@@ -1,11 +1,6 @@
-// Project page (resources/views/pages/project.blade.php).
+// Halaman proyek
 
-// Parallax: the hero, and the Masterplan scene's end, sink behind the section
-// after them as it scrolls up over them.
-//
-// Hero: while the page scrolls past the hero, it moves down at half
-// the scroll and darkens, so the section after it slides up over it and closes
-// it. Still for visitors who prefer reduced motion.
+// Parallax hero
 const parallax = document.querySelector('[data-hero-parallax]');
 if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const hero = parallax.querySelector('.hero');
@@ -26,9 +21,7 @@ if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   draw();
 }
 
-// The same as the section after the Masterplan scene comes up: once the
-// scene's end reaches the bottom of the screen, its pinned stage sinks at half
-// the scroll and darkens while Location slides up over it.
+// Parallax Masterplan
 const covered = document.querySelector('.is-project .scene--masterplan');
 if (covered && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const stage = covered.querySelector('.scene__stage');
@@ -53,7 +46,7 @@ if (covered && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   draw();
 }
 
-// Unit type sheets: <dialog>s opened by [data-sheet="{id}"]; Escape, the close button or the backdrop closes them.
+// Dialog tipe unit
 let opener = null;
 for (const trigger of document.querySelectorAll('[data-sheet]')) {
   const sheet = document.getElementById(trigger.dataset.sheet);
@@ -73,7 +66,7 @@ for (const sheet of document.querySelectorAll('.pj-sheet')) {
   sheet.addEventListener('close', () => opener?.focus());
 }
 
-// WhatsApp floating panel.
+// Panel WhatsApp
 const wa = document.querySelector('[data-wa]');
 if (wa) {
   const toggle = wa.querySelector('[data-wa-toggle]');

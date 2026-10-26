@@ -101,12 +101,7 @@ function frameSet(base) {
   return set;
 }
 
-// ---- placed points on a sequence
-// A hotspot may give its spot as `point` (x, y % of the scene's first frame)
-// instead of a tracked `track`. Its path comes with the scene when it has been
-// made (data-tracks, scripts/track-points.mjs); until then it stays at that
-// place on screen while the orbit turns behind it (guessing its path from the
-// sample tracks made it wander). Its marker leans with the turn (--spin, see tick).
+// ---- titik ditempatkan
 function placePoints(m, spots) {
   for (const s of Object.values(spots)) {
     if (!s.point || m.hotspots[s.track]) continue;
@@ -115,7 +110,7 @@ function placePoints(m, spots) {
   }
 }
 
-// ---- a still picture standing in for a sequence
+// ---- gambar diam
 const STILL_FRAMES = 120;
 
 function stillSet(src) {
@@ -164,7 +159,7 @@ async function init(root) {
     if (step) stepPlace(Number(step.dataset.locStep));
   });
 
-  // Pointing at or focusing a row in the list marks its marker (.is-active).
+  // Sorot penanda
   for (const row of root.querySelectorAll('[data-spot-open]')) {
     const marker = root.querySelector(`[data-spot="${row.dataset.spotOpen}"]`);
     if (!marker) continue;
@@ -191,12 +186,11 @@ async function init(root) {
   const set = await (root.dataset.still ? stillSet(root.dataset.still) : frameSet(root.dataset.base)).ready;
   const { m } = set;
   const N = m.count;
-  // Paths made for the placed points (data-tracks) first; a point without one stays put.
+  // Jalur titik
   if (root.dataset.tracks) Object.assign(m.hotspots, JSON.parse(root.dataset.tracks));
   if (!set.still) placePoints(m, spots);
 
-  // Still scenes: the picture's turn at frame position fw (radians), the scale
-  // that keeps it covering the stage at that angle, and the hotspots in picture px.
+  // Rotasi gambar diam
   const sweep = ((Number(root.dataset.sweep) || 0) * Math.PI) / 180;
   const turn = (fw) => {
     const a = sweep * Math.sin((2 * Math.PI * fw) / N);
@@ -243,7 +237,7 @@ async function init(root) {
       w: el.offsetWidth,
       h: el.offsetHeight,
     }));
-    // Other boxes on the stage the markers must not cover (a project scene's card).
+    // Area hindari penanda
     for (const el of root.querySelectorAll('[data-scene-avoid]')) {
       avoid.push({ x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
     }
@@ -268,8 +262,7 @@ async function init(root) {
   // Scroll into the scene in px, and the length of the Masterplan opening before the orbit's range.
   const scrolled = () => -root.getBoundingClientRect().top;
   const introLength = () => (hasIntro ? introEnd.offsetTop : 0);
-  // [data-panel="zoom"]: the panel and shade come in as soon as the frame has
-  // filled the screen, over the looping video, instead of where the orbit starts.
+  // Panel mode zoom
   const zoomEnd = root.querySelector('[data-zoom-end]');
   const panelFrom = () => (root.dataset.panel === 'zoom' && zoomEnd ? zoomEnd.offsetTop : introLength());
   const progress = () => {
@@ -291,7 +284,7 @@ async function init(root) {
     const key = set.still ? fw : shownIndex;
     if (!(Math.abs(key - drawn) < 0.002) && draw(fw)) {
       drawn = key;
-      // Without a video the Masterplan opening shows its picture until the orbit's range (see tick).
+      // Pembuka tanpa video
       if (!(hasIntro && !hasVideo)) root.classList.add('is-scrub');
     }
     return fw;
@@ -463,13 +456,11 @@ async function init(root) {
     return { done, ms };
   }
 
-  // A project scene shows the open hotspot's picture: on its card (the last one
-  // opened stays there), or in the location panel.
+  // Gambar hotspot proyek
   const picture = root.querySelector('[data-scene-card]');
   const panelImg = root.querySelector('.scene__loc-img');
   const figure = root.querySelector('[data-place-figure]');
-  // Its pictures are fetched up front, so an open point's shows at once instead
-  // of waiting behind the frames and video still coming in.
+  // Pramuat gambar titik
   if (figure) {
     for (const { image } of Object.values(spots)) {
       if (image) Object.assign(new Image(), { fetchPriority: 'high', src: image });
@@ -495,13 +486,13 @@ async function init(root) {
     if (figure) {
       const { image, title } = spots[key];
       figure.hidden = !image;
-      // Ahead of the frames still coming in, so it doesn't wait behind them.
+      // Muat gambar dulu
       if (image) Object.assign(figure.querySelector('img'), { fetchPriority: 'high', src: image, alt: title });
     }
     place.title.focus({ preventScroll: true });
   };
 
-  // From the looping video to the frames, at the frame the video is showing.
+  // Video ke frame
   const handOver = () => {
     offset = videoToFrame(shownTime ?? video.currentTime);
     current = offset;
@@ -511,7 +502,7 @@ async function init(root) {
   };
 
   async function openPlace(key) {
-    // With the panel in over the video, a point opened there takes over from it first.
+    // Ambil alih video
     if (mode === 'video' && hasVideo && root.dataset.panel === 'zoom') {
       handOver();
       showFrame(current);
@@ -609,7 +600,7 @@ async function init(root) {
 
     const fw = showFrame(override ?? current);
     placeMarkers(fw, areaIn > 0.3);
-    // How fast and which way the orbit is turning (-1..1), for markers that lean with it.
+    // Arah putaran
     root.style.setProperty('--spin', clamp((goal - current) * 0.35, -1, 1).toFixed(3));
 
     if (current !== goal || !idle) requestTick();

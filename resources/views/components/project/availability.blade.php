@@ -1,10 +1,4 @@
-{{--
-  Unit availability (after design-project.pdf): on white, the title, the
-  siteplan large on the left and the block plans in a panel on the right, each
-  opening its plan in the overlay.
-
-  av: App\Support\ProjectPage::availability(); gallery: the page's gallery payload builder.
---}}
+{{-- Ketersediaan unit --}}
 @props(['av', 'id', 'gallery'])
 
 <section id="{{ $id }}" class="pj-av" aria-labelledby="{{ $id }}-title">

@@ -7,22 +7,11 @@ use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Sunrice\Cms\Models\EntryTranslation;
 
-/**
- * Where a project's Masterplan and Cluster points are on every frame of their
- * orbit, so their pins stay on their place while it turns.
- *
- * The CMS gives each point's place on the orbit's first frame (x/y %).
- * scripts/track-points.mjs follows it through the frames (App\Jobs\TrackProjectPoints
- * runs it after a project is saved) and the paths are kept in
- * tracks/{slug}.json on the local disk, with a hash of the places they were made for.
- * A page uses a section's paths only while the places still match; until the
- * paths are made again its pins stay at their places on screen.
- */
+/** Jalur titik proyek */
 final class ProjectTracks
 {
     /**
-     * The sections with points on an orbit, and the frame sequence each turns on
-     * (the homepage's for now: Content::sampleArea(), Content::sampleCluster()).
+     * Section dengan orbit
      *
      * @return array<string, string> section handle => frame folder under public/
      */
@@ -35,8 +24,7 @@ final class ProjectTracks
     }
 
     /**
-     * A section's points that have a place, by hotspot key ({section}-{n}, n
-     * counting the named points as App\Support\ProjectPage does).
+     * Titik yang ditempatkan
      *
      * @param  list<mixed>  $rows  the section's `points` rows
      * @return array<string, array{0: float, 1: float}> key => [x %, y %]
@@ -54,7 +42,7 @@ final class ProjectTracks
     }
 
     /**
-     * The section's stored paths, when they were made for these places.
+     * Jalur tersimpan
      *
      * @param  array<string, array{0: float, 1: float}>  $placed
      * @return array<string, list<array{0: int, 1: int}|null>>|null
@@ -67,7 +55,7 @@ final class ProjectTracks
     }
 
     /**
-     * Make the paths of every section whose places changed since they were last made.
+     * Buat ulang jalur
      *
      * @throws RuntimeException when the tracking script fails
      */
@@ -93,7 +81,7 @@ final class ProjectTracks
     }
 
     /**
-     * Run scripts/track-points.mjs on the section's frames.
+     * Jalankan skrip pelacak
      *
      * @param  array<string, array{0: float, 1: float}>  $placed
      * @return array<string, list<array{0: int, 1: int}|null>>

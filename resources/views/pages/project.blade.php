@@ -1,17 +1,4 @@
-{{--
-  A project's page (Projects collection, /projects/{slug}), in the homepage's
-  layout system: hero, then Masterplan, Location, Cluster, Facility, Type and
-  Unit availability, each only when it has content. The project's Global
-  Style (fonts, colours, corners, background, logo, marker) arrives as
-  $p['style'] and overrides the homepage tokens. Data: App\Support\ProjectPage.
-
-  Laid out after design-project.pdf: light hero, the Masterplan and Cluster
-  aerials with their green panels, Location on the green, the facilities
-  carousel, the type cards, and the siteplan with its block plans.
-
-  Pictures open in the shared overlay (resources/js/overlay.js); unit types
-  open their own sheet and the WhatsApp panel toggles (resources/js/project-page.js).
---}}
+{{-- Halaman proyek --}}
 @php
   $s = $p['sections'];
   $marker = $p['style']['marker'];
@@ -33,14 +20,14 @@
   <x-header variant="project" :nav="$p['nav']" :logo="$p['style']['logo']" />
 
   <main>
-    {{-- The homepage's hero banner, filled from the project's Hero (heading, description, media as the slider). --}}
-    {{-- data-protect: the hero's pictures can't be saved or copied from the browser's menu or by dragging (resources/js/protect-media.js). --}}
+    {{-- Hero proyek --}}
+    {{-- Lindungi gambar hero --}}
     <div data-protect data-hero-parallax>
-      {{-- For now without the description (and so without the bottom row's scroll cue); Hero → Deskripsi stays in the CMS. --}}
+      {{-- Tanpa deskripsi --}}
       <x-home.hero :hero="[...$p['hero'], 'eyebrow' => $p['title'], 'cue' => 'Scroll Down', 'subtitle' => '']" />
     </div>
 
-    {{-- Masterplan and Cluster: the homepage's scenes as they are (Masterplan with its opening video), with the CMS's points as hotspots and the Penanda as pins. --}}
+    {{-- Scene Masterplan Cluster --}}
     @isset($s['masterplan'])
       @php($mp = $s['masterplan'])
       @if ($mp['scene'])
@@ -91,12 +78,12 @@
 
     @isset($s['types'])
       @php($ty = $s['types'])
-      {{-- The cutaway band above Type (Tipe → Gambar potongan, components/project/band) is off for now. --}}
+      {{-- Band potongan nonaktif --}}
       <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]" />
     @endisset
 
     @isset($s['availability'])
-      {{-- The homepage's Unit update: the project's siteplan with a status dot per unit (Ketersediaan unit → Unit) and the legend; the block plans stay in the CMS. --}}
+      {{-- Ketersediaan unit --}}
       <x-home.unit-update :id="$sectionId('availability')" :units="$s['availability']['units']" :counts="$s['availability']['counts']" :heading="['title' => $s['availability']['title'], 'intro' => $s['availability']['intro']]"
         :siteplan="$s['availability']['siteplan'] ? ['image' => $s['availability']['siteplan']['full'], 'width' => $s['availability']['siteplan']['width'] ?: 1600, 'height' => $s['availability']['siteplan']['height'] ?: 1000, 'placeholder' => false] : null"
       />

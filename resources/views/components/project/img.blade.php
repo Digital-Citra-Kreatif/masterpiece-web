@@ -1,4 +1,4 @@
-{{-- A CMS image (App\Support\ProjectPage::image()): its sized copy, srcset and dimensions. --}}
+{{-- Gambar CMS --}}
 @props(['image', 'sizes' => '100vw', 'alt' => null, 'eager' => false])
 
 <img

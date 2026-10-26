@@ -1,12 +1,8 @@
 {{--
-  Unit types: 3 cards per row. A card links to its type page (`url`, the
-  homepage: /tipe/<slug>) or opens its sheet on the same page (`sheet`, a
-  <dialog> id, project pages). Its facts are `specs` ([[label, value], …]) or,
-  without them, the homepage's LT, LB and rooms.
+  Kartu tipe unit: `url` atau `sheet` (id <dialog>), fakta `specs`
 
-  variant 'project' (after design-project.pdf): the title in capitals, white
-  card bodies with the size beside the name and the facts in one row.
-  Slots `before` and `after` hold the section's other content around the grid.
+  variant 'project': kartu proyek
+  Slot `before` / `after`: isi tambahan
 --}}
 @props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'before' => null, 'after' => null])
 

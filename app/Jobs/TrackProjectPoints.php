@@ -8,11 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Sunrice\Cms\Models\EntryTranslation;
 
-/**
- * Makes a project's Masterplan and Cluster point paths again after it was saved
- * (App\Support\ProjectTracks). It takes a minute or two, so it runs on the queue;
- * one at a time per project.
- */
+/** Lacak ulang titik */
 class TrackProjectPoints implements ShouldBeUnique, ShouldQueue
 {
     use Queueable;

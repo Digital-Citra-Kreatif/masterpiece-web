@@ -1,9 +1,4 @@
-{{--
-  A section's numbered points without an aerial to place them on (Masterplan or
-  Cluster before their map is set): the title, its intro and the list.
-
-  section: App\Support\ProjectPage::masterplan() or ::cluster(); id: the section's anchor.
---}}
+{{-- Daftar titik --}}
 @props(['section', 'id'])
 
 <section id="{{ $id }}" class="pj-points room" aria-labelledby="{{ $id }}-title">

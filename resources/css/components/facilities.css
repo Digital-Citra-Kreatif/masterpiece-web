@@ -94,9 +94,7 @@
   transition: width 0.2s linear;
 }
 
-/* ---- variant 'split' (project pages, after design-project.pdf): the heading
-   column with two square arrows on the left, the cards running off the right
-   edge, captions in the dark colour. */
+/* ---- variant 'split' */
 
 .fac--split {
   padding-block: clamp(64px, 9vw, 128px);
@@ -157,10 +155,7 @@
   background: var(--ink);
 }
 
-/* Runs off to the right edge of the screen, past the page's gutter and line,
-   the last card cut by it. Two classes, so Swiper's own .swiper margins
-   (loaded later) don't undo it, and min-width 0 so the slides can't widen the
-   grid column. */
+/* Lewat tepi kanan */
 .fac--split .fac__rail.swiper {
   min-width: 0;
   margin: 0 calc(-1 * max(var(--gutter), (100vw - var(--max)) / 2 + var(--gutter))) 0 0;
@@ -173,7 +168,7 @@
 
 .fac--split .fac__track {
   display: flex;
-  gap: 0; /* Swiper spaces the cards (spaceBetween): the homepage track's gap would add to it */
+  gap: 0; /* Jarak dari Swiper */
   padding: 0;
   overflow: visible;
 }
@@ -200,7 +195,7 @@
   }
 }
 
-/* The split variant's cards open the lightbox: the whole picture is the button. */
+/* Kartu buka lightbox */
 .fac--split .fac__img {
   position: relative;
 }

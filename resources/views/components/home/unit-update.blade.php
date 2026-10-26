@@ -2,7 +2,7 @@
   Unit update: siteplan image with a status dot per unit (red sold, yellow
   reserved, green available). Status display only; dots do not open units.
   Dot positions are percentages of the siteplan image (Units in the CMS).
-  `siteplan` ({ image, width, height, placeholder }) replaces the site's (Globals → Situs): a project's.
+  `siteplan` ({ image, width, height, placeholder }): siteplan proyek
 
   Unlike the other sections, the heading sits in the side column above the
   legend, so the siteplan starts at the top and is the first thing read.

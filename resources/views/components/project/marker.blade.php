@@ -1,4 +1,4 @@
-{{-- The Global Style marker beside a point's number: a drawn shape or the uploaded image. Nothing without one. --}}
+{{-- Penanda titik --}}
 @props(['marker'])
 
 @if ($marker && $marker['image'])

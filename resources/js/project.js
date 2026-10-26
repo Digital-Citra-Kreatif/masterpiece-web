@@ -1,5 +1,4 @@
-// Project page: the hero banner, the Masterplan opening and the Masterplan and Cluster scroll scenes (the homepage's),
-// the facilities Swiper, the PhotoSwipe lightbox, unit sheets and the WhatsApp panel.
+// Entri halaman proyek
 import './hero.js';
 import './masterplan.js';
 import './scroll-scene.js';

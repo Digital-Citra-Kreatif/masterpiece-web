@@ -3,11 +3,7 @@
   prev/next buttons, so touch, trackpad and keyboard all work without a library.
   Logic in resources/js/carousel.js.
 
-  variant 'split' (project pages, after design-project.pdf): the title, its intro
-  and two square arrows in a narrow left column, the cards running off to the
-  right in a looping Swiper carousel (resources/js/facilities-swiper.js: drag,
-  arrows, keys). A card opens the facilities' pictures in the lightbox, at its own.
-  Swiper's loop needs more cards than fit on screen, so a short list runs twice.
+  variant 'split': karusel Swiper proyek
 --}}
 @props(['facilities', 'heading', 'id' => 'fasilitas', 'variant' => 'default'])
 

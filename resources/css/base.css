@@ -131,7 +131,7 @@ video {
   max-width: 100%;
 }
 
-/* Media protection (resources/js/protect-media.js): no long-press "Save image" on phones, no drag. */
+/* Proteksi media */
 [data-protect-media] :is(img, video, canvas),
 [data-protect] :is(img, video, canvas) {
   -webkit-touch-callout: none;

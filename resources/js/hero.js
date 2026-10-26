@@ -64,8 +64,7 @@ for (const root of document.querySelectorAll('[data-hero-slides]')) {
     run();
   };
 
-  // Watched on the hero itself: the slides' box has no height of its own (the
-  // slides are absolute), so it left the screen as soon as the page scrolled.
+  // Pantau hero
   onScreen(root.closest('.hero') ?? root, (isVisible) => {
     visible = isVisible;
     run();

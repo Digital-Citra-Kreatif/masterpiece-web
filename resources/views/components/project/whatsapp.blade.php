@@ -1,9 +1,4 @@
-{{--
-  WhatsApp floating button: a fixed button bottom right that opens a small
-  panel listing the contacts, each a wa.me link with its prefilled message.
-  Shown only when the project has contacts (App\Support\ProjectPage::whatsapp()).
-  Toggle in resources/js/project-page.js; Escape closes it.
---}}
+{{-- Tombol WhatsApp --}}
 @props(['whatsapp'])
 
 <div class="wa" data-wa>

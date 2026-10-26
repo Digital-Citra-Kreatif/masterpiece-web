@@ -15,14 +15,14 @@ use Sunrice\Cms\Models\EntryTranslation;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Queue::fake(); // no point tracking (scripts/track-points.mjs) on every publish
+    Queue::fake(); // Tanpa pelacakan titik
     Storage::fake('public');
     $this->seed(SiteContentSeeder::class);
     $this->projects = Collection::query()->where('handle', 'projects')->firstOrFail();
 });
 
 /**
- * A published Projects entry at /projects/{slug}.
+ * Entri proyek terbit
  *
  * @param  array<string, mixed>  $data
  */
@@ -89,7 +89,7 @@ test('the masterplan orbit carries the CMS points with a position as its hotspot
         ->assertSee('data-spot-open="masterplan-1"', false)
         ->assertDontSee('data-spot-open="masterplan-2"', false)
         ->assertDontSee('data-spot-open="area-plaza"', false)
-        // Pins are the active Global Style's Penanda (a circle), not numbered squares.
+        // Pin penanda
         ->assertSee('class="spot spot--marker"', false)
         ->assertSee('pj-marker pj-marker--circle', false)
         ->getContent();
@@ -114,7 +114,7 @@ test('the cluster is the homepage Cluster scene with the CMS points that have a 
         ->assertDontSee('data-still=', false)
         ->assertDontSee('scene--project', false)
         ->assertSee('data-spot-open="cluster-1"', false)
-        // A point without a position isn't a hotspot, so it isn't in the scene's list either.
+        // Titik tanpa posisi
         ->assertDontSee('data-spot-open="cluster-2"', false)
         ->assertDontSee('Lakefront Pods');
 });
@@ -175,14 +175,14 @@ test('a project page shows each section with content and skips the empty ones', 
     $response = $this->get('/projects/westlake')->assertOk();
 
     $response
-        // The homepage's hero banner, with the project's Hero from the CMS; no full video, so no "Play Full Video".
+        // Hero proyek
         ->assertSee('<h1 class="hero__title" id="hero-title">A New Landmark by the Lake</h1>', false)
         ->assertDontSee('class="hero__lead"', false)
         ->assertDontSee('class="hero__rule"', false)
         ->assertSee('data-hero-slides', false)
         ->assertDontSee('Play Full Video')
         ->assertSee('scene scene--masterplan', false)
-        // No placed point: the homepage Cluster scene with its sample hotspots.
+        // Contoh hotspot Cluster
         ->assertSee('data-spot-open="cluster-plaza"', false)
         ->assertDontSee('Lakefront Pods')
         ->assertSee('<section id="facility" class="fac fac--split"', false)
@@ -195,7 +195,7 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertSee('93 m²')
         ->assertDontSee('id="type-lakeview"', false)
         ->assertDontSee('Bored pile')
-        // Unit availability: the homepage's status dots over the siteplan (Units), not the block plans.
+        // Titik status unit
         ->assertSee('<section id="unit" class="units"', false)
         ->assertSee('style="left: 5.97%; top: 66%"', false)
         ->assertSee('title="A-1 · Terjual"', false)

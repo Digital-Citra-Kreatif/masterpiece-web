@@ -1,11 +1,4 @@
-{{--
-  A unit type's detail, a side sheet in the overlay's style (bottom sheet on
-  phones): picture, facts, plans, and Gallery / VR when the CMS has them.
-  Opened by [data-sheet="{id}"] (resources/js/project-page.js); plans,
-  gallery and VR open over it in the shared overlay.
-
-  unit: App\Support\ProjectPage::unit(); gallery: the page's payload builder.
---}}
+{{-- Detail tipe unit --}}
 @props(['unit', 'gallery'])
 
 @php($title = $unit['name'])

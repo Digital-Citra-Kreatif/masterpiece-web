@@ -58,9 +58,7 @@ final class Content
     }
 
     /**
-     * The browser icon chosen in Settings → Branding, or null while none is
-     * chosen (or it is no longer an image in the library), so the layout
-     * keeps its built-in one.
+     * Ikon browser
      *
      * @return array{href: string, type: string}|null
      */
@@ -182,9 +180,7 @@ final class Content
     }
 
     /**
-     * The homepage's Kawasan scene: its frame sequence, its four tracked
-     * hotspots (marked as a stand-in) and the orbit video its Masterplan opening plays. A project's Masterplan shows it until the
-     * project has its own sequence (App\Support\ProjectPage::masterplan()).
+     * Contoh scene Kawasan
      *
      * @return array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video: string}
      */
@@ -198,8 +194,7 @@ final class Content
     }
 
     /**
-     * The homepage's Cluster scene: its frame sequence and its three tracked
-     * hotspots, marked as a stand-in, for a project's Cluster until it has its own.
+     * Contoh scene Cluster
      *
      * @return array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>}
      */

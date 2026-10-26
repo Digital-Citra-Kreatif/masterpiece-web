@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         EntryTranslation::saved(fn (EntryTranslation $translation) => app(ProjectFonts::class)->handle($translation));
-        // A project published with changed data: make its Masterplan and Cluster point paths again (on the queue).
+        // Lacak ulang titik
         EntryTranslation::saved(function (EntryTranslation $translation): void {
             if ($translation->wasChanged('data') && $translation->entry?->collection?->handle === 'projects') {
                 TrackProjectPoints::dispatch($translation->id)->afterCommit();

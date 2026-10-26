@@ -16,29 +16,14 @@
   default angle while zooming in on it, with its info in place of the section
   panel. Back, Esc, or scrolling on returns to the orbit.
 
-  scene:      { base, startFrame?, placeholder? } (a frame sequence), or
-              { still: { src, width, height, sweep? } } (one picture: scroll-scene.js
-              turns it back and forth by up to `sweep`°, the pins turning with it,
-              until the sequence exists; the rest works the same)
-  hotspots:   { key: { track, frame?, title, short?, text } }, or with a still
-              { key: { x, y, title, short?, text } } (% of the picture)
-  masterplan: { title, text, video?, panel? }: panel 'zoom' brings the section
-  panel and shade in as soon as the frame fills the screen, over the video, and
-  an open hotspot then shows its picture (`image`) on the right, with no back
-  button (Esc, scrolling on or the arrows go on).
-
-  tracks: { hotspot key: [[x, y] | null, …per frame] }: paths for hotspots placed
-  by `point` (App\Support\ProjectTracks); without one such a hotspot stays put.
-
-  marker: { shape, image } (a project's Global Style → Penanda): the markers are
-  that shape (its colour --marker) or that image instead of numbered squares.
-
-  variant 'project' (project pages, after design-project.pdf; the same
-  interaction): the picture unshaded, the pins the project's logo in a cream
-  drop (`pin`), the panel a green box on the `side` ('left' or 'right') with its
-  points in columns, the location panel the same box. `card` adds the open (or
-  first) hotspot's picture on the other side; without it the open hotspot's
-  picture shows in its panel. Hotspots may carry an `image` for these.
+  scene:      { base, startFrame?, placeholder? }
+              { still: { src, width, height, sweep? } } (gambar diam)
+  hotspots:   { key: { track, frame?, title, short?, text } }
+              { key: { x, y, title, short?, text } } (titik gambar diam)
+  masterplan: { title, text, video?, panel? } (panel 'zoom')
+  tracks:     { hotspot key: [[x, y] | null, …per frame] } (jalur titik)
+  marker:     { shape, image } (penanda proyek)
+  variant:    'project' (tampilan proyek)
 
   Logic in resources/js/scroll-scene.js (orbit) and resources/js/masterplan.js (opening).
 --}}
@@ -168,14 +153,14 @@
     </div>
 
     @if ($card && $first)
-      <!-- The open (or first) hotspot's picture, filled in by scroll-scene.js -->
+      <!-- Kartu gambar hotspot -->
       <figure class="scene__card" data-scene-card data-scene-avoid @unless ($first['content']['image']) hidden @endunless>
         <img class="scene__card-img" src="{{ $first['content']['image'] }}" alt="{{ $first['content']['title'] }}" />
       </figure>
     @endif
 
     @if (($masterplan['panel'] ?? null) === 'zoom')
-      <!-- The open hotspot's picture, on the right (filled in by scroll-scene.js) -->
+      <!-- Gambar titik terbuka -->
       <figure class="scene__place-figure" data-place-figure hidden>
         <img alt="" />
       </figure>

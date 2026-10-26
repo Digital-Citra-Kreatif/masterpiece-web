@@ -5,31 +5,11 @@ namespace App\Support;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Cms\Models\EntryTranslation;
 
-/**
- * Turns a Projects entry (blueprint `project`) into the array its page,
- * resources/views/pages/project.blade.php, reads.
- *
- * Each section is read by one method below (masterplan(), facilities(), …),
- * so a field that changes shape in the blueprint is remapped in one place.
- * A section with nothing to show is null: the page and the header nav skip it.
- *
- * The Global Style (applied only while its "Aktif" toggle is on) becomes a
- * small stylesheet, style(), that overrides the homepage's own tokens
- * (resources/css/base.css); every empty value keeps the homepage's.
- */
+/** Data halaman proyek */
 final class ProjectPage
 {
     /**
-     * Global Style colours → the homepage tokens they replace.
-     *
-     *   color_1 → --accent        brand colour: rules under headings, solid buttons' hover, progress bars, markers
-     *   color_2 → --accent-ink    the brand colour's darker step (solid buttons)
-     *   color_3 → --accent-light  the brand colour on dark bands (focus ring, labels)
-     *   color_4 → --paper         page background
-     *   color_5 → --paper-2       secondary surface (image frames, cards)
-     *   color_6 → --ink           text and solid buttons
-     *   color_7 → --room          dark bands: hero, masterplan, footer
-     *   color_8 → --room-ink      text on the dark bands
+     * Peta warna Global Style
      *
      * @var array<string, string>
      */
@@ -45,8 +25,7 @@ final class ProjectPage
     ];
 
     /**
-     * Global Style font fields → the font token each one sets: headings,
-     * body text, buttons. The homepage font stays as the fallback.
+     * Peta font Global Style
      *
      * @var array<string, string>
      */
@@ -56,7 +35,7 @@ final class ProjectPage
         'button' => '--button',
     ];
 
-    /** The sections in page order, with their anchor and the header link's label (the client's nav). */
+    /** Urutan section */
     public const SECTIONS = [
         'masterplan' => ['id' => 'masterplan', 'label' => 'Masterplan'],
         'location' => ['id' => 'location', 'label' => 'Location'],
@@ -87,7 +66,7 @@ final class ProjectPage
             'availability' => self::availability(self::group($values, 'availability')),
         ]);
 
-        // The points' paths through the orbit, once made for their current places (ProjectTracks).
+        // Jalur titik orbit
         foreach (array_keys(ProjectTracks::sections()) as $handle) {
             if (isset($sections[$handle]['scene'])) {
                 $placed = ProjectTracks::placed($sections[$handle]['points'], $handle);
@@ -110,8 +89,7 @@ final class ProjectPage
     }
 
     /**
-     * The Global Style as CSS (fonts and token overrides), the header logo and
-     * the marker drawn beside numbered points. Inactive: nothing of it.
+     * Gaya global proyek
      *
      * @param  array<string, mixed>  $style
      * @return array{css: string, logo: ?array<string, mixed>, marker: ?array{shape: ?string, image: ?string}}
@@ -174,7 +152,7 @@ final class ProjectPage
         return [
             'css' => $css,
             'logo' => self::image($style['logo'] ?? null, 'medium'),
-            // The project's logo is also its pages' browser icon (the original: the sized copies crop or are larger).
+            // Favicon dari logo
             'favicon' => ($style['logo'] ?? null) instanceof Media && $style['logo']->isImage()
                 ? ['href' => $style['logo']->url(), 'type' => $style['logo']->mime_type]
                 : null,
@@ -187,8 +165,7 @@ final class ProjectPage
     }
 
     /**
-     * The hero: the homepage's banner component, as a slider of the media
-     * (one image: still; none: the dark band alone).
+     * Hero proyek
      *
      * @param  array<string, mixed>  $hero
      * @return array{title: string, subtitle: string, background: string, slides: list<array{type: string, src: string, alt: string}>}
@@ -214,9 +191,7 @@ final class ProjectPage
     }
 
     /**
-     * Numbered points over the aerial map; those with a picture open it, with
-     * their gallery. A point is placed on the map only with both X and Y (% of
-     * the map); the others stay in the list.
+     * Titik Masterplan
      *
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, map: ?array<string, mixed>, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, gallery: list<array<string, mixed>>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
@@ -243,9 +218,7 @@ final class ProjectPage
 
         $map = self::image($section['map'] ?? null);
 
-        // The homepage's orbit (video, then the frames turning with the scroll; it is this area's render)
-        // with the CMS's points as its hotspots: x/y are % of the orbit's first frame, scroll-scene.js
-        // carries them through the other frames. Without a placed point, the four sample hotspots.
+        // Orbit dengan titik
         $hotspots = self::hotspots($points, 'masterplan');
         $scene = $points === [] ? null : [...Content::sampleArea(), ...($hotspots !== [] ? ['hotspots' => $hotspots] : [])];
 
@@ -253,9 +226,7 @@ final class ProjectPage
     }
 
     /**
-     * The location maps and the named spots on the first one (Lokasi → Titik
-     * peta, x/y % of the map), shown on hover. The area's figures (Angka
-     * kawasan) stay in the CMS but are no longer shown.
+     * Peta lokasi
      *
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, maps: list<array<string, mixed>>, pins: list<array{name: string, x: float, y: float}>}|null
@@ -277,9 +248,7 @@ final class ProjectPage
     }
 
     /**
-     * Cluster: the homepage's Cluster orbit with the CMS's points as its
-     * hotspots (x/y % of the orbit's first frame, carried through the other
-     * frames by scroll-scene.js); without a placed point, its sample hotspots.
+     * Orbit Cluster
      *
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, description: ?string, image: ?array<string, mixed>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
@@ -311,7 +280,7 @@ final class ProjectPage
     }
 
     /**
-     * The points with a position as scroll-scene hotspots (x, y %), keyed {prefix}-{n}.
+     * Titik jadi hotspot
      *
      * @param  list<array<string, mixed>>  $points
      * @return array<string, array{number: ?string, x: float, y: float, title: string, short: string, text: string, image: ?string}>
@@ -333,9 +302,7 @@ final class ProjectPage
     }
 
     /**
-     * The facilities carousel (the homepage's component): Facilities entries
-     * (title, image, description) or rows of the same fields; only those with
-     * a picture, a slide is a picture first.
+     * Karusel fasilitas
      *
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, items: list<array{title: string, description: ?string, image: string}>}|null
@@ -357,8 +324,7 @@ final class ProjectPage
     }
 
     /**
-     * The cutaway, the advantages, and the unit types grouped by view (the
-     * view's own copy heading its group), then the specifications.
+     * Tipe unit
      *
      * @param  array<string, mixed>  $section
      * @return array<string, mixed>|null
@@ -385,7 +351,7 @@ final class ProjectPage
             ->values()
             ->map(fn (array $row, int $index): array => self::unit($row, $index));
 
-        // The views' order in the CMS, then any view only a unit names.
+        // Urutan view
         $groups = $views->keys()->merge($units->pluck('view')->filter())->unique()
             ->map(function (string $view) use ($views, $units): array {
                 $copy = $views->get($view, []);
@@ -416,8 +382,7 @@ final class ProjectPage
             'heroImage' => $heroImage,
             'advantages' => $advantages,
             'groups' => $groups->all(),
-            // The homepage's type cards (components/home/type-grid): a Types entry links to its own page,
-            // a unit without one (a row) opens its sheet.
+            // Kartu tipe
             'cards' => $groups->flatMap(fn (array $group): array => $group['units'])
                 ->map(fn (array $unit): array => [
                     'name' => $unit['name'],
@@ -435,8 +400,7 @@ final class ProjectPage
     }
 
     /**
-     * One unit type, a Types entry (or a row of the same fields): its card
-     * and its detail sheet.
+     * Satu tipe unit
      *
      * @param  array<string, mixed>  $row
      * @return array{id: string, view: ?string, viewName: ?string, name: string, category: ?string, facts: list<array{0: string, 1: string}>, image: ?array<string, mixed>, plans: list<array<string, mixed>>, gallery: list<array<string, mixed>>, vr: ?string, url: ?string}
@@ -465,14 +429,14 @@ final class ProjectPage
                 ->values()
                 ->all(),
             'gallery' => self::images($row['gallery'] ?? []),
-            // A published tour's address, or a path on this site (/vr/…).
+            // Alamat tur
             'vr' => preg_match('#^(https?://|/)#', (string) ($row['vr_url'] ?? '')) === 1 ? url((string) $row['vr_url']) : null,
             'url' => $row['url'] ?? null,
         ];
     }
 
     /**
-     * The siteplan and each block's plan.
+     * Siteplan dan blok
      *
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, siteplan: ?array<string, mixed>, blocks: list<array<string, mixed>>}|null
@@ -490,7 +454,7 @@ final class ProjectPage
             ->values()
             ->all();
 
-        // The units' status dots on the siteplan (the homepage's Unit update), and how many of each.
+        // Titik status unit
         $units = collect($section['units'] ?? [])
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['code'] ?? null) && is_numeric($row['x'] ?? null) && is_numeric($row['y'] ?? null))
             ->map(fn (array $row): array => [
@@ -506,8 +470,7 @@ final class ProjectPage
     }
 
     /**
-     * The WhatsApp floating button: only with at least one contact with a
-     * number, and unless "Tampilkan tombol" is switched off.
+     * Tombol WhatsApp
      *
      * @param  array<string, mixed>  $whatsapp
      * @return array{label: string, heading: ?string, description: ?string, image: ?array<string, mixed>, contacts: list<array{title: string, avatar: ?string, href: string}>}|null
@@ -538,7 +501,7 @@ final class ProjectPage
     }
 
     /**
-     * A section's heading plus its content, or null when it has nothing to show.
+     * Judul dan isi
      *
      * @param  array<string, mixed>  $section
      * @param  array<string, mixed>  $content
@@ -559,10 +522,7 @@ final class ProjectPage
     }
 
     /**
-     * A row of a section: a repeater row as it is, or an entry picked in an
-     * entries field as one (its title as `name`, its page as `url`, its
-     * fields, some under the section's names: $rename field → row key).
-     * Null for anything else.
+     * Baris section
      *
      * @param  array<string, string>  $rename
      * @return array<string, mixed>|null
@@ -585,7 +545,7 @@ final class ProjectPage
     }
 
     /**
-     * A group field's values ([] when empty).
+     * Nilai group
      *
      * @param  array<string, mixed>  $values
      * @return array<string, mixed>
@@ -596,8 +556,7 @@ final class ProjectPage
     }
 
     /**
-     * An image for an <img>: a sized copy (the original until the library has
-     * made its sizes), its srcset and dimensions.
+     * Gambar responsif
      *
      * @return array{src: string, full: string, srcset: string, width: ?int, height: ?int, alt: string}|null
      */
@@ -651,13 +610,13 @@ final class ProjectPage
         return is_string($value) && preg_match('/^#[0-9A-Fa-f]{6}$/', $value) === 1;
     }
 
-    /** A quoted CSS string that can't end the declaration or the <style> element. */
+    /** String CSS aman */
     private static function cssString(string $value): string
     {
         return '"'.str_replace(['\\', '"', '<', "\n", "\r"], ['\\\\', '\\"', '\\3C ', '', ''], $value).'"';
     }
 
-    /** An area in m², with a decimal comma only when it has decimals ("45", "45,5"). */
+    /** Format luas */
     private static function number(int|float|string $value): string
     {
         return rtrim(rtrim(number_format((float) $value, 1, ',', '.'), '0'), ',');
