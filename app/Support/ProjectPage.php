@@ -250,8 +250,13 @@ final class ProjectPage
 
         $map = self::image($section['map'] ?? null);
 
-        // For review: the homepage's orbit and its four sample hotspots stand in until the project has its own sequence.
-        return self::section($section, ['map' => $map, 'points' => $points, 'scene' => $points !== [] ? Content::sampleArea() : null], $points !== []);
+        // The homepage's orbit (video, then the frames turning with the scroll; it is this area's render)
+        // with the CMS's points as its hotspots: x/y are % of the orbit's first frame, scroll-scene.js
+        // carries them through the other frames. Without a placed point, the four sample hotspots.
+        $hotspots = self::hotspots($points, 'masterplan');
+        $scene = $points === [] ? null : [...Content::sampleArea(), ...($hotspots !== [] ? ['hotspots' => $hotspots] : [])];
+
+        return self::section($section, ['map' => $map, 'points' => $points, 'scene' => $scene], $points !== []);
     }
 
     /**
@@ -321,7 +326,27 @@ final class ProjectPage
      */
     private static function scene(?array $map, array $points, string $prefix): ?array
     {
-        $hotspots = collect($points)
+        $hotspots = self::hotspots($points, $prefix);
+
+        if ($map === null || $hotspots === []) {
+            return null;
+        }
+
+        return [
+            'scene' => ['still' => ['src' => $map['full'], 'width' => (int) ($map['width'] ?: 1600), 'height' => (int) ($map['height'] ?: 900)]],
+            'hotspots' => $hotspots,
+        ];
+    }
+
+    /**
+     * The points with a position as scroll-scene hotspots (x, y %), keyed {prefix}-{n}.
+     *
+     * @param  list<array<string, mixed>>  $points
+     * @return array<string, array{x: float, y: float, title: string, short: string, text: string, image: ?string}>
+     */
+    private static function hotspots(array $points, string $prefix): array
+    {
+        return collect($points)
             ->filter(fn (array $point): bool => $point['x'] !== null && $point['y'] !== null)
             ->mapWithKeys(fn (array $point, int $index): array => ["{$prefix}-".($index + 1) => [
                 'x' => $point['x'],
@@ -332,15 +357,6 @@ final class ProjectPage
                 'image' => $point['image']['src'] ?? null,
             ]])
             ->all();
-
-        if ($map === null || $hotspots === []) {
-            return null;
-        }
-
-        return [
-            'scene' => ['still' => ['src' => $map['full'], 'width' => (int) ($map['width'] ?: 1600), 'height' => (int) ($map['height'] ?: 900)]],
-            'hotspots' => $hotspots,
-        ];
     }
 
     /**

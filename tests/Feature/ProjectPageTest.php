@@ -65,8 +65,35 @@ test('the masterplan is the homepage Kawasan scene as it is, with its opening an
         ->assertSee('scene--masterplan', false)
         ->assertSee('data-src="'.asset('media/hero/teaser.mp4').'"', false)
         ->assertSee('data-mp-title>Masterplan</h2>', false)
-        ->assertDontSee('Around the district.')
+        ->assertSee('<p class="mp__text" data-mp-text>Around the district.</p>', false)
         ->assertDontSee('class="scene__loc-img"', false);
+});
+
+test('the masterplan orbit carries the CMS points with a position as its hotspots', function () {
+    publishProject($this->projects, [
+        'global_style' => [...inactiveStyle(), 'active' => true],
+        'hero' => ['heading' => 'Westlake'],
+        'masterplan' => ['title' => 'Masterplan', 'points' => [
+            ['number' => '01', 'name' => 'West Lakeside', 'image' => null, 'gallery' => [], 'x' => 50, 'y' => 52],
+            ['number' => '06', 'name' => 'JX Hometown', 'image' => null, 'gallery' => [], 'x' => 31, 'y' => null],
+        ]],
+    ]);
+
+    $html = $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('scene scene--masterplan', false)
+        ->assertSee('data-base="'.url('media/scroll/kawasan').'/"', false)
+        ->assertSee('data-src="'.asset('media/hero/teaser.mp4').'"', false)
+        ->assertSee('data-spot-open="masterplan-1"', false)
+        ->assertDontSee('data-spot-open="masterplan-2"', false)
+        ->assertDontSee('data-spot-open="area-plaza"', false)
+        // Pins are the active Global Style's Penanda (a circle), not numbered squares.
+        ->assertSee('class="spot spot--marker"', false)
+        ->assertSee('pj-marker pj-marker--circle', false)
+        ->getContent();
+
+    preg_match('/data-spots="([^"]+)"/', $html, $match);
+    expect(json_decode(html_entity_decode($match[1]), true)['masterplan-1']['point'])->toBe([50, 52]);
 });
 
 test('a cluster on the masterplan map is a still scene with its pins, and the list alone without one', function () {

@@ -99,6 +99,94 @@ function frameSet(base) {
   return set;
 }
 
+// ---- placed points on a sequence
+// A hotspot may give its spot as `point` (x, y % of the scene's first frame)
+// instead of a tracked `track`. Its path through the other frames follows the
+// ground: per frame, the frame-0 positions of the sequence's tracked points are
+// mapped onto that frame's by a homography (four tracks in view), an affine
+// transform (three) or a similarity (two), and the point goes through the same
+// mapping. Aerial views are near enough to a plane for this to stay on its spot.
+
+// Solve A·x = b (n×n) by Gaussian elimination with partial pivoting; null if singular.
+function solve(A, b) {
+  const n = b.length;
+  const M = A.map((row, i) => [...row, b[i]]);
+  for (let c = 0; c < n; c++) {
+    let p = c;
+    for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+    if (Math.abs(M[p][c]) < 1e-9) return null;
+    [M[c], M[p]] = [M[p], M[c]];
+    for (let r = 0; r < n; r++) {
+      if (r === c) continue;
+      const f = M[r][c] / M[c][c];
+      for (let k = c; k <= n; k++) M[r][k] -= f * M[c][k];
+    }
+  }
+  return M.map((row, i) => row[n] / row[i]);
+}
+
+// A mapping (x, y) => [x, y] taking each `from` point onto its `to` point.
+function fitMapping(from, to) {
+  if (from.length >= 4) {
+    const A = [];
+    const b = [];
+    for (let i = 0; i < 4; i++) {
+      const [x, y] = from[i];
+      const [u, v] = to[i];
+      A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]);
+      b.push(u);
+      A.push([0, 0, 0, x, y, 1, -v * x, -v * y]);
+      b.push(v);
+    }
+    const h = solve(A, b);
+    if (h) return (x, y) => {
+      const w = h[6] * x + h[7] * y + 1;
+      return [(h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w];
+    };
+  }
+  if (from.length >= 3) {
+    const A = [];
+    const b = [];
+    for (let i = 0; i < 3; i++) {
+      const [x, y] = from[i];
+      A.push([x, y, 1, 0, 0, 0], [0, 0, 0, x, y, 1]);
+      b.push(to[i][0], to[i][1]);
+    }
+    const a = solve(A, b);
+    if (a) return (x, y) => [a[0] * x + a[1] * y + a[2], a[3] * x + a[4] * y + a[5]];
+  }
+  if (from.length >= 2) {
+    // Similarity: rotation, scale and shift from the first two pairs.
+    const [[x1, y1], [x2, y2]] = from;
+    const [[u1, v1], [u2, v2]] = to;
+    const d = [x2 - x1, y2 - y1];
+    const e = [u2 - u1, v2 - v1];
+    const len = d[0] * d[0] + d[1] * d[1];
+    if (len > 0) {
+      const ca = (d[0] * e[0] + d[1] * e[1]) / len;
+      const sa = (d[0] * e[1] - d[1] * e[0]) / len;
+      return (x, y) => [u1 + ca * (x - x1) - sa * (y - y1), v1 + sa * (x - x1) + ca * (y - y1)];
+    }
+  }
+  return null;
+}
+
+// Each placed point's path through the frames, added to m.hotspots under its track key.
+function placePoints(m, spots) {
+  const placed = Object.values(spots).filter((s) => s.point && !m.hotspots[s.track]);
+  if (!placed.length) return;
+  const tracks = Object.values(m.hotspots).filter((t) => t[0]);
+  for (const s of placed) m.hotspots[s.track] = [];
+  for (let f = 0; f < m.count; f++) {
+    const pairs = tracks.filter((t) => t[f]);
+    const map = fitMapping(pairs.map((t) => t[0]), pairs.map((t) => t[f]));
+    for (const s of placed) {
+      const p = [(s.point[0] / 100) * m.width, (s.point[1] / 100) * m.height];
+      m.hotspots[s.track].push(map ? map(p[0], p[1]) : null);
+    }
+  }
+}
+
 // ---- a still picture standing in for a sequence
 const STILL_FRAMES = 120;
 
@@ -164,6 +252,7 @@ async function init(root) {
   const set = await (root.dataset.still ? stillSet(root.dataset.still) : frameSet(root.dataset.base)).ready;
   const { m } = set;
   const N = m.count;
+  if (!set.still) placePoints(m, spots);
 
   // Still scenes: the picture's turn at frame position fw (radians), the scale
   // that keeps it covering the stage at that angle, and the hotspots in picture px.

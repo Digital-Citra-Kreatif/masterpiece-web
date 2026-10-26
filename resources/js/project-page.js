@@ -1,5 +1,28 @@
 // Project page (resources/views/pages/project.blade.php).
 
+// Hero parallax: while the page scrolls past the hero, it moves down at half
+// the scroll and darkens, so the section after it slides up over it and closes
+// it. Still for visitors who prefer reduced motion.
+const parallax = document.querySelector('[data-hero-parallax]');
+if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const hero = parallax.querySelector('.hero');
+  let queued = false;
+  const draw = () => {
+    queued = false;
+    const h = hero.offsetHeight;
+    const y = Math.min(Math.max(window.scrollY, 0), h);
+    hero.style.transform = y > 0 ? `translate3d(0, ${(y * 0.5).toFixed(1)}px, 0)` : '';
+    hero.style.setProperty('--cover', (y / h).toFixed(3));
+  };
+  window.addEventListener('scroll', () => {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(draw);
+    }
+  }, { passive: true });
+  draw();
+}
+
 // Unit type sheets: <dialog>s opened by [data-sheet="{id}"]; Escape, the close button or the backdrop closes them.
 let opener = null;
 for (const trigger of document.querySelectorAll('[data-sheet]')) {

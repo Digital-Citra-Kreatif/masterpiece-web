@@ -24,6 +24,9 @@
               { key: { x, y, title, short?, text } } (% of the picture)
   masterplan: { title, text, video? }
 
+  marker: { shape, image } (a project's Global Style → Penanda): the markers are
+  that shape (its colour --marker) or that image instead of numbered squares.
+
   variant 'project' (project pages, after design-project.pdf; the same
   interaction): the picture unshaded, the pins the project's logo in a cream
   drop (`pin`), the panel a green box on the `side` ('left' or 'right') with its
@@ -33,7 +36,7 @@
 
   Logic in resources/js/scroll-scene.js (orbit) and resources/js/masterplan.js (opening).
 --}}
-@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false])
+@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false, 'marker' => null])
 
 @php
   $still = $scene['still'] ?? null;
@@ -81,9 +84,11 @@
 
     <div class="scene__markers">
       @foreach ($spots as $s)
-        <button class="spot" type="button" data-spot="{{ $s['key'] }}" tabindex="-1" hidden>
+        <button @class(['spot', 'spot--marker' => $marker && ! $project]) type="button" data-spot="{{ $s['key'] }}" tabindex="-1" hidden>
           <span class="spot__dot">
-            @if ($project && $pin)
+            @if ($marker && ! $project)
+              <x-project.marker :marker="$marker" />
+            @elseif ($project && $pin)
               <img src="{{ $pin }}" alt="" />
             @else
               {{ $loop->iteration }}

@@ -3,7 +3,7 @@
   turns behind the headline, the lead and the "Play Full Video" card. The
   Masterplan section follows it.
 
-  hero: { title, subtitle, background: 'video'|'slider'|'none', slides: [{ type, src, alt }], teaser, full, cover, fullThumb }
+  hero: { title, eyebrow?, cue?, subtitle, background: 'video'|'slider'|'none', slides: [{ type, src, alt }], teaser, full, cover, fullThumb }
   Without `full` there is no "Play Full Video" card; without it and a subtitle,
   no bottom row at all (lead, scroll-cue rule); 'none' leaves the dark band alone.
 
@@ -45,7 +45,13 @@
   <div class="hero__shade" aria-hidden="true"></div>
 
   <div class="hero__body wrap">
+    @if (filled($hero['eyebrow'] ?? null))
+      <p class="hero__eyebrow">{{ $hero['eyebrow'] }}</p>
+    @endif
     <h1 class="hero__title" id="hero-title">{!! nl2br(e($hero['title']), false) !!}</h1>
+    @if (filled($hero['cue'] ?? null))
+      <p class="hero__cue" aria-hidden="true">{{ $hero['cue'] }}</p>
+    @endif
     @if (filled($hero['subtitle']) || ! empty($hero['full']))
     <div class="hero__foot">
       <span class="hero__rule" aria-hidden="true"></span>

@@ -338,8 +338,8 @@ class SiteContentSeeder extends Seeder
                 $points('Titik kawasan', [
                     $image('image', 'Gambar', ['width' => 50]),
                     $gallery('gallery', 'Gallery', ['width' => 50, 'instructions' => 'Opsional.']),
-                    $percent('x', 'Posisi X (%)', 'Dari kiri peta. Kosong: titik hanya tampil di daftar.'),
-                    $percent('y', 'Posisi Y (%)', 'Dari atas peta.'),
+                    $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Masterplan. Kosong: titik hanya tampil di daftar.'),
+                    $percent('y', 'Posisi Y (%)', 'Dari atas gambar pertama orbit Masterplan.'),
                 ]),
             ]),
             $section('location', 'Lokasi', [

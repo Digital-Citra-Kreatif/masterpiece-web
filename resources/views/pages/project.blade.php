@@ -35,12 +35,12 @@
   <main>
     {{-- The homepage's hero banner, filled from the project's Hero (heading, description, media as the slider). --}}
     {{-- data-protect: the hero's pictures can't be saved or copied from the browser's menu or by dragging (resources/js/protect-media.js). --}}
-    <div data-protect>
+    <div data-protect data-hero-parallax>
       {{-- For now without the description (and so without the bottom row's scroll cue); Hero → Deskripsi stays in the CMS. --}}
-      <x-home.hero :hero="[...$p['hero'], 'subtitle' => '']" />
+      <x-home.hero :hero="[...$p['hero'], 'eyebrow' => $p['title'], 'cue' => 'Scroll Down', 'subtitle' => '']" />
     </div>
 
-    {{-- Masterplan: the homepage's Kawasan scene as it is (opening, orbit, hotspots, look). Cluster: the same scene drawn as design-project.pdf, over the aerial. --}}
+    {{-- Masterplan: the homepage's Kawasan scene as it is (opening video, orbit frames, look), with the CMS's points as hotspots. Cluster: the same scene drawn as design-project.pdf, over the aerial. --}}
     @isset($s['masterplan'])
       @php($mp = $s['masterplan'])
       @if ($mp['scene'])
@@ -50,7 +50,8 @@
           :intro="null"
           :scene="$mp['scene']['scene']"
           :hotspots="$mp['scene']['hotspots']"
-          :masterplan="['title' => $mp['title'], 'text' => null, 'video' => $mp['scene']['video']]"
+          :masterplan="['title' => $mp['title'], 'text' => $mp['intro'], 'video' => $mp['scene']['video'] ?? null]"
+          :marker="$marker"
         />
       @else
         <x-project.points :section="$mp" :id="$sectionId('masterplan')" />
