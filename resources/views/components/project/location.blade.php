@@ -20,7 +20,9 @@
     <div class="pj-loc__maps">
       @foreach ($loc['maps'] as $map)
         @if ($loop->first)
-          <div class="pj-loc__stage">
+          <div class="pj-loc__stage" @if ($map['width']) style="--ratio: {{ $map['width'] }} / {{ $map['height'] }}" @endif>
+            {{-- The map and its spots on one plane that covers the stage, so a spot at x/y % stays on its place when the edges are cut. --}}
+            <div class="pj-loc__plane">
             <button class="pj-loc__map is-main" type="button" data-open="gallery" data-payload="{{ $gallery($loc['title'], $loc['maps']) }}" aria-label="Perbesar peta">
               <x-project.img :image="$map" sizes="(min-width: 960px) 66vw, 100vw" :alt="$map['alt'] ?: 'Peta lokasi'" />
             </button>
@@ -29,6 +31,7 @@
                 <span class="pj-loc__pin-name">{{ $pin['name'] }}</span>
               </button>
             @endforeach
+            </div>
           </div>
         @else
           <button class="pj-loc__map" type="button" data-open="gallery" data-payload="{{ $gallery($loc['title'], $loc['maps'], $loop->index) }}" aria-label="Perbesar peta {{ $loop->iteration }}">

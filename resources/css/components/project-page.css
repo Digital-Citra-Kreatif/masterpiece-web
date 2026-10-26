@@ -281,10 +281,28 @@ button.pj-frame:focus-visible {
   font-weight: 400;
 }
 
-/* The hero's two thin white lines carry on down the Masterplan scene, over
-   its pinned stage (full width), at the same place: 40px outside the content. */
-.is-project .scene--masterplan .scene__stage::before,
-.is-project .scene--masterplan .scene__stage::after {
+/* The hero's two thin lines carry on down every section, at the same place:
+   40px outside the content (--line-x from each edge of the full-width section).
+   White on the dark bands and scenes, dark on the light ones. */
+.is-project {
+  --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
+}
+
+.is-project :is(.pj-loc, .fac, .types, .pj-av, .pj-points, .ft) {
+  --line: rgb(14 17 19 / 0.12);
+  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
+  background-size: 1px 100%;
+  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
+  background-repeat: no-repeat;
+}
+
+.is-project :is(.pj-points, .ft) {
+  --line: rgb(255 255 255 / 0.2);
+}
+
+/* Over a scene's pinned stage (full width), so they stay put while it's pinned. */
+.is-project .scene .scene__stage::before,
+.is-project .scene .scene__stage::after {
   content: '';
   position: absolute;
   top: 0;
@@ -295,12 +313,12 @@ button.pj-frame:focus-visible {
   pointer-events: none;
 }
 
-.is-project .scene--masterplan .scene__stage::before {
-  left: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
+.is-project .scene .scene__stage::before {
+  left: var(--line-x);
 }
 
-.is-project .scene--masterplan .scene__stage::after {
-  right: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
+.is-project .scene .scene__stage::after {
+  right: var(--line-x);
 }
 
 /* Hero parallax (project-page.js): the hero sinks behind the sections after
@@ -803,12 +821,18 @@ button.pj-frame:focus-visible {
   color: var(--ink);
 }
 
+/* Two columns: the title over its intro on the left, the map on the right,
+   both centred on each other, the map touching the section's top and bottom
+   (no padding); stacked on phones, where the copy gets its own room. */
 .pj-loc__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
-  gap: clamp(32px, 4vw, 64px);
-  align-items: start;
-  padding-block: clamp(64px, 9vw, 128px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  gap: clamp(32px, 4vw, 56px);
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  /* The map runs to the section's right line (--line-x) and stops there. */
+  padding-right: calc(max(8px, var(--gutter) - 40px) + 1px);
 }
 
 .pj-loc .pj-title {
@@ -817,14 +841,51 @@ button.pj-frame:focus-visible {
 
 .pj-loc__intro {
   margin: 20px 0 0;
-  max-width: 36ch;
+  max-width: 40ch;
   color: var(--ink-2);
+  font-size: clamp(16px, 1.3vw, 18px);
   line-height: 1.6;
 }
 
 .pj-loc__stage {
   position: relative;
   flex: 1 1 100%;
+  overflow: hidden;
+  border-left: 1px solid var(--line, var(--rule)); /* the same weight as the section's lines */
+}
+
+/* Wide screens: the map fills the right column from the section's top to its
+   bottom (the screen's height), cut at the edges like object-fit: cover. */
+@media (min-width: 761px) {
+  .pj-loc__maps,
+  .pj-loc__stage {
+    align-self: stretch;
+    height: 100%;
+  }
+
+  .pj-loc__stage {
+    min-height: 100svh;
+    container-type: size;
+  }
+
+  .pj-loc__plane {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100cqw, calc(100cqh * (var(--ratio, 4 / 3))));
+    aspect-ratio: var(--ratio, 4 / 3);
+    translate: -50% -50%;
+  }
+
+  .pj-loc__plane .pj-loc__map,
+  .pj-loc__plane .pj-loc__map img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pj-loc__plane {
+  position: relative;
 }
 
 /* The map fills its stage (as a lone flex item it would shrink to nothing,
@@ -903,12 +964,12 @@ button.pj-frame:focus-visible {
 
 .pj-loc__map:not(.is-main) {
   width: 160px;
-  border: 1px solid rgb(255 255 255 / 0.24);
 }
 
 @media (max-width: 760px) {
   .pj-loc__inner {
     grid-template-columns: 1fr;
+    padding-top: 56px;
   }
 }
 
