@@ -313,6 +313,10 @@ button.pj-frame:focus-visible {
 }
 
 /* Gelap Masterplan */
+.types--project {
+  position: relative; /* tempat veil */
+}
+
 .cover-veil {
   position: absolute;
   inset: 0;

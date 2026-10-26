@@ -156,6 +156,7 @@ class SiteContentSeeder extends Seeder
                     ]),
                 ]],
                 $this->projectBlueprint(),
+                $this->footerBlueprint(),
             ],
             'collections' => [
                 ['handle' => 'pages', 'title' => 'Pages', 'blueprint' => 'page', 'blueprints' => ['homepage'], 'hierarchical' => true, 'ordered' => true, 'route' => '/{slug}'],
@@ -406,9 +407,48 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
+     * Footer semua halaman
+     *
+     * @return array<string, mixed>
+     */
+    private function footerBlueprint(): array
+    {
+        $text = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'text', [], ['label' => $label, ...$extra]);
+
+        return ['handle' => 'footer', 'title' => 'Footer', 'fields' => [
+            $this->field('logo', 'media', ['types' => ['image']], ['label' => 'Logo', 'translatable' => false, 'width' => 33]),
+            $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat', 'width' => 66]),
+            $this->field('address', 'textarea', [], ['label' => 'Alamat']),
+            $text('phone', 'Telepon', ['translatable' => false, 'width' => 33]),
+            $text('email', 'Email', ['translatable' => false, 'width' => 33, 'validation' => ['email']]),
+            $text('whatsapp', 'WhatsApp', [
+                'translatable' => false,
+                'width' => 33,
+                'validation' => ['regex:/^[0-9]{8,15}$/'],
+                'instructions' => 'Angka saja, diawali kode negara: 6281234567890.',
+            ]),
+            $text('copyright', 'Copyright'),
+        ]];
+    }
+
+    /**
+     * Menu footer (Menus)
+     *
+     * @return array<string, mixed>
+     */
+    public function footerMenu(): array
+    {
+        return ['handle' => 'footer_menu', 'title' => 'Footer Menu', 'items' => [
+            ['entry' => 'pages/home', 'labels' => ['id' => 'Home'], 'new_tab' => false, 'children' => []],
+            ['entry' => 'pages/projects', 'labels' => [], 'new_tab' => false, 'children' => []],
+            ['entry' => 'pages/unit', 'labels' => [], 'new_tab' => false, 'children' => []],
+        ]];
+    }
+
+    /**
      * @return list<array<string, mixed>>
      */
-    private function globals(): array
+    public function globals(): array
     {
         $nav = ['kawasan' => 'Masterplan', 'peta' => 'Lokasi', 'cluster' => 'Cluster', 'fasilitas' => 'Fasilitas', 'tipe' => 'Tipe', 'unit-update' => 'Unit'];
 
@@ -419,6 +459,11 @@ class SiteContentSeeder extends Seeder
                 'siteplan' => $this->media('media/placeholder/siteplan.svg', 'Siteplan cluster'),
                 'siteplan_placeholder' => true,
                 'protect_media' => false,
+            ]]],
+            // Diisi editor di CMS
+            ['handle' => 'footer', 'title' => 'Footer', 'blueprint' => 'footer', 'values' => ['id' => [
+                'logo' => $this->media('images/masterpiece-logo.png', 'Logo'),
+                'copyright' => '© '.date('Y').' PT Masterpiece Visual Production',
             ]]],
             ['handle' => 'tipe_bersama', 'title' => 'Tipe: bersama', 'blueprint' => 'tipe_bersama', 'values' => ['id' => [
                 'facade_name' => 'Fasad',

@@ -74,6 +74,37 @@ final class Content
     }
 
     /**
+     * Isi footer
+     *
+     * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, links: list<array{href: string, label: string, newTab: bool}>, copyright: string}
+     */
+    public static function footer(): array
+    {
+        return once(function (): array {
+            $values = Cms::global('footer');
+            $logo = $values['logo'] ?? null;
+            $filled = fn (string $key): ?string => filled($values[$key] ?? null) ? trim((string) $values[$key]) : null;
+            $phone = $filled('phone');
+            $email = $filled('email');
+            $whatsapp = $filled('whatsapp');
+
+            return [
+                'logo' => $logo instanceof Media && $logo->isImage() ? ['src' => $logo->url(), 'width' => $logo->width, 'height' => $logo->height] : null,
+                'description' => $filled('description'),
+                'address' => $filled('address'),
+                'phone' => $phone ? ['label' => $phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $phone)] : null,
+                'email' => $email ? ['label' => $email, 'href' => 'mailto:'.$email] : null,
+                'whatsapp' => $whatsapp ? ['label' => '+'.$whatsapp, 'href' => 'https://wa.me/'.$whatsapp] : null,
+                'links' => collect(Cms::menu('footer_menu'))
+                    ->map(fn (array $item): array => ['href' => $item['url'], 'label' => $item['label'], 'newTab' => $item['new_tab']])
+                    ->values()
+                    ->all(),
+                'copyright' => $filled('copyright') ?? '© '.date('Y').' '.Cms::site()->name(),
+            ];
+        });
+    }
+
+    /**
      * The header's links: the CMS menu (config site.menu), or, while it has
      * none, the homepage sections from Globals → Situs.
      *

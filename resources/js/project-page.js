@@ -21,20 +21,19 @@ if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   draw();
 }
 
-// Parallax Masterplan
-const covered = document.querySelector('.is-project .scene--masterplan');
-if (covered && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  const stage = covered.querySelector('.scene__stage');
+// Parallax tertutup section berikut
+// target: yang turun; box: yang diukur (bawahnya)
+function coverParallax(box, target) {
   const veil = document.createElement('span');
   veil.className = 'cover-veil';
   veil.setAttribute('aria-hidden', 'true');
-  stage.append(veil);
+  target.append(veil);
   let queued = false;
   const draw = () => {
     queued = false;
-    const h = stage.offsetHeight;
-    const d = Math.min(Math.max(window.innerHeight - covered.getBoundingClientRect().bottom, 0), h);
-    stage.style.transform = d > 0 ? `translate3d(0, ${(d * 0.5).toFixed(1)}px, 0)` : '';
+    const h = Math.min(target.offsetHeight, window.innerHeight);
+    const d = Math.min(Math.max(window.innerHeight - box.getBoundingClientRect().bottom, 0), h);
+    target.style.transform = d > 0 ? `translate3d(0, ${(d * 0.5).toFixed(1)}px, 0)` : '';
     veil.style.opacity = ((d / h) * 0.6).toFixed(3);
   };
   window.addEventListener('scroll', () => {
@@ -43,7 +42,17 @@ if (covered && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       requestAnimationFrame(draw);
     }
   }, { passive: true });
+  window.addEventListener('resize', draw);
   draw();
+}
+
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Masterplan → Location
+  const masterplan = document.querySelector('.is-project .scene--masterplan');
+  if (masterplan) coverParallax(masterplan, masterplan.querySelector('.scene__stage'));
+  // Type → Unit Availability
+  const types = document.querySelector('.is-project .types--project');
+  if (types && types.nextElementSibling) coverParallax(types, types);
 }
 
 // Dialog tipe unit
