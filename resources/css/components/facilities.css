@@ -157,24 +157,23 @@
   background: var(--ink);
 }
 
-/* Runs off to the right edge of the screen, past the page's gutter. Two
+/* Ends at the content's right edge, so the last card in view is never cut by
+   it; Swiper sizes the cards to fill the column (facilities-swiper.js). Two
    classes, so Swiper's own .swiper margins (loaded later) don't undo it, and
    min-width 0 so the slides can't widen the grid column. */
 .fac--split .fac__rail.swiper {
   min-width: 0;
-  margin: 0 calc(-1 * max(var(--gutter), (100vw - var(--max)) / 2 + var(--gutter))) 0 0;
+  margin: 0;
   overflow: hidden;
 }
 
 .fac--split .fac__track {
   display: flex;
+  gap: 0; /* Swiper spaces the cards (spaceBetween): the homepage track's gap would add to it */
   padding: 0;
   overflow: visible;
 }
 
-.fac--split .fac__slide {
-  width: clamp(240px, 25vw, 300px);
-}
 
 .fac__arrow:disabled {
   opacity: 0.4;
@@ -191,9 +190,27 @@
   font-size: 18px;
 }
 
-
 @media (max-width: 760px) {
   .fac__split {
     grid-template-columns: 1fr;
   }
+}
+
+/* The split variant's cards open the lightbox: the whole picture is the button. */
+.fac--split .fac__img {
+  position: relative;
+}
+
+.fac__zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.fac__zoom:focus-visible {
+  outline-offset: -4px;
 }

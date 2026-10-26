@@ -5,11 +5,21 @@
 
   variant 'split' (project pages, after design-project.pdf): the title, its intro
   and two square arrows in a narrow left column, the cards running off to the
-  right in a Swiper carousel (resources/js/facilities-swiper.js: drag, arrows, keys).
+  right in a looping Swiper carousel (resources/js/facilities-swiper.js: drag,
+  arrows, keys). A card opens the facilities' pictures in the lightbox, at its own.
+  Swiper's loop needs more cards than fit on screen, so a short list runs twice.
 --}}
 @props(['facilities', 'heading', 'id' => 'fasilitas', 'variant' => 'default'])
 
-@php($split = $variant === 'split')
+@php
+  $split = $variant === 'split';
+  $slides = $split && count($facilities) > 0 && count($facilities) < 8 ? [...$facilities, ...$facilities] : $facilities;
+  $lightbox = fn (int $index): string => json_encode([
+      'title' => $heading['title'],
+      'items' => array_map(fn (array $f): array => ['src' => asset($f['image']), 'alt' => $f['title'], 'caption' => $f['title']], $facilities),
+      'index' => $index % max(1, count($facilities)),
+  ]);
+@endphp
 
 <section id="{{ $id }}" @class(['fac', 'fac--split' => $split]) aria-labelledby="{{ $id }}-title">
   <div @class(['wrap', 'fac__split' => $split])>
@@ -42,10 +52,13 @@
 
   <div @class(['fac__rail', 'swiper' => $split]) @if ($split) data-fac-swiper @else data-carousel @endif>
     <ul @class(['fac__track', 'swiper-wrapper' => $split]) @unless ($split) data-track tabindex="0" @endunless aria-label="Galeri fasilitas">
-      @foreach ($facilities as $f)
-        <li @class(['fac__slide', 'swiper-slide' => $split])>
+      @foreach ($slides as $f)
+        <li @class(['fac__slide', 'swiper-slide' => $split])@if ($split && $loop->index >= count($facilities)) aria-hidden="true"@endif>
           <figure>
             <div class="fac__img">
+              @if ($split)
+                <button class="fac__zoom" type="button" data-open="gallery" data-payload="{{ $lightbox($loop->index) }}" @if ($loop->index >= count($facilities)) tabindex="-1" @endif aria-label="Perbesar {{ $f['title'] }}"></button>
+              @endif
               <img src="{{ asset($f['image']) }}" alt="{{ $f['title'] }}" loading="lazy" />
               @if ($site['showPlaceholderBadges'] && $loop->first)
                 <span class="badge fac__badge">Gambar contoh</span>
