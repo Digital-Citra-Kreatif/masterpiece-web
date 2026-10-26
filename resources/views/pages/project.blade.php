@@ -40,7 +40,7 @@
       <x-home.hero :hero="[...$p['hero'], 'eyebrow' => $p['title'], 'cue' => 'Scroll Down', 'subtitle' => '']" />
     </div>
 
-    {{-- Masterplan: the homepage's Kawasan scene as it is (opening video, orbit frames, look), with the CMS's points as hotspots. Cluster: the same scene drawn as design-project.pdf, over the aerial. --}}
+    {{-- Masterplan and Cluster: the homepage's scenes as they are (Masterplan with its opening video), with the CMS's points as hotspots and the Penanda as pins. --}}
     @isset($s['masterplan'])
       @php($mp = $s['masterplan'])
       @if ($mp['scene'])
@@ -71,10 +71,7 @@
           :intro="null"
           :scene="$cl['scene']['scene']"
           :hotspots="$cl['scene']['hotspots']"
-          variant="project"
-          side="right"
-          :pin="$p['style']['logo']['src'] ?? null"
-          card
+          :marker="$marker"
         />
       @else
         <x-project.points :section="$cl" :id="$sectionId('cluster')" />

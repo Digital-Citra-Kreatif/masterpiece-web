@@ -198,6 +198,21 @@ final class Content
     }
 
     /**
+     * The homepage's Cluster scene: its frame sequence and its three tracked
+     * hotspots, marked as a stand-in, for a project's Cluster until it has its own.
+     *
+     * @return array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>}
+     */
+    public static function sampleCluster(): array
+    {
+        $values = require resource_path('data/home.php');
+        $scenes = json_decode((string) file_get_contents(resource_path('data/area.json')), true);
+        $cluster = self::scene($values['cluster'], $scenes['cluster']);
+
+        return ['scene' => [...$cluster['scene'], 'placeholder' => true], 'hotspots' => $cluster['hotspots']];
+    }
+
+    /**
      * A section's title and intro: the CMS group's (title and description) once its
      * title is filled in, otherwise the hardcoded ones.
      *

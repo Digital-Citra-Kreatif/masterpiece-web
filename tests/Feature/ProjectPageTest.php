@@ -96,28 +96,25 @@ test('the masterplan orbit carries the CMS points with a position as its hotspot
     expect(json_decode(html_entity_decode($match[1]), true)['masterplan-1']['point'])->toBe([50, 52]);
 });
 
-test('a cluster on the masterplan map is a still scene with its pins, and the list alone without one', function () {
-    $section = ['title' => 'Cluster', 'points' => [
-        ['number' => '01', 'name' => 'Lakeview Units', 'description' => 'Lake views.', 'image' => null],
-    ]];
+test('the cluster is the homepage Cluster scene with the CMS points that have a position as hotspots', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
-        'masterplan' => ['title' => 'Masterplan', 'map' => projectImage('map.jpg'), 'points' => [['number' => '01', 'name' => 'West Lakeside']]],
-        'cluster' => $section,
+        'cluster' => ['title' => 'Cluster', 'points' => [
+            ['number' => '01', 'name' => 'Lakeview Units', 'description' => 'Lake views.', 'image' => null, 'x' => 45, 'y' => 56],
+            ['number' => '06', 'name' => 'Lakefront Pods', 'description' => null, 'image' => null],
+        ]],
     ]);
-    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake'], 'cluster' => $section], 'no-map');
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSee('scene--project scene--right', false)
-        ->assertSee('data-still="', false)
-        ->assertSee('data-spot-open="cluster-1"', false);
-
-    $this->get('/projects/no-map')
-        ->assertOk()
-        ->assertDontSee('data-scene', false)
-        ->assertSee('<section id="cluster" class="pj-points room"', false);
+        ->assertSee('data-base="'.url('media/scroll/kawasan').'/"', false)
+        ->assertDontSee('data-still=', false)
+        ->assertDontSee('scene--project', false)
+        ->assertSee('data-spot-open="cluster-1"', false)
+        // A point without a position isn't a hotspot, so it isn't in the scene's list either.
+        ->assertDontSee('data-spot-open="cluster-2"', false)
+        ->assertDontSee('Lakefront Pods');
 });
 
 test('the location map shows its spots and not the area figures', function () {
@@ -180,8 +177,9 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertSee('data-hero-slides', false)
         ->assertDontSee('Play Full Video')
         ->assertSee('scene scene--masterplan', false)
-        ->assertSee('<section id="cluster" class="pj-points room"', false)
-        ->assertSee('Lakefront Pods')
+        // No placed point: the homepage Cluster scene with its sample hotspots.
+        ->assertSee('data-spot-open="cluster-plaza"', false)
+        ->assertDontSee('Lakefront Pods')
         ->assertSee('<section id="facility" class="fac fac--split"', false)
         ->assertSee('<section id="type" class="types types--project"', false)
         ->assertSee('href="'.url('/tipe/tipe-1').'"', false)

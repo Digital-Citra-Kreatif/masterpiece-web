@@ -69,21 +69,6 @@ final class ProjectPage
     /** @var array<string, string> */
     public const VIEWS = ['streetview' => 'Street View', 'lakeview' => 'Lake View'];
 
-    /**
-     * Cluster pins, hardcoded for review until Cluster has its own map and
-     * positions in the CMS: % of the masterplan's aerial, by point number.
-     *
-     * @var array<string, array{0: float, 1: float}>
-     */
-    private const CLUSTER_PINS = [
-        '01' => [47, 17],
-        '02' => [55, 35],
-        '03' => [51, 25],
-        '04' => [56, 13],
-        '05' => [63, 11],
-        '06' => [43, 12],
-    ];
-
     private const FALLBACK_FONT = "'DM Sans Variable', 'Helvetica Neue', Arial, sans-serif";
 
     /**
@@ -96,7 +81,7 @@ final class ProjectPage
         $sections = array_filter([
             'masterplan' => $masterplan,
             'location' => self::location(self::group($values, 'location')),
-            'cluster' => self::cluster(self::group($values, 'cluster'), $masterplan['map'] ?? null),
+            'cluster' => self::cluster(self::group($values, 'cluster')),
             'facilities' => self::facilities(self::group($values, 'facilities')),
             'types' => self::types(self::group($values, 'types')),
             'availability' => self::availability(self::group($values, 'availability')),
@@ -284,58 +269,37 @@ final class ProjectPage
     }
 
     /**
-     * Cluster points over the aerial (for review: the masterplan's map and the
-     * hardcoded CLUSTER_PINS), with the picture of the point chosen in the list.
+     * Cluster: the homepage's Cluster orbit with the CMS's points as its
+     * hotspots (x/y % of the orbit's first frame, carried through the other
+     * frames by scroll-scene.js); without a placed point, its sample hotspots.
      *
      * @param  array<string, mixed>  $section
-     * @param  array<string, mixed>|null  $map  the masterplan's map
-     * @return array{title: string, intro: ?string, map: ?array<string, mixed>, points: list<array{number: ?string, name: string, description: ?string, image: ?array<string, mixed>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
+     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, description: ?string, image: ?array<string, mixed>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
      */
-    private static function cluster(array $section, ?array $map): ?array
+    private static function cluster(array $section): ?array
     {
+        $percent = fn (mixed $value): ?float => is_numeric($value) ? max(0.0, min(100.0, (float) $value)) : null;
         $points = collect($section['points'] ?? [])
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
-            ->map(function (array $row) use ($map): array {
-                $number = filled($row['number'] ?? null) ? (string) $row['number'] : null;
-                $pin = $map !== null && $number !== null ? (self::CLUSTER_PINS[$number] ?? null) : null;
+            ->map(function (array $row) use ($percent): array {
+                [$x, $y] = [$percent($row['x'] ?? null), $percent($row['y'] ?? null)];
 
                 return [
-                    'number' => $number,
+                    'number' => filled($row['number'] ?? null) ? (string) $row['number'] : null,
                     'name' => (string) $row['name'],
                     'description' => filled($row['description'] ?? null) ? (string) $row['description'] : null,
                     'image' => self::image($row['image'] ?? null),
-                    'x' => $pin[0] ?? null,
-                    'y' => $pin[1] ?? null,
+                    'x' => $x !== null && $y !== null ? $x : null,
+                    'y' => $x !== null && $y !== null ? $y : null,
                 ];
             })
             ->values()
             ->all();
 
-        return self::section($section, ['map' => $map, 'points' => $points, 'scene' => self::scene($map, $points, 'cluster')], $points !== []);
-    }
+        $hotspots = self::hotspots($points, 'cluster');
+        $scene = $points === [] ? null : [...Content::sampleCluster(), ...($hotspots !== [] ? ['hotspots' => $hotspots] : [])];
 
-    /**
-     * An aerial and its pinned points as the homepage's scroll scene takes them
-     * (components/scroll-scene): the picture stands in for the frame sequence,
-     * turning as the page scrolls, and each point with a position is a hotspot.
-     * Null without a picture or without a placed point.
-     *
-     * @param  array<string, mixed>|null  $map
-     * @param  list<array<string, mixed>>  $points
-     * @return array{scene: array{still: array{src: string, width: int, height: int}}, hotspots: array<string, array{x: float, y: float, title: string, short: string, text: string, image: ?string}>}|null
-     */
-    private static function scene(?array $map, array $points, string $prefix): ?array
-    {
-        $hotspots = self::hotspots($points, $prefix);
-
-        if ($map === null || $hotspots === []) {
-            return null;
-        }
-
-        return [
-            'scene' => ['still' => ['src' => $map['full'], 'width' => (int) ($map['width'] ?: 1600), 'height' => (int) ($map['height'] ?: 900)]],
-            'hotspots' => $hotspots,
-        ];
+        return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
     }
 
     /**

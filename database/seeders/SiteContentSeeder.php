@@ -358,6 +358,8 @@ class SiteContentSeeder extends Seeder
                 $points('Titik cluster', [
                     $image('image', 'Gambar', ['width' => 50]),
                     $textarea('description', 'Deskripsi', ['width' => 50]),
+                    $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Cluster. Kosong: titik hanya tampil di daftar.'),
+                    $percent('y', 'Posisi Y (%)', 'Dari atas gambar pertama orbit Cluster.'),
                 ]),
             ]),
             $section('facilities', 'Fasilitas', [
