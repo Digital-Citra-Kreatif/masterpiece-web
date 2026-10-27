@@ -64,9 +64,6 @@
             @endforeach
           </div>
 
-          <a class="tph__down" href="#spesifikasi" aria-label="Ke spesifikasi">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 3v18M5 14l7 7 7-7" /></svg>
-          </a>
         </div>
 
         <div class="tph__stage" id="part-panel" role="tabpanel" aria-labelledby="part-tab-0" data-part-panel>
@@ -97,19 +94,20 @@
 
     @if ($t['denah'] !== [])
       {{-- Denah: gambar memenuhi kolom kanan --}}
-      <section class="tpx" aria-labelledby="denah-title">
+      <section class="tpx" aria-labelledby="denah-title" data-view-cursor>
         <div class="wrap tpx__grid">
           <h2 class="display tpx__title" id="denah-title">Denah</h2>
           <ul class="tpx__body tpx__plans">
             @foreach ($t['denah'] as $d)
               <li>
-                <button class="tpx__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                <button class="tpx__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
                   <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
                 </button>
               </li>
             @endforeach
           </ul>
         </div>
+        <x-view-cursor />
       </section>
     @endif
 

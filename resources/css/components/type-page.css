@@ -4,6 +4,7 @@
 
 .tph,
 .tpx {
+  background-color: #fff; /* the side lines are its background image */
   --sheet-line: var(--line, var(--rule));
   /* From the grid's edge to the side line, and the text inset back to the gutter. */
   --to-line: calc(max(8px, var(--gutter) - 40px) + 1px - var(--gutter));
@@ -18,7 +19,7 @@
   padding-right: calc(max(8px, var(--gutter) - 40px) + 1px);
 }
 
-:is(.tph__tab, .tph__down, .tpx__plan, .tpx__shot):focus-visible {
+:is(.tph__tab, .tpx__plan, .tpx__shot):focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
@@ -85,20 +86,6 @@
 
 .tph__tab[aria-selected='true'] {
   color: var(--room);
-}
-
-.tph__down {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin: 16px 0 0 -10px;
-  color: var(--ink);
-}
-
-.tph__down svg {
-  width: 28px;
-  height: 28px;
 }
 
 /* The 360° viewer, against the top, the right line and the rule */
@@ -274,10 +261,6 @@
 
   .tph__tabs {
     padding-top: 32px;
-  }
-
-  .tph__down {
-    display: none;
   }
 
   .tph__stage,
