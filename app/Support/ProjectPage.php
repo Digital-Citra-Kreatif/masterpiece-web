@@ -464,7 +464,7 @@ final class ProjectPage
      * Tombol WhatsApp
      *
      * @param  array<string, mixed>  $whatsapp
-     * @return array{label: string, heading: ?string, description: ?string, image: ?array<string, mixed>, contacts: list<array{title: string, avatar: ?string, href: string}>}|null
+     * @return array{label: string, heading: ?string, description: ?string, contacts: list<array{title: string, avatar: ?string, href: string}>}|null
      */
     private static function whatsapp(array $whatsapp): ?array
     {
@@ -486,7 +486,6 @@ final class ProjectPage
             'label' => filled($whatsapp['label'] ?? null) ? (string) $whatsapp['label'] : 'WhatsApp',
             'heading' => filled($whatsapp['heading'] ?? null) ? (string) $whatsapp['heading'] : null,
             'description' => filled($whatsapp['description'] ?? null) ? (string) $whatsapp['description'] : null,
-            'image' => self::image($whatsapp['image'] ?? null, 'medium'),
             'contacts' => $contacts,
         ];
     }

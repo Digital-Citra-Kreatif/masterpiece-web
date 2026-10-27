@@ -1,42 +1,83 @@
-/* Footer */
+/* Footer: white, logo and call-to-action first, then contact, opening hours and menu. */
+
+.ft {
+  background: #fff;
+  color: var(--ink);
+  border-top: 1px solid var(--rule);
+}
 
 .ft__inner {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 40px clamp(32px, 5vw, 80px);
-  padding-block: clamp(56px, 8vw, 96px) 48px;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: 40px clamp(32px, 4vw, 64px);
+  padding-block: var(--section, clamp(56px, 8vw, 96px)) 48px;
 }
 
-/* Logo & deskripsi */
+/* Logo, deskripsi, CTA */
 .ft__brand {
-  max-width: 44ch;
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+  max-width: 40ch;
 }
 
 .ft__logo {
   display: block;
   width: auto;
-  height: 48px;
-  margin-bottom: 20px;
+  max-width: 280px;
+  height: 80px;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .ft__mark {
-  margin: 0 0 16px;
+  margin: 0;
   font-size: clamp(32px, 4vw, 52px);
 }
 
 .ft__text {
   margin: 0;
-  color: var(--room-ink);
+  color: var(--ink-2);
   font-size: 15px;
   font-style: normal;
   line-height: 1.6;
-  opacity: 0.82;
+}
+
+/* The project's own colour on a project page, near-black elsewhere. */
+.ft__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px 0 18px;
+  border-radius: var(--radius, 0);
+  background: var(--room);
+  color: var(--room-ink);
+  font-family: var(--button);
+  font-size: 15px;
+  text-decoration: none;
+  transition: background-color 0.2s var(--ease);
+}
+
+.ft__cta svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ft__cta:hover {
+  background: var(--ink);
+}
+
+.ft__cta:focus-visible,
+.ft__list a:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
 }
 
 /* Judul kolom */
 .ft__head {
   margin: 0 0 16px;
-  color: var(--room-muted);
+  color: var(--ink-2);
   font-family: var(--label);
   font-size: 12px;
   font-weight: 500;
@@ -44,35 +85,24 @@
   text-transform: uppercase;
 }
 
-.ft__col .ft__text {
-  margin-bottom: 16px;
+.ft__col .ft__text + .ft__list {
+  margin-top: 12px;
 }
 
 .ft__list {
   list-style: none;
   display: grid;
-  gap: 10px;
+  gap: 4px;
   margin: 0;
   padding: 0;
   font-size: 15px;
 }
 
-.ft__list li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-}
-
-.ft__label {
-  min-width: 6.5em;
-  color: var(--room-muted);
-}
-
 .ft__list a {
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
-  color: var(--room-ink);
+  min-height: 32px;
+  color: var(--ink);
   text-decoration: none;
 }
 
@@ -84,18 +114,24 @@
 /* Copyright, garis penuh */
 .ft__bar {
   padding-block: 20px calc(24px + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid rgb(255 255 255 / 0.14);
+  border-top: 1px solid var(--rule);
+}
+
+/* The floating WhatsApp button sits bottom left: the copyright moves right. */
+body:has(.wa) .ft__meta {
+  text-align: right;
 }
 
 .ft__meta {
   margin: 0;
-  color: var(--room-muted);
+  color: var(--ink-2);
   font-size: 13px;
 }
 
-@media (max-width: 860px) {
+/* Tablet: logo row on top, three columns under it */
+@media (max-width: 1024px) {
   .ft__inner {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .ft__brand {
@@ -103,8 +139,10 @@
   }
 }
 
-@media (max-width: 520px) {
+/* Mobile: one column, so an opening-hours line never breaks mid-range */
+@media (max-width: 760px) {
   .ft__inner {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
 }

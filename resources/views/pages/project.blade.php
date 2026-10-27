@@ -108,8 +108,8 @@
   @endisset
 
   @if ($p['whatsapp'])
-    <x-project.whatsapp :whatsapp="$p['whatsapp']" />
+    <x-project.whatsapp :whatsapp="$p['whatsapp']" :logo="$p['style']['logo']" />
   @endif
 
-  <x-footer />
+  <x-footer :logo="$p['style']['logo']" />
 </x-layouts.base>

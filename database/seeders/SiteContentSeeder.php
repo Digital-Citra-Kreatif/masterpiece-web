@@ -428,6 +428,7 @@ class SiteContentSeeder extends Seeder
             $this->field('logo', 'media', ['types' => ['image']], ['label' => 'Logo', 'translatable' => false, 'width' => 33]),
             $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat', 'width' => 66]),
             $this->field('address', 'textarea', [], ['label' => 'Alamat']),
+            $this->field('hours', 'textarea', [], ['label' => 'Jam operasional', 'instructions' => 'Satu baris per jadwal, mis. Senin–Jumat, 09.00–17.00.']),
             $text('phone', 'Telepon', ['translatable' => false, 'width' => 33]),
             $text('email', 'Email', ['translatable' => false, 'width' => 33, 'validation' => ['email']]),
             $text('whatsapp', 'WhatsApp', [

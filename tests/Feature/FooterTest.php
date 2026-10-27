@@ -30,14 +30,15 @@ test('the footer shows its logo, the footer menu and the copyright', function ()
         ->assertDontSee('>Kontak</h2>', false)
         ->getContent();
 
-    expect(substr_count($html, '<footer class="ft room">'))->toBe(1);
+    expect(substr_count($html, '<footer class="ft">'))->toBe(1);
 });
 
-test('the footer shows the contacts filled in under Globals → Footer', function () {
+test('the footer shows the contacts, opening hours and a WhatsApp button filled in under Globals → Footer', function () {
     $set = GlobalSet::query()->where('handle', 'footer')->firstOrFail();
     app(SaveGlobals::class)->handle($set, [
         'description' => 'Pengembang kawasan ruko.',
         'address' => "Jl. BSD Raya\nTangerang",
+        'hours' => "Senin–Jumat, 09.00–17.00\nSabtu, 10.00–14.00",
         'phone' => '+62 21 555 0100',
         'email' => 'info@example.com',
         'whatsapp' => '6281234567890',
@@ -49,5 +50,7 @@ test('the footer shows the contacts filled in under Globals → Footer', functio
         ->assertSee("Jl. BSD Raya<br>\nTangerang", false)
         ->assertSee('href="tel:+62215550100"', false)
         ->assertSee('href="mailto:info@example.com"', false)
-        ->assertSee('href="https://wa.me/6281234567890"', false);
+        ->assertSee('<h2 class="ft__head">Jam operasional</h2>', false)
+        ->assertSee("Senin–Jumat, 09.00–17.00<br>\nSabtu, 10.00–14.00", false)
+        ->assertSeeInOrder(['class="ft__cta" href="https://wa.me/6281234567890"', 'Chat via WhatsApp'], false);
 });
