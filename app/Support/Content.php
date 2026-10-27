@@ -77,7 +77,7 @@ final class Content
      * Isi footer. Logo: the Branding logo (the footer sits on white), else Footer → Logo;
      * a project page passes its own logo to the component instead.
      *
-     * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, links: list<array{href: string, label: string, newTab: bool}>, copyright: string}
+     * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, copyright: string}
      */
     public static function footer(): array
     {
@@ -99,10 +99,6 @@ final class Content
                 'phone' => $phone ? ['label' => $phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $phone)] : null,
                 'email' => $email ? ['label' => $email, 'href' => 'mailto:'.$email] : null,
                 'whatsapp' => $whatsapp ? ['label' => '+'.$whatsapp, 'href' => 'https://wa.me/'.$whatsapp] : null,
-                'links' => collect(Cms::menu('footer_menu'))
-                    ->map(fn (array $item): array => ['href' => $item['url'], 'label' => $item['label'], 'newTab' => $item['new_tab']])
-                    ->values()
-                    ->all(),
                 'copyright' => $filled('copyright') ?? '© '.date('Y').' '.Cms::site()->name(),
             ];
         });

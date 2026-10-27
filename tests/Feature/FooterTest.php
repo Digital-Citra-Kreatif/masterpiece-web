@@ -16,7 +16,7 @@ beforeEach(function () {
     $this->seed(SiteContentSeeder::class);
 });
 
-test('the footer shows its logo, the footer menu and the copyright', function () {
+test('the footer shows its logo and the copyright, without a menu', function () {
     app(StructureImporter::class)->import(['menus' => [['handle' => 'footer_menu', 'title' => 'Footer Menu', 'items' => [
         ['url' => '/projects', 'labels' => ['id' => 'Projects'], 'new_tab' => false, 'children' => []],
     ]]]]);
@@ -24,8 +24,7 @@ test('the footer shows its logo, the footer menu and the copyright', function ()
     $html = $this->get('/')
         ->assertOk()
         ->assertSee('class="ft__logo"', false)
-        ->assertSee('aria-label="Menu footer"', false)
-        ->assertSee('>Projects</a>', false)
+        ->assertDontSee('aria-label="Menu footer"', false)
         ->assertSee('© '.date('Y').' PT Masterpiece Visual Production')
         ->assertDontSee('>Kontak</h2>', false)
         ->getContent();
@@ -33,7 +32,7 @@ test('the footer shows its logo, the footer menu and the copyright', function ()
     expect(substr_count($html, '<footer class="ft">'))->toBe(1);
 });
 
-test('the footer shows the contacts, opening hours and a WhatsApp button filled in under Globals → Footer', function () {
+test('the footer shows the contacts and opening hours filled in under Globals → Footer', function () {
     $set = GlobalSet::query()->where('handle', 'footer')->firstOrFail();
     app(SaveGlobals::class)->handle($set, [
         'description' => 'Pengembang kawasan ruko.',
@@ -52,5 +51,6 @@ test('the footer shows the contacts, opening hours and a WhatsApp button filled 
         ->assertSee('href="mailto:info@example.com"', false)
         ->assertSee('<h2 class="ft__head">Jam operasional</h2>', false)
         ->assertSee("Senin–Jumat, 09.00–17.00<br>\nSabtu, 10.00–14.00", false)
-        ->assertSeeInOrder(['class="ft__cta" href="https://wa.me/6281234567890"', 'Chat via WhatsApp'], false);
+        ->assertSee('href="https://wa.me/6281234567890" target="_blank" rel="noopener">WhatsApp +6281234567890</a>', false)
+        ->assertDontSee('ft__cta', false);
 });

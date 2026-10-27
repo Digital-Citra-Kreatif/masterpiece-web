@@ -1,4 +1,4 @@
-/* Footer: white, logo and call-to-action first, then contact, opening hours and menu. */
+/* Footer: white, logo first, then contact and opening hours. */
 
 .ft {
   background: #fff;
@@ -8,12 +8,12 @@
 
 .ft__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.8fr);
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr) minmax(0, 1fr);
   gap: 40px clamp(32px, 4vw, 64px);
-  padding-block: var(--section, clamp(56px, 8vw, 96px)) 48px;
+  padding-block: 72px 48px;
 }
 
-/* Logo, deskripsi, CTA */
+/* Logo, deskripsi */
 .ft__brand {
   display: grid;
   justify-items: start;
@@ -43,32 +43,7 @@
   line-height: 1.6;
 }
 
-/* The project's own colour on a project page, near-black elsewhere. */
-.ft__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 48px;
-  padding: 0 22px 0 18px;
-  border-radius: var(--radius, 0);
-  background: var(--room);
-  color: var(--room-ink);
-  font-family: var(--button);
-  font-size: 15px;
-  text-decoration: none;
-  transition: background-color 0.2s var(--ease);
-}
 
-.ft__cta svg {
-  width: 20px;
-  height: 20px;
-}
-
-.ft__cta:hover {
-  background: var(--ink);
-}
-
-.ft__cta:focus-visible,
 .ft__list a:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
@@ -106,9 +81,12 @@
   text-decoration: none;
 }
 
+.ft__list a {
+  transition: color 0.2s var(--ease);
+}
+
 .ft__list a:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: var(--ink-2);
 }
 
 /* Copyright, garis penuh */
@@ -128,10 +106,10 @@ body:has(.wa) .ft__meta {
   font-size: 13px;
 }
 
-/* Tablet: logo row on top, three columns under it */
+/* Tablet: logo row on top, contact and hours under it */
 @media (max-width: 1024px) {
   .ft__inner {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .ft__brand {
