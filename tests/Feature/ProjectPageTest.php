@@ -208,6 +208,18 @@ test('a project page shows each section with content and skips the empty ones', 
         ->and(substr_count($html, 'class="roll-host"'))->toBe(5);
 });
 
+test('the Type cutaway image sits inside the section, above the title', function () {
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'types' => ['title' => 'Type', 'hero_image' => projectImage('cutaway.jpg')],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSeeInOrder(['<section id="type" class="types types--project"', '<div class="types__top">', 'class="pj-band"', 'id="type-title"'], false);
+});
+
 test('an active Global Style sets the project\'s fonts and colours over the homepage tokens', function () {
     $style = [
         'active' => true,

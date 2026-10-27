@@ -26,6 +26,12 @@
   }
 }
 
+/* Isi di atas judul, garis penuh di bawahnya */
+.types__top {
+  padding-top: clamp(56px, 9vw, 120px);
+  border-bottom: 1px solid var(--line, var(--rule));
+}
+
 .card {
   display: block;
   text-decoration: none;
@@ -150,9 +156,22 @@ article.card {
   border-top: 1px solid var(--line, var(--rule));
 }
 
+/* Gambar menempel garis atas dan garis samping (--line-x) */
+.types--project .types__top {
+  padding-top: 0;
+}
+
+.types--project .types__top .wrap > * {
+  margin-inline: calc(max(8px, var(--gutter) - 40px) + 1px - var(--gutter));
+}
+
+/* Jarak 160px dari garis ke judul Type */
+.types--project .types__top + .wrap > .sheet {
+  padding-top: 160px;
+}
+
 .types--project .sheet__title {
   color: var(--room);
-  text-transform: uppercase;
 }
 
 .types--project .types__grid {

@@ -78,8 +78,14 @@
 
     @isset($s['types'])
       @php($ty = $s['types'])
-      {{-- Band potongan nonaktif --}}
-      <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]" />
+      <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]">
+        {{-- Gambar potongan selebar konten --}}
+        @if ($ty['heroImage'])
+          <x-slot:top>
+            <x-project.band :image="$ty['heroImage']" />
+          </x-slot:top>
+        @endif
+      </x-home.type-grid>
     @endisset
 
     @isset($s['availability'])

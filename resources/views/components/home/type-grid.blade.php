@@ -2,13 +2,20 @@
   Kartu tipe unit: `url` atau `sheet` (id <dialog>), fakta `specs`
 
   variant 'project': kartu proyek
+  Slot `top`: isi di atas judul, selebar konten
   Slot `before` / `after`: isi tambahan
 --}}
-@props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'before' => null, 'after' => null])
+@props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'top' => null, 'before' => null, 'after' => null])
 
 @php($project = $variant === 'project')
 
 <section id="{{ $id }}" @class(['types', 'types--project' => $project]) aria-labelledby="{{ $id }}-title">
+  @if ($top)
+    <div class="types__top">
+      <div class="wrap">{{ $top }}</div>
+    </div>
+  @endif
+
   <div class="wrap">
     <x-sheet-header
       id="{{ $id }}-title"
