@@ -5,7 +5,7 @@
 //   - horizontal wheel / trackpad gestures are left to the page: the turntable
 //     rotates and the facilities carousel scrolls as before
 //   - nested scroll areas (the type page panel) scroll on their own
-//   - paused while a dialog (overlay, hamburger menu) is open
+//   - paused while a dialog (the overlay) is open
 //   - off for visitors who prefer reduced motion (Lenis default)
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';

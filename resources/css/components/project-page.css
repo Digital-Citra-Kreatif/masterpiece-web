@@ -645,6 +645,14 @@ button.pj-frame:focus-visible {
   }
 }
 
+/* Mobile: lanskap 4:3 selebar konten, tidak memanjang */
+@media (max-width: 760px) {
+  .is-project .mp {
+    --mp-w: calc(100vw - 2 * var(--gutter));
+    --mp-h: calc(var(--mp-w) * 3 / 4);
+  }
+}
+
 .is-project .mp__title {
   font-family: var(--display);
   font-weight: 400;

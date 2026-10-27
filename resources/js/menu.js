@@ -1,34 +1,39 @@
-// Hamburger menu (tablet and mobile): the header links in a full-screen dialog.
-// showModal() keeps focus inside and Esc closes it; smooth-scroll.js pauses
-// Lenis while it is open. A link to a section on this page closes the menu
-// first, then glides there.
+// Hamburger menu (tablet and mobile): the header links in a dropdown under the
+// header, as tall as its links. The button toggles it; Esc, a click outside or
+// following a link closes it. The page under the overlay stays put while it is
+// open; Lenis restarts before its own click handler (on window) reads a link, so
+// section links still glide there.
 import { lenis } from './smooth-scroll.js';
 
 const menu = document.getElementById('hd-menu');
-const opener = document.querySelector('[data-menu-open]');
+const toggle = document.querySelector('[data-menu-toggle]');
 
-if (menu && opener) {
-  const close = () => menu.open && menu.close();
+if (menu && toggle) {
+  const header = toggle.closest('.hd');
+  const setOpen = (open) => {
+    menu.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    // White header while open
+    header.classList.toggle('is-menu-open', open);
+    open ? lenis.stop() : lenis.start();
+  };
+  const nav = menu.querySelector('nav');
 
-  opener.addEventListener('click', () => {
-    menu.showModal();
-    opener.setAttribute('aria-expanded', 'true');
+  toggle.addEventListener('click', () => setOpen(menu.hidden));
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !menu.hidden) {
+      setOpen(false);
+      toggle.focus();
+    }
   });
-  menu.addEventListener('close', () => opener.setAttribute('aria-expanded', 'false'));
-  menu.querySelector('[data-menu-close]').addEventListener('click', close);
 
-  for (const link of menu.querySelectorAll('.hd__menu-nav a')) {
-    link.addEventListener('click', (event) => {
-      const url = new URL(link.href);
-      const target = url.hash && url.pathname === location.pathname ? document.querySelector(url.hash) : null;
-      close();
-      if (target) {
-        event.preventDefault();
-        // The observer in smooth-scroll.js restarts Lenis only after this handler.
-        lenis.start();
-        lenis.scrollTo(target);
-        history.pushState(null, '', url.hash);
-      }
-    });
+  document.addEventListener('click', (event) => {
+    // The overlay is the menu's ::after, so a click on it lands outside the nav.
+    if (!menu.hidden && !nav.contains(event.target) && !toggle.contains(event.target)) setOpen(false);
+  });
+
+  for (const link of menu.querySelectorAll('a')) {
+    link.addEventListener('click', () => setOpen(false));
   }
 }
