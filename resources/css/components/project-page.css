@@ -645,11 +645,25 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Mobile: lanskap 4:3 selebar konten, tidak memanjang */
+/* Mobile: lanskap 4:3 selebar konten; judul menembus tepi atas, deskripsi tepi bawah */
 @media (max-width: 760px) {
   .is-project .mp {
     --mp-w: calc(100vw - 2 * var(--gutter));
     --mp-h: calc(var(--mp-w) * 3 / 4);
+  }
+
+  .is-project :is(.mp__title, .mp__text) {
+    translate: 0 -50%;
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.45); /* terbaca di atas video */
+  }
+
+  .is-project .mp__title {
+    top: calc(50% - var(--mp-h) / 2);
+  }
+
+  .is-project .mp__text {
+    top: calc(50% + var(--mp-h) / 2);
+    max-width: 32ch;
   }
 }
 
@@ -960,10 +974,31 @@ button.pj-frame:focus-visible {
   width: 160px;
 }
 
+/* Tablet dan mobile: tinggi mengikuti peta, bukan satu layar */
+@media (max-width: 1024px) {
+  .pj-loc__inner {
+    min-height: 0;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+  .pj-loc__stage {
+    min-height: 0;
+    aspect-ratio: var(--ratio, 4 / 3);
+  }
+}
+
 @media (max-width: 760px) {
   .pj-loc__inner {
     grid-template-columns: 1fr;
     padding-top: var(--section);
+  }
+
+  /* Peta menempel garis samping, garisnya pindah ke atas */
+  .pj-loc__stage {
+    margin-left: calc(max(8px, var(--gutter) - 40px) + 1px - var(--gutter));
+    border-left: 0;
+    border-top: 1px solid var(--line, var(--rule));
   }
 }
 

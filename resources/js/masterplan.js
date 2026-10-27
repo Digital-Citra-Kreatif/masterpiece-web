@@ -36,7 +36,9 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
     const w = box.offsetWidth;
     const h = box.offsetHeight;
     const cover = (bw, bh) => Math.max(bw / img.dataset.w, bh / img.dataset.h);
-    return { x: (W - w) / 2, y: (H - h) / 2, scale: cover(w, h) / cover(W, H) };
+    // The picture is cut to the stage, so it never shrinks below the box: a box
+    // wider than the portrait stage (phones) would otherwise show a narrow strip.
+    return { x: (W - w) / 2, y: (H - h) / 2, scale: Math.max(cover(w, h) / cover(W, H), w / W, h / H) };
   };
 
   const timeline = gsap.timeline({
