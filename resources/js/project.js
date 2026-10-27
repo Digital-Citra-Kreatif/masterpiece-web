@@ -5,4 +5,5 @@ import './scroll-scene.js';
 import './facilities-swiper.js';
 import './view-cursor.js';
 import './lightbox.js';
+import './unit-filter.js';
 import './project-page.js';

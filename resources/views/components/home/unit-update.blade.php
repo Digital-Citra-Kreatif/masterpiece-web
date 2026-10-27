@@ -1,6 +1,8 @@
 {{--
   Unit update: siteplan image with a status dot per unit (red sold, yellow
   reserved, green available). Status display only; dots do not open units.
+  Clicking a legend status shows only that status's dots; clicking it again
+  shows all (resources/js/unit-filter.js).
   Dot positions are percentages of the siteplan image (Units in the CMS).
   `siteplan` ({ image, width, height, placeholder }): siteplan proyek
 
@@ -11,7 +13,7 @@
 
 @php($siteplan ??= $site['siteplan'])
 
-<section id="{{ $id }}" class="units" aria-labelledby="unit-title">
+<section id="{{ $id }}" class="units" data-unit-filter aria-labelledby="unit-title">
   <div class="wrap">
     <div class="units__layout">
       <header class="units__head" data-reveal>
@@ -28,6 +30,7 @@
             @foreach ($units as $u)
               <li
                 class="dot dot--{{ $u['status'] }}"
+                data-status="{{ $u['status'] }}"
                 style="left: {{ $u['x'] }}%; top: {{ $u['y'] }}%"
                 title="{{ $u['id'] }} · {{ $site['statusLabels'][$u['status']] }}"
               >
@@ -45,9 +48,11 @@
         <ul>
           @foreach ($counts as $status => $count)
             <li>
-              <span class="dot dot--{{ $status }} dot--static" aria-hidden="true"></span>
-              <span class="units__label">{{ $site['statusLabels'][$status] }}</span>
-              <span class="units__count display">{{ $count }}</span>
+              <button class="units__filter" type="button" data-filter="{{ $status }}" aria-pressed="false">
+                <span class="dot dot--{{ $status }} dot--static" aria-hidden="true"></span>
+                <span class="units__label">{{ $site['statusLabels'][$status] }}</span>
+                <span class="units__count display">{{ $count }}</span>
+              </button>
             </li>
           @endforeach
         </ul>

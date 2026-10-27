@@ -88,6 +88,7 @@ test('each section shows its title and description from the CMS, or the defaults
         ->assertSee('Intro fasilitas dari CMS')
         ->assertSee('Intro tipe dari CMS')
         ->assertSee('<h2 class="display units__title" id="unit-title">Status unit</h2>', false)
+        ->assertSee('data-filter="available" aria-pressed="false"', false)
         ->assertDontSee('Diabaikan tanpa judul');
 });
 

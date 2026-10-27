@@ -125,11 +125,37 @@
 }
 
 .units__legend li {
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Status filter: the whole row is the button */
+.units__filter {
   display: flex;
   align-items: center;
   gap: 14px;
+  width: 100%;
   padding: 14px 0;
-  border-bottom: 1px solid var(--rule);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity 0.2s var(--ease);
+}
+
+.units__filter:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Other statuses step back while one is chosen */
+.units.is-filtered .units__filter[aria-pressed='false'] {
+  opacity: 0.4;
+}
+
+.units.is-filtered .units__filter[aria-pressed='false']:hover {
+  opacity: 0.7;
 }
 
 .units__label {

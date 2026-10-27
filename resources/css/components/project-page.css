@@ -1300,3 +1300,8 @@ button.pj-frame:focus-visible {
 .is-project .units__bar {
   display: none;
 }
+
+/* Jumlah unit lebih kecil */
+.is-project .units__count {
+  font-size: 24px;
+}
