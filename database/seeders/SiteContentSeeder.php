@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Cms\Actions\Entries\SetHomepage;
+use Sunrice\Cms\Models\Blueprint;
 use Sunrice\Cms\Models\Collection;
 use Sunrice\Cms\Structure\StructureImporter;
 
@@ -49,7 +50,15 @@ class SiteContentSeeder extends Seeder
      */
     public function run(StructureImporter $importer): void
     {
-        $importer->import($this->structure());
+        // {project} di rute Types butuh field Proyek di blueprint Tipe, yang diisi importer setelah koleksi
+        $structure = $this->structure();
+        $types = collect($structure['collections'])->firstWhere('handle', 'types');
+        $tipe = Blueprint::query()->where('handle', 'tipe')->first();
+        if (! collect($tipe->fields ?? [])->contains('handle', 'project')) {
+            $structure['collections'] = array_map(fn (array $collection): array => $collection['handle'] === 'types' ? [...$collection, 'route' => '/tipe/{slug}'] : $collection, $structure['collections']);
+        }
+        $importer->import($structure);
+        $importer->import(['collections' => [$types]]);
         $importer->import([
             'globals' => $this->globals(),
             'entries' => [...$this->facilities(), ...$this->types(), ...$this->units(), $this->homepage()],
@@ -96,6 +105,11 @@ class SiteContentSeeder extends Seeder
                         ->all(),
                 ]],
                 ['handle' => 'tipe', 'title' => 'Tipe', 'fields' => [
+                    $this->field('project', 'entries', ['collections' => ['projects'], 'multiple' => false], [
+                        'label' => 'Proyek',
+                        'translatable' => false,
+                        'instructions' => 'Proyek tipe ini; slug-nya masuk ke URL tipe (/proyek/tipe/slug).',
+                    ]),
                     $text('label', ['instructions' => 'Baris kecil di bawah nama, misalnya "Ruko Hook".']),
                     $this->field('view', 'select', ['options' => [
                         ['value' => 'lakeview', 'label' => 'Lake View'],
@@ -160,7 +174,7 @@ class SiteContentSeeder extends Seeder
             ],
             'collections' => [
                 ['handle' => 'pages', 'title' => 'Pages', 'blueprint' => 'page', 'blueprints' => ['homepage'], 'hierarchical' => true, 'ordered' => true, 'route' => '/{slug}'],
-                ['handle' => 'types', 'title' => 'Types', 'blueprint' => 'tipe', 'ordered' => true, 'route' => '/tipe/{slug}'],
+                ['handle' => 'types', 'title' => 'Types', 'blueprint' => 'tipe', 'ordered' => true, 'route' => '/{project}/tipe/{slug}'],
                 ['handle' => 'facilities', 'title' => 'Facilities', 'blueprint' => 'fasilitas', 'ordered' => true],
                 ['handle' => 'units', 'title' => 'Units', 'blueprint' => 'unit'],
                 ['handle' => 'projects', 'title' => 'Projects', 'blueprint' => 'project', 'ordered' => true, 'route' => '/projects/{slug}'],

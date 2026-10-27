@@ -153,6 +153,8 @@ final class Content
             ->all();
         $slides = $cmsSlides !== [] ? $cmsSlides : $hero['slides'];
         $units = self::units();
+        // URL tipe dari CMS (rute koleksi Types)
+        $typeUrls = Cms::entries('types')->get()->mapWithKeys(fn (EntryTranslation $type): array => [$type->slug => $type->url()]);
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
         $masterplan = $heading('masterplan', ['title' => $values['masterplan']['title'], 'intro' => $values['masterplan']['text']]);
         $areaMap = $heading('lokasi', $values['lokasi']);
@@ -194,7 +196,7 @@ final class Content
                     'slug' => $type[0],
                     'name' => $type[1],
                     'label' => $type[2],
-                    'url' => url("/tipe/{$type[0]}"),
+                    'url' => $typeUrls[$type[0]] ?? url("/tipe/{$type[0]}"),
                     'image' => $type[3],
                     'lt' => self::number($type[4]),
                     'lb' => self::number($type[5]),

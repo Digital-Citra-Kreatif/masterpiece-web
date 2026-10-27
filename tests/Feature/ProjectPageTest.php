@@ -144,7 +144,7 @@ test('a project page shows each section with content and skips the empty ones', 
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $type->update(['data' => [...$type->data, 'view' => 'lakeview', 'dimensions' => '4,5 x 10 m', 'lt' => 45, 'lb' => 93, 'floors' => 2]]);
 
-    publishProject($this->projects, [
+    $project = publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'A New Landmark by the Lake', 'description' => 'By the lake in BSD City.', 'media' => [projectImage('hero.jpg')]],
         'masterplan' => ['title' => 'Masterplan', 'description' => 'Around the district.', 'points' => [
@@ -171,6 +171,8 @@ test('a project page shows each section with content and skips the empty ones', 
         ]],
         'whatsapp' => ['contacts' => []],
     ]);
+    // URL tipe memuat slug proyeknya
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id]]);
 
     $response = $this->get('/projects/westlake')->assertOk();
 
@@ -187,7 +189,7 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertDontSee('Lakefront Pods')
         ->assertSee('<section id="facility" class="fac fac--split"', false)
         ->assertSee('<section id="type" class="types types--project"', false)
-        ->assertSee('href="'.url('/tipe/tipe-1').'"', false)
+        ->assertSee('href="'.url('/westlake/tipe/tipe-1').'"', false)
         ->assertDontSee('data-sheet=', false)
         ->assertSee($facility->title)
         ->assertSee($type->title)

@@ -34,8 +34,8 @@ test('the homepage shows every section from the CMS', function () {
         ->assertSee('id="cluster-title"', false)
         ->assertSee('Danau &amp; promenade', false)
         ->assertSee('Plaza &amp; boulevard ruko', false)
-        ->assertSee(url('/tipe/tipe-1'))
-        ->assertSee(url('/tipe/tipe-6'));
+        ->assertSee(url('/-/tipe/tipe-1'))
+        ->assertSee(url('/-/tipe/tipe-6'));
 
     expect(substr_count($response->getContent(), '<li class="fac__slide">'))->toBe(6)
         ->and(substr_count($response->getContent(), 'class="card"'))->toBe(6)
@@ -92,7 +92,7 @@ test('each section shows its title and description from the CMS, or the defaults
 });
 
 test('a type page shows its specs, its parts and its floor plans', function () {
-    $this->get('/tipe/tipe-6')
+    $this->get('/-/tipe/tipe-6')
         ->assertOk()
         ->assertSee('<h1 class="display panel__name">Tipe 6</h1>', false)
         ->assertSee('140 m²')
@@ -103,7 +103,7 @@ test('a type page shows its specs, its parts and its floor plans', function () {
 });
 
 test('an unknown address shows the site\'s not found page', function () {
-    $this->get('/tipe/tidak-ada')
+    $this->get('/-/tipe/tidak-ada')
         ->assertNotFound()
         ->assertSee('Halaman tidak ditemukan');
 });
