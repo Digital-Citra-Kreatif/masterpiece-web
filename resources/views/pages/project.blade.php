@@ -61,6 +61,7 @@
           :hotspots="$cl['scene']['hotspots']"
           :tracks="$cl['scene']['tracks'] ?? null"
           :marker="$marker"
+          panel="zoom"
         />
       @else
         <x-project.points :section="$cl" :id="$sectionId('cluster')" />

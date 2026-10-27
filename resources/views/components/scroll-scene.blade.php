@@ -21,13 +21,14 @@
   hotspots:   { key: { track, frame?, title, short?, text } }
               { key: { x, y, title, short?, text } } (titik gambar diam)
   masterplan: { title, text, video?, panel? } (panel 'zoom')
+  panel:      'zoom' tanpa masterplan (titik terbuka seperti Masterplan)
   tracks:     { hotspot key: [[x, y] | null, …per frame] } (jalur titik)
   marker:     { shape, image } (penanda proyek)
   variant:    'project' (tampilan proyek)
 
   Logic in resources/js/scroll-scene.js (orbit) and resources/js/masterplan.js (opening).
 --}}
-@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false, 'marker' => null, 'tracks' => null])
+@props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false, 'marker' => null, 'tracks' => null, 'panel' => null])
 
 @php
   $still = $scene['still'] ?? null;
@@ -45,6 +46,7 @@
       ],
   ])->values();
   $project = $variant === 'project';
+  $zoom = ($masterplan['panel'] ?? $panel) === 'zoom';
   $first = $spots->first(fn (array $s): bool => $s['content']['image'] !== null || $s['content']['text'] !== '');
   $base = $still ? null : rtrim(asset($scene['base']), '/').'/';
   $firstFrame = $still ? $still['src'] : $base.'lg/f_'.sprintf('%03d', $scene['startFrame'] ?? 0).'.jpg';
@@ -55,7 +57,7 @@
   @class(['scene', 'scene--masterplan' => $masterplan, 'scene--project' => $project, "scene--{$side}" => $project])
   data-scene
   @if ($tracks) data-tracks="{{ json_encode($tracks) }}" @endif
-  @if (($masterplan['panel'] ?? null) === 'zoom') data-panel="zoom" @endif
+  @if ($zoom) data-panel="zoom" @endif
   @if ($still)
     data-still="{{ $still['src'] }}"
     data-sweep="{{ $still['sweep'] ?? 12 }}"
@@ -159,7 +161,7 @@
       </figure>
     @endif
 
-    @if (($masterplan['panel'] ?? null) === 'zoom')
+    @if ($zoom)
       <!-- Gambar titik terbuka -->
       <figure class="scene__place-figure" data-place-figure hidden>
         <img alt="" />
