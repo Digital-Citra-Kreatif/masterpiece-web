@@ -15,7 +15,8 @@
   color: var(--ink);
 }
 
-.hd--ink.hd--project .hd__mark {
+.hd--ink.hd--project .hd__mark,
+.hd--ink.hd--project.is-menu-open .hd__mark {
   padding-inline: 0;
   background: none;
   box-shadow: none;

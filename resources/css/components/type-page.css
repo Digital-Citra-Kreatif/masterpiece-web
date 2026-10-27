@@ -89,9 +89,13 @@
 }
 
 /* The 360° viewer, against the top, the right line and the rule */
+/* min-width and overflow keep what WebRotate injects at its native 760px from
+   widening the column (and the page, on phones). */
 .tph__stage {
   display: grid;
   place-items: center;
+  min-width: 0;
+  overflow: hidden;
   min-height: clamp(480px, calc(100svh - var(--header-h)), 760px);
   border-left: 1px solid var(--sheet-line);
   background: #000; /* the viewer's own black */
@@ -99,6 +103,7 @@
 
 .tph__stage .tt {
   width: 100%;
+  min-width: 0;
   margin-inline: 0;
   color: var(--paper);
 }
@@ -250,9 +255,10 @@
 
 /* ---- mobile: one column; pictures and contents run line to line */
 @media (max-width: 760px) {
+  /* minmax(0, …): a column never grows past the screen for wide content */
   .tph__grid,
   .tpx__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .tph__copy {
