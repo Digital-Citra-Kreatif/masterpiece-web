@@ -11,6 +11,14 @@
   color: #fff;
 }
 
+/* Mobile: 60% layar, section berikutnya sudah terlihat */
+@media (max-width: 760px) {
+  .hero {
+    height: max(60vh, 400px);
+    height: max(60svh, 400px);
+  }
+}
+
 .hero__video,
 .hero__media {
   position: absolute;
