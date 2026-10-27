@@ -5,11 +5,12 @@
   'type': solid, with a back link to the Unit update section.
   Up to 1024px wide, 'home' and 'project' swap the links for a hamburger that
   opens them in a dropdown under the header (resources/js/menu.js).
+  `ink`: dark links and no logo card, over a light page (a project's type page).
   Not sticky: it sits at the top of the page and scrolls away.
 --}}
-@props(['variant' => 'home', 'nav' => null, 'logo' => null])
+@props(['variant' => 'home', 'nav' => null, 'logo' => null, 'ink' => false])
 
-<header class="hd hd--{{ $variant }}">
+<header @class(['hd', "hd--{$variant}", 'hd--ink' => $ink])>
   <div class="hd__inner wrap">
     <a class="hd__mark" href="{{ url('/') }}" aria-label="{{ $site['logo']['alt'] }}, beranda">
       @if ($logo)

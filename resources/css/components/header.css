@@ -10,6 +10,17 @@
   color: #fff;
 }
 
+/* Over a light page: dark links, the logo without its card */
+.hd--ink {
+  color: var(--ink);
+}
+
+.hd--ink.hd--project .hd__mark {
+  padding-inline: 0;
+  background: none;
+  box-shadow: none;
+}
+
 .hd--type {
   background: var(--paper);
   color: var(--ink);

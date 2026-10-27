@@ -97,7 +97,7 @@ test('each section shows its title and description from the CMS, or the defaults
 test('a type page shows its specs, its parts and its floor plans', function () {
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
-        ->assertSee('<h1 class="display panel__name">Tipe 6</h1>', false)
+        ->assertSee('<h1 class="display tph__name" id="type-name">Tipe 6</h1>', false)
         ->assertSee('140 m²')
         ->assertSee('240 m²')
         ->assertSeeInOrder(['Fasad', 'Lantai 1', 'Lantai 2', 'Lantai 3'])

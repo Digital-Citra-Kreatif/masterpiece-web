@@ -56,15 +56,7 @@ final class ProjectPage
      */
     public static function page(EntryTranslation $entry, array $values): array
     {
-        $masterplan = self::masterplan(self::group($values, 'masterplan'));
-        $sections = array_filter([
-            'masterplan' => $masterplan,
-            'location' => self::location(self::group($values, 'location')),
-            'cluster' => self::cluster(self::group($values, 'cluster')),
-            'facilities' => self::facilities(self::group($values, 'facilities')),
-            'types' => self::types(self::group($values, 'types')),
-            'availability' => self::availability(self::group($values, 'availability')),
-        ]);
+        $sections = self::sections($values);
 
         // Jalur titik orbit
         foreach (array_keys(ProjectTracks::sections()) as $handle) {
@@ -79,13 +71,71 @@ final class ProjectPage
             'style' => self::style(self::group($values, 'global_style')),
             'hero' => self::hero(self::group($values, 'hero'), (string) $entry->title),
             'sections' => $sections,
-            'nav' => collect(self::SECTIONS)
-                ->filter(fn (array $section, string $handle): bool => isset($sections[$handle]))
-                ->map(fn (array $section): array => ['href' => '#'.$section['id'], 'label' => $section['label'], 'active' => false, 'newTab' => false])
-                ->values()
-                ->all(),
+            'nav' => self::nav($sections),
             'whatsapp' => self::whatsapp(self::group($values, 'whatsapp')),
         ];
+    }
+
+    /**
+     * A type page's project: its style, menu to the project's sections, WhatsApp
+     * button and its other types (the cards that have a page of their own).
+     *
+     * @return array{title: string, url: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, types: list<array<string, mixed>>}|null
+     */
+    public static function forType(EntryTranslation $type, mixed $project): ?array
+    {
+        if (! $project instanceof EntryTranslation) {
+            return null;
+        }
+
+        $values = $project->values();
+        $sections = self::sections($values);
+        $url = (string) $project->url();
+
+        return [
+            'title' => (string) $project->title,
+            'url' => $url,
+            'style' => self::style(self::group($values, 'global_style')),
+            'nav' => self::nav($sections, $url),
+            'whatsapp' => self::whatsapp(self::group($values, 'whatsapp')),
+            'types' => collect($sections['types']['cards'] ?? [])
+                ->filter(fn (array $card): bool => $card['url'] !== null && $card['url'] !== $type->url())
+                ->values()
+                ->all(),
+        ];
+    }
+
+    /**
+     * The project's sections that have content.
+     *
+     * @param  array<string, mixed>  $values
+     * @return array<string, array<string, mixed>>
+     */
+    private static function sections(array $values): array
+    {
+        return array_filter([
+            'masterplan' => self::masterplan(self::group($values, 'masterplan')),
+            'location' => self::location(self::group($values, 'location')),
+            'cluster' => self::cluster(self::group($values, 'cluster')),
+            'facilities' => self::facilities(self::group($values, 'facilities')),
+            'types' => self::types(self::group($values, 'types')),
+            'availability' => self::availability(self::group($values, 'availability')),
+        ]);
+    }
+
+    /**
+     * Header links to the sections there are; `$base` is the project's address from another page.
+     *
+     * @param  array<string, array<string, mixed>>  $sections
+     * @return list<array{href: string, label: string, active: bool, newTab: bool}>
+     */
+    private static function nav(array $sections, string $base = ''): array
+    {
+        return collect(self::SECTIONS)
+            ->filter(fn (array $section, string $handle): bool => isset($sections[$handle]))
+            ->map(fn (array $section): array => ['href' => $base.'#'.$section['id'], 'label' => $section['label'], 'active' => false, 'newTab' => false])
+            ->values()
+            ->all();
     }
 
     /**

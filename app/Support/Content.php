@@ -256,7 +256,8 @@ final class Content
     }
 
     /**
-     * One type page: its card data plus the 360° sequence, its parts, denah, gallery and VR.
+     * One type page: its card data plus the 360° sequence, its parts, denah, gallery, VR
+     * and, for a project's type, the project's style, menu, WhatsApp and other types.
      *
      * @param  array<string, mixed>  $values
      * @return array<string, mixed>
@@ -268,6 +269,10 @@ final class Content
         $floors = max(1, (int) ($values['floors'] ?? 1));
         $floorTexts = collect($shared['floor_texts'] ?? [])->pluck('text')->filter()->values();
         $card = self::card($entry, $values);
+        $denah = collect($values['floor_plans'] ?? [])
+            ->filter(fn (array $plan): bool => $plan['image'] instanceof Media)
+            ->map(fn (array $plan): array => ['label' => $plan['label'], 'image' => self::url($plan['image'])])
+            ->values();
 
         $parts = [[
             'id' => 'fasad',
@@ -284,7 +289,6 @@ final class Content
                 // Until the client's sequence has a keyframe per floor, floors sit at evenly spaced angles.
                 'frame' => (int) round($floor * $sequence['frames'] / ($floors + 1)),
                 'text' => $floorTexts->get($floor - 1) ?? $floorTexts->last() ?? '',
-                'denah' => "Lantai {$floor}",
             ];
         }
 
@@ -302,13 +306,10 @@ final class Content
             ],
             'sequence' => [...$sequence, 'placeholder' => ! ($values['real_facade'] ?? false)],
             'parts' => $parts,
-            'denah' => collect($values['floor_plans'] ?? [])
-                ->filter(fn (array $plan): bool => $plan['image'] instanceof Media)
-                ->map(fn (array $plan): array => ['label' => $plan['label'], 'image' => self::url($plan['image'])])
-                ->values()
-                ->all(),
+            'denah' => $denah->all(),
             'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): string => $image->url())->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],
+            'project' => ProjectPage::forType($entry, $values['project'] ?? null),
         ];
     }
 

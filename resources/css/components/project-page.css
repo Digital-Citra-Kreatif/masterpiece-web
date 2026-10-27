@@ -264,7 +264,8 @@ button.pj-frame:focus-visible {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
 }
 
-.is-project :is(.pj-loc, .fac, .types, .pj-av, .units, .pj-points, .ft) {
+/* Juga di halaman tipe proyek (bagian, spesifikasi, denah, galeri) */
+.is-project :is(.pj-loc, .fac, .types, .pj-av, .units, .pj-points, .ft, .tph, .tpx) {
   --line: rgb(14 17 19 / 0.12);
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
   background-size: 1px 100%;

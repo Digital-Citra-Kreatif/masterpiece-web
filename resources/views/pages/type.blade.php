@@ -1,148 +1,156 @@
 {{--
-  Type page. Left column: one 360° image sequence that stays on screen while the
-  page scrolls through its parts (facade, then each floor). Each part is a
-  keyframe: reaching it, by scrolling or from the part list in the panel,
-  animates the sequence there and shows the part's text and denah. Dragging
-  still rotates freely. Right column stays fixed: property info, denah, Gallery
-  and VR. On narrow screens the info sits above the viewer and a bottom bar
-  keeps key facts, Gallery and VR in reach.
+  Type page, laid out as a drawing sheet (single unit.pdf): the parts first, in
+  two columns (name, the part's text and a tab per part on the left; the 360°
+  viewer on the right, against the top and the right line: a tab turns it to the
+  part's keyframe), then rows with the title in a narrow column and
+  the content right of a rule: specifications, floor plans, gallery with the VR
+  tour, and the project's other types.
 
-  Part switching in resources/js/type-parts.js.
+  A project's type wears the project's style, header, footer logo and WhatsApp
+  button; a type without one keeps the site's own.
+
+  Tabs in resources/js/type-parts.js.
 --}}
 @php
+  $pj = $t['project'];
   $parts = $t['parts'];
-  $denahIndex = fn ($label) => collect($t['denah'])->search(fn ($d) => $d['label'] === $label);
 
-  $galleryPayload = json_encode([
-      'title' => "{$t['name']}: Galeri",
-      'items' => collect($t['gallery'])->map(fn ($src, $i) => ['src' => asset($src), 'alt' => "{$t['name']}, gambar ".($i + 1)]),
-  ]);
+  $galleryItems = collect($t['gallery'])->map(fn ($src, $i) => ['src' => asset($src), 'alt' => "{$t['name']}, gambar ".($i + 1)]);
+  $galleryPayload = fn ($index = 0) => json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems, 'index' => $index]);
   $denahItems = collect($t['denah'])->map(fn ($d) => ['src' => asset($d['image']), 'caption' => $d['label'], 'alt' => "Denah {$d['label']}"]);
   $denahPayload = fn ($index) => json_encode(['title' => "{$t['name']}: Denah", 'items' => $denahItems, 'index' => $index]);
-  $vrPayload = json_encode(['src' => asset($t['vr']['url']), 'title' => "{$t['name']}: Tur VR"]);
-  $facts = [
-      ['LT', "{$t['lt']} m²"],
-      ['LB', "{$t['lb']} m²"],
-      ['KT', $t['bedrooms']],
-      ['KM', $t['bathrooms']],
-  ];
+  $vrPayload = filled($t['vr']['url']) ? json_encode(['src' => asset($t['vr']['url']), 'title' => "{$t['name']}: Tur VR"]) : null;
 @endphp
 
 <x-layouts.base
   :title="$t['name']"
   :description="$t['name'].': fasad dan setiap lantai dalam 360°, denah, galeri, dan tur VR.'"
-  body-class="is-type"
+  :favicon="$pj['style']['favicon'] ?? null"
+  :body-class="$pj ? 'is-type is-project' : 'is-type'"
   entry="resources/js/type.js"
 >
-  <x-header variant="type" />
+  @if ($pj && $pj['style']['css'] !== '')
+    <x-slot:head>
+      <style>{!! $pj['style']['css'] !!}</style>
+    </x-slot:head>
+  @endif
 
-  <main class="tp wrap">
-    <div
-      class="tp__track"
-      data-parts="{{ json_encode(collect($parts)->map(fn ($p) => Arr::only($p, ['name', 'kind', 'text', 'frame']))) }}"
-      style="--parts: {{ count($parts) }}"
-    >
-      @foreach ($parts as $p)
-        <span class="tp__step" id="{{ $p['id'] }}" data-part-step="{{ $loop->index }}" style="--i: {{ $loop->index }}" aria-hidden="true"></span>
-      @endforeach
+  @if ($pj)
+    <x-header variant="project" :nav="$pj['nav']" :logo="$pj['style']['logo']" ink />
+  @else
+    <x-header variant="type" />
+  @endif
 
-      <section class="viewer" aria-labelledby="part-title" style="--ratio: {{ $t['sequence']['width'] / $t['sequence']['height'] }}">
-        <div class="viewer__head">
-          <div>
-            <h2 class="display viewer__title" id="part-title" data-part-name>{{ $parts[0]['name'] }}</h2>
-          </div>
-          <nav class="viewer__dots" aria-label="Bagian">
+  <main>
+    {{-- Bagian sebagai tab: nama, teks dan tab di kiri, viewer 360° di kanan --}}
+    <section class="tph" aria-labelledby="type-name" data-parts="{{ json_encode(collect($parts)->map(fn ($p) => Arr::only($p, ['name', 'text', 'frame']))) }}">
+      <div class="wrap tph__grid">
+        <div class="tph__copy">
+          <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
+          <p class="tph__text" data-part-text aria-live="polite">{{ $parts[0]['text'] }}</p>
+
+          <div class="tph__tabs" role="tablist" aria-label="Bagian" aria-orientation="vertical">
             @foreach ($parts as $p)
-              <a href="#{{ $p['id'] }}" @class(['is-active' => $loop->first]) data-part-dot aria-label="{{ $p['name'] }}"></a>
+              <button
+                class="tph__tab"
+                type="button"
+                role="tab"
+                id="part-tab-{{ $loop->index }}"
+                aria-controls="part-panel"
+                aria-selected="{{ $loop->first ? 'true' : 'false' }}"
+                tabindex="{{ $loop->first ? 0 : -1 }}"
+                data-part-tab
+              >{{ $p['name'] }}</button>
             @endforeach
-          </nav>
+          </div>
+
+          <a class="tph__down" href="#spesifikasi" aria-label="Ke spesifikasi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 3v18M5 14l7 7 7-7" /></svg>
+          </a>
         </div>
 
-        <div class="viewer__stage">
+        <div class="tph__stage" id="part-panel" role="tabpanel" aria-labelledby="part-tab-0" data-part-panel>
           <x-turntable :id="'tt-'.$t['slug']" :label="$t['name'].', fasad dan lantai'" :turntable="$t['sequence']" tone="black" />
         </div>
+      </div>
+    </section>
 
-        <div class="viewer__info">
-          <p class="viewer__text" data-part-text aria-live="polite">{{ $parts[0]['text'] }}</p>
-          @foreach ($parts as $p)
-            @php($d = isset($p['denah']) ? $denahIndex($p['denah']) : false)
-            @if ($d !== false)
-              <button class="viewer__denah" type="button" data-part-denah="{{ $loop->index }}" data-open="gallery" data-payload="{{ $denahPayload($d) }}" @if (! $loop->first) hidden @endif>
-                <img src="{{ asset($t['denah'][$d]['image']) }}" alt="" loading="lazy" />
-                <span>Denah {{ $t['denah'][$d]['label'] }}</span>
-              </button>
-            @endif
-          @endforeach
+    {{-- Spesifikasi --}}
+    <section class="tpx" id="spesifikasi" aria-labelledby="spec-title">
+      <div class="wrap tpx__grid">
+        <h2 class="display tpx__title" id="spec-title">Spesifikasi</h2>
+        <div class="tpx__body tpx__body--pad">
+          @if ($t['intro'])
+            <p class="tpx__intro">{{ $t['intro'] }}</p>
+          @endif
+          <dl class="tpx__specs">
+            @foreach ($t['info'] as [$k, $v])
+              <div>
+                <dt>{{ $k }}</dt>
+                <dd>{{ $v }}</dd>
+              </div>
+            @endforeach
+          </dl>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <aside class="tp__panel" aria-label="Informasi {{ $t['name'] }}">
-      <div class="panel">
-        <h1 class="display panel__name">{{ $t['name'] }}</h1>
-        @if ($t['label'])
-          <p class="panel__label eyebrow">{{ $t['label'] }}</p>
-        @endif
-
-        <dl class="panel__facts">
-          @foreach ($facts as [$k, $v])
-            <div>
-              <dt>{{ $k }}</dt>
-              <dd>{{ $v }}</dd>
-            </div>
-          @endforeach
-        </dl>
-
-        <p class="panel__intro">{{ $t['intro'] }}</p>
-
-        <dl class="panel__info">
-          @foreach ($t['info'] as [$k, $v])
-            <div>
-              <dt>{{ $k }}</dt>
-              <dd>{{ $v }}</dd>
-            </div>
-          @endforeach
-        </dl>
-
-        <nav class="panel__floors" aria-label="Bagian">
-          @foreach ($parts as $p)
-            <a href="#{{ $p['id'] }}" data-part-link="{{ $loop->index }}" @class(['is-active' => $loop->first])>
-              <span>{{ sprintf('%02d', $loop->iteration) }}</span>
-              {{ $p['name'] }}
-            </a>
-          @endforeach
-        </nav>
-
-        <div class="panel__denah">
-          <ul aria-label="Denah">
+    @if ($t['denah'] !== [])
+      {{-- Denah: gambar memenuhi kolom kanan --}}
+      <section class="tpx" aria-labelledby="denah-title">
+        <div class="wrap tpx__grid">
+          <h2 class="display tpx__title" id="denah-title">Denah</h2>
+          <ul class="tpx__body tpx__plans">
             @foreach ($t['denah'] as $d)
               <li>
-                <button type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Buka denah {{ $d['label'] }}">
-                  <img src="{{ asset($d['image']) }}" alt="" loading="lazy" />
-                  <span>{{ $d['label'] }}</span>
+                <button class="tpx__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                  <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
                 </button>
               </li>
             @endforeach
           </ul>
         </div>
+      </section>
+    @endif
 
-        <div class="panel__actions">
-          <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Gallery</button>
-          <button class="btn btn--solid" type="button" data-open="iframe" data-payload="{{ $vrPayload }}">VR</button>
+    @if ($t['gallery'] !== [] || $vrPayload)
+      {{-- Galeri dan tur VR --}}
+      <section class="tpx" aria-labelledby="gallery-title">
+        <div class="wrap tpx__grid">
+          <div class="tpx__side">
+            <h2 class="display tpx__title" id="gallery-title">Galeri</h2>
+            @if ($vrPayload)
+              <button class="btn btn--solid tpx__vr" type="button" data-open="iframe" data-payload="{{ $vrPayload }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4l-3-3-3 3H5a2 2 0 0 1-2-2Z" /><circle cx="8.5" cy="11.5" r="1.5" /><circle cx="15.5" cy="11.5" r="1.5" /></svg>
+                Tur VR 360°
+              </button>
+            @endif
+          </div>
+          <div class="tpx__body">
+            @if ($t['gallery'] !== [])
+              <ul class="tpx__gallery">
+                @foreach ($galleryItems as $image)
+                  <li>
+                    <button class="tpx__shot" type="button" data-open="gallery" data-payload="{{ $galleryPayload($loop->index) }}" aria-label="Perbesar {{ $image['alt'] }}">
+                      <img src="{{ $image['src'] }}" alt="" loading="lazy" />
+                    </button>
+                  </li>
+                @endforeach
+              </ul>
+            @endif
+          </div>
         </div>
-      </div>
-    </aside>
+      </section>
+    @endif
+
+    @if ($pj && $pj['types'] !== [])
+      <x-home.type-grid variant="project" id="tipe-lain" :types="$pj['types']" :heading="['title' => 'Tipe lain', 'intro' => null]" />
+    @endif
   </main>
 
-  <!-- Narrow screens: facts, Gallery and VR stay reachable while scrolling. -->
-  <div class="dock" aria-label="{{ $t['name'] }} ringkas">
-    <div class="dock__info">
-      <strong class="display">{{ $t['name'] }}</strong>
-      <span>{{ collect($facts)->map(fn ($f) => "{$f[0]} {$f[1]}")->join(' · ') }}</span>
-    </div>
-    <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Gallery</button>
-    <button class="btn btn--solid" type="button" data-open="iframe" data-payload="{{ $vrPayload }}">VR</button>
-  </div>
+  @if ($pj && $pj['whatsapp'])
+    <x-project.whatsapp :whatsapp="$pj['whatsapp']" :logo="$pj['style']['logo']" />
+  @endif
 
-  <x-footer />
+  <x-footer :logo="$pj['style']['logo'] ?? null" />
 </x-layouts.base>
