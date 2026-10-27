@@ -645,25 +645,42 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Mobile: lanskap 4:3 selebar konten; judul menembus tepi atas, deskripsi tepi bawah */
+/* Tablet: bingkai lebih besar, tetap 4:3 */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .is-project .mp {
+    --mp-h: min(52.5vw, 60svh);
+  }
+}
+
+/* Mobile: lanskap 4:3 selebar konten */
 @media (max-width: 760px) {
   .is-project .mp {
     --mp-w: calc(100vw - 2 * var(--gutter));
     --mp-h: calc(var(--mp-w) * 3 / 4);
   }
+}
 
+/* Tablet dan mobile: judul menembus tepi atas, deskripsi tepi bawah, sedikit
+   keluar dari sisi bingkai (tidak melewati gutter) */
+@media (max-width: 1024px) {
   .is-project :is(.mp__title, .mp__text) {
     translate: 0 -50%;
     text-shadow: 0 1px 12px rgb(0 0 0 / 0.45); /* terbaca di atas video */
   }
 
   .is-project .mp__title {
+    left: max(var(--gutter), calc(50% - var(--mp-w) * 0.6));
     top: calc(50% - var(--mp-h) / 2);
   }
 
   .is-project .mp__text {
+    left: auto;
+    right: max(var(--gutter), calc(50% - var(--mp-w) * 0.6));
     top: calc(50% + var(--mp-h) / 2);
+    bottom: auto;
     max-width: 32ch;
+    text-align: right;
+    white-space: normal;
   }
 }
 
@@ -673,7 +690,7 @@ button.pj-frame:focus-visible {
 }
 
 /* Deskripsi pembuka */
-@media (min-width: 761px) {
+@media (min-width: 1025px) {
   .is-project .mp__text {
     width: min(32ch, calc(50% - var(--mp-w) * 0.41 - var(--gutter)));
     white-space: normal;
