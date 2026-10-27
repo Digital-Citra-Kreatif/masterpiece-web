@@ -345,11 +345,6 @@ class SiteContentSeeder extends Seeder
             ]),
             $section('location', 'Lokasi', [
                 $gallery('maps', 'Peta', ['instructions' => 'Peta lokasi; tandai akses jalan tol.']),
-                $this->field('pins', 'repeater', [], ['label' => 'Titik peta', 'instructions' => 'Titik di peta pertama; namanya tampil saat titik disorot.', 'fields' => [
-                    $text('name', 'Nama', ['required' => true]),
-                    $percent('x', 'Posisi X (%)', 'Dari kiri peta.'),
-                    $percent('y', 'Posisi Y (%)', 'Dari atas peta.'),
-                ]]),
                 $this->field('stats', 'repeater', [], ['label' => 'Angka kawasan', 'fields' => [
                     $text('value', 'Angka', ['required' => true, 'width' => 25]),
                     $text('label', 'Keterangan', ['required' => true, 'width' => 75]),

@@ -229,22 +229,13 @@ final class ProjectPage
      * Peta lokasi
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, maps: list<array<string, mixed>>, pins: list<array{name: string, x: float, y: float}>}|null
+     * @return array{title: string, intro: ?string, maps: list<array<string, mixed>>}|null
      */
     private static function location(array $section): ?array
     {
         $maps = self::images($section['maps'] ?? []);
-        $pins = collect($section['pins'] ?? [])
-            ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null) && is_numeric($row['x'] ?? null) && is_numeric($row['y'] ?? null))
-            ->map(fn (array $row): array => [
-                'name' => (string) $row['name'],
-                'x' => max(0.0, min(100.0, (float) $row['x'])),
-                'y' => max(0.0, min(100.0, (float) $row['y'])),
-            ])
-            ->values()
-            ->all();
 
-        return self::section($section, ['maps' => $maps, 'pins' => $maps === [] ? [] : $pins], $maps !== []);
+        return self::section($section, ['maps' => $maps], $maps !== []);
     }
 
     /**

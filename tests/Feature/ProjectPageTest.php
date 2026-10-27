@@ -119,7 +119,7 @@ test('the cluster is the homepage Cluster scene with the CMS points that have a 
         ->assertDontSee('Lakefront Pods');
 });
 
-test('the location map shows its spots and not the area figures', function () {
+test('the location shows only the map, without spots or area figures', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
@@ -133,9 +133,9 @@ test('the location map shows its spots and not the area figures', function () {
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSee('<button class="pj-loc__pin" type="button" style="left: 41%; top: 40%">', false)
-        ->assertSee('West Lakeside')
-        ->assertDontSee('Unplaced')
+        ->assertSee('class="pj-loc__map is-main"', false)
+        ->assertDontSee('pj-loc__pin', false)
+        ->assertDontSee('West Lakeside')
         ->assertDontSee('500K+');
 });
 

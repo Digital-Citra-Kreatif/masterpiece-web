@@ -171,7 +171,7 @@ article.card {
 }
 
 .types--project .sheet__title {
-  color: var(--room);
+  color: var(--ink);
 }
 
 .types--project .types__grid {
@@ -197,6 +197,21 @@ article.card {
   flex: 1;
   padding: 16px 20px 18px;
   background: #fff;
+  transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+/* Hover: badan kartu hijau proyek (--room), isi putih */
+.types--project .card:is(:hover, :focus-within) .card__body {
+  background: var(--room);
+  color: #fff;
+}
+
+.types--project .card:is(:hover, :focus-within) .card__head {
+  border-bottom-color: rgb(255 255 255 / 0.24);
+}
+
+.types--project .card:is(:hover, :focus-within) :is(.card__label, .card__specs dt) {
+  color: #fff;
 }
 
 .types--project .card__head {

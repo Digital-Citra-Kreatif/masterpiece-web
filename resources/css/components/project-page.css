@@ -33,7 +33,7 @@ button.pj-frame:focus-visible {
 
 .pj-title {
   margin: 0;
-  color: var(--room);
+  color: var(--ink);
   font-size: clamp(40px, 4.6vw, 64px);
   font-weight: 400;
   line-height: 1.05;
@@ -658,31 +658,31 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Daftar Masterplan */
+/* Daftar Masterplan dan Cluster */
 @media (min-width: 761px) {
-  .is-project .scene--masterplan .scene__area > * {
+  .is-project .scene .scene__area > * {
     max-width: none;
   }
 
-  .is-project .scene--masterplan .scene__list {
+  .is-project .scene .scene__list {
     column-count: 4;
     column-gap: 32px;
     border-top: 0;
   }
 
-  .is-project .scene--masterplan .scene__list li {
+  .is-project .scene .scene__list li {
     break-inside: avoid;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  .is-project .scene--masterplan .scene__list button {
+  .is-project .scene .scene__list button {
     padding-block: 8px;
     font-size: 14px;
   }
 }
 
-.is-project .scene--masterplan .scene__list button:hover,
-.is-project .scene--masterplan .scene__list button:focus-visible {
+.is-project .scene .scene__list button:hover,
+.is-project .scene .scene__list button:focus-visible {
   padding-left: 0;
   color: var(--accent-light);
 }
@@ -869,7 +869,7 @@ button.pj-frame:focus-visible {
 }
 
 .pj-loc .pj-title {
-  color: var(--room);
+  color: var(--ink);
 }
 
 .pj-loc__intro {
@@ -923,51 +923,6 @@ button.pj-frame:focus-visible {
 /* Peta isi stage */
 .pj-loc__stage .pj-loc__map {
   width: 100%;
-}
-
-/* Titik peta */
-.pj-loc__pin {
-  position: absolute;
-  width: 44px; /* Area sentuh */
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: none;
-  translate: -50% -50%;
-}
-
-.pj-loc__pin::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 18px;
-  height: 18px;
-  translate: -50% -50%;
-  border: 3px solid #fff;
-  border-radius: 50%;
-  background: var(--marker, #d8322a);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.35); /* Bayangan penanda */
-}
-
-.pj-loc__pin-name {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% - 4px);
-  translate: -50% 0;
-  padding: 6px 10px;
-  border-radius: var(--radius, 0);
-  background: var(--room);
-  color: var(--room-ink);
-  font-size: 14px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.pj-loc__pin:hover .pj-loc__pin-name,
-.pj-loc__pin:focus-visible .pj-loc__pin-name {
-  opacity: 1;
 }
 
 .pj-loc__maps {
@@ -1325,4 +1280,23 @@ button.pj-frame:focus-visible {
   width: clamp(6px, 0.6vw, 10px);
   height: clamp(6px, 0.6vw, 10px);
   box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px rgba(14, 17, 19, 0.5);
+}
+
+/* Semua status lingkaran penuh, beda warna saja (peta dan legenda) */
+.is-project .units .dot {
+  background: var(--c);
+}
+
+/* Unit Availability: tanpa garis judul, legenda tidak sticky, tanpa bar status */
+.is-project .units__intro {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.is-project .units__legend {
+  position: static;
+}
+
+.is-project .units__bar {
+  display: none;
 }

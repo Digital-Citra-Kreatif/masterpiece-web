@@ -17,7 +17,7 @@
   ]);
 @endphp
 
-<section id="{{ $id }}" @class(['fac', 'fac--split' => $split]) aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" @class(['fac', 'fac--split' => $split]) @if ($split) data-view-cursor @endif aria-labelledby="{{ $id }}-title">
   <div @class(['wrap', 'fac__split' => $split])>
     @if ($split)
       <div class="fac__head">
@@ -53,7 +53,7 @@
           <figure>
             <div class="fac__img">
               @if ($split)
-                <button class="fac__zoom" type="button" data-open="gallery" data-payload="{{ $lightbox($loop->index) }}" @if ($loop->index >= count($facilities)) tabindex="-1" @endif aria-label="Perbesar {{ $f['title'] }}"></button>
+                <button class="fac__zoom" type="button" data-view-target data-open="gallery" data-payload="{{ $lightbox($loop->index) }}" @if ($loop->index >= count($facilities)) tabindex="-1" @endif aria-label="Perbesar {{ $f['title'] }}"></button>
               @endif
               <img src="{{ asset($f['image']) }}" alt="{{ $f['title'] }}" loading="lazy" />
               @if ($site['showPlaceholderBadges'] && $loop->first)
@@ -83,5 +83,7 @@
 
   @if ($split)
   </div>
+
+  <x-view-cursor />
   @endif
 </section>

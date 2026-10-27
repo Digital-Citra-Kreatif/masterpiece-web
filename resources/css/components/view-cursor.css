@@ -1,0 +1,35 @@
+/* Kursor View: lingkaran hitam ikut pointer di atas gambar (mouse saja) */
+
+[data-view-cursor] {
+  position: relative;
+}
+
+.view-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 88px;
+  height: 88px;
+  margin: -44px 0 0 -44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--label);
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.6;
+  transition: opacity 0.2s, scale 0.3s var(--ease);
+}
+
+.view-cursor.is-on {
+  opacity: 1;
+  scale: 1;
+}
+
+.has-view-cursor :is([data-view-target], [data-view-target] *) {
+  cursor: none;
+}

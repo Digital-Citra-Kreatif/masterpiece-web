@@ -19,11 +19,6 @@
             <button class="pj-loc__map is-main" type="button" data-open="gallery" data-payload="{{ $gallery($loc['title'], $loc['maps']) }}" aria-label="Perbesar peta">
               <x-project.img :image="$map" sizes="(min-width: 960px) 66vw, 100vw" :alt="$map['alt'] ?: 'Peta lokasi'" />
             </button>
-            @foreach ($loc['pins'] as $pin)
-              <button class="pj-loc__pin" type="button" style="left: {{ $pin['x'] }}%; top: {{ $pin['y'] }}%">
-                <span class="pj-loc__pin-name">{{ $pin['name'] }}</span>
-              </button>
-            @endforeach
             </div>
           </div>
         @else
