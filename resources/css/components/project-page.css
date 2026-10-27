@@ -823,7 +823,7 @@ button.pj-frame:focus-visible {
 /* Titik tanpa aerial */
 
 .pj-points {
-  padding-bottom: clamp(64px, 9vw, 120px);
+  padding-bottom: var(--section, clamp(64px, 9vw, 120px));
 }
 
 .pj-points__list {
@@ -955,7 +955,7 @@ button.pj-frame:focus-visible {
 @media (max-width: 760px) {
   .pj-loc__inner {
     grid-template-columns: 1fr;
-    padding-top: 56px;
+    padding-top: var(--section);
   }
 }
 
@@ -990,7 +990,7 @@ button.pj-frame:focus-visible {
 
 .pj-av {
   background: #fff;
-  padding-block: clamp(64px, 9vw, 128px);
+  padding-block: var(--section, clamp(64px, 9vw, 128px));
 }
 
 .pj-av__intro {

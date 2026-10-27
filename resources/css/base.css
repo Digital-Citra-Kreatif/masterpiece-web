@@ -32,8 +32,18 @@
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
+/* Tablet: gutter 24px, jarak section 72px */
+@media (max-width: 1024px) {
+  :root {
+    --gutter: 24px;
+    --section: 72px;
+  }
+}
+
+/* Mobile: gutter 16px */
 @media (max-width: 760px) {
   :root {
+    --gutter: 16px;
     --header-h: 64px;
   }
 }
@@ -244,7 +254,7 @@ h2.display {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 24px 48px;
   align-items: end;
-  padding-block: clamp(56px, 9vw, 120px) clamp(28px, 4vw, 48px);
+  padding-block: var(--section, clamp(56px, 9vw, 120px)) clamp(28px, 4vw, 48px);
 }
 
 .sheet__title {

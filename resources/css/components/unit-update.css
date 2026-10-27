@@ -1,7 +1,7 @@
 /* Unit update: siteplan with status dots and legend. */
 
 .units {
-  padding-block: clamp(64px, 8vw, 112px) clamp(72px, 10vw, 140px);
+  padding-block: var(--section, clamp(64px, 8vw, 112px)) var(--section, clamp(72px, 10vw, 140px));
   background: var(--paper-2);
 }
 

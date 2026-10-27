@@ -89,10 +89,131 @@
 }
 
 @media (max-width: 640px) {
-  .hd--home .hd__nav {
-    display: none;
-  }
   .hd__back {
     font-size: 14px;
+  }
+}
+
+/* ---- hamburger menu (tablet and mobile) */
+
+.hd__burger {
+  display: none;
+  place-items: center;
+  flex: none;
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px; /* the icon lines up with the gutter, the tap target spills over */
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.hd__burger svg {
+  width: 24px;
+  height: 24px;
+}
+
+.hd__burger:focus-visible,
+.hd__menu-nav a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+@media (max-width: 1024px) {
+  .hd__nav {
+    display: none;
+  }
+
+  .hd__burger {
+    display: grid;
+  }
+}
+
+/* Full-screen panel on the dark room colour; the project's own colour on a project page. */
+.hd__menu {
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+  border: 0;
+  background: var(--room);
+  color: var(--room-ink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.hd__menu[open] {
+  display: flex;
+  flex-direction: column;
+  animation: menu-in 0.35s var(--ease);
+}
+
+.hd__menu::backdrop {
+  background: none;
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.hd__menu-top {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: none;
+  height: var(--header-h);
+}
+
+.hd__menu-top .hd__burger {
+  display: grid;
+}
+
+.hd__menu-nav {
+  display: flex;
+  flex-direction: column;
+  margin-block: auto;
+  padding-block: 24px 48px;
+}
+
+.hd__menu-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding-block: 8px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.16);
+  color: inherit;
+  font-family: var(--display);
+  font-size: clamp(24px, 5vw, 36px);
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.hd__menu-nav a[aria-current='page'] {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
+}
+
+@media (hover: hover) {
+  .hd__menu-nav a {
+    transition: opacity 0.2s var(--ease);
+  }
+
+  .hd__menu-nav:hover a:not(:hover) {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hd__menu[open] {
+    animation: none;
   }
 }

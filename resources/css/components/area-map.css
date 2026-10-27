@@ -1,7 +1,7 @@
 /* Homepage area map (static image). */
 
 .map {
-  padding-bottom: clamp(64px, 9vw, 120px);
+  padding-bottom: var(--section, clamp(64px, 9vw, 120px));
 }
 
 .map__figure {

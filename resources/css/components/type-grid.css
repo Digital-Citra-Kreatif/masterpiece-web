@@ -1,7 +1,7 @@
 /* Unit type cards. */
 
 .types {
-  padding-bottom: clamp(64px, 9vw, 120px);
+  padding-bottom: var(--section, clamp(64px, 9vw, 120px));
   border-top: 1px solid var(--rule);
 }
 
@@ -28,7 +28,7 @@
 
 /* Isi di atas judul, garis penuh di bawahnya */
 .types__top {
-  padding-top: clamp(56px, 9vw, 120px);
+  padding-top: var(--section, clamp(56px, 9vw, 120px));
   border-bottom: 1px solid var(--line, var(--rule));
 }
 
@@ -167,7 +167,7 @@ article.card {
 
 /* Jarak 160px dari garis ke judul Type */
 .types--project .types__top + .wrap > .sheet {
-  padding-top: 160px;
+  padding-top: var(--section, 160px);
 }
 
 .types--project .sheet__title {

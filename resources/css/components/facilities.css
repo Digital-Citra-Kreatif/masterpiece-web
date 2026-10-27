@@ -1,7 +1,7 @@
 /* Facilities carousel. */
 
 .fac {
-  padding-bottom: clamp(64px, 9vw, 120px);
+  padding-bottom: var(--section, clamp(64px, 9vw, 120px));
 }
 
 .fac__track {
@@ -97,7 +97,7 @@
 /* ---- variant 'split' */
 
 .fac--split {
-  padding-block: clamp(64px, 9vw, 128px);
+  padding-block: var(--section, clamp(64px, 9vw, 128px));
   overflow: hidden;
 }
 
