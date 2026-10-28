@@ -1,7 +1,6 @@
 {{-- Halaman tipe --}}
 @php
   $pj = $t['project'];
-  $parts = $t['parts'];
 
   $galleryItems = collect($t['gallery'])->map(fn ($img, $i) => ['src' => asset($img['src']), 'thumb' => asset($img['thumb']), 'alt' => "{$t['name']}, gambar ".($i + 1)]);
   $galleryPayload = fn ($index = 0) => json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems->map(fn ($img) => Arr::only($img, ['src', 'alt'])), 'index' => $index]);
@@ -12,7 +11,7 @@
 
 <x-layouts.base
   :title="$t['name']"
-  :description="$t['name'].': fasad dan setiap lantai dalam 360°, denah, galeri, dan tur VR.'"
+  :description="$t['name'].': spesifikasi, denah, galeri, dan tur VR.'"
   :favicon="$pj['style']['favicon'] ?? null"
   :body-class="$pj ? 'is-type is-project' : 'is-type'"
   entry="resources/js/type.js"
@@ -30,41 +29,10 @@
   @endif
 
   <main>
-    {{-- Tab bagian --}}
-    <section class="tph" aria-labelledby="type-name" data-parts="{{ json_encode(collect($parts)->map(fn ($p) => Arr::only($p, ['name', 'text', 'frame']))) }}">
-      <div class="wrap tph__grid">
-        <div class="tph__copy">
-          <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
-
-          {{-- Tab bagian --}}
-          <ul class="tph__tabs" aria-label="Bagian">
-            @foreach ($parts as $p)
-              <li @class(['tph__part', 'is-open' => $loop->first]) data-part>
-                <div class="tph__head">
-                  <button class="tph__tab" type="button" aria-expanded="{{ $loop->first ? 'true' : 'false' }}" aria-controls="part-desc-{{ $loop->index }}" data-part-tab>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></svg>
-                    {{ $p['name'] }}
-                  </button>
-                </div>
-                <div class="tph__body">
-                  <p class="tph__desc" id="part-desc-{{ $loop->index }}"><strong>{{ $p['name'] }}.</strong> {{ $p['text'] }}</p>
-                </div>
-              </li>
-            @endforeach
-          </ul>
-        </div>
-
-        <div class="tph__stage" aria-label="{{ $t['name'] }}, tampilan 360°" role="region">
-          <x-turntable :id="'tt-'.$t['slug']" :label="$t['name'].', fasad dan lantai'" :turntable="$t['sequence']" tone="black" />
-          @if (count($parts) > 1)
-            <button class="icon-btn tph__nav tph__nav--prev" type="button" data-part-prev aria-label="Bagian sebelumnya">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-            </button>
-            <button class="icon-btn tph__nav tph__nav--next" type="button" data-part-next aria-label="Bagian berikutnya">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
-            </button>
-          @endif
-        </div>
+    {{-- Judul tipe --}}
+    <section class="tph tph--title" aria-labelledby="type-name">
+      <div class="wrap">
+        <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
       </div>
     </section>
 

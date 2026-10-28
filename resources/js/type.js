@@ -1,7 +1,4 @@
 // Entri halaman tipe
-import './turntable.js';
-import './type-parts.js';
-import './type-parallax.js';
 import './plans-swiper.js';
 import './gallery-grid.js';
 import './lightbox.js';

@@ -93,13 +93,13 @@ test('each section shows its title and description from the CMS, or the defaults
         ->assertDontSee('Diabaikan tanpa judul');
 });
 
-test('a type page shows its specs, its parts and its floor plans', function () {
+test('a type page shows its title, specs and floor plans, without the 360° viewer', function () {
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name">Tipe 6</h1>', false)
+        ->assertDontSee('data-turntable', false)
         ->assertSee('140 m²')
         ->assertSee('240 m²')
-        ->assertSeeInOrder(['Fasad', 'Lantai 1', 'Lantai 2', 'Lantai 3'])
         ->assertSee('Denah Lantai 1')
         ->assertSee('data-plans-swiper', false)
         ->assertSee('<div class="tpg__run"', false)

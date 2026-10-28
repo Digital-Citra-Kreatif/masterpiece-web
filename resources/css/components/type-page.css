@@ -21,17 +21,6 @@
   outline-offset: 3px;
 }
 
-/* Parallax hero */
-.is-type main > * {
-  position: relative;
-  z-index: 1;
-}
-
-.is-type main > .tph {
-  z-index: 0;
-  will-change: transform;
-}
-
 /* Garis lebih tipis */
 body.is-type :is(.tph, .tpx, .types, .ft) {
   --line: rgb(14 17 19 / 0.07);
@@ -239,6 +228,17 @@ body.is-type :is(.tph, .tpx, .types, .ft) {
   height: 100%;
   max-height: clamp(480px, 43vw, 620px);
   object-fit: contain;
+}
+
+/* Judul halaman tipe */
+.tph--title .wrap {
+  padding-block: clamp(32px, 4vw, 56px);
+}
+
+@media (max-width: 760px) {
+  .tph--title .wrap {
+    padding-block: 24px;
+  }
 }
 
 /* Section di proyek */
