@@ -23,7 +23,8 @@ test('the homepage shows every section from the CMS', function () {
     $response = $this->get('/')->assertOk();
 
     $response
-        ->assertSee("Quiet Living,<br>\nClose to Everything.", false)
+        // Judul per kata, baris tetap
+        ->assertSeeInOrder(['>Quiet</span>', '>Living,</span>', '<br>', '>Close</span>', '>Everything.</span>'], false)
         ->assertSee("A residential cluster in Jakarta,<br>\ndesigned for growing families.", false)
         ->assertSee('<section class="hero"', false)
         ->assertSee('<h2 class="display mp__title" data-mp-title>Masterplan</h2>', false)
@@ -50,7 +51,7 @@ test('the hero banner shows the heading, description and media from the CMS', fu
     $home->update(['data' => array_replace_recursive($home->data, ['hero' => ['heading' => 'Judul dari CMS', 'description' => 'Deskripsi dari CMS']])]);
 
     $response = $this->get('/')
-        ->assertSee('Judul dari CMS')
+        ->assertSeeInOrder(['>Judul</span>', '>dari</span>', '>CMS</span>'], false)
         ->assertSee('Deskripsi dari CMS')
         ->assertSee('data-hero-slides', false)
         ->assertDontSee('class="hero__video"', false);

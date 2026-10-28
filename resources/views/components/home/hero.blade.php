@@ -38,7 +38,16 @@
     @if (filled($hero['eyebrow'] ?? null))
       <p class="hero__eyebrow">{{ $hero['eyebrow'] }}</p>
     @endif
-    <h1 class="hero__title" id="hero-title">{!! nl2br(e($hero['title']), false) !!}</h1>
+    {{-- Per kata untuk animasi --}}
+    @php($word = 0)
+    <h1 class="hero__title" id="hero-title">
+      @foreach (preg_split('/\R/', (string) $hero['title']) as $line)
+        @if (! $loop->first)<br>@endif
+        @foreach (preg_split('/\s+/', trim($line), -1, PREG_SPLIT_NO_EMPTY) as $text)
+          <span class="hero__word" style="--i: {{ $word++ }}">{{ $text }}</span>
+        @endforeach
+      @endforeach
+    </h1>
     @if (filled($hero['cue'] ?? null))
       <p class="hero__cue" aria-hidden="true">{{ $hero['cue'] }}</p>
     @endif

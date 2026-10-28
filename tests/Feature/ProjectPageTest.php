@@ -193,7 +193,7 @@ test('a project page shows each section with content and skips the empty ones', 
 
     $response
         // Hero proyek
-        ->assertSee('<h1 class="hero__title" id="hero-title">A New Landmark by the Lake</h1>', false)
+        ->assertSeeInOrder(['<h1 class="hero__title" id="hero-title">', '<span class="hero__word" style="--i: 0">A</span>', '>Landmark</span>', '>Lake</span>', '</h1>'], false)
         ->assertDontSee('class="hero__lead"', false)
         ->assertDontSee('class="hero__rule"', false)
         ->assertSee('data-hero-slides', false)
