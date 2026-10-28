@@ -372,12 +372,7 @@ class SiteContentSeeder extends Seeder
                 ]]),
             ]),
             $section('availability', 'Ketersediaan unit', [
-                $image('siteplan', 'Siteplan', ['instructions' => 'Titik unit di gambar ini diatur di [Atur titik unit](/admin/unit-points).']),
-                $this->field('points', 'repeater', [], ['label' => 'Titik unit', 'instructions' => 'Terisi dari halaman Titik unit; unitnya dari menu Units yang memilih proyek ini.', 'fields' => [
-                    $this->field('unit', 'entries', ['collections' => ['units'], 'multiple' => false], ['label' => 'Unit', 'required' => true, 'translatable' => false, 'width' => 50]),
-                    $this->field('x', 'number', ['min' => 0, 'max' => 100], ['label' => 'X (%)', 'required' => true, 'translatable' => false, 'width' => 25]),
-                    $this->field('y', 'number', ['min' => 0, 'max' => 100], ['label' => 'Y (%)', 'required' => true, 'translatable' => false, 'width' => 25]),
-                ]]),
+                $image('siteplan', 'Siteplan', ['instructions' => 'Unit dari menu Units yang memilih proyek ini tampil di [peta titik unit](#peta-titik-unit) di bawah.']),
                 $this->field('blocks', 'repeater', [], ['label' => 'Blok', 'fields' => [
                     $text('name', 'Nama', ['required' => true, 'width' => 25]),
                     $view(['width' => 25]),
