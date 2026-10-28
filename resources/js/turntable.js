@@ -141,7 +141,7 @@ async function boot(root) {
 
   // Ganti paket per tab
   root.addEventListener('tt:load', (e) => {
-    const { config, root: path, width, height } = e.detail;
+    const { config, root: path, width, height, frame = 0 } = e.detail;
     stopSeek();
     stage.style.aspectRatio = `${width} / ${height}`;
     viewerEl.style.height = `${height}px`;
@@ -149,7 +149,7 @@ async function boot(root) {
     viewer.settings.responsiveBaseWidth = Number(width);
     root.classList.remove('is-ready');
     progress.style.setProperty('--progress', '0%');
-    viewer.reload(config, path, null, 0);
+    viewer.reload(config, path, null, frame);
   });
   // Ukur ulang setelah tampil
   root.addEventListener('tt:resize', () => api?.updateDimensions());

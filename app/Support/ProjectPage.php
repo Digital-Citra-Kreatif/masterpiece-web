@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\UnitPoint;
+use Illuminate\Support\Arr;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Cms\Content as Cms;
 use Sunrice\Cms\Models\EntryTranslation;
@@ -346,14 +347,15 @@ final class ProjectPage
      * Tab 360°
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, tabs: list<array{name: string, text: string, frames: list<string>, width: int, height: int, config: string, root: string}>}|null
+     * @return array{title: string, intro: ?string, tabs: list<array{name: string, text: string, frames: list<string>, width: int, height: int, frame: int, config: string, root: string}>}|null
      */
     private static function turntable(array $section, int $project): ?array
     {
         $tabs = collect(self::turntableTabs($section))
-            ->map(fn (array $tab, int $index): array => [
-                ...$tab,
-                'config' => route('turntable.config', ['project' => $project, 'tab' => $index]),
+            ->map(fn (array $tab): array => [
+                ...Arr::except($tab, 'source'),
+                // Tab bergambar sama, config sama
+                'config' => route('turntable.config', ['project' => $project, 'tab' => $tab['source']]),
                 'root' => Turntable::root($project),
             ])
             ->all();
@@ -363,35 +365,46 @@ final class ProjectPage
     }
 
     /**
-     * Tab berisi gambar
+     * Tab 360° dengan gambarnya
      *
      * @param  array<string, mixed>  $section
-     * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int}>
+     * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int, frame: int, source: int}>
      */
     public static function turntableTabs(array $section): array
     {
-        return collect($section['tabs'] ?? [])
+        $rows = collect($section['tabs'] ?? [])
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
-            ->map(function (array $row): ?array {
+            ->values()
+            ->map(fn (array $row): array => [
+                'row' => $row,
                 // Urut nama file
-                $frames = collect(is_iterable($row['images'] ?? null) ? $row['images'] : [])
+                'frames' => collect(is_iterable($row['images'] ?? null) ? $row['images'] : [])
                     ->filter(fn (mixed $media): bool => $media instanceof Media && $media->isImage())
                     ->sortBy(fn (Media $media): string => (string) $media->filename, SORT_NATURAL | SORT_FLAG_CASE)
-                    ->values();
-                if ($frames->isEmpty()) {
-                    return null;
-                }
+                    ->values(),
+            ]);
+
+        // Tab kosong pakai gambar tab pertama
+        $first = $rows->search(fn (array $item): bool => $item['frames']->isNotEmpty());
+        if ($first === false) {
+            return [];
+        }
+
+        return $rows
+            ->map(function (array $item, int $index) use ($rows, $first): array {
+                $source = $item['frames']->isNotEmpty() ? $index : $first;
+                $frames = $rows[$source]['frames'];
 
                 return [
-                    'name' => (string) $row['name'],
-                    'text' => (string) ($row['description'] ?? ''),
+                    'name' => (string) $item['row']['name'],
+                    'text' => (string) ($item['row']['description'] ?? ''),
                     'frames' => $frames->map(fn (Media $media): string => $media->url())->all(),
                     'width' => (int) ($frames->first()->width ?: 1600),
                     'height' => (int) ($frames->first()->height ?: 1200),
+                    'frame' => min(max(0, (int) ($item['row']['frame'] ?? 0)), $frames->count() - 1),
+                    'source' => $source,
                 ];
             })
-            ->filter()
-            ->values()
             ->all();
     }
 

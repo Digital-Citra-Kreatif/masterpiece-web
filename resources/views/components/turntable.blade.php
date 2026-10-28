@@ -15,6 +15,7 @@
   data-turntable
   data-wr360="{{ asset('wr360') }}"
   data-hotspots="{{ json_encode((object) $resolved->all()) }}"
+  @if ($turntable['frame'] ?? 0) data-goto="{{ $turntable['frame'] }}" @endif
 >
   <div
     class="tt__stage"

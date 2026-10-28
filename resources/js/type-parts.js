@@ -21,11 +21,15 @@ if (root) {
       return;
     }
     still.hidden = true;
+    // Dipakai juga saat viewer belum jalan
+    tt.dataset.goto = String(p.frame);
     if (p.config !== loaded) {
       loaded = p.config;
-      // Dipakai juga saat viewer belum jalan
       Object.assign(tt.querySelector('.tt__stage').dataset, { config: p.config, root: p.root, width: p.width, height: p.height });
       tt.dispatchEvent(new CustomEvent('tt:load', { detail: p }));
+    } else {
+      // Gambar sama: putar halus
+      tt.dispatchEvent(new CustomEvent('tt:goto', { detail: { frame: p.frame } }));
     }
     if (spin.hidden) {
       spin.hidden = false;

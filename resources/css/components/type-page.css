@@ -245,11 +245,20 @@ body.is-type :is(.tph, .tpx, .types, .ft) {
 .tph.tph--section {
   padding-block: 160px;
   border: 0;
+  border-top: 1px solid var(--sheet-line);
   background-color: var(--paper);
 }
 
+/* Tab sejajar tengah gambar */
 .tph--section .tph__copy {
+  justify-content: center;
+  gap: 32px;
   padding-block: 0;
+}
+
+.tph--section .tph__tabs {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .tph--section .tph__stage {

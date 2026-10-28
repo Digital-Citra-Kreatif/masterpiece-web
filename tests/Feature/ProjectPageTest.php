@@ -238,14 +238,15 @@ test('the hero slides through every image and video of its media', function () {
         ->and(preg_match_all('/<img\s+class="hero__media"/', $html))->toBe(2);
 });
 
-test('the 360° section sits above Type, with spinning and still tabs', function () {
+test('the 360° section sits above Type, with spinning, still and shared tabs', function () {
     $frames = collect(['frame_10.jpg', 'frame_2.jpg', 'frame_1.jpg'])->map(fn (string $name): int => projectImage($name))->all();
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
         'turntable' => ['title' => 'Explore the unit', 'tabs' => [
-            ['name' => 'Fasad', 'description' => 'Tampak depan.', 'images' => $frames],
-            ['name' => 'Lantai 1', 'description' => 'Denah aksonometri.', 'images' => [projectImage('floor.jpg')]],
+            ['name' => 'Fasad', 'description' => 'Tampak depan.', 'images' => $frames, 'frame' => null],
+            ['name' => 'Lantai 1', 'description' => 'Denah aksonometri.', 'images' => [projectImage('floor.jpg')], 'frame' => null],
+            ['name' => 'Lantai 2', 'description' => 'Pakai gambar Fasad.', 'images' => [], 'frame' => 2],
         ]],
         'types' => ['title' => 'Type', 'hero_image' => projectImage('cutaway.jpg')],
     ]);
@@ -259,9 +260,13 @@ test('the 360° section sits above Type, with spinning and still tabs', function
     preg_match('/data-parts="([^"]+)"/', $html, $match);
     $parts = json_decode(html_entity_decode($match[1]), true);
     $names = fn (array $urls): array => array_map(fn (string $url): string => preg_replace('/.*-(frame-\d+)\.jpg.*/', '$1', $url), $urls);
-    expect($parts)->toHaveCount(2)
+    expect($parts)->toHaveCount(3)
         ->and($names($parts[0]['frames']))->toBe(['frame-1', 'frame-2', 'frame-10'])
         ->and($parts[1]['frames'])->toHaveCount(1)
+        // Tab tanpa gambar memutar gambar Fasad
+        ->and($parts[2]['frames'])->toBe($parts[0]['frames'])
+        ->and($parts[2]['config'])->toBe($parts[0]['config'])
+        ->and($parts[2]['frame'])->toBe(2)
         ->and($html)->toContain('data-part-spin')
         ->and($html)->toContain('data-config="'.url('/turntable/'));
 });

@@ -13,7 +13,7 @@
   id="{{ $id }}"
   class="tph tph--section"
   @if ($section['title']) aria-labelledby="{{ $id }}-title" @else aria-label="{{ $label }}" @endif
-  data-parts="{{ json_encode(collect($tabs)->map(fn (array $tab): array => Arr::only($tab, ['name', 'frames', 'width', 'height', 'config', 'root']))) }}"
+  data-parts="{{ json_encode(collect($tabs)->map(fn (array $tab): array => Arr::only($tab, ['name', 'frames', 'width', 'height', 'frame', 'config', 'root']))) }}"
 >
   <div class="wrap tph__grid">
     <div class="tph__copy">
@@ -45,7 +45,7 @@
           <x-turntable
             :id="$id.'-tt'"
             :label="$label"
-            :turntable="['config' => $shown['config'], 'root' => $shown['root'], 'width' => $shown['width'], 'height' => $shown['height'], 'poster' => $shown['frames'][0]]"
+            :turntable="['config' => $shown['config'], 'root' => $shown['root'], 'width' => $shown['width'], 'height' => $shown['height'], 'frame' => $shown['frame'], 'poster' => $shown['frames'][$shown['frame']]]"
             tone="black"
           />
         </div>
