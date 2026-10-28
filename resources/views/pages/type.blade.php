@@ -3,8 +3,8 @@
   $pj = $t['project'];
   $parts = $t['parts'];
 
-  $galleryItems = collect($t['gallery'])->map(fn ($src, $i) => ['src' => asset($src), 'alt' => "{$t['name']}, gambar ".($i + 1)]);
-  $galleryPayload = fn ($index = 0) => json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems, 'index' => $index]);
+  $galleryItems = collect($t['gallery'])->map(fn ($img, $i) => ['src' => asset($img['src']), 'thumb' => asset($img['thumb']), 'alt' => "{$t['name']}, gambar ".($i + 1)]);
+  $galleryPayload = fn ($index = 0) => json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems->map(fn ($img) => Arr::only($img, ['src', 'alt'])), 'index' => $index]);
   $denahItems = collect($t['denah'])->map(fn ($d) => ['src' => asset($d['image']), 'caption' => $d['label'], 'alt' => "Denah {$d['label']}"]);
   $denahPayload = fn ($index) => json_encode(['title' => "{$t['name']}: Denah", 'items' => $denahItems, 'index' => $index]);
   $vrUrl = filled($t['vr']['url']) ? asset($t['vr']['url']) : null;
@@ -152,7 +152,7 @@
               @foreach (range(1, $sets * 2) as $copy)
                 @foreach ($galleryItems as $image)
                   <li @if ($copy > 1) aria-hidden="true" @endif>
-                    <img src="{{ $image['src'] }}" alt="{{ $copy > 1 ? '' : $image['alt'] }}" loading="lazy" />
+                    <img src="{{ $image['thumb'] }}" decoding="async" alt="{{ $copy > 1 ? '' : $image['alt'] }}" loading="lazy" />
                   </li>
                 @endforeach
               @endforeach
@@ -174,7 +174,7 @@
               @foreach ($galleryItems as $image)
                 <li>
                   <button class="tpx__shot" type="button" data-open="gallery" data-payload="{{ $galleryPayload($loop->index) }}" aria-label="Perbesar {{ $image['alt'] }}">
-                    <img src="{{ $image['src'] }}" alt="" loading="lazy" />
+                    <img src="{{ $image['thumb'] }}" decoding="async" alt="" loading="lazy" />
                   </button>
                 </li>
               @endforeach

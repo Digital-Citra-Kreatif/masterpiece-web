@@ -21,6 +21,17 @@
   outline-offset: 3px;
 }
 
+/* Parallax hero */
+.is-type main > * {
+  position: relative;
+  z-index: 1;
+}
+
+.is-type main > .tph {
+  z-index: 0;
+  will-change: transform;
+}
+
 /* Garis lebih tipis */
 body.is-type :is(.tph, .tpx, .types, .ft) {
   --line: rgb(14 17 19 / 0.07);
@@ -368,6 +379,7 @@ body.is-type :is(.tph, .tpx, .types, .ft) {
 /* Strip berjalan */
 .tpg__run {
   overflow: hidden;
+  contain: paint; /* Isolasi animasi */
   padding-bottom: 160px;
 }
 
@@ -379,6 +391,7 @@ body.is-type :is(.tph, .tpx, .types, .ft) {
   margin: 0;
   padding: 0;
   animation: gallery-run calc(var(--n) * 4s) linear infinite;
+  will-change: translate; /* Lapisan GPU */
 }
 
 .tpg__track img {

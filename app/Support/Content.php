@@ -291,7 +291,7 @@ final class Content
             'sequence' => [...$sequence, 'placeholder' => ! ($values['real_facade'] ?? false)],
             'parts' => $parts,
             'denah' => $denah->all(),
-            'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): string => $image->url())->values()->all(),
+            'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url(), 'thumb' => $image->url('medium')])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],
             'project' => ProjectPage::forType($entry, $values['project'] ?? null),
         ];
