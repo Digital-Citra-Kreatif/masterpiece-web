@@ -348,7 +348,7 @@
 /* ---- mobile: one column; pictures and contents run line to line */
 @media (max-width: 760px) {
   .tph {
-    padding-top: calc(var(--header-h) + 16px);
+    padding-top: calc(var(--header-h) + 32px);
   }
 
   /* minmax(0, …): a column never grows past the screen for wide content */
@@ -358,7 +358,7 @@
   }
 
   .tph__copy {
-    padding: 24px var(--inset) 24px 0;
+    padding: 24px var(--inset) 72px 0; /* 72px to the next section */
   }
 
   .tph__name {
@@ -378,7 +378,15 @@
   }
 
   .tph__tab {
-    min-height: 48px;
+    min-height: 44px; /* tap target, and no more */
+    padding-block: 0;
+    align-items: center;
+  }
+
+  /* Number as large as the name; normal-size text needs the darker grey */
+  .tph__tab-no {
+    color: #6a6e71;
+    font-size: 16px;
   }
 
   .tpx__body,
@@ -388,15 +396,17 @@
     border-top: 1px solid var(--sheet-line);
   }
 
-  /* Inside the text's gutter; as tall as the 360° viewer with its controls */
+  /* First, above the name; inside the text's gutter; as tall as the 360°
+     viewer with its controls */
   .tph__stage {
+    order: -1;
     min-height: 0;
-    margin: 0 var(--inset) var(--inset) 0;
+    margin: 0 var(--inset) 0 0;
   }
 
   .tpx__grid > .tpx__title,
   .tpx__side {
-    padding: 32px var(--inset) 24px 0;
+    padding: 72px var(--inset) 24px 0; /* 72px from the section above */
   }
 
   .tpx__title {
@@ -404,7 +414,8 @@
   }
 
   .tpx--spec .tpx__body {
-    padding: 24px var(--inset) 48px;
+    padding: 0 var(--inset) 72px;
+    border-top: 0;
   }
 
   .tpx__specs div {

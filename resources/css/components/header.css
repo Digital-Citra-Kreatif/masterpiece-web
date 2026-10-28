@@ -104,7 +104,7 @@
   }
 
   .hd--type .hd__logo--own {
-    height: 48px;
+    height: 56px;
   }
 }
 
@@ -115,10 +115,6 @@
 
   .hd__btn {
     padding-inline: 14px;
-  }
-
-  .hd__btn-more {
-    display: none;
   }
 }
 
