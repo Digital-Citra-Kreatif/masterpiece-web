@@ -125,10 +125,16 @@
 
     @if ($t['gallery'] !== [] || $vrUrl)
       {{-- Galeri dan VR --}}
-      <section class="tpx" aria-labelledby="gallery-title">
-        <div class="wrap tpx__grid">
-          <div class="tpx__side">
-            <h2 class="display tpx__title" id="gallery-title">Galeri</h2>
+      <section class="tpx tpg" aria-labelledby="gallery-title">
+        <div class="wrap tpg__head">
+          <h2 class="display tpx__title" id="gallery-title">Galeri</h2>
+          <div class="tpg__actions">
+            @if ($t['gallery'] !== [])
+              <button class="btn" type="button" aria-haspopup="dialog" aria-controls="gallery-grid" data-grid-open>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" /></svg>
+                Lihat Galeri
+              </button>
+            @endif
             @if ($vrUrl)
               <a class="btn btn--solid tpx__vr" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4l-3-3-3 3H5a2 2 0 0 1-2-2Z" /><circle cx="8.5" cy="11.5" r="1.5" /><circle cx="15.5" cy="11.5" r="1.5" /></svg>
@@ -137,20 +143,41 @@
               </a>
             @endif
           </div>
-          <div class="tpx__body">
-            @if ($t['gallery'] !== [])
-              <ul class="tpx__gallery">
+        </div>
+
+        @if ($t['gallery'] !== [])
+          {{-- Strip berjalan --}}
+          <div class="tpg__run" style="--n: {{ count($galleryItems) }}">
+            <ul class="tpg__track">
+              @foreach ([false, true] as $copy)
                 @foreach ($galleryItems as $image)
-                  <li>
-                    <button class="tpx__shot" type="button" data-open="gallery" data-payload="{{ $galleryPayload($loop->index) }}" aria-label="Perbesar {{ $image['alt'] }}">
-                      <img src="{{ $image['src'] }}" alt="" loading="lazy" />
-                    </button>
+                  <li @if ($copy) aria-hidden="true" @endif>
+                    <img src="{{ $image['src'] }}" alt="{{ $copy ? '' : $image['alt'] }}" loading="lazy" />
                   </li>
                 @endforeach
-              </ul>
-            @endif
+              @endforeach
+            </ul>
           </div>
-        </div>
+
+          {{-- Popup grid --}}
+          <dialog class="tpg__dialog" id="gallery-grid" aria-labelledby="gallery-grid-title" data-gallery-grid>
+            <div class="tpg__bar">
+              <h3 class="display tpg__dialog-title" id="gallery-grid-title">Galeri {{ $t['name'] }}</h3>
+              <button class="icon-btn" type="button" aria-label="Tutup galeri" data-grid-close>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
+              </button>
+            </div>
+            <ul class="tpg__grid">
+              @foreach ($galleryItems as $image)
+                <li>
+                  <button class="tpx__shot" type="button" data-open="gallery" data-payload="{{ $galleryPayload($loop->index) }}" aria-label="Perbesar {{ $image['alt'] }}">
+                    <img src="{{ $image['src'] }}" alt="" loading="lazy" />
+                  </button>
+                </li>
+              @endforeach
+            </ul>
+          </dialog>
+        @endif
       </section>
     @endif
 

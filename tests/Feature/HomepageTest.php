@@ -103,6 +103,9 @@ test('a type page shows its specs, its parts and its floor plans', function () {
         ->assertSeeInOrder(['Fasad', 'Lantai 1', 'Lantai 2', 'Lantai 3'])
         ->assertSee('Denah Lantai 1')
         ->assertSee('data-plans-swiper', false)
+        ->assertSee('<div class="tpg__run"', false)
+        ->assertSee('aria-controls="gallery-grid" data-grid-open', false)
+        ->assertSee('<dialog class="tpg__dialog" id="gallery-grid"', false)
         ->assertSee('aria-label="Denah berikutnya"', false)
         ->assertSee('href="'.asset('/vr/placeholder/index.html').'" target="_blank" rel="noopener"', false);
 });
