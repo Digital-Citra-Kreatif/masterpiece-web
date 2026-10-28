@@ -134,7 +134,7 @@ class SiteContentSeeder extends Seeder
                         $text('reserved', ['required' => true, 'width' => 33]),
                         $text('available', ['required' => true, 'width' => 33]),
                     ]]),
-                    $this->field('protect_media', 'toggle', [], ['instructions' => 'Lindungi gambar & video: menutup menu simpan gambar/video di browser.']),
+                    $this->field('protect_media', 'toggle', [], ['instructions' => 'Nonaktifkan fitur simpan gambar/video di browser']),
                 ]],
                 $this->projectBlueprint(),
                 $this->footerBlueprint(),
