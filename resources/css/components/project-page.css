@@ -1210,6 +1210,20 @@ button.pj-frame:focus-visible {
   }
 }
 
+/* Animasi tutup */
+.wa__panel.is-closing {
+  pointer-events: none;
+  animation: wa-out 0.22s var(--ease) forwards;
+}
+
+@keyframes wa-out {
+  to {
+    opacity: 0;
+    scale: 0.92;
+    translate: 0 12px;
+  }
+}
+
 .wa__heading {
   margin: 0;
   font-size: 16px;
@@ -1323,6 +1337,7 @@ button.pj-frame:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .wa__panel,
+  .wa__panel.is-closing,
   .wa__contacts li {
     animation: none;
   }
