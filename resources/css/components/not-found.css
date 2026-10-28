@@ -1,22 +1,68 @@
 /* Halaman 404 */
 
-.nf {
+/* Isi mengisi layar, footer di bawah */
+body:has(.nf) {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   min-height: 100svh;
+  background: #fff;
+}
+
+.nf {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  padding-top: var(--header-h);
+  align-items: center;
+  gap: 28px;
+  padding: 64px var(--gutter);
+  text-align: center;
+}
+
+/* Angka di belakang judul */
+.nf__head {
+  display: grid;
+  place-items: center;
+  width: 100%;
+}
+
+.nf__code,
+.nf__title {
+  grid-area: 1 / 1;
+}
+
+.nf__code {
+  color: rgb(14 17 19 / 0.045);
+  font-family: var(--display);
+  font-size: clamp(180px, 38vw, 480px);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  user-select: none;
 }
 
 .nf__title {
   margin: 0;
-  font-size: clamp(48px, 8vw, 112px);
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(26px, 4.2vw, 52px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
 }
 
 .nf__text {
+  max-width: 40ch;
   margin: 0;
   color: var(--ink-2);
+  font-size: 17px;
+}
+
+/* Tombol pil */
+.nf__btn {
+  min-height: 52px;
+  padding-inline: 32px;
+  border-radius: 999px;
 }
