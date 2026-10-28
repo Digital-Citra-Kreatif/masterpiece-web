@@ -77,6 +77,10 @@
       />
     @endisset
 
+    @isset($s['turntable'])
+      <x-project.turntable :section="$s['turntable']" :id="$sectionId('turntable')" />
+    @endisset
+
     @isset($s['types'])
       @php($ty = $s['types'])
       <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]">

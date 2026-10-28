@@ -338,6 +338,13 @@ class SiteContentSeeder extends Seeder
                     $text('name', 'Nama', ['required' => true, 'width' => 50]),
                 ]]),
             ]),
+            $section('turntable', '360°', [
+                $this->field('tabs', 'repeater', [], ['label' => 'Tab', 'fields' => [
+                    $text('name', 'Nama', ['required' => true, 'instructions' => 'Misalnya "Fasad" atau "Lantai 1".']),
+                    $textarea('description', 'Deskripsi'),
+                    $gallery('images', 'Gambar', ['required' => true, 'instructions' => '1 gambar: gambar diam. Banyak gambar: diputar 360°, urut sesuai nama file.']),
+                ]]),
+            ], description: false),
             $section('types', 'Tipe', [
                 $image('hero_image', 'Gambar potongan'),
                 $this->field('units', 'entries', ['collections' => ['types'], 'multiple' => true], ['label' => 'Tipe unit', 'translatable' => false]),

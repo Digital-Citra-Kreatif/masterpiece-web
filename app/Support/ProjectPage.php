@@ -43,6 +43,7 @@ final class ProjectPage
         'location' => ['id' => 'location', 'label' => 'Location'],
         'cluster' => ['id' => 'cluster', 'label' => 'Cluster'],
         'facilities' => ['id' => 'facility', 'label' => 'Facility'],
+        'turntable' => ['id' => 'view-360', 'label' => '360°'],
         'types' => ['id' => 'type', 'label' => 'Type'],
         'availability' => ['id' => 'unit', 'label' => 'Unit'],
     ];
@@ -119,6 +120,7 @@ final class ProjectPage
             'location' => self::location(self::group($values, 'location')),
             'cluster' => self::cluster(self::group($values, 'cluster')),
             'facilities' => self::facilities(self::group($values, 'facilities')),
+            'turntable' => self::turntable(self::group($values, 'turntable'), $project),
             'types' => self::types(self::group($values, 'types')),
             'availability' => self::availability(self::group($values, 'availability'), $project),
         ]);
@@ -337,6 +339,59 @@ final class ProjectPage
                 'text' => (string) ($point['description'] ?? ''),
                 'image' => $point['image']['src'] ?? null,
             ]])
+            ->all();
+    }
+
+    /**
+     * Tab 360°
+     *
+     * @param  array<string, mixed>  $section
+     * @return array{title: string, intro: ?string, tabs: list<array{name: string, text: string, frames: list<string>, width: int, height: int, config: string, root: string}>}|null
+     */
+    private static function turntable(array $section, int $project): ?array
+    {
+        $tabs = collect(self::turntableTabs($section))
+            ->map(fn (array $tab, int $index): array => [
+                ...$tab,
+                'config' => route('turntable.config', ['project' => $project, 'tab' => $index]),
+                'root' => Turntable::root($project),
+            ])
+            ->all();
+
+        // Tanpa tab tidak tampil
+        return $tabs === [] ? null : self::section($section, ['tabs' => $tabs], true);
+    }
+
+    /**
+     * Tab berisi gambar
+     *
+     * @param  array<string, mixed>  $section
+     * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int}>
+     */
+    public static function turntableTabs(array $section): array
+    {
+        return collect($section['tabs'] ?? [])
+            ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
+            ->map(function (array $row): ?array {
+                // Urut nama file
+                $frames = collect(is_iterable($row['images'] ?? null) ? $row['images'] : [])
+                    ->filter(fn (mixed $media): bool => $media instanceof Media && $media->isImage())
+                    ->sortBy(fn (Media $media): string => (string) $media->filename, SORT_NATURAL | SORT_FLAG_CASE)
+                    ->values();
+                if ($frames->isEmpty()) {
+                    return null;
+                }
+
+                return [
+                    'name' => (string) $row['name'],
+                    'text' => (string) ($row['description'] ?? ''),
+                    'frames' => $frames->map(fn (Media $media): string => $media->url())->all(),
+                    'width' => (int) ($frames->first()->width ?: 1600),
+                    'height' => (int) ($frames->first()->height ?: 1200),
+                ];
+            })
+            ->filter()
+            ->values()
             ->all();
     }
 

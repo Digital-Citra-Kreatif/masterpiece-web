@@ -4,16 +4,45 @@ const root = document.querySelector('[data-parts]');
 if (root) {
   const parts = JSON.parse(root.dataset.parts);
   const tt = root.querySelector('[data-turntable]');
+  const spin = root.querySelector('[data-part-spin]');
+  const still = root.querySelector('[data-part-still]');
   const items = [...root.querySelectorAll('[data-part]')];
   const tabs = items.map((item) => item.querySelector('[data-part-tab]'));
   let active = 0;
+  let loaded = tt?.querySelector('.tt__stage')?.dataset.config ?? null;
+
+  // Gambar sendiri per tab
+  function showFrames(p) {
+    if (p.frames.length < 2) {
+      still.src = p.frames[0];
+      still.alt = p.name;
+      still.hidden = false;
+      if (spin) spin.hidden = true;
+      return;
+    }
+    still.hidden = true;
+    if (p.config !== loaded) {
+      loaded = p.config;
+      // Dipakai juga saat viewer belum jalan
+      Object.assign(tt.querySelector('.tt__stage').dataset, { config: p.config, root: p.root, width: p.width, height: p.height });
+      tt.dispatchEvent(new CustomEvent('tt:load', { detail: p }));
+    }
+    if (spin.hidden) {
+      spin.hidden = false;
+      tt.dispatchEvent(new CustomEvent('tt:resize'));
+    }
+  }
 
   function setPart(i) {
     if (i === active) return;
     active = i;
     const p = parts[i];
-    tt.dataset.goto = String(p.frame); // Diambil saat siap
-    tt.dispatchEvent(new CustomEvent('tt:goto', { detail: { frame: p.frame } }));
+    if (p.frames) {
+      showFrames(p);
+    } else {
+      tt.dataset.goto = String(p.frame); // Diambil saat siap
+      tt.dispatchEvent(new CustomEvent('tt:goto', { detail: { frame: p.frame } }));
+    }
     items.forEach((item, k) => {
       item.classList.toggle('is-open', k === i);
       tabs[k].setAttribute('aria-expanded', String(k === i));

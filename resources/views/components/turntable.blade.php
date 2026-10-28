@@ -7,7 +7,10 @@
       'kicker' => $kicker ?? $label,
       'image' => isset($h['image']) ? asset($h['image']) : null,
   ]);
-  $pkg = rtrim(asset($turntable['package']), '/').'/';
+  // Paket folder atau config dari server
+  $pkg = isset($turntable['package']) ? rtrim(asset($turntable['package']), '/').'/' : null;
+  $config = $pkg ? $pkg.'config.xml' : $turntable['config'];
+  $root = $pkg ?? $turntable['root'];
 @endphp
 
 <div
@@ -20,8 +23,8 @@
   <div
     class="tt__stage"
     style="aspect-ratio: {{ $turntable['width'] }} / {{ $turntable['height'] }}"
-    data-config="{{ $pkg }}config.xml"
-    data-root="{{ $pkg }}"
+    data-config="{{ $config }}"
+    data-root="{{ $root }}"
     data-width="{{ $turntable['width'] }}"
     data-height="{{ $turntable['height'] }}"
     data-first="{{ $turntable['firstImage'] ?? 0 }}"

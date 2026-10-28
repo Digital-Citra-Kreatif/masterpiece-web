@@ -105,14 +105,30 @@ async function boot(root) {
   viewer.settings.responsiveBaseWidth = Number(stage.dataset.width);
   viewer.settings.responsiveMinHeight = 0;
   viewer.settings.alt = viewerEl.getAttribute('aria-label');
-  viewer.settings.progressCallback = (_fs, percent) => progress.style.setProperty('--progress', `${percent}%`);
+  viewer.settings.progressCallback = (_fs, percent) => {
+    progress.style.setProperty('--progress', `${percent}%`);
+    // Selesai muat ulang
+    if (percent < 100 || !api) return;
+    try {
+      total = api.images.getTotalImageCount() || 1;
+      setAngle(api.images.getCurrentImageIndex());
+    } catch {
+      return; // Viewer belum siap
+    }
+    root.classList.add('is-ready');
+  };
+  let listening = false;
   viewer.settings.apiReadyCallback = (readyApi) => {
     api = readyApi;
     total = api.images.getTotalImageCount() || 1;
     setAngle(api.images.getCurrentImageIndex());
-    api.images.onFrame((e) => setAngle(e.index.image));
-    // Drag batalkan seek
-    api.images.onDrag((e) => e.action === 'dragStart' && stopSeek());
+    // Sekali saja, reload memanggil lagi
+    if (!listening) {
+      listening = true;
+      api.images.onFrame((e) => setAngle(e.index.image));
+      // Drag batalkan seek
+      api.images.onDrag((e) => e.action === 'dragStart' && stopSeek());
+    }
     root.classList.add('is-ready');
     if (pendingGoTo !== null) {
       api.images.showImageByIndex(pendingGoTo);
@@ -122,6 +138,21 @@ async function boot(root) {
     pending = 0;
   };
   viewer.runImageRotator();
+
+  // Ganti paket per tab
+  root.addEventListener('tt:load', (e) => {
+    const { config, root: path, width, height } = e.detail;
+    stopSeek();
+    stage.style.aspectRatio = `${width} / ${height}`;
+    viewerEl.style.height = `${height}px`;
+    root.style.setProperty('--native', `${width}px`);
+    viewer.settings.responsiveBaseWidth = Number(width);
+    root.classList.remove('is-ready');
+    progress.style.setProperty('--progress', '0%');
+    viewer.reload(config, path, null, 0);
+  });
+  // Ukur ulang setelah tampil
+  root.addEventListener('tt:resize', () => api?.updateDimensions());
 
   // Wheel horizontal
   let acc = 0;

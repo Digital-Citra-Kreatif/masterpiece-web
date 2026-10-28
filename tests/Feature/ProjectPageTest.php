@@ -238,6 +238,34 @@ test('the hero slides through every image and video of its media', function () {
         ->and(preg_match_all('/<img\s+class="hero__media"/', $html))->toBe(2);
 });
 
+test('the 360° section sits above Type, with spinning and still tabs', function () {
+    $frames = collect(['frame_10.jpg', 'frame_2.jpg', 'frame_1.jpg'])->map(fn (string $name): int => projectImage($name))->all();
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'turntable' => ['title' => 'Explore the unit', 'tabs' => [
+            ['name' => 'Fasad', 'description' => 'Tampak depan.', 'images' => $frames],
+            ['name' => 'Lantai 1', 'description' => 'Denah aksonometri.', 'images' => [projectImage('floor.jpg')]],
+        ]],
+        'types' => ['title' => 'Type', 'hero_image' => projectImage('cutaway.jpg')],
+    ]);
+
+    $html = $this->get('/projects/westlake')->assertOk()
+        ->assertSeeInOrder(['<section', 'id="view-360"', 'class="tph tph--section"', '<h2 class="pj-title display" id="view-360-title">Explore the unit</h2>', 'id="type"'], false)
+        ->assertSee('href="#view-360"', false)
+        ->assertSee('<strong>Fasad.</strong> Tampak depan.', false)
+        ->getContent();
+
+    preg_match('/data-parts="([^"]+)"/', $html, $match);
+    $parts = json_decode(html_entity_decode($match[1]), true);
+    $names = fn (array $urls): array => array_map(fn (string $url): string => preg_replace('/.*-(frame-\d+)\.jpg.*/', '$1', $url), $urls);
+    expect($parts)->toHaveCount(2)
+        ->and($names($parts[0]['frames']))->toBe(['frame-1', 'frame-2', 'frame-10'])
+        ->and($parts[1]['frames'])->toHaveCount(1)
+        ->and($html)->toContain('data-part-spin')
+        ->and($html)->toContain('data-config="'.url('/turntable/'));
+});
+
 test('the Type cutaway image sits inside the section, above the title', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
