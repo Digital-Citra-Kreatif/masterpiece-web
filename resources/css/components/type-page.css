@@ -324,6 +324,25 @@
   .tpx__gallery {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .tph__tab-no {
+    font-size: 26px;
+  }
+
+  /* Not as tall as on a wide screen */
+  .tph__stage {
+    min-height: clamp(320px, 42vw, 430px);
+  }
+
+  /* 72px above and below each section's title and content */
+  .tpx--spec {
+    --spec-pad: 72px;
+  }
+
+  .tpx__grid > .tpx__title,
+  .tpx__side {
+    padding-block: 72px;
+  }
 }
 
 /* ---- mobile: one column; pictures and contents run line to line */
