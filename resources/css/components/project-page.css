@@ -1142,8 +1142,8 @@ button.pj-frame:focus-visible {
 .wa__toggle {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -1164,8 +1164,8 @@ button.pj-frame:focus-visible {
 }
 
 .wa__toggle svg {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
 }
 
 .wa__toggle .wa__icon-close {
