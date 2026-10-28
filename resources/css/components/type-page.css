@@ -254,7 +254,6 @@
 }
 
 .tpx__intro {
-  max-width: 60ch;
   margin: 0 0 32px;
   color: var(--ink-2);
   font-size: 16px;
@@ -345,7 +344,7 @@
   align-items: end;
   justify-content: space-between;
   gap: 24px;
-  padding-block: clamp(40px, 5vw, 72px) 32px;
+  padding-block: 160px 32px;
 }
 
 .tpg__actions {
@@ -363,33 +362,29 @@
 /* Strip berjalan */
 .tpg__run {
   overflow: hidden;
-  padding-bottom: clamp(40px, 5vw, 72px);
+  padding-bottom: 160px;
 }
 
 .tpg__track {
   list-style: none;
   display: flex;
-  gap: 8px;
+  gap: 16px;
   width: max-content;
   margin: 0;
   padding: 0;
-  animation: gallery-run calc(var(--n) * 6s) linear infinite;
-}
-
-.tpg__run:hover .tpg__track {
-  animation-play-state: paused;
+  animation: gallery-run calc(var(--n) * 4s) linear infinite;
 }
 
 .tpg__track img {
   display: block;
-  height: clamp(220px, 26vw, 380px);
+  height: clamp(160px, 16vw, 260px);
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
 
 @keyframes gallery-run {
   to {
-    translate: calc(-50% - 4px) 0; /* Satu set */
+    translate: calc(-50% - 8px) 0; /* Satu set */
   }
 }
 
@@ -469,6 +464,10 @@
 
   .tpg__head {
     padding-top: 72px;
+  }
+
+  .tpg__run {
+    padding-bottom: 72px;
   }
 
   /* Viewer lebih pendek */
@@ -563,7 +562,7 @@
   }
 
   .tpg__track img {
-    height: 200px;
+    height: 150px;
   }
 
   .tpg__bar {

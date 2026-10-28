@@ -139,7 +139,6 @@
               <a class="btn btn--solid tpx__vr" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4l-3-3-3 3H5a2 2 0 0 1-2-2Z" /><circle cx="8.5" cy="11.5" r="1.5" /><circle cx="15.5" cy="11.5" r="1.5" /></svg>
                 Tur VR 360°
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6" /></svg>
               </a>
             @endif
           </div>
@@ -147,12 +146,13 @@
 
         @if ($t['gallery'] !== [])
           {{-- Strip berjalan --}}
-          <div class="tpg__run" style="--n: {{ count($galleryItems) }}">
+          @php($sets = (int) ceil(6 / count($galleryItems)))
+          <div class="tpg__run" style="--n: {{ count($galleryItems) * $sets }}">
             <ul class="tpg__track">
-              @foreach ([false, true] as $copy)
+              @foreach (range(1, $sets * 2) as $copy)
                 @foreach ($galleryItems as $image)
-                  <li @if ($copy) aria-hidden="true" @endif>
-                    <img src="{{ $image['src'] }}" alt="{{ $copy ? '' : $image['alt'] }}" loading="lazy" />
+                  <li @if ($copy > 1) aria-hidden="true" @endif>
+                    <img src="{{ $image['src'] }}" alt="{{ $copy > 1 ? '' : $image['alt'] }}" loading="lazy" />
                   </li>
                 @endforeach
               @endforeach
