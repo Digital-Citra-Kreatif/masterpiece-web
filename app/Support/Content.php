@@ -351,7 +351,7 @@ final class Content
      */
     private static function units(): Collection
     {
-        return Cms::entries('units')->alphabetical()->get()
+        return Cms::entries('units')->where('project', null)->alphabetical()->get()
             ->map(function (EntryTranslation $unit): array {
                 $values = $unit->values();
 

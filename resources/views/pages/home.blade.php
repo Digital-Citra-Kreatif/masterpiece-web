@@ -50,7 +50,9 @@
     <x-home.type-grid :types="$types" :heading="$headings['types']" />
 
     <!-- Update unit -->
-    <x-home.unit-update :units="$units" :counts="$counts" :heading="$headings['units']" />
+    @if ($units !== [])
+      <x-home.unit-update :units="$units" :counts="$counts" :heading="$headings['units']" />
+    @endif
   </main>
 
   <x-footer />

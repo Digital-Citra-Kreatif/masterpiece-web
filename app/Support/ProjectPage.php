@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use Sunrice\Admin\Media\Media;
+use Sunrice\Cms\Content as Cms;
 use Sunrice\Cms\Models\EntryTranslation;
 
 /** Data halaman proyek */
@@ -56,7 +57,7 @@ final class ProjectPage
      */
     public static function page(EntryTranslation $entry, array $values): array
     {
-        $sections = self::sections($values);
+        $sections = self::sections($values, $entry->entry_id);
 
         // Jalur titik orbit
         foreach (array_keys(ProjectTracks::sections()) as $handle) {
@@ -88,7 +89,7 @@ final class ProjectPage
         }
 
         $values = $project->values();
-        $sections = self::sections($values);
+        $sections = self::sections($values, $project->entry_id);
         $url = (string) $project->url();
 
         return [
@@ -110,7 +111,7 @@ final class ProjectPage
      * @param  array<string, mixed>  $values
      * @return array<string, array<string, mixed>>
      */
-    private static function sections(array $values): array
+    private static function sections(array $values, int $project): array
     {
         return array_filter([
             'masterplan' => self::masterplan(self::group($values, 'masterplan')),
@@ -118,7 +119,7 @@ final class ProjectPage
             'cluster' => self::cluster(self::group($values, 'cluster')),
             'facilities' => self::facilities(self::group($values, 'facilities')),
             'types' => self::types(self::group($values, 'types')),
-            'availability' => self::availability(self::group($values, 'availability')),
+            'availability' => self::availability(self::group($values, 'availability'), $project),
         ]);
     }
 
@@ -480,7 +481,7 @@ final class ProjectPage
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, siteplan: ?array<string, mixed>, blocks: list<array<string, mixed>>}|null
      */
-    private static function availability(array $section): ?array
+    private static function availability(array $section, int $project): ?array
     {
         $siteplan = self::image($section['siteplan'] ?? null);
         $blocks = collect($section['blocks'] ?? [])
@@ -494,13 +495,14 @@ final class ProjectPage
             ->all();
 
         // Titik status unit
-        $units = collect($section['units'] ?? [])
-            ->filter(fn (mixed $row): bool => is_array($row) && filled($row['code'] ?? null) && is_numeric($row['x'] ?? null) && is_numeric($row['y'] ?? null))
+        $units = Cms::entries('units')->whereEntry('project', $project)->alphabetical()->get()
+            ->map(fn (EntryTranslation $unit): array => [...$unit->values(), 'code' => (string) $unit->title])
+            ->filter(fn (array $row): bool => is_numeric($row['x'] ?? null) && is_numeric($row['y'] ?? null))
             ->map(fn (array $row): array => [
-                'id' => (string) $row['code'],
+                'id' => $row['code'],
                 'x' => (float) $row['x'],
                 'y' => (float) $row['y'],
-                'status' => in_array($row['status'] ?? null, Content::STATUSES, true) ? $row['status'] : 'available',
+                'status' => in_array($row['sale_status'] ?? null, Content::STATUSES, true) ? $row['sale_status'] : 'available',
             ])
             ->values();
         $counts = collect(Content::STATUSES)->mapWithKeys(fn (string $status): array => [$status => $units->where('status', $status)->count()])->all();

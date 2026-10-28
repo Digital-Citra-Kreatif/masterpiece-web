@@ -40,7 +40,7 @@ class SiteContentSeeder extends Seeder
         $importer->import(['collections' => [$types]]);
         $importer->import([
             'globals' => $this->globals(),
-            'entries' => [...$this->types(), ...$this->units(), $this->homepage()],
+            'entries' => [...$this->types(), $this->homepage()],
             'settings' => ['site' => [
                 'description' => 'Kawasan ruko dan hunian. Jelajahi kawasan, cluster, fasilitas, dan tipe unit dalam 360°.',
             ]],
@@ -116,13 +116,20 @@ class SiteContentSeeder extends Seeder
                     $this->field('placeholder', 'toggle', [], ['instructions' => 'Data contoh, belum dari klien.']),
                 ]],
                 ['handle' => 'unit', 'title' => 'Unit', 'fields' => [
-                    $this->field('x', 'number', ['min' => 0, 'max' => 100], ['required' => true, 'width' => 33, 'instructions' => '% dari lebar siteplan.']),
-                    $this->field('y', 'number', ['min' => 0, 'max' => 100], ['required' => true, 'width' => 33, 'instructions' => '% dari tinggi siteplan.']),
+                    $this->field('project', 'entries', ['collections' => ['projects'], 'multiple' => false], [
+                        'label' => 'Proyek',
+                        'required' => true,
+                        'translatable' => false,
+                        'width' => 50,
+                        'instructions' => 'Judul entri = kode unit, misalnya "A-1".',
+                    ]),
                     $this->field('sale_status', 'select', ['options' => [
                         ['value' => 'available', 'label' => 'Tersedia'],
                         ['value' => 'reserved', 'label' => 'Dipesan'],
                         ['value' => 'sold', 'label' => 'Terjual'],
-                    ], 'default' => 'available'], ['required' => true, 'width' => 33]),
+                    ], 'default' => 'available'], ['label' => 'Status', 'required' => true, 'width' => 50]),
+                    $this->field('x', 'number', ['min' => 0, 'max' => 100], ['label' => 'Posisi X (%)', 'width' => 50, 'instructions' => 'Atur lewat menu Titik unit.']),
+                    $this->field('y', 'number', ['min' => 0, 'max' => 100], ['label' => 'Posisi Y (%)', 'width' => 50]),
                 ]],
                 ['handle' => 'situs', 'title' => 'Situs', 'fields' => [
                     $this->field('nav', 'repeater', [], ['fields' => [
@@ -373,16 +380,6 @@ class SiteContentSeeder extends Seeder
                     $view(['width' => 25]),
                     $image('image', 'Blockplan', ['width' => 50]),
                 ]]),
-                $this->field('units', 'repeater', [], ['label' => 'Unit', 'instructions' => 'Titik status di siteplan; posisi dalam % dari gambar Siteplan.', 'fields' => [
-                    $text('code', 'Kode', ['required' => true, 'translatable' => false, 'width' => 25, 'instructions' => 'Misalnya "A-1".']),
-                    $this->field('status', 'select', ['options' => [
-                        ['value' => 'available', 'label' => 'Tersedia'],
-                        ['value' => 'reserved', 'label' => 'Dipesan'],
-                        ['value' => 'sold', 'label' => 'Terjual'],
-                    ], 'default' => 'available'], ['label' => 'Status', 'required' => true, 'translatable' => false, 'width' => 25]),
-                    $this->field('x', 'number', ['min' => 0, 'max' => 100], ['label' => 'Posisi X (%)', 'required' => true, 'translatable' => false, 'width' => 25]),
-                    $this->field('y', 'number', ['min' => 0, 'max' => 100], ['label' => 'Posisi Y (%)', 'required' => true, 'translatable' => false, 'width' => 25]),
-                ]]),
             ]),
         ];
     }
@@ -509,22 +506,6 @@ class SiteContentSeeder extends Seeder
                 'vr_url' => '/vr/placeholder/index.html',
                 'real_facade' => $type[8],
                 'placeholder' => true,
-            ]))
-            ->all();
-    }
-
-    /**
-     * Titik siteplan
-     *
-     * @return list<array<string, mixed>>
-     */
-    private function units(): array
-    {
-        return collect(json_decode((string) file_get_contents(resource_path('data/units.json')), true))
-            ->map(fn (array $unit): array => $this->entry('units', strtolower($unit['id']), $unit['id'], [
-                'x' => $unit['x'],
-                'y' => $unit['y'],
-                'sale_status' => $unit['status'],
             ]))
             ->all();
     }

@@ -34,6 +34,20 @@ function publishProject(Collection $projects, array $data, string $slug = 'westl
     return $translation->fresh();
 }
 
+/**
+ * Entri unit terbit
+ *
+ * @param  array<string, mixed>  $data
+ */
+function publishUnit(string $code, array $data): EntryTranslation
+{
+    $units = Collection::query()->where('handle', 'units')->firstOrFail();
+    $translation = app(CreateEntry::class)->handle($units, ['title' => $code, 'slug' => str($code)->slug()->toString(), 'locale' => 'id', 'data' => $data]);
+    app(PublishEntry::class)->handle($translation->fresh());
+
+    return $translation->fresh();
+}
+
 function projectImage(string $name): int
 {
     return app(UploadMedia::class)->handle(UploadedFile::fake()->image($name, 40, 30), [])->id;
@@ -166,14 +180,15 @@ test('a project page shows each section with content and skips the empty ones', 
         'availability' => ['title' => 'Unit Availability', 'siteplan' => projectImage('siteplan.jpg'), 'blocks' => [
             ['name' => 'Blok A', 'view' => 'streetview', 'image' => projectImage('blok-a.jpg')],
             ['name' => 'Blok B', 'view' => 'streetview', 'image' => null],
-        ], 'units' => [
-            ['code' => 'A-1', 'status' => 'sold', 'x' => 5.97, 'y' => 66],
-            ['code' => 'A-2', 'status' => 'available', 'x' => 7.2, 'y' => 66],
         ]],
         'whatsapp' => ['contacts' => []],
     ]);
     // Slug proyek URL
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id]]);
+    publishUnit('A-1', ['project' => $project->entry_id, 'sale_status' => 'sold', 'x' => 5.97, 'y' => 66]);
+    publishUnit('A-2', ['project' => $project->entry_id, 'sale_status' => 'available', 'x' => null, 'y' => null]);
+    $other = publishProject($this->projects, ['whatsapp' => ['contacts' => []]], 'lain');
+    publishUnit('Z-9', ['project' => $other->entry_id, 'sale_status' => 'reserved', 'x' => 10, 'y' => 10]);
 
     $response = $this->get('/projects/westlake')->assertOk();
 
@@ -202,6 +217,8 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertSee('<section id="unit" class="units"', false)
         ->assertSee('style="left: 5.97%; top: 66%"', false)
         ->assertSee('title="A-1 · Terjual"', false)
+        ->assertDontSee('title="A-2', false)
+        ->assertDontSee('title="Z-9', false)
         ->assertDontSee('pj-block', false)
         ->assertDontSee('id="location"', false)
         ->assertDontSee('href="#location"', false);
