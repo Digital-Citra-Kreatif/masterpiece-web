@@ -24,6 +24,11 @@
   outline-offset: 3px;
 }
 
+/* The other types on a lighter grey than the site's concrete */
+.is-type .types {
+  background-color: #f9faf9;
+}
+
 /* The header on the page's own white, without a band or rule */
 .is-type .hd--type {
   background: none;
@@ -58,7 +63,7 @@
 }
 
 .tph__text {
-  max-width: 38ch;
+  max-width: 46ch;
   margin: 20px 0 0;
   color: var(--ink-2);
   font-size: 16px;
@@ -116,7 +121,7 @@
   color: var(--room);
 }
 
-/* The 360° viewer, against the top, the right line and the rule */
+/* The 360° viewer, against the top, clear of the side line and the rule */
 /* min-width and overflow keep what WebRotate injects at its native 760px from
    widening the column (and the page, on phones). */
 .tph__stage {
@@ -125,7 +130,7 @@
   min-width: 0;
   overflow: hidden;
   min-height: clamp(480px, 43vw, 620px);
-  border-left: 1px solid var(--sheet-line);
+  margin: 0 clamp(24px, 3vw, 48px) clamp(24px, 3vw, 48px) 0; /* clear of the side line and the rule below */
   background: #000; /* the viewer's own black */
 }
 
@@ -177,23 +182,30 @@
   border-left: 1px solid var(--sheet-line);
 }
 
+/* Specifications: 160px above and below on a wide screen, rows without rules */
+.tpx--spec {
+  --spec-pad: clamp(64px, 11vw, 160px);
+}
+
+.tpx--spec .tpx__title {
+  padding-block: var(--spec-pad);
+}
+
+.tpx--spec .tpx__body {
+  padding: var(--spec-pad) clamp(24px, 4vw, 64px);
+}
+
 .tpx__intro {
   max-width: 60ch;
-  margin: 0;
-  padding: clamp(40px, 5vw, 72px) clamp(24px, 4vw, 64px) 32px;
+  margin: 0 0 32px;
   color: var(--ink-2);
   font-size: 16px;
   line-height: 1.75;
 }
 
-/* Each specification is one box across the column, line to line, a rule
-   between them, so label and value read as a pair. */
+/* Each specification is one row across the column, label left, value right */
 .tpx__specs {
   margin: 0;
-}
-
-.tpx__intro + .tpx__specs {
-  border-top: 1px solid var(--sheet-line);
 }
 
 .tpx__specs div {
@@ -201,17 +213,13 @@
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: baseline;
   gap: 16px;
-  padding: 22px clamp(24px, 4vw, 64px);
-}
-
-.tpx__specs div + div {
-  border-top: 1px solid var(--sheet-line);
+  padding-block: 12px;
 }
 
 .tpx__specs dt {
   color: var(--ink-2);
   font-family: var(--label);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -221,22 +229,28 @@
 .tpx__specs dd {
   margin: 0;
   color: var(--ink);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   text-align: right;
   overflow-wrap: anywhere;
 }
 
-/* Plans fill the column, edge to edge, a rule between them */
+/* Plans fill the column, edge to edge; more than one slide, arrows under the title */
 .tpx__plans {
   list-style: none;
-  display: grid;
+  margin: 0;
   padding: 0;
 }
 
-.tpx__plans li + li {
-  border-top: 1px solid var(--sheet-line);
+.tpx__body.swiper {
+  margin: 0; /* not Swiper's auto margins */
+  overflow: hidden;
+}
+
+.tpx__arrows {
+  display: flex;
+  gap: 4px;
 }
 
 .tpx__plan {
@@ -348,16 +362,17 @@
     min-height: 48px;
   }
 
-  .tph__stage,
-  .tpx__body {
+  .tpx__body,
+  .tpx__body.swiper {
     margin-left: var(--to-line);
     border-left: 0;
     border-top: 1px solid var(--sheet-line);
   }
 
-  /* As tall as the 360° viewer with its controls */
+  /* Inside the text's gutter; as tall as the 360° viewer with its controls */
   .tph__stage {
     min-height: 0;
+    margin: 0 var(--inset) var(--inset) 0;
   }
 
   .tpx__grid > .tpx__title,
@@ -369,13 +384,17 @@
     font-size: clamp(30px, 6vw, 40px);
   }
 
-  .tpx__intro {
-    padding: 24px var(--inset);
+  .tpx--spec .tpx__body {
+    padding: 24px var(--inset) 48px;
   }
 
   .tpx__specs div {
     gap: 12px;
-    padding: 16px var(--inset);
+    padding-block: 10px;
+  }
+
+  .tpx__specs dd {
+    font-size: 18px;
   }
 
   .tpx__gallery {

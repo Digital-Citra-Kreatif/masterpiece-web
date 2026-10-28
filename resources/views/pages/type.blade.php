@@ -1,7 +1,7 @@
 {{--
   Type page, laid out as a drawing sheet (single unit.pdf): the parts first, in
   two columns (name, the part's text and a tab per part on the left; the 360°
-  viewer on the right, against the top and the right line: a tab turns it to the
+  viewer on the right, clear of the side line and the rule: a tab turns it to the
   part's keyframe), then rows with the title in a narrow column and
   the content right of a rule: specifications, floor plans, gallery with the VR
   tour, and the project's other types.
@@ -77,7 +77,7 @@
     </section>
 
     {{-- Spesifikasi --}}
-    <section class="tpx" id="spesifikasi" aria-labelledby="spec-title">
+    <section class="tpx tpx--spec" id="spesifikasi" aria-labelledby="spec-title">
       <div class="wrap tpx__grid">
         <h2 class="display tpx__title" id="spec-title">Spesifikasi</h2>
         <div class="tpx__body">
@@ -98,18 +98,34 @@
 
     @if ($t['denah'] !== [])
       {{-- Denah: gambar memenuhi kolom kanan --}}
+      {{-- Lebih dari satu denah: slider dengan panah (resources/js/plans-swiper.js) --}}
+      @php($slidePlans = count($t['denah']) > 1)
       <section class="tpx" aria-labelledby="denah-title" data-view-cursor>
         <div class="wrap tpx__grid">
-          <h2 class="display tpx__title" id="denah-title">Denah</h2>
-          <ul class="tpx__body tpx__plans">
-            @foreach ($t['denah'] as $d)
-              <li>
-                <button class="tpx__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
-                  <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
+          <div class="tpx__side">
+            <h2 class="display tpx__title" id="denah-title">Denah</h2>
+            @if ($slidePlans)
+              <div class="tpx__arrows">
+                <button class="fac__arrow" type="button" data-plans-prev aria-label="Denah sebelumnya">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
                 </button>
-              </li>
-            @endforeach
-          </ul>
+                <button class="fac__arrow" type="button" data-plans-next aria-label="Denah berikutnya">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+                </button>
+              </div>
+            @endif
+          </div>
+          <div @class(['tpx__body', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
+            <ul @class(['tpx__plans', 'swiper-wrapper' => $slidePlans])>
+              @foreach ($t['denah'] as $d)
+                <li @class(['swiper-slide' => $slidePlans])>
+                  <button class="tpx__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
+                    <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
+                  </button>
+                </li>
+              @endforeach
+            </ul>
+          </div>
         </div>
         <x-view-cursor />
       </section>

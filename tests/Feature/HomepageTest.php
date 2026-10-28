@@ -102,6 +102,8 @@ test('a type page shows its specs, its parts and its floor plans', function () {
         ->assertSee('240 m²')
         ->assertSeeInOrder(['Fasad', 'Lantai 1', 'Lantai 2', 'Lantai 3'])
         ->assertSee('Denah Lantai 1')
+        ->assertSee('data-plans-swiper', false)
+        ->assertSee('aria-label="Denah berikutnya"', false)
         ->assertSee('vr\/placeholder\/index.html', false);
 });
 
