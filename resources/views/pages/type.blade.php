@@ -6,8 +6,9 @@
   the content right of a rule: specifications, floor plans, gallery with the VR
   tour, and the project's other types.
 
-  A project's type wears the project's style, header, footer logo and WhatsApp
-  button; a type without one keeps the site's own.
+  A project's type wears the project's style, logo (a header with a button back
+  to the project, no menu), footer logo and WhatsApp button; a type without one
+  keeps the site's own.
 
   Tabs in resources/js/type-parts.js.
 --}}
@@ -36,7 +37,7 @@
   @endif
 
   @if ($pj)
-    <x-header variant="project" :nav="$pj['nav']" :logo="$pj['style']['logo']" ink />
+    <x-header variant="type" :logo="$pj['style']['logo']" :back="['href' => $pj['url'], 'label' => 'Kembali ke '.$pj['title']]" />
   @else
     <x-header variant="type" />
   @endif
@@ -76,7 +77,7 @@
     <section class="tpx" id="spesifikasi" aria-labelledby="spec-title">
       <div class="wrap tpx__grid">
         <h2 class="display tpx__title" id="spec-title">Spesifikasi</h2>
-        <div class="tpx__body tpx__body--pad">
+        <div class="tpx__body">
           @if ($t['intro'])
             <p class="tpx__intro">{{ $t['intro'] }}</p>
           @endif

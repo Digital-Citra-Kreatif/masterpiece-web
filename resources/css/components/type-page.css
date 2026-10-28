@@ -24,21 +24,28 @@
   outline-offset: 3px;
 }
 
+/* The header on the page's own white, without a band or rule */
+.is-type .hd--type {
+  background: none;
+  box-shadow: none;
+}
+
 /* ---- parts: name, text and tabs left; the part's picture right */
 .tph {
-  padding-top: calc(var(--header-h) + 48px);
+  padding-top: calc(var(--header-h) + 24px);
   border-bottom: 1px solid var(--sheet-line);
 }
 
 .tph__grid {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
 }
 
 .tph__copy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: clamp(32px, 4vw, 56px) clamp(24px, 4vw, 64px) clamp(24px, 3vw, 40px) 0;
+  min-width: 0;
+  padding: clamp(32px, 4vw, 56px) clamp(24px, 4vw, 56px) clamp(32px, 4vw, 56px) 0;
 }
 
 .tph__name {
@@ -47,45 +54,56 @@
   font-size: clamp(40px, 4.6vw, 72px);
   font-weight: 400;
   line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .tph__text {
-  max-width: 44ch;
+  max-width: 38ch;
   margin: 20px 0 0;
   color: var(--ink-2);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.75;
 }
 
-/* Tabs as a plain list; the open one in the project's colour */
+/* Full rows make each floor easier to select; the inset marks the active view. */
 .tph__tabs {
   display: grid;
-  justify-items: start;
-  gap: 4px;
+  width: 100%;
+  max-width: 380px;
+  gap: 0;
   margin-top: auto;
   padding-top: 48px;
 }
 
 .tph__tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  padding: 0;
+  min-height: 52px;
+  padding: 12px 16px;
   border: 0;
+  border-bottom: 1px solid var(--sheet-line);
   background: none;
   color: var(--ink-2);
   font: inherit;
   font-size: 16px;
+  text-align: left;
+  overflow-wrap: anywhere;
   cursor: pointer;
-  transition: color 0.2s var(--ease);
+  transition: color 0.2s var(--ease), background-color 0.2s var(--ease);
 }
 
-.tph__tab:hover {
+.tph__tab:hover,
+.tph__tab:active {
   color: var(--ink);
+  background-color: #f3f4f2;
 }
 
 .tph__tab[aria-selected='true'] {
   color: var(--room);
+  background-color: #f3f4f2;
+  font-weight: 600;
+  box-shadow: inset 3px 0 var(--accent);
 }
 
 /* The 360° viewer, against the top, the right line and the rule */
@@ -96,7 +114,7 @@
   place-items: center;
   min-width: 0;
   overflow: hidden;
-  min-height: clamp(480px, calc(100svh - var(--header-h)), 760px);
+  min-height: clamp(480px, 43vw, 620px);
   border-left: 1px solid var(--sheet-line);
   background: #000; /* the viewer's own black */
 }
@@ -128,6 +146,7 @@
   font-size: clamp(36px, 4vw, 56px);
   font-weight: 400;
   line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .tpx__grid > .tpx__title,
@@ -148,30 +167,35 @@
   border-left: 1px solid var(--sheet-line);
 }
 
-.tpx__body--pad {
-  padding: clamp(40px, 5vw, 72px) clamp(24px, 4vw, 64px);
-}
-
 .tpx__intro {
   max-width: 60ch;
-  margin: 0 0 32px;
+  margin: 0;
+  padding: clamp(40px, 5vw, 72px) clamp(24px, 4vw, 64px) 32px;
   color: var(--ink-2);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.75;
 }
 
-/* Rows without rules */
+/* Each specification is one box across the column, line to line, a rule
+   between them, so label and value read as a pair. */
 .tpx__specs {
-  max-width: 640px;
   margin: 0;
 }
 
+.tpx__intro + .tpx__specs {
+  border-top: 1px solid var(--sheet-line);
+}
+
 .tpx__specs div {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: baseline;
   gap: 16px;
-  padding-block: 10px;
+  padding: 22px clamp(24px, 4vw, 64px);
+}
+
+.tpx__specs div + div {
+  border-top: 1px solid var(--sheet-line);
 }
 
 .tpx__specs dt {
@@ -179,15 +203,19 @@
   font-family: var(--label);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 
 .tpx__specs dd {
   margin: 0;
   color: var(--ink);
   font-size: 16px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 /* Plans fill the column, edge to edge, a rule between them */
@@ -219,6 +247,13 @@
 .tpx__vr svg {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
+}
+
+.tpx__vr {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
 }
 
 /* Gallery: a flush grid, hairlines between the shots */
@@ -253,8 +288,26 @@
   scale: 1.04;
 }
 
+@media (min-width: 761px) and (max-width: 1024px) {
+  .tph__copy {
+    padding-right: 24px;
+  }
+
+  .tpx__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  }
+
+  .tpx__gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* ---- mobile: one column; pictures and contents run line to line */
 @media (max-width: 760px) {
+  .tph {
+    padding-top: calc(var(--header-h) + 16px);
+  }
+
   /* minmax(0, …): a column never grows past the screen for wide content */
   .tph__grid,
   .tpx__grid {
@@ -262,11 +315,27 @@
   }
 
   .tph__copy {
-    padding: 32px 0;
+    padding: 24px var(--inset) 24px 0;
+  }
+
+  .tph__name {
+    font-size: clamp(36px, 7vw, 48px);
+  }
+
+  .tph__text {
+    max-width: 48ch;
+    margin-top: 16px;
+    font-size: 15px;
   }
 
   .tph__tabs {
-    padding-top: 32px;
+    max-width: none;
+    padding-top: 24px;
+    margin-top: 0;
+  }
+
+  .tph__tab {
+    min-height: 48px;
   }
 
   .tph__stage,
@@ -283,15 +352,46 @@
 
   .tpx__grid > .tpx__title,
   .tpx__side {
-    padding: 40px 0 24px;
+    padding: 32px var(--inset) 24px 0;
   }
 
-  .tpx__body--pad {
-    padding: 32px var(--inset);
+  .tpx__title {
+    font-size: clamp(30px, 6vw, 40px);
+  }
+
+  .tpx__intro {
+    padding: 24px var(--inset);
+  }
+
+  .tpx__specs div {
+    gap: 12px;
+    padding: 16px var(--inset);
   }
 
   .tpx__gallery {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .is-type .hd--type .hd__inner {
+    gap: 12px;
+  }
+
+  .is-type .hd--type .hd__logo:not(.hd__logo--own) {
+    width: clamp(96px, 30vw, 140px);
+    height: auto;
+  }
+
+  .is-type .hd__back {
+    flex-shrink: 0;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .is-type .hd__back svg {
+    flex-shrink: 0;
+    width: 16px;
   }
 }
 

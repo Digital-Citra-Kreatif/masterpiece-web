@@ -288,7 +288,7 @@ test('the WhatsApp button shows only with contacts', function () {
         ->assertSee('https://wa.me/6281234567890?text=Halo%2C%20saya%20tertarik', false);
 });
 
-test('a project\'s type page wears the project\'s header, links back to its types and lists the other types', function () {
+test('a project\'s type page has the project\'s logo, a button back to the project and lists the other types', function () {
     $types = EntryTranslation::query()->whereIn('slug', ['tipe-1', 'tipe-2'])->get()->keyBy('slug');
     $project = publishProject($this->projects, [
         'global_style' => inactiveStyle(),
@@ -302,9 +302,10 @@ test('a project\'s type page wears the project\'s header, links back to its type
 
     $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        ->assertSee('<header class="hd hd--project hd--ink">', false)
+        ->assertSee('<header class="hd hd--type">', false)
+        ->assertDontSee('hd__nav', false)
+        ->assertSee('<a class="btn hd__btn" href="'.url('/projects/westlake').'" aria-label="Kembali ke Westlake">', false)
         ->assertSee('<h1 class="display tph__name" id="type-name">'.$types['tipe-1']->title.'</h1>', false)
-        ->assertSee('href="'.url('/projects/westlake').'#type"', false)
         ->assertSee('role="tablist"', false)
         ->assertSee('<section id="tipe-lain" class="types types--project"', false)
         ->assertSee('href="'.url('/westlake/tipe/tipe-2').'"', false)

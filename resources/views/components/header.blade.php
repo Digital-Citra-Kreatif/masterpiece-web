@@ -2,15 +2,15 @@
   'home': transparent over the hero, the CMS menu (config site.menu; without
   links there, the homepage sections).
   'project': like 'home', with the page's own links (`nav`) and, when given, its own `logo` ({ src, width, height }).
-  'type': solid, with a back link to the Unit update section.
+  'type': solid, with a back link to the Unit update section, or, given `back`
+  ({ href, label }), a button back to that page (a project's type page).
   Up to 1024px wide, 'home' and 'project' swap the links for a hamburger that
   opens them in a dropdown under the header (resources/js/menu.js).
-  `ink`: dark links and no logo card, over a light page (a project's type page).
   Not sticky: it sits at the top of the page and scrolls away.
 --}}
-@props(['variant' => 'home', 'nav' => null, 'logo' => null, 'ink' => false])
+@props(['variant' => 'home', 'nav' => null, 'logo' => null, 'back' => null])
 
-<header @class(['hd', "hd--{$variant}", 'hd--ink' => $ink])>
+<header @class(['hd', "hd--{$variant}"])>
   <div class="hd__inner wrap">
     <a class="hd__mark" href="{{ url('/') }}" aria-label="{{ $site['logo']['alt'] }}, beranda">
       @if ($logo)
@@ -50,6 +50,13 @@
         </svg>
         <span class="visually-hidden">Menu</span>
       </button>
+    @elseif ($back)
+      <a class="btn hd__btn" href="{{ $back['href'] }}" aria-label="{{ $back['label'] }}">
+        Kembali<span class="hd__btn-more">&nbsp;ke proyek</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M19 12H5M11 6l-6 6 6 6" />
+        </svg>
+      </a>
     @else
       <a class="hd__back roll-host" href="{{ url('/') }}#unit-update">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">

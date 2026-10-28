@@ -10,18 +10,6 @@
   color: #fff;
 }
 
-/* Over a light page: dark links, the logo without its card */
-.hd--ink {
-  color: var(--ink);
-}
-
-.hd--ink.hd--project .hd__mark,
-.hd--ink.hd--project.is-menu-open .hd__mark {
-  padding-inline: 0;
-  background: none;
-  box-shadow: none;
-}
-
 .hd--type {
   background: var(--paper);
   color: var(--ink);
@@ -59,6 +47,12 @@
   opacity: 1;
 }
 
+/* A project's own logo on its type page */
+.hd--type .hd__logo--own {
+  height: 64px;
+  object-fit: contain;
+}
+
 .hd__nav {
   display: flex;
   gap: clamp(20px, 4vw, 48px);
@@ -94,15 +88,37 @@
   height: 18px;
 }
 
+.hd__btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.hd__btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 @media (max-width: 760px) {
   .hd__logo {
     height: 28px;
+  }
+
+  .hd--type .hd__logo--own {
+    height: 48px;
   }
 }
 
 @media (max-width: 640px) {
   .hd__back {
     font-size: 14px;
+  }
+
+  .hd__btn {
+    padding-inline: 14px;
+  }
+
+  .hd__btn-more {
+    display: none;
   }
 }
 
