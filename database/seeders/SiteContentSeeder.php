@@ -253,7 +253,6 @@ class SiteContentSeeder extends Seeder
             ]]),
             ...$this->projectSections(),
             $this->field('whatsapp', 'group', [], ['label' => 'WhatsApp Floating', 'fields' => [
-                $image('image', 'Gambar'),
                 $text('label', 'Label', ['width' => 50]),
                 $text('heading', 'Heading', ['width' => 50]),
                 $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat']),
@@ -293,13 +292,9 @@ class SiteContentSeeder extends Seeder
             'translatable' => false,
             'instructions' => "Pilih dari {$menu}; urutan pilihan jadi urutan tampil.",
         ]);
-        $view = fn (array $extra = []): array => $this->field('view', 'select', ['options' => [
-            ['value' => 'lakeview', 'label' => 'Lake View'],
-            ['value' => 'streetview', 'label' => 'Street View'],
-        ]], ['label' => 'View', 'required' => true, 'translatable' => false, ...$extra]);
-        $section = fn (string $handle, string $label, array $fields): array => $this->field($handle, 'group', [], ['label' => $label, 'fields' => [
+        $section = fn (string $handle, string $label, array $fields, bool $description = true): array => $this->field($handle, 'group', [], ['label' => $label, 'fields' => [
             $text('title', 'Judul'),
-            $textarea('description', 'Deskripsi'),
+            ...($description ? [$textarea('description', 'Deskripsi')] : []),
             ...$fields,
         ]]);
         $percent = fn (string $handle, string $label, string $instructions): array => $this->field($handle, 'number', ['min' => 0, 'max' => 100], [
@@ -322,62 +317,35 @@ class SiteContentSeeder extends Seeder
                 ]),
             ]]),
             $section('masterplan', 'Masterplan', [
-                $image('map', 'Peta', ['instructions' => 'Foto aerial kawasan; titik di bawah ditempatkan di atas gambar ini.']),
                 $points('Titik kawasan', [
-                    $image('image', 'Gambar', ['width' => 50]),
-                    $gallery('gallery', 'Gallery', ['width' => 50, 'instructions' => 'Opsional.']),
-                    $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Masterplan. Kosong: titik hanya tampil di daftar.'),
+                    $image('image', 'Gambar'),
+                    $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Masterplan. Kosong: titik tidak tampil.'),
                     $percent('y', 'Posisi Y (%)', 'Dari atas gambar pertama orbit Masterplan.'),
                 ]),
             ]),
             $section('location', 'Lokasi', [
                 $gallery('maps', 'Peta', ['instructions' => 'Peta lokasi; tandai akses jalan tol.']),
-                $this->field('stats', 'repeater', [], ['label' => 'Angka kawasan', 'fields' => [
-                    $text('value', 'Angka', ['required' => true, 'width' => 25]),
-                    $text('label', 'Keterangan', ['required' => true, 'width' => 75]),
-                ]]),
             ]),
             $section('cluster', 'Cluster', [
                 $points('Titik cluster', [
                     $image('image', 'Gambar', ['width' => 50]),
                     $textarea('description', 'Deskripsi', ['width' => 50]),
-                    $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Cluster. Kosong: titik hanya tampil di daftar.'),
+                    $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Cluster. Kosong: titik tidak tampil.'),
                     $percent('y', 'Posisi Y (%)', 'Dari atas gambar pertama orbit Cluster.'),
                 ]),
-            ]),
+            ], description: false),
             $section('facilities', 'Fasilitas', [
                 $this->field('items', 'repeater', [], ['label' => 'Fasilitas', 'fields' => [
-                    $text('name', 'Nama', ['required' => true]),
+                    $text('name', 'Nama', ['required' => true, 'width' => 50]),
                     $image('image', 'Gambar', ['required' => true, 'width' => 50]),
-                    $textarea('description', 'Deskripsi', ['width' => 50]),
                 ]]),
             ]),
             $section('types', 'Tipe', [
-                $image('hero_image', 'Gambar potongan', ['instructions' => 'Gambar hero di atas keunggulan unit.']),
-                $this->field('advantages', 'repeater', [], ['label' => 'Keunggulan', 'fields' => [
-                    $text('name', 'Nama', ['required' => true]),
-                    $image('image', 'Gambar', ['width' => 50]),
-                    $textarea('description', 'Deskripsi', ['width' => 50]),
-                ]]),
-                $this->field('views', 'repeater', [], ['label' => 'Pilihan view', 'fields' => [
-                    $view(['width' => 25]),
-                    $text('name', 'Nama', ['required' => true, 'width' => 75]),
-                    $textarea('description', 'Deskripsi', ['width' => 50]),
-                    $textarea('businesses', 'Cocok untuk usaha', ['width' => 50, 'instructions' => 'Satu jenis usaha per baris.']),
-                ]]),
+                $image('hero_image', 'Gambar potongan', ['instructions' => 'Gambar lebar di atas kartu tipe.']),
                 $entries('units', 'Tipe unit', 'types', 'Types'),
-                $this->field('specifications', 'repeater', [], ['label' => 'Spesifikasi bangunan', 'fields' => [
-                    $text('label', 'Bagian', ['required' => true, 'width' => 25]),
-                    $textarea('value', 'Spesifikasi', ['required' => true, 'width' => 75]),
-                ]]),
-            ]),
+            ], description: false),
             $section('availability', 'Ketersediaan unit', [
                 $image('siteplan', 'Siteplan', ['instructions' => 'Unit dari menu Units yang memilih proyek ini tampil di [peta titik unit](#peta-titik-unit) di bawah.']),
-                $this->field('blocks', 'repeater', [], ['label' => 'Blok', 'fields' => [
-                    $text('name', 'Nama', ['required' => true, 'width' => 25]),
-                    $view(['width' => 25]),
-                    $image('image', 'Blockplan', ['width' => 50]),
-                ]]),
             ]),
         ];
     }

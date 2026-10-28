@@ -98,12 +98,10 @@
   </main>
 
   @isset($s['types'])
-    @foreach ($s['types']['groups'] as $group)
-      @foreach ($group['units'] as $unit)
-        @if ($unit['url'] === null)
-          <x-project.unit-sheet :unit="$unit" :gallery="$gallery" />
-        @endif
-      @endforeach
+    @foreach ($s['types']['units'] as $unit)
+      @if ($unit['url'] === null)
+        <x-project.unit-sheet :unit="$unit" :gallery="$gallery" />
+      @endif
     @endforeach
   @endisset
 

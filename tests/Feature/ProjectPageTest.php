@@ -70,7 +70,7 @@ test('the masterplan is the homepage Kawasan scene as it is, with its opening an
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
         'masterplan' => ['title' => 'Masterplan', 'description' => 'Around the district.', 'points' => [
-            ['number' => '01', 'name' => 'West Lakeside', 'image' => null, 'gallery' => []],
+            ['number' => '01', 'name' => 'West Lakeside', 'image' => null],
         ]],
     ]);
 
@@ -91,8 +91,8 @@ test('the masterplan orbit carries the CMS points with a position as its hotspot
         'global_style' => [...inactiveStyle(), 'active' => true],
         'hero' => ['heading' => 'Westlake'],
         'masterplan' => ['title' => 'Masterplan', 'points' => [
-            ['number' => '01', 'name' => 'West Lakeside', 'image' => null, 'gallery' => [], 'x' => 50, 'y' => 52],
-            ['number' => '06', 'name' => 'JX Hometown', 'image' => null, 'gallery' => [], 'x' => 31, 'y' => null],
+            ['number' => '01', 'name' => 'West Lakeside', 'image' => null, 'x' => 50, 'y' => 52],
+            ['number' => '06', 'name' => 'JX Hometown', 'image' => null, 'x' => 31, 'y' => null],
         ]],
     ]);
 
@@ -162,26 +162,21 @@ test('a project page shows each section with content and skips the empty ones', 
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'A New Landmark by the Lake', 'description' => 'By the lake in BSD City.', 'media' => [projectImage('hero.jpg')]],
         'masterplan' => ['title' => 'Masterplan', 'description' => 'Around the district.', 'points' => [
-            ['number' => '01', 'name' => 'West Lakeside', 'image' => projectImage('point.jpg'), 'gallery' => []],
-            ['number' => '05', 'name' => 'Office & Hotel', 'image' => null, 'gallery' => []],
+            ['number' => '01', 'name' => 'West Lakeside', 'image' => projectImage('point.jpg')],
+            ['number' => '05', 'name' => 'Office & Hotel', 'image' => null],
         ]],
         'cluster' => ['title' => 'Cluster', 'points' => [
             ['number' => '01', 'name' => 'Lakeview Units', 'description' => 'Lake views.', 'image' => projectImage('cluster.jpg')],
             ['number' => '06', 'name' => 'Lakefront Pods', 'description' => null, 'image' => null],
         ]],
         'facilities' => ['title' => 'Facilities', 'items' => [
-            ['name' => 'Lakeside Social Deck', 'description' => 'Decks by the lake.', 'image' => projectImage('deck.jpg')],
+            ['name' => 'Lakeside Social Deck', 'image' => projectImage('deck.jpg')],
         ]],
         'types' => [
             'title' => 'Type',
-            'views' => [['view' => 'lakeview', 'name' => 'Lake View', 'description' => 'Facing the lake.', 'businesses' => "Cafe\nRestaurant"]],
             'units' => [$type->entry_id],
-            'specifications' => [['label' => 'Foundation', 'value' => "Mini pile\nBored pile"]],
         ],
-        'availability' => ['title' => 'Unit Availability', 'siteplan' => projectImage('siteplan.jpg'), 'blocks' => [
-            ['name' => 'Blok A', 'view' => 'streetview', 'image' => projectImage('blok-a.jpg')],
-            ['name' => 'Blok B', 'view' => 'streetview', 'image' => null],
-        ]],
+        'availability' => ['title' => 'Unit Availability', 'siteplan' => projectImage('siteplan.jpg')],
         'whatsapp' => ['contacts' => []],
     ]);
     // Slug proyek URL
@@ -214,15 +209,12 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertSee($type->title)
         ->assertSee('4,5 x 10 m')
         ->assertSee('93 m²')
-        ->assertDontSee('id="type-lakeview"', false)
-        ->assertDontSee('Bored pile')
         // Titik status unit
         ->assertSee('<section id="unit" class="units"', false)
         ->assertSee('style="left: 5.97%; top: 66%"', false)
         ->assertSee('title="A-1 · Terjual"', false)
         ->assertDontSee('title="A-2', false)
         ->assertDontSee('title="Z-9', false)
-        ->assertDontSee('pj-block', false)
         ->assertDontSee('id="location"', false)
         ->assertDontSee('href="#location"', false);
 

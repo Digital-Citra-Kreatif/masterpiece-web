@@ -245,7 +245,7 @@ final class ProjectPage
      * Titik Masterplan
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, map: ?array<string, mixed>, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, gallery: list<array<string, mixed>>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
+     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
      */
     private static function masterplan(array $section): ?array
     {
@@ -259,7 +259,6 @@ final class ProjectPage
                     'number' => filled($row['number'] ?? null) ? (string) $row['number'] : null,
                     'name' => (string) $row['name'],
                     'image' => self::image($row['image'] ?? null),
-                    'gallery' => self::images($row['gallery'] ?? []),
                     'x' => $x !== null && $y !== null ? $x : null,
                     'y' => $x !== null && $y !== null ? $y : null,
                 ];
@@ -267,13 +266,11 @@ final class ProjectPage
             ->values()
             ->all();
 
-        $map = self::image($section['map'] ?? null);
-
         // Orbit dengan titik
         $hotspots = self::hotspots($points, 'masterplan');
         $scene = $points === [] ? null : [...Content::sampleArea(), ...($hotspots !== [] ? ['hotspots' => $hotspots] : [])];
 
-        return self::section($section, ['map' => $map, 'points' => $points, 'scene' => $scene], $points !== []);
+        return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
     }
 
     /**
@@ -347,7 +344,7 @@ final class ProjectPage
      * Karusel fasilitas
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, items: list<array{title: string, description: ?string, image: string}>}|null
+     * @return array{title: string, intro: ?string, items: list<array{title: string, image: string}>}|null
      */
     private static function facilities(array $section): ?array
     {
@@ -355,7 +352,6 @@ final class ProjectPage
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null) && ($row['image'] ?? null) instanceof Media)
             ->map(fn (array $row): array => [
                 'title' => (string) $row['name'],
-                'description' => filled($row['description'] ?? null) ? (string) $row['description'] : null,
                 'image' => $row['image']->url('large'),
             ])
             ->values()
@@ -372,20 +368,6 @@ final class ProjectPage
      */
     private static function types(array $section): ?array
     {
-        $advantages = collect($section['advantages'] ?? [])
-            ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
-            ->map(fn (array $row): array => [
-                'name' => (string) $row['name'],
-                'description' => filled($row['description'] ?? null) ? (string) $row['description'] : null,
-                'image' => self::image($row['image'] ?? null, 'medium'),
-            ])
-            ->values()
-            ->all();
-
-        $views = collect($section['views'] ?? [])
-            ->filter(fn (mixed $row): bool => is_array($row) && isset(self::VIEWS[$row['view'] ?? '']))
-            ->keyBy('view');
-
         $units = collect($section['units'] ?? [])
             ->map(fn (mixed $item): ?array => self::row($item, ['label' => 'category']))
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
@@ -393,38 +375,16 @@ final class ProjectPage
             ->map(fn (array $row, int $index): array => self::unit($row, $index));
 
         // Urutan view
-        $groups = $views->keys()->merge($units->pluck('view')->filter())->unique()
-            ->map(function (string $view) use ($views, $units): array {
-                $copy = $views->get($view, []);
-
-                return [
-                    'view' => $view,
-                    'name' => filled($copy['name'] ?? null) ? (string) $copy['name'] : self::VIEWS[$view],
-                    'description' => filled($copy['description'] ?? null) ? (string) $copy['description'] : null,
-                    'businesses' => self::lines($copy['businesses'] ?? null),
-                    'units' => $units->where('view', $view)->values()->all(),
-                ];
-            })
-            ->values();
-        $unsorted = $units->whereNull('view')->values()->all();
-        if ($unsorted !== []) {
-            $groups->push(['view' => null, 'name' => null, 'description' => null, 'businesses' => [], 'units' => $unsorted]);
-        }
-
-        $specifications = collect($section['specifications'] ?? [])
-            ->filter(fn (mixed $row): bool => is_array($row) && filled($row['label'] ?? null) && filled($row['value'] ?? null))
-            ->map(fn (array $row): array => ['label' => (string) $row['label'], 'value' => (string) $row['value']])
-            ->values()
-            ->all();
+        $order = $units->pluck('view')->filter()->unique()->values()->flip();
+        $units = $units->sortBy(fn (array $unit): int => $order[$unit['view']] ?? PHP_INT_MAX)->values();
 
         $heroImage = self::image($section['hero_image'] ?? null);
 
         return self::section($section, [
             'heroImage' => $heroImage,
-            'advantages' => $advantages,
-            'groups' => $groups->all(),
+            'units' => $units->all(),
             // Kartu tipe
-            'cards' => $groups->flatMap(fn (array $group): array => $group['units'])
+            'cards' => $units
                 ->map(fn (array $unit): array => [
                     'name' => $unit['name'],
                     'label' => $unit['category'],
@@ -436,8 +396,7 @@ final class ProjectPage
                 ])
                 ->values()
                 ->all(),
-            'specifications' => $specifications,
-        ], $heroImage !== null || $advantages !== [] || $units->isNotEmpty() || $specifications !== []);
+        ], $heroImage !== null || $units->isNotEmpty());
     }
 
     /**
@@ -477,23 +436,14 @@ final class ProjectPage
     }
 
     /**
-     * Siteplan dan blok
+     * Siteplan dan titik unit
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, siteplan: ?array<string, mixed>, blocks: list<array<string, mixed>>}|null
+     * @return array{title: string, intro: ?string, siteplan: ?array<string, mixed>, units: list<array{id: string, x: float, y: float, status: string}>, counts: array<string, int>}|null
      */
     private static function availability(array $section, int $project): ?array
     {
         $siteplan = self::image($section['siteplan'] ?? null);
-        $blocks = collect($section['blocks'] ?? [])
-            ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null) && self::image($row['image'] ?? null) !== null)
-            ->map(fn (array $row): array => [
-                ...self::image($row['image'], 'medium'),
-                'name' => (string) $row['name'],
-                'viewName' => self::VIEWS[$row['view'] ?? ''] ?? null,
-            ])
-            ->values()
-            ->all();
 
         // Titik status unit
         $points = UnitPoint::query()->where('project_id', $project)->get()->keyBy('unit_id');
@@ -508,7 +458,7 @@ final class ProjectPage
             ->values();
         $counts = collect(Content::STATUSES)->mapWithKeys(fn (string $status): array => [$status => $units->where('status', $status)->count()])->all();
 
-        return self::section($section, ['siteplan' => $siteplan, 'blocks' => $blocks, 'units' => $units->all(), 'counts' => $counts], $siteplan !== null || $blocks !== []);
+        return self::section($section, ['siteplan' => $siteplan, 'units' => $units->all(), 'counts' => $counts], $siteplan !== null);
     }
 
     /**
@@ -627,12 +577,6 @@ final class ProjectPage
             ->filter()
             ->values()
             ->all();
-    }
-
-    /** @return list<string> */
-    private static function lines(mixed $text): array
-    {
-        return collect(preg_split('/\R/', (string) $text))->map(fn (string $line): string => trim($line))->filter()->values()->all();
     }
 
     private static function fontFormat(Media $font): ?string

@@ -262,7 +262,7 @@ button.pj-frame:focus-visible {
 }
 
 /* Juga halaman tipe */
-.is-project :is(.pj-loc, .fac, .types, .pj-av, .units, .pj-points, .ft, .tph, .tpx) {
+.is-project :is(.pj-loc, .fac, .types, .units, .pj-points, .ft, .tph, .tpx) {
   --line: rgb(14 17 19 / 0.12);
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
   background-size: 1px 100%;
@@ -1034,84 +1034,6 @@ button.pj-frame:focus-visible {
 @media (max-width: 760px) {
   .pj-band {
     aspect-ratio: 4 / 3;
-  }
-}
-
-/* Section ketersediaan */
-
-.pj-av {
-  background: #fff;
-  padding-block: var(--section, clamp(64px, 9vw, 128px));
-}
-
-.pj-av__intro {
-  max-width: 60ch;
-  margin: 16px 0 0;
-  color: var(--ink-2);
-  line-height: 1.6;
-}
-
-.pj-av__grid {
-  display: grid;
-  gap: 24px;
-  margin-top: clamp(28px, 4vw, 48px);
-  align-items: start;
-}
-
-.pj-av__grid.has-blocks {
-  grid-template-columns: minmax(0, 3.2fr) minmax(0, 1fr);
-}
-
-.pj-av__siteplan {
-  display: block;
-  padding: 0;
-  border: 0;
-  background: var(--paper-2);
-}
-
-.pj-av__siteplan img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.pj-av__side {
-  list-style: none;
-  margin: 0;
-  padding: 24px;
-  border-radius: var(--radius, 0);
-  background: var(--paper);
-}
-
-.pj-block {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 0;
-  border: 0;
-  border-top: 1px solid var(--rule);
-  background: none;
-  color: var(--ink);
-  font-size: 16px;
-  text-align: left;
-}
-
-.pj-block:hover .pj-block__name {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.pj-block__view {
-  color: var(--ink-2);
-  font-size: 13px;
-}
-
-@media (max-width: 760px) {
-  .pj-av__grid.has-blocks {
-    grid-template-columns: 1fr;
   }
 }
 
