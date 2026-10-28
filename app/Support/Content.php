@@ -59,6 +59,28 @@ final class Content
     }
 
     /**
+     * Isi halaman 404
+     *
+     * @return array{title: string, description: ?string, link: array{href: string, label: string, newTab: bool}}
+     */
+    public static function notFound(): array
+    {
+        $values = Cms::global('not_found');
+        $link = is_array($values['link'] ?? null) ? $values['link'] : [];
+
+        return [
+            'title' => filled($values['heading'] ?? null) ? (string) $values['heading'] : 'Halaman tidak ditemukan',
+            'description' => filled($values['description'] ?? null) ? (string) $values['description'] : null,
+            'link' => [
+                // Tanpa tujuan: beranda
+                'href' => filled($link['url'] ?? null) ? (string) $link['url'] : url('/'),
+                'label' => filled($link['label'] ?? null) ? (string) $link['label'] : 'Kembali ke beranda',
+                'newTab' => ($link['new_tab'] ?? false) === true,
+            ],
+        ];
+    }
+
+    /**
      * Isi footer
      *
      * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, copyright: string}

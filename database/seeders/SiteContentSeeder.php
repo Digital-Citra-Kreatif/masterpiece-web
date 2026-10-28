@@ -138,6 +138,7 @@ class SiteContentSeeder extends Seeder
                 ]],
                 $this->projectBlueprint(),
                 $this->footerBlueprint(),
+                $this->notFoundBlueprint(),
             ],
             'collections' => [
                 ['handle' => 'pages', 'title' => 'Pages', 'blueprint' => 'page', 'blueprints' => ['homepage'], 'hierarchical' => true, 'ordered' => true, 'route' => '/{slug}'],
@@ -366,6 +367,20 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
+     * Halaman 404
+     *
+     * @return array<string, mixed>
+     */
+    private function notFoundBlueprint(): array
+    {
+        return ['handle' => 'not_found', 'title' => '404', 'fields' => [
+            $this->field('heading', 'text', [], ['label' => 'Judul']),
+            $this->field('description', 'textarea', [], ['label' => 'Deskripsi']),
+            $this->field('link', 'link', [], ['label' => 'Link', 'instructions' => 'Teks tombol dan halaman tujuannya.']),
+        ]];
+    }
+
+    /**
      * Menu footer (Menus)
      *
      * @return array<string, mixed>
@@ -392,6 +407,11 @@ class SiteContentSeeder extends Seeder
             // Diisi di CMS
             ['handle' => 'footer', 'title' => 'Footer', 'blueprint' => 'footer', 'values' => ['id' => [
                 'logo' => $this->media('images/masterpiece-logo.png', 'Logo'),
+            ]]],
+            ['handle' => 'not_found', 'title' => '404', 'blueprint' => 'not_found', 'values' => ['id' => [
+                'heading' => 'Halaman tidak ditemukan',
+                'description' => 'Sepertinya halaman yang Anda cari sudah berpindah atau mungkin tidak pernah ada.',
+                'link' => ['type' => 'url', 'url' => '/', 'label' => 'Kembali ke beranda', 'new_tab' => false],
             ]]],
         ];
     }

@@ -6,8 +6,10 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Settings\BrandingSettings;
+use Sunrice\Cms\Actions\Globals\SaveGlobals;
 use Sunrice\Cms\Actions\Menus\SaveMenu;
 use Sunrice\Cms\Models\EntryTranslation;
+use Sunrice\Cms\Models\GlobalSet;
 use Sunrice\Cms\Models\Menu;
 
 uses(RefreshDatabase::class);
@@ -111,7 +113,25 @@ test('a type page shows its title, specs and floor plans, without the 360° view
 test('an unknown address shows the site\'s not found page', function () {
     $this->get('/-/tipe/tidak-ada')
         ->assertNotFound()
-        ->assertSee('Halaman tidak ditemukan');
+        ->assertSee('<h1 class="nf__title">Halaman tidak ditemukan</h1>', false)
+        ->assertSee('href="/"', false)
+        ->assertSee('Kembali ke beranda');
+});
+
+test('the not found page shows the title, description and link from Globals → 404', function () {
+    app(SaveGlobals::class)->handle(GlobalSet::query()->where('handle', 'not_found')->firstOrFail(), [
+        'heading' => 'Ups, salah alamat',
+        'description' => 'Coba lihat proyek kami.',
+        'link' => ['type' => 'url', 'url' => '/projects', 'label' => 'Lihat proyek', 'new_tab' => false],
+    ], 'id');
+
+    $this->get('/tidak-ada')
+        ->assertNotFound()
+        ->assertSee('<h1 class="nf__title">Ups, salah alamat</h1>', false)
+        ->assertSee('Coba lihat proyek kami.')
+        ->assertSee('href="/projects"', false)
+        ->assertSee('Lihat proyek')
+        ->assertDontSee('Kembali ke beranda');
 });
 
 test('the home header has no menu while the CMS menu has no links', function () {
