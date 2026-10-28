@@ -1,12 +1,8 @@
-{{--
-    Prints fields as they come: text, rich text, images, links and flexible blocks; skips what it doesn't know
-    (repeaters, groups, numbers…: print those in your own templates, by handle: $values['price']).
-    @include('cms.partials.fields', ['values' => $values, 'richText' => $richText])
---}}
+{{-- Daftar field --}}
 @foreach ($values as $handle => $value)
     @continue($handle === 'seo' || $value === null || $value === '')
     @if (is_string($value))
-        {{-- Only rich text is HTML (cleaned when saved); everything else is escaped. --}}
+        {{-- Rich text mentah --}}
         @if (in_array($handle, $richText, true))
             <div class="prose">{!! $value !!}</div>
         @else

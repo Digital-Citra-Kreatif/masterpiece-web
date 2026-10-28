@@ -1,33 +1,4 @@
-{{--
-  A pinned, full-screen scene whose image sequence scrubs with page scroll
-  (after malinowskiego.com). Used for Kawasan and Cluster on the homepage.
-
-  With `masterplan`, the scene opens on the Masterplan composition: the orbit
-  video (the same orbit as the frames; without one, the scene's first frame) in a
-  portrait frame, the title over its left edge and the text by its right.
-  Scrolling moves the title out to the left and the text to the right while the
-  frame grows to fill the screen ([data-zoom-end]); the video keeps looping full
-  screen for a stretch of scroll. Scrolling on ([data-intro-end]), the canvas
-  picks up at the frame the video is showing, the section panel and markers fade
-  in and the orbit scrubs on. Without `masterplan`, the panel and markers show
-  from the start.
-
-  Opening a hotspot (marker or list) fast-forwards the orbit to the hotspot's
-  default angle while zooming in on it, with its info in place of the section
-  panel. Back, Esc, or scrolling on returns to the orbit.
-
-  scene:      { base, startFrame?, placeholder? }
-              { still: { src, width, height, sweep? } } (gambar diam)
-  hotspots:   { key: { track, frame?, title, short?, text } }
-              { key: { x, y, title, short?, text } } (titik gambar diam)
-  masterplan: { title, text, video?, panel? } (panel 'zoom')
-  panel:      'zoom' tanpa masterplan (titik terbuka seperti Masterplan)
-  tracks:     { hotspot key: [[x, y] | null, …per frame] } (jalur titik)
-  marker:     { shape, image } (penanda proyek)
-  variant:    'project' (tampilan proyek)
-
-  Logic in resources/js/scroll-scene.js (orbit) and resources/js/masterplan.js (opening).
---}}
+{{-- Scene scroll --}}
 @props(['id', 'title', 'intro', 'scene', 'hotspots', 'masterplan' => null, 'variant' => 'default', 'side' => 'left', 'pin' => null, 'card' => false, 'marker' => null, 'tracks' => null, 'panel' => null])
 
 @php
@@ -102,7 +73,7 @@
 
     @if ($masterplan)
       <div class="mp" data-masterplan>
-        {{-- The frames' and the video's proportions (1280 × 720, or the still's), for the cover-fit maths in masterplan.js. --}}
+        {{-- Rasio frame --}}
         <div class="mp__frame" data-mp-frame>
           @if ($masterplan['video'] ?? null)
             <video
@@ -168,7 +139,7 @@
       </figure>
     @endif
 
-    <!-- Location view: shown in place of the panel while a hotspot is open -->
+    <!-- Tampilan lokasi -->
     <div class="scene__loc wrap" role="group" aria-labelledby="{{ $id }}-loc-title" hidden>
       <button class="scene__back" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">

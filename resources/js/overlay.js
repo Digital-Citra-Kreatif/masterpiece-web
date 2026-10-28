@@ -1,7 +1,4 @@
-// Shared overlay: full video, gallery lightbox, VR iframe, hotspot info.
-//
-// Declarative:  <button data-open="gallery" data-payload='{"title":"…","items":[{"src":"…"}],"index":0}'>
-// Programmatic: window.drOverlay.open('info', { kicker, title, text, image })
+// Overlay bersama
 
 const dlg = document.getElementById('overlay');
 const $ = (sel) => dlg.querySelector(sel);
@@ -97,7 +94,7 @@ $('.ov__close').addEventListener('click', close);
 els.prev.addEventListener('click', () => showGalleryItem(gallery.index - 1));
 els.next.addEventListener('click', () => showGalleryItem(gallery.index + 1));
 
-// Backdrop click (the dialog itself, outside the content) closes.
+// Klik backdrop
 dlg.addEventListener('click', (e) => {
   if (e.target === dlg || e.target === $('.ov__body')) close();
 });
@@ -108,7 +105,7 @@ dlg.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') showGalleryItem(gallery.index + 1);
 });
 
-// Swipe between gallery images on touch screens.
+// Swipe galeri
 let swipeX = null;
 els.gallery.addEventListener('pointerdown', (e) => (swipeX = e.clientX));
 els.gallery.addEventListener('pointerup', (e) => {

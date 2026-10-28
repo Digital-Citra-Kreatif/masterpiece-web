@@ -77,8 +77,7 @@ final class ProjectPage
     }
 
     /**
-     * A type page's project: its style, menu to the project's sections, WhatsApp
-     * button and its other types (the cards that have a page of their own).
+     * Proyek halaman tipe
      *
      * @return array{title: string, url: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, types: list<array<string, mixed>>}|null
      */
@@ -106,7 +105,7 @@ final class ProjectPage
     }
 
     /**
-     * The project's sections that have content.
+     * Section berisi
      *
      * @param  array<string, mixed>  $values
      * @return array<string, array<string, mixed>>
@@ -124,7 +123,7 @@ final class ProjectPage
     }
 
     /**
-     * Header links to the sections there are; `$base` is the project's address from another page.
+     * Link header section
      *
      * @param  array<string, array<string, mixed>>  $sections
      * @return list<array{href: string, label: string, active: bool, newTab: bool}>

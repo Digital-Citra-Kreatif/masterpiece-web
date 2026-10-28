@@ -13,21 +13,7 @@ use Sunrice\Cms\Actions\Entries\SaveDraft;
 use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Structure\StructureImporter;
 
-/**
- * The Project fields (SiteContentSeeder::projectBlueprint()) and the content of
- * Ruko Westlake Village, from the client's material in project-one/ (not in git):
- * Urutan.txt, the web layout and presentation PDFs, and their photos.
- *
- * Only the Project, Fasilitas and Tipe blueprints are imported, so other blueprints
- * edited in the admin stay as they are. The project's facilities and unit types are
- * entries of the Facilities and Types collections (slugs westlake-…), picked in the
- * project. Sections the entry already has are left alone, and so are Global Style
- * and WhatsApp Floating. Photos go to the media folder Projects / {slug};
- * a file already in the library (same name and size, or same content) isn't uploaded again.
- *
- * Some photos are larger than the CLI's default upload limit, so run it with:
- * php -d upload_max_filesize=25M -d post_max_size=25M -d memory_limit=1G artisan db:seed --class=WestlakeProjectSeeder
- */
+/** Proyek Westlake Village */
 class WestlakeProjectSeeder extends Seeder
 {
     private const SLUG = 'ruko-westlake-village';
@@ -39,14 +25,12 @@ class WestlakeProjectSeeder extends Seeder
 
     private ?MediaFolder $folder = null;
 
-    /**
-     * Run the database seeds.
-     */
+    /** Jalankan seeder */
     public function run(StructureImporter $importer, SaveDraft $saveDraft, PublishEntry $publish): void
     {
         $definitions = app(SiteContentSeeder::class);
         $importer->import(['blueprints' => [$definitions->blueprint('fasilitas'), $definitions->blueprint('tipe')]]);
-        // Forced: facilities and unit types used to be rows of the project itself, they are entry pickers now.
+        // Paksa impor ulang
         $importer->import(['blueprints' => [$definitions->blueprint('project')]], force: true);
         $importer->import(['entries' => [...$this->facilityEntries(), ...$this->typeEntries()]]);
 
@@ -66,7 +50,7 @@ class WestlakeProjectSeeder extends Seeder
     }
 
     /**
-     * Each section's content, made only when the entry lacks that section.
+     * Isi tiap section
      *
      * @return array<string, callable(): array<string, mixed>>
      */
@@ -166,7 +150,7 @@ class WestlakeProjectSeeder extends Seeder
     }
 
     /**
-     * The project's four facilities, as entries of the Facilities collection.
+     * Fasilitas proyek
      *
      * @return list<array<string, mixed>>
      */
@@ -186,8 +170,7 @@ class WestlakeProjectSeeder extends Seeder
     }
 
     /**
-     * The six unit types (Urutan.txt), Street View then Lake View, as entries of the
-     * Types collection. The floor plan images show both floors in one.
+     * Tipe unit proyek
      *
      * @return list<array<string, mixed>>
      */
@@ -223,7 +206,7 @@ class WestlakeProjectSeeder extends Seeder
     }
 
     /**
-     * A published entry in the site's language (Indonesian), as StructureImporter takes it.
+     * Entri terbit
      *
      * @param  array<string, mixed>  $data
      * @return array{collection: string, slug: string, translations: array<string, array<string, mixed>>}
@@ -238,7 +221,7 @@ class WestlakeProjectSeeder extends Seeder
     }
 
     /**
-     * The ids of a collection's entries, in the order of the slugs given.
+     * ID entri koleksi
      *
      * @param  list<string>  $slugs
      * @return list<int>
@@ -254,10 +237,7 @@ class WestlakeProjectSeeder extends Seeder
         return collect($slugs)->map(fn (string $slug): int => $ids[$slug])->all();
     }
 
-    /**
-     * Whether a section was stored in an older shape of the blueprint: a hero heading
-     * on several lines, or facilities and unit types as rows instead of picked entries.
-     */
+    /** Bentuk section lama */
     private static function isOutdated(string $handle, mixed $stored): bool
     {
         return match ($handle) {
@@ -278,10 +258,7 @@ class WestlakeProjectSeeder extends Seeder
         return array_map($row, $items);
     }
 
-    /**
-     * The media library id of a photo in the client's material, uploading it the
-     * first time. File names are matched case-insensitively (Windows and macOS exports differ).
-     */
+    /** ID media foto */
     private function image(?string $path): ?int
     {
         if ($path === null) {
@@ -305,7 +282,7 @@ class WestlakeProjectSeeder extends Seeder
         ))->id;
     }
 
-    /** The folder Projects / {slug}, created when missing. */
+    /** Folder media proyek */
     private function folder(): MediaFolder
     {
         if ($this->folder !== null) {

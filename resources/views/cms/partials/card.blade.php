@@ -1,7 +1,4 @@
-{{--
-    An entry in a list (listing, term and search pages): its title, date and, when its fields have them, an "image"
-    and an "excerpt". @include('cms.partials.card', ['item' => $translation])
---}}
+{{-- Kartu entri --}}
 @php($url = $item->url())
 @php($fields = $item->values())
 @php($image = $fields['image'] ?? null)

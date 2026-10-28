@@ -1,18 +1,4 @@
-// Masterplan opening of the Kawasan scene (GSAP ScrollTrigger, scrubbed by scroll).
-//
-// Over the scene's first stretch of scroll (up to [data-zoom-end]) the title
-// moves out to the left and the text to the right while the portrait frame grows
-// to fill the stage. The frame holds the looping orbit video (scroll-scene.js plays
-// it and hands over from it to the canvas), cover-fit as the canvas draws the
-// frames, so at full size the video is exactly the view the canvas continues.
-//
-// The zoom only animates clip-path and transform: the picture always covers the
-// stage, cut down to the box and scaled so it covers the box the way a
-// cover-fit image the box's size would, opening to the full stage at scale 1.
-// The scale stays a 2D transform (force3D: false, no will-change): as a GPU layer
-// the browser would keep the picture rasterised at its small starting size and
-// stretch that, so it looked blurred while growing. `scrub` eases the timeline
-// after the scroll a little instead of locking it to every pixel.
+// Pembuka Masterplan
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { lenis } from './smooth-scroll.js';
@@ -29,15 +15,14 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
   const text = root.querySelector('[data-mp-text]');
   const end = root.querySelector('[data-zoom-end]');
 
-  // The box on the stage, and the picture's scale that cover-fits it.
+  // Kotak dan skala
   const start = () => {
     const W = stage.clientWidth;
     const H = stage.clientHeight;
     const w = box.offsetWidth;
     const h = box.offsetHeight;
     const cover = (bw, bh) => Math.max(bw / img.dataset.w, bh / img.dataset.h);
-    // The picture is cut to the stage, so it never shrinks below the box: a box
-    // wider than the portrait stage (phones) would otherwise show a narrow strip.
+    // Batas minimal kotak
     return { x: (W - w) / 2, y: (H - h) / 2, scale: Math.max(cover(w, h) / cover(W, H), w / W, h / H) };
   };
 

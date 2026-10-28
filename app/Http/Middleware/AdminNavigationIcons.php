@@ -7,15 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Gives the site's CMS collections their own sidebar icons.
- *
- * The CMS gives every collection the same icon and the panel has no setting for
- * it, so this wraps the navigation the panel shares (it runs after the panel's own
- * middleware) and swaps the icon of the items named here. Icons must be names the
- * panel's sidebar knows (vendor/sunrice/admin/resources/js/components/app/nav-icon.tsx);
- * unknown names show as a dot.
- */
+/** Ikon sidebar CMS */
 class AdminNavigationIcons
 {
     /** @var array<string, string> navigation item key => icon */
@@ -26,8 +18,6 @@ class AdminNavigationIcons
     ];
 
     /**
-     * Handle an incoming request.
-     *
      * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response

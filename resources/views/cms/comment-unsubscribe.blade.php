@@ -1,7 +1,4 @@
-{{--
-    A reply email's "stop these emails" link, in the site's layout (starter template: edit freely). It asks first
-    ($action: the signed link to POST to), then says it's done ($done). Gets $locale, $title, $url, $done and $action.
---}}
+{{-- Berhenti langganan komentar --}}
 @extends('cms.layout', ['seoTitle' => $done ? __('sunrice-cms::site.comments.unsubscribed_title') : __('sunrice-cms::site.comments.unsubscribe_title')])
 
 @push('head')

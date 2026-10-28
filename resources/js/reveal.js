@@ -1,4 +1,4 @@
-// Fade elements marked [data-reveal] in as they enter the viewport.
+// Animasi muncul
 const els = document.querySelectorAll('[data-reveal]');
 
 if (!('IntersectionObserver' in window)) {

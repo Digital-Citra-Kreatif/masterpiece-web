@@ -1,9 +1,9 @@
-/* WebRotate 360 turntable. */
+/* Turntable WebRotate */
 
 .tt {
   --tt-bg: var(--room-2);
   color: var(--room-ink);
-  /* WebRotate never upscales frames past their native width. */
+  /* Tanpa upscale */
   max-width: var(--native);
   margin-inline: auto;
 }
@@ -49,7 +49,7 @@
   outline-offset: -3px;
 }
 
-/* WebRotate injects .wr360_player; keep it transparent and full-size. */
+/* Player WebRotate */
 .tt .wr360_player {
   background: transparent !important;
 }

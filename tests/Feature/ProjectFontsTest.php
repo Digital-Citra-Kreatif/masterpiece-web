@@ -40,7 +40,7 @@ test('a project\'s font files move to the media folder Fonts / {slug}', function
 
     expect($folder->media()->pluck('id')->sort()->values()->all())->toBe([$heading, $button]);
 
-    // Saving a draft in the admin, as an editor does.
+    // Simpan draft admin
     app(SyncPermissions::class)->handle();
     $admin = User::factory()->create();
     $admin->assignRole(SyncPermissions::superAdminRole());

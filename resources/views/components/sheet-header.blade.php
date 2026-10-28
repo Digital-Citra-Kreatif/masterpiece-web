@@ -1,4 +1,4 @@
-{{-- Section heading: title and intro. --}}
+{{-- Judul bagian --}}
 @props(['id' => null, 'title', 'intro' => null])
 
 <div class="sheet" data-reveal>

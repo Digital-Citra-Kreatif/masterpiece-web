@@ -1,4 +1,4 @@
-// Homepage: hero video, Masterplan opening, Kawasan and Cluster scroll scenes, facilities carousel, unit filter.
+// Entri beranda
 import './hero.js';
 import './masterplan.js';
 import './scroll-scene.js';

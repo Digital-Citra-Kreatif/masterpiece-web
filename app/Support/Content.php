@@ -8,21 +8,14 @@ use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Content as Cms;
 use Sunrice\Cms\Models\EntryTranslation;
 
-/**
- * Turns CMS content into the arrays the site's Blade views read.
- *
- * Editors change words, pictures, numbers and statuses in the CMS. Motion packages
- * (scroll-scene frames and the WebRotate sequence) are delivered by the 3D team, so
- * their data stays in resources/data: area.json places each hotspot on its landmark,
- * sequence.php describes the type pages' 360° sequence.
- */
+/** Konten CMS situs */
 final class Content
 {
-    /** Unit statuses, in the order the legend lists them. */
+    /** Urutan status unit */
     public const STATUSES = ['available', 'reserved', 'sold'];
 
     /**
-     * Site-wide data every page shares as `$site` (Globals → Situs, Settings → Site and Settings → Branding).
+     * Data situs bersama
      *
      * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>, siteplan: array{image: ?string, width: int, height: int, placeholder: bool}}
      */
@@ -74,8 +67,7 @@ final class Content
     }
 
     /**
-     * Isi footer. Logo: the Branding logo (the footer sits on white), else Footer → Logo;
-     * a project page passes its own logo to the component instead.
+     * Isi footer
      *
      * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, copyright: string}
      */
@@ -105,8 +97,7 @@ final class Content
     }
 
     /**
-     * The header's links: the CMS menu (config site.menu), or, while it has
-     * none, the homepage sections from Globals → Situs.
+     * Link header
      *
      * @param  array<string, mixed>  $settings
      * @return list<array{href: string, label: string, active: bool, newTab: bool}>
@@ -126,12 +117,7 @@ final class Content
     }
 
     /**
-     * The homepage's sections: the hero banner and each section's title and
-     * description from the Beranda entry's fields, the rest from
-     * resources/data/home.php (hardcoded for now) and the Unit collection.
-     *
-     * Hero media: one image is a still background, one video a loop, more take turns
-     * as a slider. Without media the hero keeps the hardcoded background.
+     * Section beranda
      *
      * @param  array<string, mixed>  $entryValues
      * @return array<string, mixed>
@@ -153,7 +139,7 @@ final class Content
             ->all();
         $slides = $cmsSlides !== [] ? $cmsSlides : $hero['slides'];
         $units = self::units();
-        // URL tipe dari CMS (rute koleksi Types)
+        // URL tipe CMS
         $typeUrls = Cms::entries('types')->get()->mapWithKeys(fn (EntryTranslation $type): array => [$type->slug => $type->url()]);
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
         $masterplan = $heading('masterplan', ['title' => $values['masterplan']['title'], 'intro' => $values['masterplan']['text']]);
@@ -164,14 +150,14 @@ final class Content
                 ...$hero,
                 'title' => filled($cmsHero['heading'] ?? null) ? $cmsHero['heading'] : $hero['title'],
                 'subtitle' => $cmsHero === [] ? $hero['subtitle'] : ($cmsHero['description'] ?? ''),
-                // A slider without slides falls back to the teaser loop.
+                // Cadangan video teaser
                 'background' => $cmsSlides !== [] || ($hero['background'] === 'slider' && $slides !== []) ? 'slider' : 'video',
                 'slides' => $slides,
             ],
             'masterplan' => [
                 'title' => $masterplan['title'],
                 'text' => $masterplan['intro'],
-                // The hero's loop is the same orbit as the Kawasan frames: it plays once the frame is full size.
+                // Orbit Kawasan
                 'video' => $hero['teaser'],
             ],
             'area' => self::scene($values['kawasan'], $scenes['area']),
@@ -241,8 +227,7 @@ final class Content
     }
 
     /**
-     * A section's title and intro: the CMS group's (title and description) once its
-     * title is filled in, otherwise the hardcoded ones.
+     * Judul dan intro
      *
      * @param  array<string, mixed>  $group
      * @param  array{title: string, intro: ?string}  $fallback
@@ -256,8 +241,7 @@ final class Content
     }
 
     /**
-     * One type page: its card data plus the 360° sequence, its parts, denah, gallery, VR
-     * and, for a project's type, the project's style, menu, WhatsApp and other types.
+     * Data halaman tipe
      *
      * @param  array<string, mixed>  $values
      * @return array<string, mixed>
@@ -286,7 +270,7 @@ final class Content
                 'id' => "lantai-{$floor}",
                 'name' => "Lantai {$floor}",
                 'kind' => 'Aksonometri',
-                // Until the client's sequence has a keyframe per floor, floors sit at evenly spaced angles.
+                // Sudut lantai sementara
                 'frame' => (int) round($floor * $sequence['frames'] / ($floors + 1)),
                 'text' => $floorTexts->get($floor - 1) ?? $floorTexts->last() ?? '',
             ];
@@ -299,7 +283,7 @@ final class Content
                 ['Luas tanah', "{$card['lt']} m²"],
                 ['Luas bangunan', "{$card['lb']} m²"],
                 ['Jumlah lantai', (string) $floors],
-                // Optional since shophouse types (a project's) have no rooms to count.
+                // Ruko tanpa kamar
                 ...filled($values['bedrooms'] ?? null) ? [['Kamar tidur', (string) $card['bedrooms']]] : [],
                 ...filled($values['bathrooms'] ?? null) ? [['Kamar mandi', (string) $card['bathrooms']]] : [],
                 ...collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
@@ -314,7 +298,7 @@ final class Content
     }
 
     /**
-     * What a type card on the homepage shows.
+     * Kartu tipe beranda
      *
      * @param  array<string, mixed>  $values
      * @return array{slug: string, name: string, label: ?string, url: ?string, image: ?string, lt: string, lb: string, bedrooms: int, bathrooms: int, placeholder: bool}
@@ -336,10 +320,7 @@ final class Content
     }
 
     /**
-     * A scroll scene: the section's copy, its frames package and the hotspots that have a landmark.
-     *
-     * Hotspot copy comes from the CMS; where each one sits (its landmark and default
-     * angle) comes from the scene package's data, matched by key.
+     * Scene scroll
      *
      * @param  array<string, mixed>  $section
      * @param  array{scene: array<string, mixed>, hotspots: array<string, array{track: string, frame?: int}>}  $package
@@ -364,7 +345,7 @@ final class Content
     }
 
     /**
-     * The siteplan dots (Unit collection).
+     * Titik siteplan
      *
      * @return Collection<int, array{id: string, x: float, y: float, status: string}>
      */
@@ -389,7 +370,7 @@ final class Content
         return $media?->url();
     }
 
-    /** An area in m², with a decimal comma only when it has decimals ("120", "120,5"). */
+    /** Format luas */
     private static function number(int|float|string $value): string
     {
         return rtrim(rtrim(number_format((float) $value, 1, ',', '.'), '0'), ',');

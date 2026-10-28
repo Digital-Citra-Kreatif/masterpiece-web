@@ -14,17 +14,13 @@ use Sunrice\Cms\Models\EntryTranslation;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+    /** Daftar layanan */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
+    /** Boot layanan */
     public function boot(): void
     {
         View::composer(['pages.*', 'components.*', 'errors.404'], function (ViewInstance $view): void {

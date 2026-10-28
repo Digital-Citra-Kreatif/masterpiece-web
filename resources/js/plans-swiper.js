@@ -1,4 +1,4 @@
-// Slider denah di halaman tipe, hanya bila denahnya lebih dari satu
+// Slider denah
 import Swiper from 'swiper';
 import { A11y, Keyboard, Navigation } from 'swiper/modules';
 import 'swiper/css';

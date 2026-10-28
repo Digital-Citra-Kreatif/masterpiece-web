@@ -1,33 +1,10 @@
-// Scroll scenes: a pinned canvas whose image sequence follows page scroll.
-//
-// Each scene starts at data-start and scrubs one full orbit over its range.
-//
-// Masterplan scene (has [data-intro-end]): its first stretch of scroll belongs to
-// the Masterplan opening (masterplan.js), which grows the frame holding the orbit
-// video to the full stage. The video loops (it is the same orbit as the frames)
-// until the orbit's range starts at [data-intro-end]. On the first scroll into the
-// range the canvas takes over at the frame the video is showing, so there is no
-// cut, the Masterplan layer hides (.is-scrub) and the section panel and markers
-// fade in. Back at the start of the range the video resumes from the frame the
-// scrub stopped on.
-//
-// Hotspots: opening one (marker or list) fast-forwards the orbit to the
-// hotspot's default angle while zooming in on it, with its info in place of the
-// panel. Back, Esc, or scrolling on turns and zooms back out to the orbit.
-//
-// Scenes that share a frame folder share one download (see frameSet).
-//
-// Still scenes ([data-still]): until a project has its sequence, one picture
-// stands in for it (stillSet). It counts as STILL_FRAMES frames: over the scroll
-// range it turns one way and back by up to [data-sweep] degrees, scaled up just
-// enough to keep covering the stage, and the hotspots (x/y % of the picture)
-// turn with it, so the scrub, the markers and the hotspot moves work unchanged.
+// Scene scroll
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const size = Math.min(window.innerWidth, 1600) * Math.min(devicePixelRatio || 1, 2) > 1100 ? 'lg' : 'sm';
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const ramp = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
-// The same ramp with eased ends (smoothstep), for fades that shouldn't start or stop abruptly.
+// Ramp halus
 const smooth = (v, a, b) => {
   const t = ramp(v, a, b);
   return t * t * (3 - 2 * t);
@@ -35,7 +12,7 @@ const smooth = (v, a, b) => {
 
 import { release, resume } from './video-hold.js';
 
-// ---- frame sets, loaded coarse-to-fine so any scroll position has something close
+// Set frame
 const sets = new Map();
 
 function frameSet(base) {
@@ -68,7 +45,7 @@ function frameSet(base) {
           img.src = base + m.pattern.replace('{size}', size).replace('{n}', String(i).padStart(3, '0'));
         };
         for (let k = 0; k < 6; k++) loadOne();
-        // Sharp versions of the frames the camera rests on when zoomed in (optional).
+        // Frame detail opsional
         set.detail = new Map();
         set.loadDetail = () => {
           if (set.detailRequested || !m.detail) return;
@@ -101,7 +78,7 @@ function frameSet(base) {
   return set;
 }
 
-// ---- titik ditempatkan
+// Titik ditempatkan
 function placePoints(m, spots) {
   for (const s of Object.values(spots)) {
     if (!s.point || m.hotspots[s.track]) continue;
@@ -110,7 +87,7 @@ function placePoints(m, spots) {
   }
 }
 
-// ---- gambar diam
+// Gambar diam
 const STILL_FRAMES = 120;
 
 function stillSet(src) {
@@ -132,7 +109,7 @@ function stillSet(src) {
   return set;
 }
 
-// ---- one scene
+// Satu scene
 async function init(root) {
   const stage = root.querySelector('.scene__stage');
   const introEnd = root.querySelector('[data-intro-end]');
@@ -170,7 +147,7 @@ async function init(root) {
     row.addEventListener('blur', mark(false));
   }
 
-  // Media time of the video frame actually on screen (currentTime runs slightly ahead).
+  // Waktu frame tampil
   let shownTime = null;
   if (hasVideo) {
     video.src = video.dataset.src;
@@ -207,28 +184,26 @@ async function init(root) {
     }
   }
 
-  // Video time <-> scene frame. Video frame k = render frame k*video.step;
-  // scene frame f = render frame f*step.
+  // Konversi waktu video
   const perSecond = hasVideo ? (m.video.fps * m.video.step) / m.step : 0;
-  // Not rounded: the scrub carries on from exactly where the (interpolated) video
-  // is, the canvas showing the nearest frame, so the hand-over doesn't jump.
+  // Tanpa pembulatan
   const videoToFrame = (t) => (Math.floor(t * m.video.fps + 0.01) * (m.video.step / m.step)) % N;
   const frameToVideo = (f) => (((f % N) + N) % N) / perSecond;
 
-  // ---- state
+  // Status scene
   let mode = hasVideo ? 'video' : 'scrub';
-  let offset = Number(root.dataset.start) || 0; // frame at the start of the scroll range
-  let current = offset; // smoothed frame position (float, unwrapped)
-  let drawn = NaN; // frame position (float, wrapped) on the canvas; NaN = redraw
-  let shownF = 0; // frame position currently shown (float, wrapped)
-  let shownIndex = 0; // nearest whole frame to it
-  let lastTarget = NaN; // scroll target at the previous tick, to tell when scrolling stops
-  let override = null; // frame (float) set by a hotspot move instead of the scroll
+  let offset = Number(root.dataset.start) || 0; // Frame awal
+  let current = offset; // Posisi dihaluskan
+  let drawn = NaN; // Posisi di canvas
+  let shownF = 0; // Posisi tampil
+  let shownIndex = 0; // Frame terdekat
+  let lastTarget = NaN; // Target sebelumnya
+  let override = null; // Frame dari hotspot
   let ticking = false;
 
-  // ---- layout
+  // Tata letak
   let W = 0, H = 0, dpr = 1, scale = 1, ox = 0, oy = 0;
-  let avoid = []; // text boxes markers must not cover (layout boxes, transforms ignored)
+  let avoid = []; // Area teks
   const measureAvoid = () => {
     const area = root.querySelector('.scene__area');
     avoid = [...area.children].map((el) => ({
@@ -249,7 +224,7 @@ async function init(root) {
     dpr = Math.min(devicePixelRatio || 1, 2);
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
-    // cover-fit the frame (hotspot coordinates are in m.width x m.height space)
+    // Cover-fit frame
     scale = Math.max(W / m.width, H / m.height);
     ox = (W - m.width * scale) / 2;
     oy = (H - m.height * scale) / 2;
@@ -259,7 +234,7 @@ async function init(root) {
     requestTick();
   };
 
-  // Scroll into the scene in px, and the length of the Masterplan opening before the orbit's range.
+  // Jarak scroll
   const scrolled = () => -root.getBoundingClientRect().top;
   const introLength = () => (hasIntro ? introEnd.offsetTop : 0);
   // Panel mode zoom
@@ -275,12 +250,12 @@ async function init(root) {
     return r.bottom > -50 && r.top < window.innerHeight + 50;
   };
 
-  // Put frame position f (float, unwrapped) on the canvas; returns it wrapped to 0..N.
+  // Tampilkan posisi frame
   function showFrame(f) {
     const fw = ((f % N) + N) % N;
     shownF = fw;
     shownIndex = Math.round(fw) % N;
-    // A sequence shows whole frames, so it only redraws when the nearest one changes; a still turns smoothly.
+    // Kapan redraw
     const key = set.still ? fw : shownIndex;
     if (!(Math.abs(key - drawn) < 0.002) && draw(fw)) {
       drawn = key;
@@ -290,13 +265,7 @@ async function init(root) {
     return fw;
   }
 
-  // Draw frame position fw through the camera: always the nearest whole frame,
-  // never two laid over each other. The frames are 3° apart, so a blend of two
-  // showed buildings near the camera twice (a ghost) while scrolling; at 120
-  // frames a turn the orbit still flows. The zoom happens here, from the source
-  // image, so zoomed views keep the source's resolution (a CSS zoom would enlarge
-  // the screen-sized canvas instead). Resting on a frame while zoomed, its detail
-  // frame is used if there is one.
+  // Gambar lewat kamera
   function draw(fw) {
     const t = fw - Math.floor(fw);
     const near = Math.round(fw) % N;
@@ -323,7 +292,7 @@ async function init(root) {
     return true;
   }
 
-  // A tracked point at frame position fw, between the two nearest frames' points.
+  // Titik terlacak
   const trackAt = (track, fw) => {
     if (set.still) {
       const p = stillPoints[track];
@@ -351,8 +320,7 @@ async function init(root) {
       const show = p && x > 24 && y > 80 && x < W - 24 && y < H - 24 && !covered(x, y);
       el.hidden = !show;
       if (!show) continue;
-      // Near the right edge the label goes on the left of the dot. When flipped the
-      // dot sits at the element's right edge, so shift left by the element's width.
+      // Label di kiri
       const flip = x + Number((el.dataset.w ||= el.offsetWidth)) > W - 16;
       el.classList.toggle('spot--flip', flip);
       const left = flip ? x - el.offsetWidth : x;
@@ -360,20 +328,12 @@ async function init(root) {
     }
   }
 
-  // ---- go to a location
-  // Each hotspot has a default angle (`frame` in the scene). Opening it
-  // fast-forwards the orbit to that angle, the real camera path turning, while a
-  // camera over the canvas moves in and zooms onto the hotspot, following it
-  // frame by frame as it moves across the turning view. Moving to another
-  // hotspot turns the orbit to its angle while the camera pulls back a little and
-  // follows across; closing turns back to the scroll position while zooming out.
-  // The camera is [cx, cy, w]: the point at the screen centre and the visible
-  // width, in stage pixels ([W/2, H/2, W] = the plain orbit).
-  const ZOOM = 2.2; // how close the camera gets on a location
-  let placeKey = null; // open hotspot, or null while orbiting
-  let placeY = 0; // scroll position when it opened
-  let cam = null; // null = untouched orbit
-  let run = 0; // id of the running move; starting a new one cancels it
+  // Menuju lokasi
+  const ZOOM = 2.2; // Jarak zoom
+  let placeKey = null; // Hotspot terbuka
+  let placeY = 0; // Scroll saat dibuka
+  let cam = null; // Kamera aktif
+  let run = 0; // ID gerakan
   let flyTimer = 0;
 
   const flying = () => {
@@ -392,7 +352,7 @@ async function init(root) {
     const h = (w * H) / W;
     return [clamp(x, w / 2, W - w / 2), clamp(y, h / 2, H - h / 2), w];
   };
-  // A hotspot's position on the stage at a frame position (null if not in it).
+  // Posisi hotspot
   const posAt = (key, fw) => {
     const p = trackAt(spots[key].track, fw);
     return p ? [ox + p[0] * scale, oy + p[1] * scale] : null;
@@ -402,7 +362,7 @@ async function init(root) {
     return clampCam([p[0], p[1], W / ZOOM]);
   };
 
-  // Set the camera and redraw the frame on screen through it.
+  // Atur kamera
   const applyCam = (c) => {
     cam = c;
     if (draw(shownF)) drawn = shownF;
@@ -410,7 +370,7 @@ async function init(root) {
 
   const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
   const lerp = (a, b, t) => a + (b - a) * t;
-  // Run fn(0..1) over ms; resolves false if another move took over.
+  // Animasi berdurasi
   const tween = (id, ms, fn) =>
     new Promise((resolve) => {
       const t0 = performance.now();
@@ -423,9 +383,7 @@ async function init(root) {
       requestAnimationFrame(frame);
     });
 
-  // One move: turn the orbit from where it is to `toFrame` while the camera goes
-  // from wherever it is (following `fromKey` if leaving a hotspot) to `toKey`
-  // (or back to the plain orbit when there is none).
+  // Satu gerakan
   function travel(id, { fromKey = null, toKey = null, toFrame }) {
     const c0 = cam || overview();
     const l0 = Math.log(W / c0[2]);
@@ -437,20 +395,20 @@ async function init(root) {
     let lastB = null;
     const done = tween(id, ms, (t) => {
       const e = ease(t);
-      override = f0 + d * e; // the scroll no longer decides the angle until closed
+      override = f0 + d * e; // Sudut dari hotspot
       const fw = wrap(override);
       const a = fromKey ? (lastA = posAt(fromKey, fw) || lastA) : null;
       const b = toKey ? (lastB = posAt(toKey, fw) || lastB) : null;
       const start = a || [c0[0], c0[1]];
       const end = b || [W / 2, H / 2];
-      // Going in: travel leads, zoom follows. Between hotspots: zoom dips half way.
+      // Kurva gerak
       const pan = toKey && !fromKey ? ease(clamp(t / 0.8, 0, 1)) : e;
       let ls;
       if (fromKey && toKey) ls = lerp(l0, l1, e) - 0.55 * Math.log(ZOOM) * Math.sin(Math.PI * t);
       else if (toKey) ls = lerp(l0, l1, ease(clamp((t - 0.15) / 0.85, 0, 1)));
       else ls = lerp(l0, l1, e);
       cam = clampCam([lerp(start[0], end[0], pan), lerp(start[1], end[1], pan), W / Math.exp(Math.max(0, ls))]);
-      drawn = NaN; // camera moved: redraw even if the frame is the same
+      drawn = NaN; // Paksa redraw
       showFrame(override);
     });
     return { done, ms };
@@ -534,7 +492,7 @@ async function init(root) {
     if (root.contains(document.activeElement) || document.activeElement === document.body) {
       root.querySelector(`[data-spot-open="${key}"]`)?.focus({ preventScroll: true });
     }
-    // Turn back to the angle the scroll position calls for.
+    // Kembali ke sudut
     const { done } = travel(id, { fromKey: key, toFrame: Math.round(current) });
     setTimeout(() => id === run && root.classList.remove('is-place'), 500);
     if (!(await done)) return;
@@ -554,12 +512,11 @@ async function init(root) {
 
   function tick() {
     ticking = false;
-    if (placeKey && Math.abs(window.scrollY - placeY) > 120) closePlace(); // scrolling on returns to the orbit
+    if (placeKey && Math.abs(window.scrollY - placeY) > 120) closePlace(); // Scroll menutup hotspot
     if (!onScreen()) return;
     const p = progress();
 
-    // Phases. Masterplan scene: once the frame has filled the stage, the panel comes in,
-    // eased, over the next third of a screen.
+    // Fase scene
     const intro = introLength();
     const from = panelFrom();
     const areaIn = hasIntro ? smooth(scrolled(), from, from + H * 0.3) : 1;
@@ -569,7 +526,7 @@ async function init(root) {
     if (hasIntro && !hasVideo) root.classList.toggle('is-scrub', p > 0);
 
     if (hasVideo && p <= 0 && mode === 'scrub' && !placeKey && override === null && Math.abs(current - offset) < 0.05) {
-      // Back at the start of the range and settled: hand the orbit back to the video at the same frame.
+      // Kembalikan ke video
       mode = 'video';
       shownTime = null;
       resume(video);
@@ -587,10 +544,7 @@ async function init(root) {
 
     if (mode !== 'scrub') return;
 
-    // One full orbit over the scroll range. Lenis already eases the scroll, so the
-    // frame follows it closely (a light 0.25 catch-up, not a second heavy lag).
-    // Once the scroll stops, the orbit glides on to the nearest whole frame so the
-    // picture at rest is one sharp frame, not a blend of two.
+    // Orbit ikut scroll
     const target = offset + p * N;
     const idle = target === lastTarget;
     lastTarget = target;
@@ -612,16 +566,12 @@ async function init(root) {
     requestAnimationFrame(tick);
   }
 
-  // The canvas under the video holds a frame from the start (the Masterplan layer
-  // covers it), so taking over only changes its picture: showing it for the first
-  // time at the hand-over made the browser set it up on screen right then, and the
-  // page stalled for a moment.
+  // Canvas siap awal
   let warm = !hasVideo;
   const warmUp = () => {
     if (!warm && draw(offset)) warm = true;
   };
-  // While the video plays, the canvas follows it a frame behind the scenes, so the
-  // frames the hand-over draws are already decoded instead of decoded right then.
+  // Pra-decode frame
   if (hasVideo && 'requestVideoFrameCallback' in video) {
     let followed = NaN;
     const follow = (_now, meta) => {
@@ -634,7 +584,7 @@ async function init(root) {
     video.requestVideoFrameCallback(follow);
   }
 
-  // Redraw as sharper frames arrive.
+  // Frame lebih tajam
   set.listeners.add(() => {
     warmUp();
     if (mode === 'scrub') {
@@ -642,7 +592,7 @@ async function init(root) {
       requestTick();
     }
   });
-  // Detail frames are only needed once someone heads for a hotspot.
+  // Frame detail
   root.addEventListener('pointerover', (e) => e.target.closest('[data-spot], [data-spot-open]') && set.loadDetail?.(), { passive: true });
   root.addEventListener('focusin', (e) => e.target.closest('[data-spot-open]') && set.loadDetail?.());
   window.addEventListener('scroll', requestTick, { passive: true });
@@ -653,7 +603,7 @@ async function init(root) {
   resize();
   warmUp();
 
-  // Pause the video when the scene is off screen.
+  // Jeda video
   if (hasVideo) {
     new IntersectionObserver(([e]) => {
       if (mode === 'video' && !e.isIntersecting) release(video);
@@ -662,7 +612,7 @@ async function init(root) {
   }
 }
 
-// Scenes start when they come within a screen or so.
+// Mulai scene
 const scenes = [...document.querySelectorAll('[data-scene]')];
 const lazy = new IntersectionObserver(
   (entries) => {

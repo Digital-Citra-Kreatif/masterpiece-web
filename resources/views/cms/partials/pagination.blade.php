@@ -1,4 +1,4 @@
-{{-- Previous and next links of a paginator. @include('cms.partials.pagination', ['paginator' => $entries]) --}}
+{{-- Paginasi --}}
 @if ($paginator->hasPages())
     <nav class="pagination" aria-label="{{ __('Pages') }}">
         @if ($paginator->previousPageUrl())

@@ -1,12 +1,6 @@
 <?php
 
-// The homepage's copy and media that aren't in the CMS yet, and the fallback for
-// what is: the hero banner and each section's title and description (Pages →
-// Beranda) show these until filled in there. Paths are under public/.
-//
-// The hero runs as a `slider` (slides: images or videos, taking turns) or as the
-// teaser `video`. The teaser stays filled either way: the Masterplan frame plays it.
-// Units (the siteplan dots) still come from the CMS: Unit collection.
+// Data beranda hardcoded
 
 $hotspot = fn (string $key, string $title, string $short, string $text): array => compact('key', 'title', 'short', 'text');
 
@@ -58,7 +52,7 @@ return [
             $hotspot('cluster-commercial', 'Akses ke pusat komersial', 'Akses komersial', 'Cluster terhubung langsung ke pusat komersial melalui boulevard utama.'),
         ],
     ],
-    // Section headings: title and intro.
+    // Judul section
     'headings' => [
         'fasilitas' => ['title' => 'Ruang bersama', 'intro' => 'Fasilitas yang melengkapi kawasan, dari tepi danau hingga pusat komersial.'],
         'tipe' => ['title' => 'Pilih tipe', 'intro' => 'Bandingkan luas tanah, luas bangunan, dan jumlah kamar. Buka satu tipe untuk menjelajahi fasad dan setiap lantainya.'],
@@ -72,7 +66,7 @@ return [
         ['title' => 'Deret ruko tepi air', 'image' => 'media/stills/fac-plaza.jpg'],
         ['title' => 'Ruang hijau', 'image' => 'media/stills/fac-green.jpg'],
     ],
-    // Cards linking to the type pages (Tipe collection in the CMS): slug, name, label, image, LT, LB, bedrooms, bathrooms.
+    // Kartu tipe
     'tipe' => [
         ['tipe-1', 'Tipe 1', 'Ruko Hook', 'media/stills/ruko-front-34.jpg', 120, 180, 2, 2],
         ['tipe-2', 'Tipe 2', null, 'media/stills/ruko-34.jpg', 90, 150, 2, 2],

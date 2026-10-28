@@ -1,13 +1,4 @@
-{{--
-  'home': transparent over the hero, the CMS menu (config site.menu; without
-  links there, the homepage sections).
-  'project': like 'home', with the page's own links (`nav`) and, when given, its own `logo` ({ src, width, height }).
-  'type': solid, with a back link to the Unit update section, or, given `back`
-  ({ href, label }), a button back to that page (a project's type page).
-  Up to 1024px wide, 'home' and 'project' swap the links for a hamburger that
-  opens them in a dropdown under the header (resources/js/menu.js).
-  Not sticky: it sits at the top of the page and scrolls away.
---}}
+{{-- Header situs --}}
 @props(['variant' => 'home', 'nav' => null, 'logo' => null, 'back' => null])
 
 <header @class(['hd', "hd--{$variant}"])>
@@ -40,7 +31,7 @@
         @endforeach
       </nav>
 
-      {{-- Tablet dan mobile: menu hamburger, dropdown di bawah header (resources/js/menu.js) --}}
+      {{-- Menu hamburger --}}
       <button class="hd__burger" type="button" aria-expanded="false" aria-controls="hd-menu" data-menu-toggle>
         <svg class="hd__burger-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <path d="M3 7h18M3 12h18M3 17h18" />

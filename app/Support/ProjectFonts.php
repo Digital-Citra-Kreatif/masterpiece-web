@@ -21,28 +21,17 @@ use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Support\MediaUsage;
 use ZipArchive;
 
-/**
- * Keeps each project's custom fonts together in the media library: whenever a
- * Projects entry is saved (draft or live), the files in its Global Style font
- * fields move to the folder Fonts / {project slug}, created when missing, and
- * renamed with the slug (the latest one, draft or live): one folder per project.
- *
- * A ZIP in a font field is unpacked: its font files (every weight) are uploaded
- * to that folder, the regular one takes the ZIP's place in the field (the editor
- * can choose another from the folder) and the ZIP is deleted.
- * Other files in it (licences, previews) are skipped, and so are folders'
- * names: only each file's own name is kept.
- */
+/** Font per proyek */
 final class ProjectFonts
 {
     public const ROOT_FOLDER = 'Fonts';
 
-    /** The Global Style fields that hold font files. */
+    /** Field font */
     public const FIELDS = ['heading', 'description', 'button'];
 
     public const EXTENSIONS = ['woff2', 'woff', 'ttf', 'otf'];
 
-    /** Limits on what a ZIP may unpack to. */
+    /** Batas isi ZIP */
     public const ZIP_MAX_FILES = 50;
 
     public const ZIP_MAX_FILE_BYTES = 10 * 1024 * 1024;
@@ -54,10 +43,7 @@ final class ProjectFonts
         private DeleteMedia $deleteMedia,
     ) {}
 
-    /**
-     * After an admin request changed an entry. Saving a draft writes with a query
-     * update, which fires no model events, so this catches what `saved` misses.
-     */
+    /** Setelah simpan draft */
     public function handleRequest(Request $request): void
     {
         $route = $request->route();
@@ -91,14 +77,14 @@ final class ProjectFonts
             $ids = $this->fontIds($translation->draft_data ?? [])->merge($this->fontIds($translation->data ?? []))->unique();
         }
 
-        // A font picked from another project's folder stays there.
+        // Font proyek lain
         $media = Media::query()->whereKey($ids->all())->where(fn ($query) => $query->whereNull('folder_id')->orWhere('folder_id', '!=', $folder->id))->get()
             ->reject(fn (Media $font): bool => self::usedElsewhere($font->id, $entryId));
         $this->moveMedia->handle($media, $folder);
         $this->deleteUnusedZips($folder);
     }
 
-    /** Whether something other than this entry uses the file. */
+    /** Dipakai entri lain */
     private static function usedElsewhere(int|Collection $mediaIds, string $entryId): bool
     {
         return MediaUsageRecord::query()->whereIn('media_id', collect($mediaIds)->all())
@@ -106,14 +92,7 @@ final class ProjectFonts
             ->exists();
     }
 
-    /**
-     * The project's one folder under Fonts, named after its slug. When the
-     * slug changes, the folder named after an earlier slug of the project (its
-     * revisions keep them) is renamed; folders of several earlier slugs are
-     * merged into it and the emptied ones go. An earlier slug another project
-     * now has is that project's folder, left alone. Without a folder and with
-     * no fonts to put in one ($create false), none is made.
-     */
+    /** Folder font proyek */
     private function projectFolder(EntryTranslation $translation, string $slug, bool $create): ?MediaFolder
     {
         $root = MediaFolder::query()->whereNull('parent_id')->where('name', self::ROOT_FOLDER)->first();
@@ -143,7 +122,7 @@ final class ProjectFonts
         return $folder ?? ($create ? $this->saveFolder->handle($slug, $root) : null);
     }
 
-    /** Whether another project now has this slug (its folder's name). */
+    /** Slug proyek lain */
     private static function slugTakenByAnother(string $slug, EntryTranslation $translation): bool
     {
         return EntryTranslation::query()->where('collection_id', $translation->collection_id)->where('entry_id', '!=', $translation->entry_id)
@@ -151,22 +130,20 @@ final class ProjectFonts
             ->exists();
     }
 
-    /** ZIPs left in a project's folder that nothing uses any more: their fonts were unpacked. */
+    /** ZIP tak terpakai */
     private function deleteUnusedZips(MediaFolder $folder): void
     {
         foreach ($folder->media()->get()->filter(fn (Media $media): bool => self::isZip($media)) as $zip) {
             try {
                 $this->deleteMedia->handle($zip);
             } catch (ValidationException) {
-                // Still used somewhere: it stays.
+                // Masih dipakai
             }
         }
     }
 
     /**
-     * Replaces each ZIP in the font fields (draft and live) with one of its
-     * fonts, the regular one when it has it: the others wait in the project's
-     * folder for the editor to choose instead.
+     * Ganti ZIP field
      *
      * @param  Collection<int, Media>  $zips
      */
@@ -176,7 +153,7 @@ final class ProjectFonts
         $replace = function (?array $data) use ($chosen): ?array {
             foreach (self::FIELDS as $field) {
                 $value = $data['global_style']['fonts'][$field] ?? null;
-                // One file per field (a list is from when fields held several).
+                // File per field
                 $id = is_array($value) ? ($value[0] ?? null) : $value;
                 if ($id === null) {
                     continue;
@@ -192,20 +169,20 @@ final class ProjectFonts
             'draft_data' => json_encode($replace($translation->draft_data ?? []), JSON_THROW_ON_ERROR),
         ]);
         $translation->refresh();
-        // A query update fires no model events: keep the media library's "Used by" right, so the ZIPs are free to delete.
+        // Sinkron "Used by"
         MediaUsage::entry($translation);
 
         foreach ($zips as $zip) {
             try {
                 $this->deleteMedia->handle($zip);
             } catch (ValidationException) {
-                // Still used somewhere else: it stays.
+                // Masih dipakai
             }
         }
     }
 
     /**
-     * Uploads the font files in a ZIP to the folder.
+     * Unggah isi ZIP
      *
      * @return list<int> the new media ids
      */
@@ -235,7 +212,7 @@ final class ProjectFonts
                 try {
                     $ids[] = $this->uploadMedia->handle(new UploadedFile($fontPath, $name, null, null, true), ['folder_id' => $folder->id])->id;
                 } catch (ValidationException) {
-                    // A file the media library refuses: left out.
+                    // File ditolak
                 } finally {
                     @unlink($fontPath);
                 }
@@ -249,8 +226,7 @@ final class ProjectFonts
     }
 
     /**
-     * The regular weight among a family's files: named "Regular", else one with
-     * no weight or style in its name (Candara.ttf), else the first.
+     * Pilih font regular
      *
      * @param  list<int>  $ids
      */
@@ -271,7 +247,7 @@ final class ProjectFonts
     }
 
     /**
-     * The media ids in the font fields: one file or several each.
+     * ID media font
      *
      * @param  array<string, mixed>  $data
      * @return Collection<int, int>

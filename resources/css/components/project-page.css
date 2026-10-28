@@ -28,7 +28,6 @@ button.pj-frame:focus-visible {
   border-radius: var(--radius, 0);
 }
 
-/* ---------------------------------------------------------------- shared */
 /* Tata letak umum */
 
 .pj-title {
@@ -61,7 +60,6 @@ button.pj-frame:focus-visible {
   background: var(--ink);
 }
 
-/* ---------------------------------------------------------------- header */
 /* Header transparan */
 
 .hd--project .hd__inner {
@@ -125,7 +123,6 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* ---------------------------------------------------------------- hero */
 /* Judul hero */
 
 /* Posisi judul hero */
@@ -264,7 +261,7 @@ button.pj-frame:focus-visible {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
 }
 
-/* Juga di halaman tipe proyek (bagian, spesifikasi, denah, galeri) */
+/* Juga halaman tipe */
 .is-project :is(.pj-loc, .fac, .types, .pj-av, .units, .pj-points, .ft, .tph, .tpx) {
   --line: rgb(14 17 19 / 0.12);
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
@@ -315,7 +312,7 @@ button.pj-frame:focus-visible {
 
 /* Gelap Masterplan */
 .types--project {
-  position: relative; /* tempat veil */
+  position: relative; /* Tempat veil */
 }
 
 .cover-veil {
@@ -332,7 +329,6 @@ button.pj-frame:focus-visible {
   z-index: 1;
 }
 
-/* ---------------------------------------------------------------- scenes */
 /* Scene proyek */
 
 .scene--project {
@@ -646,14 +642,14 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Tablet: bingkai lebih besar, tetap 4:3 */
+/* Tablet */
 @media (min-width: 761px) and (max-width: 1024px) {
   .is-project .mp {
     --mp-h: min(52.5vw, 60svh);
   }
 }
 
-/* Mobile: lanskap 4:3 selebar konten */
+/* Mobile */
 @media (max-width: 760px) {
   .is-project .mp {
     --mp-w: calc(100vw - 2 * var(--gutter));
@@ -661,12 +657,11 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Tablet dan mobile: judul menembus tepi atas, deskripsi tepi bawah, sedikit
-   keluar dari sisi bingkai (tidak melewati gutter) */
+/* Tablet dan mobile */
 @media (max-width: 1024px) {
   .is-project :is(.mp__title, .mp__text) {
     translate: 0 -50%;
-    text-shadow: 0 1px 12px rgb(0 0 0 / 0.45); /* terbaca di atas video */
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.45); /* Terbaca di video */
   }
 
   .is-project .mp__title {
@@ -698,7 +693,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Daftar Masterplan dan Cluster */
+/* Daftar Masterplan, Cluster */
 @media (min-width: 761px) {
   .is-project .scene .scene__area > * {
     max-width: none;
@@ -859,7 +854,6 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* ---------------------------------------------------------------- points */
 /* Titik tanpa aerial */
 
 .pj-points {
@@ -888,7 +882,6 @@ button.pj-frame:focus-visible {
   opacity: 0.86;
 }
 
-/* ---------------------------------------------------------------- location */
 /* Komponen lokasi */
 
 .pj-loc {
@@ -992,7 +985,7 @@ button.pj-frame:focus-visible {
   width: 160px;
 }
 
-/* Tablet dan mobile: tinggi mengikuti peta, bukan satu layar */
+/* Tablet dan mobile */
 @media (max-width: 1024px) {
   .pj-loc__inner {
     min-height: 0;
@@ -1012,15 +1005,13 @@ button.pj-frame:focus-visible {
     padding-top: var(--section);
   }
 
-  /* Peta menempel garis samping, garisnya pindah ke atas */
+  /* Peta menempel garis */
   .pj-loc__stage {
     margin-left: calc(max(8px, var(--gutter) - 40px) + 1px - var(--gutter));
     border-left: 0;
     border-top: 1px solid var(--line, var(--rule));
   }
 }
-
-/* ---------------------------------------------------------------- band */
 
 /* Potongan ruko */
 .pj-band {
@@ -1046,7 +1037,6 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* ---------------------------------------------------------------- availability */
 /* Section ketersediaan */
 
 .pj-av {
@@ -1125,7 +1115,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* ---------------------------------------------------------------- marker */
+/* Penanda unit */
 
 .pj-marker {
   display: inline-block;
@@ -1158,7 +1148,7 @@ button.pj-frame:focus-visible {
   vertical-align: -0.15em;
 }
 
-/* ---------------------------------------------------------------- unit sheet */
+/* Sheet unit */
 
 .pj-sheet__body {
   width: 100%;
@@ -1216,9 +1206,7 @@ button.pj-frame:focus-visible {
   margin-top: 24px;
 }
 
-/* ---------------------------------------------------------------- WhatsApp */
-
-/* Kiri bawah: ikon WhatsApp bulat hijau, panel terbuka di atasnya */
+/* Tombol WhatsApp */
 .wa {
   position: fixed;
   left: max(clamp(24px, 3vw, 40px), env(safe-area-inset-left, 0px));
@@ -1237,7 +1225,7 @@ button.pj-frame:focus-visible {
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: #25d366; /* hijau WhatsApp */
+  background: #25d366; /* Hijau WhatsApp */
   color: #fff;
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.22); /* Melayang di atas */
   transition: background 0.25s var(--ease), scale 0.25s var(--ease);
@@ -1258,7 +1246,7 @@ button.pj-frame:focus-visible {
   height: 30px;
 }
 
-/* Panel: tanpa garis, membuka dari ikon */
+/* Panel kontak */
 .wa__panel {
   width: min(320px, calc(100vw - 48px));
   max-height: calc(100svh - 140px);
@@ -1293,7 +1281,7 @@ button.pj-frame:focus-visible {
   font-size: 14px;
 }
 
-/* Admin: kotak abu per item */
+/* Item admin */
 .wa__contacts {
   list-style: none;
   display: grid;
@@ -1315,7 +1303,7 @@ button.pj-frame:focus-visible {
   transition: background-color 0.2s var(--ease);
 }
 
-/* Kontak muncul berurutan saat panel terbuka */
+/* Animasi kontak */
 .wa__contacts li {
   animation: wa-item 0.35s var(--ease) backwards;
   animation-delay: calc(120ms + var(--i, 0) * 60ms);
@@ -1346,7 +1334,7 @@ button.pj-frame:focus-visible {
   object-fit: cover;
 }
 
-/* Logo proyek di lingkaran putih, utuh */
+/* Logo proyek */
 .wa__contacts .wa__logo {
   padding: 5px;
   background: #fff;
@@ -1367,7 +1355,6 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* ---------------------------------------------------------------- lightbox */
 /* Caption PhotoSwipe */
 .pswp__caption {
   position: absolute;
@@ -1381,7 +1368,6 @@ button.pj-frame:focus-visible {
   pointer-events: none;
 }
 
-/* ---------------------------------------------------------------- unit dots */
 /* Titik unit kecil */
 .is-project .units__dots .dot {
   width: clamp(6px, 0.6vw, 10px);
@@ -1389,12 +1375,12 @@ button.pj-frame:focus-visible {
   box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px rgba(14, 17, 19, 0.5);
 }
 
-/* Semua status lingkaran penuh, beda warna saja (peta dan legenda) */
+/* Status lingkaran penuh */
 .is-project .units .dot {
   background: var(--c);
 }
 
-/* Unit Availability: tanpa garis judul, legenda tidak sticky, tanpa bar status */
+/* Ketersediaan unit */
 .is-project .units__intro {
   padding-top: 0;
   border-top: 0;
@@ -1408,7 +1394,7 @@ button.pj-frame:focus-visible {
   display: none;
 }
 
-/* Jumlah unit lebih kecil */
+/* Jumlah unit kecil */
 .is-project .units__count {
   font-size: 24px;
 }

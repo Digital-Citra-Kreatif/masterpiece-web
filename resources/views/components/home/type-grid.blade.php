@@ -1,10 +1,4 @@
-{{--
-  Kartu tipe unit: `url` atau `sheet` (id <dialog>), fakta `specs`
-
-  variant 'project': kartu proyek
-  Slot `top`: isi di atas judul, selebar konten
-  Slot `before` / `after`: isi tambahan
---}}
+{{-- Grid tipe unit --}}
 @props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'top' => null, 'before' => null, 'after' => null])
 
 @php($project = $variant === 'project')

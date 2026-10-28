@@ -1,10 +1,4 @@
-{{--
-  Facilities carousel (max 10 slides): native horizontal scroll-snap with
-  prev/next buttons, so touch, trackpad and keyboard all work without a library.
-  Logic in resources/js/carousel.js.
-
-  variant 'split': karusel Swiper proyek
---}}
+{{-- Karusel fasilitas --}}
 @props(['facilities', 'heading', 'id' => 'fasilitas', 'variant' => 'default'])
 
 @php

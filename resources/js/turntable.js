@@ -1,41 +1,19 @@
-// Boots WebRotate 360 on every [data-turntable] when it nears the viewport.
-//
-// Input model (brief: "left/right rotates, vertical scroll moves the page"):
-//   - drag / touch swipe: handled by WebRotate (its player uses touch-action: pan-y,
-//     so vertical swipes still scroll the page on phones)
-//   - wheel / trackpad: WebRotate's own wheel handling is off in config.xml; here a
-//     mostly-horizontal wheel gesture (or Shift+wheel) rotates, and a vertical one
-//     is left alone so the page scrolls
-//   - ←/→ keys on the focused viewer, and the step buttons
-//
-// Licensing: WebRotate's free tier loads only the first viewer created on a page;
-// later ones never start. The homepage has one (cluster), but every type page
-// (facade + floors) has more than one, so the site expects a PRO/Enterprise
-// license file at /wr360/license.lic. Without one, only the first viewer on the
-// page boots and the others show their poster with a notice.
-//
-// Animated seek: dispatch `tt:goto` on the [data-turntable] element with
-// { detail: { frame } } and the viewer plays through the frames in between (the
-// shorter way round). Used by the type page to move between its parts.
-//
-// Hotspot clicks: config.xml gives each hotspot clickAction="11" clickData="drHotspot",
-// which makes WebRotate call window.drHotspot(hotspotConfig).
+// Pemuat WebRotate
 
 import WR360 from '@webrotate360/imagerotator';
 import '@webrotate360/imagerotator/build/css/empty.css';
 
-// URL of public/wr360/, from asset() in the Blade component (works under a subpath).
+// URL wr360
 const WR360_DIR = document.querySelector('[data-wr360]')?.dataset.wr360 ?? '/wr360';
 const GRAPHICS = `${WR360_DIR}/graphics`;
-// Free tier: empty file, viewer shows "powered by WebRotate 360". Replace with the
-// PRO/Enterprise license file if the client buys one.
+// Lisensi WebRotate
 const LICENSE = `${WR360_DIR}/license.lic`;
 const WHEEL_PX_PER_FRAME = 24;
 const KEY_STEP = 2;
 
 const hotspotContent = new Map();
 
-// Empty file = free tier. (WebRotate itself validates a real license file.)
+// Cek lisensi
 const licensed = fetch(LICENSE)
   .then((r) => (r.ok ? r.text() : ''))
   .then((text) => text.trim().length > 0)
@@ -48,7 +26,7 @@ window.drHotspot = (config) => {
 };
 
 async function boot(root) {
-  const order = booted++; // claim a slot before awaiting, so simultaneous boots can't both be "first"
+  const order = booted++; // Klaim slot dulu
   if (!(await licensed) && order > 0) {
     root.classList.add('is-locked');
     for (const btn of root.querySelectorAll('[data-step]')) btn.disabled = true;
@@ -68,10 +46,10 @@ async function boot(root) {
 
   let api = null;
   let total = 1;
-  let pending = 0; // steps requested before the viewer is ready
-  // Seek requested before the viewer is ready (the page may set data-goto early).
+  let pending = 0; // Langkah tertunda
+  // Seek tertunda
   let pendingGoTo = root.dataset.goto ? Number(root.dataset.goto) : null;
-  let seek = 0; // running seek animation (rAF id)
+  let seek = 0; // Animasi seek
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const setAngle = (index) => {
@@ -116,9 +94,7 @@ async function boot(root) {
   };
   root.addEventListener('tt:goto', (e) => goTo(e.detail.frame));
 
-  // WebRotate reads the container height at start-up as "height at
-  // responsiveBaseWidth" and scales it with the width from there, so start from
-  // the native frame height rather than the already-scaled CSS height.
+  // Tinggi frame asli
   viewerEl.style.height = `${stage.dataset.height}px`;
 
   const viewer = WR360.ImageRotator.Create(viewerEl.id);
@@ -135,7 +111,7 @@ async function boot(root) {
     total = api.images.getTotalImageCount() || 1;
     setAngle(api.images.getCurrentImageIndex());
     api.images.onFrame((e) => setAngle(e.index.image));
-    // Grabbing the viewer takes over from a running seek.
+    // Drag batalkan seek
     api.images.onDrag((e) => e.action === 'dragStart' && stopSeek());
     root.classList.add('is-ready');
     if (pendingGoTo !== null) {
@@ -147,7 +123,7 @@ async function boot(root) {
   };
   viewer.runImageRotator();
 
-  // Horizontal wheel / trackpad rotates; vertical passes through to the page.
+  // Wheel horizontal
   let acc = 0;
   stage.addEventListener(
     'wheel',
@@ -174,7 +150,7 @@ async function boot(root) {
     e.preventDefault();
   });
 
-  // Step buttons: tap for one notch, hold to keep turning.
+  // Tombol langkah
   for (const btn of root.querySelectorAll('[data-step]')) {
     const dir = Number(btn.dataset.step);
     let timer = null;
@@ -193,7 +169,7 @@ async function boot(root) {
     });
   }
 
-  // Hotspot list under the viewer opens the same panels as the on-image markers.
+  // Daftar hotspot
   for (const btn of root.querySelectorAll('[data-spot]')) {
     btn.addEventListener('click', () => window.drHotspot({ id: btn.dataset.spot }));
   }

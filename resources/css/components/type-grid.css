@@ -1,4 +1,4 @@
-/* Unit type cards. */
+/* Kartu tipe unit */
 
 .types {
   padding-bottom: var(--section, clamp(64px, 9vw, 120px));
@@ -26,7 +26,7 @@
   }
 }
 
-/* Isi di atas judul, garis penuh di bawahnya */
+/* Isi atas judul */
 .types__top {
   padding-top: var(--section, clamp(56px, 9vw, 120px));
   border-bottom: 1px solid var(--line, var(--rule));
@@ -149,14 +149,14 @@ article.card {
   inset: 0;
 }
 
-/* ---- variant 'project' */
+/* Varian proyek */
 
 /* Garis pemisah penuh */
 .types--project {
   border-top: 1px solid var(--line, var(--rule));
 }
 
-/* Gambar menempel garis atas dan garis samping (--line-x) */
+/* Gambar menempel garis */
 .types--project .types__top {
   padding-top: 0;
 }
@@ -165,7 +165,7 @@ article.card {
   margin-inline: calc(max(8px, var(--gutter) - 40px) + 1px - var(--gutter));
 }
 
-/* Jarak 160px dari garis ke judul Type */
+/* Jarak ke judul */
 .types--project .types__top + .wrap > .sheet {
   padding-top: var(--section, 160px);
 }
@@ -200,7 +200,7 @@ article.card {
   transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 
-/* Hover: badan kartu hijau proyek (--room), isi putih */
+/* Hover kartu */
 .types--project .card:is(:hover, :focus-within) .card__body {
   background: var(--room);
   color: #fff;

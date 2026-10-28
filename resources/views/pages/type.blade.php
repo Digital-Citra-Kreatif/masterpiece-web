@@ -1,17 +1,4 @@
-{{--
-  Type page, laid out as a drawing sheet (single unit.pdf): the parts first, in
-  two columns (name, the part's text and a tab per part on the left; the 360°
-  viewer on the right, clear of the side line and the rule: a tab turns it to the
-  part's keyframe), then rows with the title in a narrow column and
-  the content right of a rule: specifications, floor plans, gallery with the VR
-  tour, and the project's other types.
-
-  A project's type wears the project's style, logo (a header with a button back
-  to the project, no menu), footer logo and WhatsApp button; a type without one
-  keeps the site's own.
-
-  Tabs in resources/js/type-parts.js.
---}}
+{{-- Halaman tipe --}}
 @php
   $pj = $t['project'];
   $parts = $t['parts'];
@@ -43,7 +30,7 @@
   @endif
 
   <main>
-    {{-- Bagian sebagai tab: nama, teks dan tab di kiri, viewer 360° di kanan --}}
+    {{-- Tab bagian --}}
     <section class="tph" aria-labelledby="type-name" data-parts="{{ json_encode(collect($parts)->map(fn ($p) => Arr::only($p, ['name', 'text', 'frame']))) }}">
       <div class="wrap tph__grid">
         <div class="tph__copy">
@@ -97,8 +84,8 @@
     </section>
 
     @if ($t['denah'] !== [])
-      {{-- Denah: gambar memenuhi kolom kanan --}}
-      {{-- Lebih dari satu denah: slider dengan panah (resources/js/plans-swiper.js) --}}
+      {{-- Denah --}}
+      {{-- Slider denah --}}
       @php($slidePlans = count($t['denah']) > 1)
       <section class="tpx" aria-labelledby="denah-title" data-view-cursor>
         <div class="wrap tpx__grid">
@@ -132,7 +119,7 @@
     @endif
 
     @if ($t['gallery'] !== [] || $vrPayload)
-      {{-- Galeri dan tur VR --}}
+      {{-- Galeri dan VR --}}
       <section class="tpx" aria-labelledby="gallery-title">
         <div class="wrap tpx__grid">
           <div class="tpx__side">

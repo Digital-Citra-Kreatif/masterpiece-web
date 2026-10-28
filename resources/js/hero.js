@@ -1,5 +1,4 @@
-// Hero: the looping teaser video, or the slider. Both run while on screen and
-// stay still (poster, first slide) for visitors who prefer reduced motion.
+// Pemutar hero
 import { release, resume } from './video-hold.js';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -18,7 +17,7 @@ for (const video of document.querySelectorAll('.hero__video')) {
   });
 }
 
-// An image slide shows for 6s; a video slide until it ends. A lone video loops.
+// Durasi slide
 const IMAGE_MS = 6000;
 
 for (const root of document.querySelectorAll('[data-hero-slides]')) {

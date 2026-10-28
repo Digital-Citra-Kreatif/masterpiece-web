@@ -1,16 +1,8 @@
-// Smooth page scroll (Lenis). Lenis eases the real window scroll position, so
-// every scroll listener (scenes, reveal) keeps working unchanged.
-//
-//   - in-page links (#kawasan, #lantai-2, ...) glide to their target
-//   - horizontal wheel / trackpad gestures are left to the page: the turntable
-//     rotates and the facilities carousel scrolls as before
-//   - nested scroll areas (the type page panel) scroll on their own
-//   - paused while a dialog (the overlay) is open
-//   - off for visitors who prefer reduced motion (Lenis default)
+// Smooth scroll Lenis
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 
-// Exported so scroll-driven animations (masterplan.js) can follow it.
+// Ekspor Lenis
 export const lenis = new Lenis({
   autoRaf: true,
   anchors: true,

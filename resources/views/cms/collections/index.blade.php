@@ -1,8 +1,4 @@
-{{--
-    A collection's listing page (starter template). For one collection only, copy it to cms/collections/{collection}/index.blade.php.
-    Gets $page (Cms::page()), $collection, $title, $entries (a paginator of EntryTranslations), $values and $richText
-    (the listing page's own fields), $locale and $url.
---}}
+{{-- Daftar koleksi --}}
 @extends('cms.layout')
 
 @section('content')

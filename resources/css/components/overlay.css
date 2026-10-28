@@ -1,4 +1,4 @@
-/* Shared overlay dialog: video, gallery, VR iframe, hotspot info. */
+/* Dialog overlay */
 
 .ov {
   width: 100%;
@@ -121,7 +121,7 @@
   right: 0;
 }
 
-/* Hotspot info: side sheet on wide screens, bottom sheet on phones. */
+/* Info hotspot */
 .ov.is-info {
   background: transparent;
   width: min(460px, 100%);

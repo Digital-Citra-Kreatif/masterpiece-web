@@ -1,18 +1,15 @@
-/* Type page as a drawing sheet (single unit.pdf): side lines (project-page.css),
-   full rules between rows, a rule between the title column and the content, and
-   the viewer and plans set against the rules. */
+/* Halaman tipe */
 
 .tph,
 .tpx {
-  background-color: #fff; /* the side lines are its background image */
+  background-color: #fff; /* Latar garis samping */
   --sheet-line: var(--line, var(--rule));
-  /* From the grid's edge to the side line, and the text inset back to the gutter. */
+  /* Jarak garis samping */
   --to-line: calc(max(8px, var(--gutter) - 40px) + 1px - var(--gutter));
   --inset: calc(var(--gutter) - max(8px, var(--gutter) - 40px) - 1px);
 }
 
-/* Grids run to the right side line, so pictures sit against it (a smaller
-   right padding, not a negative margin: .wrap centres with auto margins) */
+/* Grid sampai garis */
 .tph__grid,
 .tpx__grid {
   display: grid;
@@ -24,18 +21,18 @@
   outline-offset: 3px;
 }
 
-/* The other types on a lighter grey than the site's concrete */
+/* Tipe lain */
 .is-type .types {
   background-color: #f9faf9;
 }
 
-/* The header on the page's own white, without a band or rule */
+/* Header halaman */
 .is-type .hd--type {
   background: none;
   box-shadow: none;
 }
 
-/* ---- parts: name, text and tabs left; the part's picture right */
+/* Bagian tipe */
 .tph {
   padding-top: calc(var(--header-h) + 24px);
   border-bottom: 1px solid var(--sheet-line);
@@ -70,8 +67,7 @@
   line-height: 1.75;
 }
 
-/* Tabs as numbered sheets: a large drawing number beside the part's name. The
-   open part's number takes the page's colour; the others step back. */
+/* Tab bernomor */
 .tph__tabs {
   display: grid;
   width: 100%;
@@ -95,7 +91,7 @@
   cursor: pointer;
 }
 
-/* Large text: #777b7e keeps 4.3:1 on white */
+/* Kontras teks besar */
 .tph__tab-no {
   color: #777b7e;
   font-family: var(--display);
@@ -103,7 +99,7 @@
   font-weight: 400;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  flex: 0 0 2ch; /* two digits of this font, so the names line up */
+  flex: 0 0 2ch; /* Lebar dua digit */
   transition: color 0.2s var(--ease);
 }
 
@@ -121,17 +117,16 @@
   color: var(--room);
 }
 
-/* The 360° viewer, against the top, clear of the side line and the rule */
-/* min-width and overflow keep what WebRotate injects at its native 760px from
-   widening the column (and the page, on phones). */
+/* Viewer 360° */
+/* Batas lebar WebRotate */
 .tph__stage {
   display: grid;
   place-items: center;
   min-width: 0;
   overflow: hidden;
   min-height: clamp(480px, 43vw, 620px);
-  margin: 0 clamp(24px, 3vw, 48px) clamp(24px, 3vw, 48px) 0; /* clear of the side line and the rule below */
-  background: #000; /* the viewer's own black */
+  margin: 0 clamp(24px, 3vw, 48px) clamp(24px, 3vw, 48px) 0; /* Jarak dari garis */
+  background: #000; /* Hitam viewer */
 }
 
 .tph__stage .tt {
@@ -141,12 +136,12 @@
   color: var(--paper);
 }
 
-/* No arrows or angle dial: the viewer turns by drag, swipe, wheel and ←/→ */
+/* Tanpa kontrol */
 .tph__stage .tt__hud {
   display: none;
 }
 
-/* ---- rows: the title in a narrow column, the content right of a rule */
+/* Baris konten */
 .tpx {
   border-bottom: 1px solid var(--sheet-line);
 }
@@ -182,7 +177,7 @@
   border-left: 1px solid var(--sheet-line);
 }
 
-/* Specifications: 160px above and below on a wide screen, rows without rules */
+/* Spesifikasi */
 .tpx--spec {
   --spec-pad: clamp(64px, 11vw, 160px);
 }
@@ -203,7 +198,7 @@
   line-height: 1.75;
 }
 
-/* Each specification is one row across the column, label left, value right */
+/* Baris spesifikasi */
 .tpx__specs {
   margin: 0;
 }
@@ -236,7 +231,7 @@
   overflow-wrap: anywhere;
 }
 
-/* Plans fill the column, edge to edge; more than one slide, arrows under the title */
+/* Slider denah */
 .tpx__plans {
   list-style: none;
   margin: 0;
@@ -244,7 +239,7 @@
 }
 
 .tpx__body.swiper {
-  margin: 0; /* not Swiper's auto margins */
+  margin: 0; /* Reset margin Swiper */
   overflow: hidden;
 }
 
@@ -280,7 +275,7 @@
   text-align: left;
 }
 
-/* Gallery: a flush grid, hairlines between the shots */
+/* Galeri */
 .tpx__gallery {
   list-style: none;
   display: grid;
@@ -329,12 +324,12 @@
     font-size: 26px;
   }
 
-  /* Not as tall as on a wide screen */
+  /* Viewer lebih pendek */
   .tph__stage {
     min-height: clamp(320px, 42vw, 430px);
   }
 
-  /* 72px above and below each section's title and content */
+  /* Jarak 72px */
   .tpx--spec {
     --spec-pad: 72px;
   }
@@ -345,20 +340,20 @@
   }
 }
 
-/* ---- mobile: one column; pictures and contents run line to line */
+/* Mobile */
 @media (max-width: 760px) {
   .tph {
     padding-top: calc(var(--header-h) + 32px);
   }
 
-  /* minmax(0, …): a column never grows past the screen for wide content */
+  /* Kolom tidak melebar */
   .tph__grid,
   .tpx__grid {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .tph__copy {
-    padding: 24px var(--inset) 72px 0; /* 72px to the next section */
+    padding: 24px var(--inset) 72px 0; /* Jarak section berikutnya */
   }
 
   .tph__name {
@@ -378,12 +373,12 @@
   }
 
   .tph__tab {
-    min-height: 44px; /* tap target, and no more */
+    min-height: 44px; /* Area sentuh */
     padding-block: 0;
     align-items: center;
   }
 
-  /* Number as large as the name; normal-size text needs the darker grey */
+  /* Nomor besar */
   .tph__tab-no {
     color: #6a6e71;
     font-size: 16px;
@@ -396,8 +391,7 @@
     border-top: 1px solid var(--sheet-line);
   }
 
-  /* First, above the name; inside the text's gutter; as tall as the 360°
-     viewer with its controls */
+  /* Viewer di atas */
   .tph__stage {
     order: -1;
     min-height: 0;
@@ -406,7 +400,7 @@
 
   .tpx__grid > .tpx__title,
   .tpx__side {
-    padding: 72px var(--inset) 24px 0; /* 72px from the section above */
+    padding: 72px var(--inset) 24px 0; /* Jarak section atas */
   }
 
   .tpx__title {

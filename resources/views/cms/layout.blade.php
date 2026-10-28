@@ -1,13 +1,4 @@
-{{--
-    The site's layout (starter template: edit freely). Pages @extends('cms.layout') and fill @section('content');
-    @push('head') adds to the <head>. On the app's own pages pass a title: @extends('cms.layout', ['seoTitle' => 'Contact']).
-
-    It reads the page shown from cms_page() (Sunrice\Cms\Site\Page: ->entry, ->term, ->collection, ->locale), never
-    from $entry or $term: a page's own @foreach ($entries as $entry) would leave those set to its last card.
-
-    Expects (all optional; missing ones render nothing): the menus "main" and "footer", and a global set "footer"
-    with a text field "text".
---}}
+{{-- Layout situs --}}
 @php($page = cms_page())
 @php($home = url(app()->getLocale() === \Sunrice\Cms\Support\Locales::default() ? '/' : '/'.app()->getLocale()))
 <!doctype html>
@@ -16,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <x-sunrice-cms::seo :title="$seoTitle ?? null" />
-    {{-- public/cms/site.css, published with these templates: replace it with your own build (Vite, Tailwind…). --}}
+    {{-- Stylesheet CMS --}}
     <link rel="stylesheet" href="{{ asset('cms/site.css') }}">
     @stack('head')
     <x-sunrice-cms::code place="head" />

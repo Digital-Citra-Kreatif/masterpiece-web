@@ -1,6 +1,4 @@
-/* Header: at the top of the page only, it scrolls away with it (not sticky).
-   Transparent over the home hero, solid on the other pages. Logo and
-   sentence-case links from the "Hero utama" preview. */
+/* Header situs */
 
 .hd {
   position: absolute;
@@ -27,11 +25,11 @@
 .hd__mark {
   display: grid;
   align-content: center;
-  min-height: 44px; /* tap target */
+  min-height: 44px; /* Area sentuh */
   flex: none;
 }
 
-/* Both logos share one cell; the dark one shows on the solid header. */
+/* Dua logo */
 .hd__logo {
   grid-area: 1 / 1;
   width: auto;
@@ -47,7 +45,7 @@
   opacity: 1;
 }
 
-/* A project's own logo on its type page */
+/* Logo proyek */
 .hd--type .hd__logo--own {
   height: 64px;
   object-fit: contain;
@@ -75,7 +73,7 @@
   align-items: center;
   justify-content: center;
   min-width: 44px;
-  min-height: 44px; /* tap target; the text keeps its size */
+  min-height: 44px; /* Area sentuh */
 }
 
 .hd__back {
@@ -118,7 +116,7 @@
   }
 }
 
-/* ---- hamburger menu (tablet and mobile) */
+/* Menu hamburger */
 
 .hd__burger {
   display: none;
@@ -127,7 +125,7 @@
   align-self: center;
   width: 48px;
   height: 48px;
-  margin-right: -9px; /* the icon lines up with the gutter, the tap target spills over */
+  margin-right: -9px; /* Sejajar gutter */
   padding: 0;
   border: 0;
   background: none;
@@ -156,7 +154,7 @@
   }
 }
 
-/* Menu open: white header, dark logo and a black cross */
+/* Menu terbuka */
 .hd {
   transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
 }
@@ -174,7 +172,7 @@
   opacity: 1;
 }
 
-/* Burger or cross, by state */
+/* Ikon menu */
 .hd__burger-close,
 .hd__burger[aria-expanded='true'] .hd__burger-open {
   display: none;
@@ -184,9 +182,7 @@
   display: block;
 }
 
-/* Dropdown under the header, as tall as its links, in the body font; white,
-   one panel with the open header. The white sits on the nav, so its opening
-   (cut down from the top) leaves the overlay alone. */
+/* Dropdown menu */
 .hd__menu {
   position: absolute;
   top: 100%;
@@ -195,7 +191,7 @@
   color: var(--ink);
 }
 
-/* The project emblem hangs over the dropdown, with a lighter shadow while open. */
+/* Emblem proyek */
 .hd--project .hd__mark {
   position: relative;
   z-index: 1;
@@ -205,7 +201,7 @@
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.12);
 }
 
-/* Overlay over the rest of the page; a click on it closes the menu. */
+/* Overlay menu */
 .hd__menu::after {
   content: '';
   position: absolute;
@@ -218,14 +214,14 @@
   animation: menu-fade 0.35s var(--ease);
 }
 
-/* Only below 1024px; a menu left open hides on wider screens. */
+/* Khusus layar kecil */
 @media (min-width: 1025px) {
   .hd__menu {
     display: none;
   }
 }
 
-/* Opening: the panel unrolls, the links follow one by one, the overlay fades in. */
+/* Animasi buka */
 @keyframes menu-unroll {
   from {
     clip-path: inset(0 0 100% 0);

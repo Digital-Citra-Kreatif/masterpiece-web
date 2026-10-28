@@ -80,7 +80,7 @@
     @isset($s['types'])
       @php($ty = $s['types'])
       <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]">
-        {{-- Gambar potongan selebar konten --}}
+        {{-- Gambar potongan --}}
         @if ($ty['heroImage'])
           <x-slot:top>
             <x-project.band :image="$ty['heroImage']" />

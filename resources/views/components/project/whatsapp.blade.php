@@ -1,4 +1,4 @@
-{{-- Tombol WhatsApp. `logo`: logo proyek, pengganti avatar admin yang kosong --}}
+{{-- Tombol WhatsApp --}}
 @props(['whatsapp', 'logo' => null])
 
 <div class="wa" data-wa>

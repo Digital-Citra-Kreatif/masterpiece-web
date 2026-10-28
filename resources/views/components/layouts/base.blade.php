@@ -1,7 +1,4 @@
-{{--
-  Page shell. `entry` is the page's own script (resources/js/home.js or type.js).
-  `favicon` ({ href, type }) replaces the site's browser icon on this page (a project's logo).
---}}
+{{-- Kerangka halaman --}}
 @props(['title' => null, 'description' => null, 'bodyClass' => '', 'entry' => null, 'favicon' => null])
 
 @php($favicon ??= $site['favicon'])

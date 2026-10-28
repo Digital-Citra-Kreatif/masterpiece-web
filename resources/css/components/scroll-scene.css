@@ -1,7 +1,7 @@
-/* Pinned scroll scenes (Kawasan, Cluster) with the Masterplan opening and hotspots. */
+/* Scene scroll */
 
 .scene {
-  --range: 400vh; /* scroll distance for one full orbit */
+  --range: 400vh; /* Jarak satu orbit */
   position: relative;
   height: calc(100vh + var(--range));
   height: calc(100svh + var(--range));
@@ -15,13 +15,13 @@
   }
 }
 
-/* Section links land exactly on the pinned view. */
+/* Target link section */
 .scene__anchor {
   position: absolute;
   top: 0;
 }
 
-/* With the Masterplan opening, the section link lands where the panel has faded in. */
+/* Target dengan Masterplan */
 .scene--masterplan .scene__anchor {
   top: calc(var(--intro) + var(--range) * 0.04);
 }
@@ -50,10 +50,7 @@
   opacity: 1;
 }
 
-/* ---- go to a location: the camera is drawn inside the canvas by
-   scroll-scene.js, so nothing to style here. */
-
-/* Orbit UI steps aside while a location is open. */
+/* Orbit menyingkir */
 .scene.is-flying [data-phase],
 .scene.is-flying .scene__markers {
   transition: opacity 0.4s ease;
@@ -74,7 +71,7 @@
     linear-gradient(0deg, rgba(8, 10, 12, 0.8) 0%, rgba(8, 10, 12, 0.12) 52%);
 }
 
-/* Extra shade behind the section panel, faded in with it. */
+/* Bayangan panel */
 .scene__shade::after {
   content: '';
   position: absolute;
@@ -95,17 +92,14 @@
   left: var(--gutter);
 }
 
-/* Phases fade by scroll; scroll-scene.js sets --p-area (0..1). */
+/* Fase per scroll */
 [data-phase='area'] {
   opacity: var(--p-area, 0);
   transform: translateY(calc((1 - var(--p-area, 0)) * 40px));
   visibility: var(--v-area, hidden);
 }
 
-/* ---- Masterplan opening (layout from the "Home" preview, drawn at 969 wide).
-   masterplan.js grows the frame (the looping orbit video) to the full stage and
-   moves the copy out over the first var(--zoom) of scroll; the video then loops
-   full screen until var(--intro), where the orbit's range starts (scroll-scene.js). */
+/* Pembuka Masterplan */
 
 .scene--masterplan {
   --zoom: 120vh;
@@ -131,14 +125,13 @@
   object-fit: cover;
 }
 
-/* The scene's own shade comes in with the panel, after the frame has filled the screen. */
+/* Bayangan scene */
 .scene--masterplan .scene__shade {
   opacity: var(--p-area, 0);
 }
 
 .mp {
-  /* The frame: a tall portrait rectangle, 2:3, two thirds of the screen high
-     (narrower on screens that are less wide than that allows). */
+  /* Bingkai potret */
   --mp-h: min(66svh, 28vw * 1.5);
   --mp-w: calc(var(--mp-h) * 2 / 3);
   position: absolute;
@@ -147,9 +140,7 @@
   pointer-events: none;
 }
 
-/* The frame covers the stage and is cut down to the box; masterplan.js
-   opens the cut and scales the picture up with it (clip-path and transform only,
-   so the zoom never lays the page out again). */
+/* Potongan bingkai */
 .mp__frame {
   position: absolute;
   inset: 0;
@@ -157,7 +148,7 @@
   clip-path: inset(calc(50% - var(--mp-h) / 2) calc(50% - var(--mp-w) / 2));
 }
 
-/* Cover-fit and centred, as the canvas draws the frame: at scale 1 the two match. */
+/* Cover di tengah */
 .mp__img {
   position: absolute;
   inset: 0;
@@ -167,18 +158,14 @@
   transform-origin: 50% 50%;
 }
 
-/* Once the canvas has taken over from the video, the layer (video and copy) fades
-   out over it. Both show the same frame, but the video's encoding is a little
-   darker and softer than the frames, so a cut would show as a jump. Coming back,
-   the layer returns at once: the canvas hides at once too, and a fade would show
-   the dark stage between them. */
+/* Transisi ke canvas */
 .scene.is-scrub .mp {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.5s ease, visibility 0s 0.5s;
 }
 
-/* The box itself, measured by masterplan.js; the copy is placed around it. */
+/* Kotak bingkai */
 .mp__box {
   position: absolute;
   left: 50%;
@@ -189,7 +176,7 @@
   visibility: hidden;
 }
 
-/* Over the frame's top-left edge, starting 41% of its width to the left of it. */
+/* Teks kiri atas */
 .mp__title {
   position: absolute;
   left: calc(50% - var(--mp-w) * 0.91);
@@ -202,7 +189,7 @@
   white-space: nowrap;
 }
 
-/* By the frame's bottom-right edge, starting just inside it. */
+/* Teks kanan bawah */
 .mp__text {
   position: absolute;
   left: calc(50% + var(--mp-w) * 0.41);
@@ -233,7 +220,7 @@
   }
 }
 
-/* ---- section panel */
+/* Panel section */
 .scene__area {
   position: absolute;
   inset: auto 0 0;
@@ -291,7 +278,7 @@
   padding-left: 6px;
 }
 
-/* ---- location panel */
+/* Panel lokasi */
 .scene__loc {
   position: absolute;
   inset: auto 0 0;
@@ -366,7 +353,7 @@
   color: var(--ink);
 }
 
-/* ---- hotspot markers */
+/* Penanda hotspot */
 .scene__markers {
   position: absolute;
   inset: 0;
@@ -389,7 +376,7 @@
   will-change: transform;
 }
 
-/* Grows the 34px marker to a 44px tap target without changing its look. */
+/* Area sentuh */
 .spot::before {
   content: '';
   position: absolute;
@@ -419,7 +406,7 @@
   position: absolute;
   inset: -1.5px;
   border: 1.5px solid #fff;
-  /* A few pings to show the markers can be opened, then they rest. */
+  /* Animasi ping */
   animation: spot-ping 2.4s var(--ease) 3;
   animation-fill-mode: forwards;
 }

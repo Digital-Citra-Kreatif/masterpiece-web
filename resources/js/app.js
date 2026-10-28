@@ -1,4 +1,4 @@
-// Every page: smooth scroll and its scrollbar, reveal-on-scroll, the shared overlay, media protection and the hamburger menu.
+// Entri semua halaman
 import './smooth-scroll.js';
 import './scrollbar.js';
 import './reveal.js';

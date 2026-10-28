@@ -21,8 +21,7 @@ if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   draw();
 }
 
-// Parallax tertutup section berikut
-// target: yang turun; box: yang diukur (bawahnya)
+// Parallax tertutup
 function coverParallax(box, target) {
   const veil = document.createElement('span');
   veil.className = 'cover-veil';
@@ -47,10 +46,10 @@ function coverParallax(box, target) {
 }
 
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  // Masterplan → Location
+  // Masterplan → Lokasi
   const masterplan = document.querySelector('.is-project .scene--masterplan');
   if (masterplan) coverParallax(masterplan, masterplan.querySelector('.scene__stage'));
-  // Type → Unit Availability
+  // Tipe → Ketersediaan
   const types = document.querySelector('.is-project .types--project');
   if (types && types.nextElementSibling) coverParallax(types, types);
 }

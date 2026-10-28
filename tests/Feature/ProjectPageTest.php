@@ -171,7 +171,7 @@ test('a project page shows each section with content and skips the empty ones', 
         ]],
         'whatsapp' => ['contacts' => []],
     ]);
-    // URL tipe memuat slug proyeknya
+    // Slug proyek URL
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id]]);
 
     $response = $this->get('/projects/westlake')->assertOk();

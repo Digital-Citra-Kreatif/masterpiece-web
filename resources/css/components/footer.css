@@ -1,4 +1,4 @@
-/* Footer: white, logo first, then contact and opening hours. */
+/* Footer */
 
 .ft {
   background: #fff;
@@ -95,7 +95,7 @@
   border-top: 1px solid var(--rule);
 }
 
-/* The floating WhatsApp button sits bottom left: the copyright moves right. */
+/* Geser untuk WhatsApp */
 body:has(.wa) .ft__meta {
   text-align: right;
 }
@@ -106,7 +106,7 @@ body:has(.wa) .ft__meta {
   font-size: 13px;
 }
 
-/* Tablet: logo row on top, contact and hours under it */
+/* Tablet */
 @media (max-width: 1024px) {
   .ft__inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -117,7 +117,7 @@ body:has(.wa) .ft__meta {
   }
 }
 
-/* Mobile: one column, so an opening-hours line never breaks mid-range */
+/* Mobile */
 @media (max-width: 760px) {
   .ft__inner {
     grid-template-columns: 1fr;

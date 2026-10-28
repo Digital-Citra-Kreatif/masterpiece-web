@@ -2,10 +2,10 @@
   <x-header variant="home" />
 
   <main>
-    <!-- 1. Hero -->
+    <!-- Hero -->
     <x-home.hero :hero="$hero" />
 
-    <!-- 2. Masterplan + Area: one pinned scene; the Masterplan frame zooms into the scroll scrub -->
+    <!-- Masterplan dan area -->
     <x-scroll-scene
       id="kawasan"
       :title="$area['title']"
@@ -15,7 +15,7 @@
       :masterplan="$masterplan"
     />
 
-    <!-- 3. Area map (static, no interaction) -->
+    <!-- Peta area -->
     <section id="peta" class="map" aria-labelledby="peta-title">
       <div class="wrap">
         <x-sheet-header id="peta-title" :title="$areaMap['title']" :intro="$areaMap['intro']" />
@@ -34,7 +34,7 @@
       </div>
     </section>
 
-    <!-- 4. Cluster: scroll scene like Kawasan -->
+    <!-- Cluster -->
     <x-scroll-scene
       id="cluster"
       :title="$cluster['title']"
@@ -43,13 +43,13 @@
       :hotspots="$cluster['hotspots']"
     />
 
-    <!-- 5. Facilities -->
+    <!-- Fasilitas -->
     <x-home.facilities :facilities="$facilities" :heading="$headings['facilities']" />
 
-    <!-- 6. Unit types -->
+    <!-- Tipe unit -->
     <x-home.type-grid :types="$types" :heading="$headings['types']" />
 
-    <!-- 7. Unit update -->
+    <!-- Update unit -->
     <x-home.unit-update :units="$units" :counts="$counts" :heading="$headings['units']" />
   </main>
 

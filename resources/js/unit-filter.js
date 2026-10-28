@@ -1,4 +1,4 @@
-// Unit availability: a legend status shows only its units; pressing it again shows all.
+// Filter unit
 for (const host of document.querySelectorAll('[data-unit-filter]')) {
   const buttons = [...host.querySelectorAll('[data-filter]')];
   const dots = [...host.querySelectorAll('.units__dots [data-status]')];

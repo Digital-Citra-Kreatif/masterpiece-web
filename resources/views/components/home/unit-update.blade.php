@@ -1,14 +1,4 @@
-{{--
-  Unit update: siteplan image with a status dot per unit (red sold, yellow
-  reserved, green available). Status display only; dots do not open units.
-  Clicking a legend status shows only that status's dots; clicking it again
-  shows all (resources/js/unit-filter.js).
-  Dot positions are percentages of the siteplan image (Units in the CMS).
-  `siteplan` ({ image, width, height, placeholder }): siteplan proyek
-
-  Unlike the other sections, the heading sits in the side column above the
-  legend, so the siteplan starts at the top and is the first thing read.
---}}
+{{-- Update unit --}}
 @props(['units', 'counts', 'heading', 'id' => 'unit-update', 'siteplan' => null])
 
 @php($siteplan ??= $site['siteplan'])

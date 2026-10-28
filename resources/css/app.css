@@ -1,6 +1,4 @@
-/* One stylesheet for every page. base.css holds tokens, type and shared
-   pieces (buttons, badges, section headers); each file in components/ belongs to
-   one Blade component or page and must come after base.css so it can override it. */
+/* Stylesheet utama */
 
 @import '@fontsource-variable/dm-sans';
 @import './base.css';

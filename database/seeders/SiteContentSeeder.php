@@ -11,16 +11,7 @@ use Sunrice\Cms\Models\Blueprint;
 use Sunrice\Cms\Models\Collection;
 use Sunrice\Cms\Structure\StructureImporter;
 
-/**
- * The site's CMS structure and its first content: the homepage, Tipe, Fasilitas,
- * Unit and the Situs and Tipe: bersama globals, following the client's content model.
- *
- * Images and videos editors may replace are uploaded to the media library from
- * public/media. Copy marked as stand-in in the original project still is.
- *
- * Safe to run again: the importer only adds what is missing, and files already
- * in the media library are not uploaded twice.
- */
+/** Struktur konten CMS */
 class SiteContentSeeder extends Seeder
 {
     /** @var list<array{int, string, string, int|float, int|float, int, int, int, bool}> number, label, card image, LT, LB, bedrooms, bathrooms, floors, real facade */
@@ -45,12 +36,10 @@ class SiteContentSeeder extends Seeder
 
     private const GALLERY = ['ruko-front.jpg', 'ruko-34.jpg', 'ruko-side.jpg', 'ruko-back.jpg', 'ruko-back-34.jpg', 'ruko-side-2.jpg', 'ruko-front-34.jpg'];
 
-    /**
-     * Run the database seeds.
-     */
+    /** Jalankan seeder */
     public function run(StructureImporter $importer): void
     {
-        // {project} di rute Types butuh field Proyek di blueprint Tipe, yang diisi importer setelah koleksi
+        // Rute proyek Types
         $structure = $this->structure();
         $types = collect($structure['collections'])->firstWhere('handle', 'types');
         $tipe = Blueprint::query()->where('handle', 'tipe')->first();
@@ -85,7 +74,7 @@ class SiteContentSeeder extends Seeder
         return [
             'blueprints' => [
                 ['handle' => 'page', 'title' => 'Halaman', 'fields' => [$textarea('intro'), $this->field('body', 'rich_text')]],
-                // The other homepage sections are still hardcoded in resources/data/home.php.
+                // Section lain hardcoded
                 ['handle' => 'homepage', 'title' => 'Beranda', 'fields' => [
                     $this->field('hero', 'group', [], ['label' => 'Hero banner', 'fields' => [
                         $textarea('heading', ['label' => 'Heading', 'required' => true, 'instructions' => 'Baris baru tetap jadi baris baru.']),
@@ -183,7 +172,7 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
-     * One blueprint's definition, to import it alone (other blueprints may have been changed in the admin).
+     * Definisi satu blueprint
      *
      * @return array<string, mixed>
      */
@@ -193,11 +182,7 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
-     * The Project blueprint (title and slug are the entry's own): the project's
-     * Global Style, its page sections and its WhatsApp floating button.
-     *
-     * Font files (.woff2, .woff, .ttf, .otf, or a ZIP of a family: unpacked, the regular one chosen) uploaded here are moved to the media folder Fonts / {slug}
-     * (App\Support\ProjectFonts). Colours are hex codes: the CMS has no colour field.
+     * Blueprint proyek
      *
      * @return array<string, mixed>
      */
@@ -224,7 +209,7 @@ class SiteContentSeeder extends Seeder
                     'label' => 'Warna',
                     'width' => 75,
                     ...$whenActive,
-                    // Each colour replaces one of the site's tokens (App\Support\ProjectPage::PALETTE); empty keeps the homepage's.
+                    // Token warna situs
                     'fields' => collect([
                         1 => 'Warna utama',
                         2 => 'Warna utama gelap',
@@ -241,7 +226,7 @@ class SiteContentSeeder extends Seeder
                     ...$whenActive,
                     'fields' => [$font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol')],
                 ]),
-                // A marker is drawn (colour and shape) or an uploaded image/SVG: one or the other.
+                // Bentuk atau gambar
                 $this->field('marker', 'group', [], [
                     'label' => 'Penanda',
                     ...$whenActive,
@@ -296,12 +281,7 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
-     * The project's own content, one group per section of its page, in the
-     * client's order: Hero, Masterplan, Lokasi, Cluster, Fasilitas, Tipe, Ketersediaan.
-     *
-     * Every section starts with its title and description; rows read the same way
-     * everywhere (number and name, then image and description). Facilities and
-     * unit types are entries of the Facilities and Types collections, picked here.
+     * Section halaman proyek
      *
      * @return list<array<string, mixed>>
      */
@@ -470,7 +450,7 @@ class SiteContentSeeder extends Seeder
                 'siteplan_placeholder' => true,
                 'protect_media' => false,
             ]]],
-            // Diisi editor di CMS
+            // Diisi di CMS
             ['handle' => 'footer', 'title' => 'Footer', 'blueprint' => 'footer', 'values' => ['id' => [
                 'logo' => $this->media('images/masterpiece-logo.png', 'Logo'),
                 'copyright' => '© '.date('Y').' PT Masterpiece Visual Production',
@@ -488,7 +468,7 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
-     * The homepage: the hero banner and each section's title and description from the CMS, the rest hardcoded in resources/data/home.php.
+     * Halaman beranda
      *
      * @return array<string, mixed>
      */
@@ -555,7 +535,7 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
-     * The siteplan dots, from the stand-in positions in resources/data/units.json.
+     * Titik siteplan
      *
      * @return list<array<string, mixed>>
      */
@@ -571,7 +551,7 @@ class SiteContentSeeder extends Seeder
     }
 
     /**
-     * A published entry in the site's language (Indonesian).
+     * Entri terbit
      *
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
@@ -586,9 +566,7 @@ class SiteContentSeeder extends Seeder
         ], fn (mixed $value): bool => $value !== null);
     }
 
-    /**
-     * The media library id of a file under public/, uploading it the first time.
-     */
+    /** ID media file */
     private function media(string $path, string $alt): int
     {
         $source = public_path($path);

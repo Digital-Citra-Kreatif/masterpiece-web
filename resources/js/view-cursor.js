@@ -1,11 +1,11 @@
-// Kursor View, hanya untuk mouse
+// Kursor View
 if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
   const hosts = [...document.querySelectorAll('[data-view-cursor]')]
     .map((host) => ({ host, cursor: host.querySelector('[data-view-cursor-el]') }))
     .filter(({ cursor }) => cursor !== null);
   let pointer = null;
 
-  // Posisi dan status dari titik pointer, juga saat halaman bergulir di bawahnya
+  // Posisi pointer
   const update = () => {
     const under = pointer && document.elementFromPoint(pointer.x, pointer.y);
     for (const { host, cursor } of hosts) {

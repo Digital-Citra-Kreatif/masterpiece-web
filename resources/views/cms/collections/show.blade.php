@@ -1,10 +1,4 @@
-{{--
-    Any entry (starter template). For one collection only, copy it to cms/collections/{collection}/show.blade.php;
-    for one entry, to cms/collections/{collection}/{slug}.blade.php (its slug in the main language).
-    Gets $page (Cms::page()), $entry (EntryTranslation), $title, $values (its fields), $richText (the rich text fields'
-    handles), $collection, $locale, $preview, $draft, $fallback (the main language's content in another language) and
-    $contentLocale (the language the content is in: lang marks it on untranslated pages, for screen readers).
---}}
+{{-- Detail entri --}}
 @extends('cms.layout')
 
 @section('content')
@@ -15,7 +9,7 @@
                 <p class="muted"><time datetime="{{ $entry->published_at->toAtomString() }}">{{ $entry->published_at->translatedFormat('j F Y') }}</time></p>
             @endif
             @if ($entry->terms->isNotEmpty())
-                {{-- Its terms, of every taxonomy (one only: $entry->termsOf('topics')), linking to their pages. --}}
+                {{-- Term entri --}}
                 <p class="muted">
                     @foreach ($entry->terms as $term)
                         @if ($url = $term->url())

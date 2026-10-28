@@ -1,6 +1,4 @@
-/* The page's scrollbar, drawn over the page so its track is truly
-   transparent: a 3px black thumb at 30%, square, no arrows.
-   Logic in resources/js/scrollbar.js. */
+/* Scrollbar halaman */
 
 .scrollbar {
   position: fixed;
@@ -27,7 +25,7 @@
   cursor: grab;
 }
 
-/* A wider hit area than the 3px it shows, so the thumb is easy to drag. */
+/* Area tarik */
 .scrollbar__thumb::before {
   content: '';
   position: absolute;

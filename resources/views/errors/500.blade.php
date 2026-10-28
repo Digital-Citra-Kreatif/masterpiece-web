@@ -1,7 +1,4 @@
-{{--
-    Server error (starter template, published to resources/views/errors/). Standalone, with the stylesheet only:
-    whatever failed (often the database) would fail again in the layout.
---}}
+{{-- Error server --}}
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>

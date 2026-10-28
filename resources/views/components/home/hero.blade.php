@@ -1,14 +1,4 @@
-{{--
-  The hero banner: a full-screen loop of the aerial orbit, or slides that take
-  turns behind the headline, the lead and the "Play Full Video" card. The
-  Masterplan section follows it.
-
-  hero: { title, eyebrow?, cue?, subtitle, background: 'video'|'slider'|'none', slides: [{ type, src, alt }], teaser, full, cover, fullThumb }
-  Without `full` there is no "Play Full Video" card; without it and a subtitle,
-  no bottom row at all (lead, scroll-cue rule); 'none' leaves the dark band alone.
-
-  Logic in resources/js/hero.js.
---}}
+{{-- Banner hero --}}
 @props(['hero'])
 
 <section class="hero" aria-labelledby="hero-title">

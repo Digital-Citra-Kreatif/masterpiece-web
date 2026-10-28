@@ -1,4 +1,4 @@
-/* Facilities carousel. */
+/* Carousel fasilitas */
 
 .fac {
   padding-bottom: var(--section, clamp(64px, 9vw, 120px));
@@ -94,7 +94,7 @@
   transition: width 0.2s linear;
 }
 
-/* ---- variant 'split' */
+/* Varian split */
 
 .fac--split {
   padding-block: var(--section, clamp(64px, 9vw, 128px));

@@ -1,6 +1,4 @@
-// The page's scrollbar, drawn over the page (a native one takes a strip beside
-// it, so its track can't be transparent). The thumb follows the scroll, Lenis's
-// included, and can be dragged; wheel, keys and touch scroll as always.
+// Scrollbar kustom
 import { lenis } from './smooth-scroll.js';
 
 const MIN_THUMB = 24;
@@ -31,7 +29,7 @@ window.addEventListener('resize', update);
 new ResizeObserver(update).observe(document.body);
 update();
 
-// Dragging: the thumb's travel maps onto the page's.
+// Drag thumb
 thumb.addEventListener('pointerdown', (down) => {
   down.preventDefault();
   thumb.setPointerCapture(down.pointerId);

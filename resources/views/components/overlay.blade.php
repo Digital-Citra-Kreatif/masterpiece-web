@@ -1,11 +1,4 @@
-{{--
-  One shared <dialog> for everything that opens over the page:
-    video   — Play Full Video
-    gallery — type gallery and denah (lightbox with prev/next)
-    iframe  — 3DVista VR tour
-    info    — area/cluster hotspot panel (text + image), shown as a side sheet
-  Opened from resources/js/overlay.js via [data-open] triggers or window.drOverlay.open().
---}}
+{{-- Overlay dialog --}}
 <dialog class="ov" id="overlay" aria-labelledby="ov-title">
   <div class="ov__bar">
     <p class="ov__title eyebrow" id="ov-title"></p>
@@ -19,10 +12,10 @@
   </div>
 
   <div class="ov__body">
-    <!-- video -->
+    <!-- Video -->
     <video class="ov__video" controls playsinline preload="none" @if ($site['protectMedia']) controlslist="nodownload" disablepictureinpicture @endif hidden></video>
 
-    <!-- gallery -->
+    <!-- Galeri -->
     <figure class="ov__gallery" hidden>
       <img class="ov__img" alt="" />
       <figcaption class="ov__caption"></figcaption>
@@ -34,10 +27,10 @@
       </button>
     </figure>
 
-    <!-- iframe (VR) -->
+    <!-- Tur VR -->
     <iframe class="ov__frame" title="" allow="fullscreen; xr-spatial-tracking; gyroscope; accelerometer" hidden></iframe>
 
-    <!-- hotspot info -->
+    <!-- Info hotspot -->
     <article class="ov__info" hidden>
       <img class="ov__info-img" alt="" />
       <div class="ov__info-text">

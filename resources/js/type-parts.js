@@ -1,6 +1,4 @@
-// Type page parts as tabs: a tab turns the one 360° sequence to that part's
-// keyframe (turntable.js, `tt:goto`) and swaps its text in above the tabs.
-// ↑/↓ (and ←/→) move between tabs, as the tabs pattern expects.
+// Tab bagian
 const root = document.querySelector('[data-parts]');
 
 if (root) {
@@ -15,7 +13,7 @@ if (root) {
     if (i === active) return;
     active = i;
     const p = parts[i];
-    tt.dataset.goto = String(p.frame); // picked up if the viewer is still starting
+    tt.dataset.goto = String(p.frame); // Diambil saat siap
     tt.dispatchEvent(new CustomEvent('tt:goto', { detail: { frame: p.frame } }));
     text.textContent = p.text;
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {

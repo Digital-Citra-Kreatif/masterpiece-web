@@ -1,11 +1,11 @@
-/* Unit update: siteplan with status dots and legend. */
+/* Update unit */
 
 .units {
   padding-block: var(--section, clamp(64px, 8vw, 112px)) var(--section, clamp(72px, 10vw, 140px));
   background: var(--paper-2);
 }
 
-/* Siteplan on the left from the top; heading and legend share the side column. */
+/* Tata letak */
 .units__layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
@@ -79,7 +79,7 @@
   border-radius: 50%;
   translate: -50% -50%;
   background: var(--c);
-  /* The dark hairline gives every status, yellow included, an edge that reads on the light plan. */
+  /* Garis tepi status */
   box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px rgba(14, 17, 19, 0.6);
 }
 
@@ -91,9 +91,7 @@
   height: 12px;
 }
 
-/* Each status has its own mark as well as its colour, so red and green stay
-   apart for colour-blind visitors: available is solid, reserved a ring, sold
-   struck through. The legend uses the same marks. */
+/* Tanda per status */
 .dot--sold {
   --c: var(--sold);
   background: linear-gradient(45deg, var(--c) 0 40%, var(--paper) 40% 60%, var(--c) 60%);
@@ -128,7 +126,7 @@
   border-bottom: 1px solid var(--rule);
 }
 
-/* Status filter: the whole row is the button */
+/* Filter status */
 .units__filter {
   display: flex;
   align-items: center;
@@ -149,7 +147,7 @@
   outline-offset: 2px;
 }
 
-/* Other statuses step back while one is chosen */
+/* Status lain redup */
 .units.is-filtered .units__filter[aria-pressed='false'] {
   opacity: 0.4;
 }

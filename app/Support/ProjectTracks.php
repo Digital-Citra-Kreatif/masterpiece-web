@@ -26,7 +26,7 @@ final class ProjectTracks
     /**
      * Titik yang ditempatkan
      *
-     * @param  list<mixed>  $rows  the section's `points` rows
+     * @param  list<mixed>  $rows
      * @return array<string, array{0: float, 1: float}> key => [x %, y %]
      */
     public static function placed(array $rows, string $section): array

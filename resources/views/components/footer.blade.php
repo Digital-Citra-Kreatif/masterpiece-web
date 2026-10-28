@@ -1,7 +1,4 @@
-{{--
-  Footer (Globals → Footer), on white: logo, contact and opening hours.
-  `logo` ({ src, width, height }): a project page's own logo, in place of the Branding logo.
---}}
+{{-- Footer situs --}}
 @props(['logo' => null])
 
 @php

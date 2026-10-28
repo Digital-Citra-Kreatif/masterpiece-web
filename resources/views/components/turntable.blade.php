@@ -1,15 +1,4 @@
-{{--
-  A WebRotate 360 turntable. Rotates on horizontal drag, horizontal wheel /
-  trackpad swipe, the arrow buttons, or ←/→ when focused. Vertical scroll over
-  the viewer keeps scrolling the page.
-
-  turntable: { package, width, height, firstImage?, poster?, placeholder? }
-  `hotspots` maps WebRotate hotspot ids to the content of the info panel. The
-  list under the viewer opens the same panels, so hotspots are reachable by
-  keyboard and screen readers too.
-
-  Logic in resources/js/turntable.js.
---}}
+{{-- Turntable WebRotate --}}
 @props(['id', 'label', 'turntable', 'hotspots' => [], 'kicker' => null, 'tone' => 'dark'])
 
 @php

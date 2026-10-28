@@ -1,5 +1,4 @@
-// Floating WhatsApp (project and type pages): the button opens the contact panel;
-// Esc or a click elsewhere closes it.
+// WhatsApp mengambang
 const wa = document.querySelector('[data-wa]');
 if (wa) {
   const toggle = wa.querySelector('[data-wa-toggle]');

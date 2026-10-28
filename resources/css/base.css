@@ -1,38 +1,38 @@
 :root {
-  --paper: #f3f4f2; /* cool concrete */
+  --paper: #f3f4f2; /* Beton sejuk */
   --paper-2: #e6e8e5;
   --card: #fbfbfa;
   --ink: #0e1113;
   --ink-2: #3c4247;
-  --muted: #5f666c; /* 4.7:1 on --paper-2, the darkest light surface it sits on */
+  --muted: #5f666c; /* Kontras 4.7:1 */
   --rule: #d2d5d3;
-  --room: #0b0d0f; /* dark bands for full-screen scenes */
+  --room: #0b0d0f; /* Latar scene gelap */
   --room-2: #14171a;
   --room-ink: #eef0f1;
   --room-muted: #8a9199;
-  --accent: #34425e; /* deep slate navy */
+  --accent: #34425e; /* Navy gelap */
   --accent-ink: #232e44;
-  --accent-light: #bcc5d6; /* pale steel, accent on dark */
+  --accent-light: #bcc5d6; /* Aksen di gelap */
 
   --sold: #e0442e;
   --reserved: #f0b400;
   --available: #1f9a57;
 
-  /* DM Sans everywhere, as in the "Hero utama" preview. */
+  /* Font utama */
   --sans: 'DM Sans Variable', 'Helvetica Neue', Arial, sans-serif;
   --display: var(--sans);
-  --label: var(--sans); /* small tracked uppercase: buttons, specs */
-  --button: var(--label); /* buttons only: a project's Global Style sets its own */
+  --label: var(--sans); /* Label kecil */
+  --button: var(--label); /* Font tombol */
 
   --gutter: clamp(16px, 4vw, 56px);
   --max: 1440px;
   --header-h: 88px;
-  /* Section headings (h2): a step below the hero headline (h1, up to 84px). */
+  /* Ukuran judul section */
   --h2: clamp(36px, 4.4vw, 64px);
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
-/* Tablet: gutter 24px, jarak section 72px */
+/* Tablet */
 @media (max-width: 1024px) {
   :root {
     --gutter: 24px;
@@ -40,7 +40,7 @@
   }
 }
 
-/* Mobile: gutter 16px */
+/* Mobile */
 @media (max-width: 760px) {
   :root {
     --gutter: 16px;
@@ -59,16 +59,7 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Minimal scrollbars: a 3px black thumb at 30%, square, on a transparent
-   track, no arrow buttons. Chrome, Edge and Safari draw them from the
-   -webkit- rules (exact width); setting scrollbar-width there would make
-   Chrome ignore them, so only Firefox gets the standard properties
-   (thin: its own width, it has no arrows).
-
-   The page's own scrollbar can't be transparent: it takes a strip beside
-   the page, not over it. So once resources/js/scrollbar.js runs it's hidden
-   and drawn over the page instead (components/scrollbar.css); these rules
-   are for the scroll areas inside the page. */
+/* Scrollbar minimal */
 html.has-scrollbar {
   scrollbar-width: none;
 }
@@ -107,7 +98,7 @@ html.has-scrollbar::-webkit-scrollbar {
   }
 }
 
-/* Lenis (resources/js/smooth-scroll.js) does the easing once it runs. */
+/* Scroll via Lenis */
 html.lenis {
   scroll-behavior: auto;
 }
@@ -168,7 +159,7 @@ button {
   outline-offset: 3px;
 }
 
-/* The navy ring is 1.9:1 on the dark surfaces; pale steel is 11:1 there. */
+/* Fokus di gelap */
 .scene,
 .room,
 .ov,
@@ -189,8 +180,7 @@ button {
   white-space: nowrap;
 }
 
-/* Letter roll (components/roll-text): on hover of .roll-host each letter slides
-   up, one after another, and a copy (its text-shadow) rises into place. */
+/* Animasi huruf */
 .roll {
   display: inline-block;
   height: 1.25em;
@@ -224,13 +214,13 @@ button {
   padding-inline: var(--gutter);
 }
 
-/* ---------------------------------------------------------------- type */
+/* Tipografi */
 
 .eyebrow {
   font-family: var(--label);
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.16em; /* the one tracking every small label uses */
+  letter-spacing: 0.16em; /* Tracking label */
   text-transform: uppercase;
 }
 
@@ -241,14 +231,14 @@ button {
   letter-spacing: -0.02em;
 }
 
-/* Section headings: as thin as the hero headline, a size below it. */
+/* Judul section */
 h2,
 h2.display {
   font-size: var(--h2);
   font-weight: 200;
 }
 
-/* Section header styled like a drawing-sheet title block. */
+/* Header section */
 .sheet {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -289,7 +279,7 @@ h2.display {
   color: var(--room-muted);
 }
 
-/* ---------------------------------------------------------------- buttons */
+/* Tombol */
 
 .btn {
   display: inline-flex;
@@ -357,7 +347,7 @@ h2.display {
   height: 18px;
 }
 
-/* Placeholder badge: marks stand-in media/data. */
+/* Badge placeholder */
 .badge {
   display: inline-block;
   padding: 3px 8px;
@@ -372,7 +362,7 @@ h2.display {
   line-height: 1.5;
 }
 
-/* ---------------------------------------------------------------- reveal */
+/* Animasi muncul */
 
 [data-reveal] {
   opacity: 0;

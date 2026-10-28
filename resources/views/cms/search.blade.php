@@ -1,7 +1,4 @@
-{{--
-    The search page, /search?q=… (starter template). Gets $page (Cms::page()), $query, $results (a paginator of
-    EntryTranslations), $title and $locale. Search pages are never indexed.
---}}
+{{-- Halaman pencarian --}}
 @extends('cms.layout', ['seoTitle' => $title])
 
 @section('content')
