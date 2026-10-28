@@ -248,33 +248,12 @@ final class Content
      */
     public static function type(EntryTranslation $entry, array $values): array
     {
-        $shared = Cms::global('tipe_bersama');
-        $sequence = require resource_path('data/sequence.php');
         $floors = max(1, (int) ($values['floors'] ?? 1));
-        $floorTexts = collect($shared['floor_texts'] ?? [])->pluck('text')->filter()->values();
         $card = self::card($entry, $values);
         $denah = collect($values['floor_plans'] ?? [])
             ->filter(fn (array $plan): bool => $plan['image'] instanceof Media)
             ->map(fn (array $plan): array => ['label' => $plan['label'], 'image' => self::url($plan['image'])])
             ->values();
-
-        $parts = [[
-            'id' => 'fasad',
-            'name' => $shared['facade_name'] ?? 'Fasad',
-            'kind' => 'Tampak luar',
-            'frame' => 0,
-            'text' => $shared['facade_text'] ?? '',
-        ]];
-        foreach (range(1, $floors) as $floor) {
-            $parts[] = [
-                'id' => "lantai-{$floor}",
-                'name' => "Lantai {$floor}",
-                'kind' => 'Aksonometri',
-                // Sudut lantai sementara
-                'frame' => (int) round($floor * $sequence['frames'] / ($floors + 1)),
-                'text' => $floorTexts->get($floor - 1) ?? $floorTexts->last() ?? '',
-            ];
-        }
 
         return [
             ...$card,
@@ -288,8 +267,6 @@ final class Content
                 ...filled($values['bathrooms'] ?? null) ? [['Kamar mandi', (string) $card['bathrooms']]] : [],
                 ...collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
             ],
-            'sequence' => [...$sequence, 'placeholder' => ! ($values['real_facade'] ?? false)],
-            'parts' => $parts,
             'denah' => $denah->all(),
             'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url(), 'thumb' => $image->url('medium')])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],

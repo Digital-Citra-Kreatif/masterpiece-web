@@ -147,7 +147,6 @@ class WestlakeProjectSeeder extends Seeder
                     'floors' => 2,
                     'floor_plans' => [['label' => 'Lantai 1 & 2', 'image' => $this->image("Data Type Unit/Denah {$prefix} Type {$type} - LT LB.webp")]],
                     'gallery' => [],
-                    'real_facade' => false,
                     'placeholder' => false,
                 ],
             ))->values()->all())

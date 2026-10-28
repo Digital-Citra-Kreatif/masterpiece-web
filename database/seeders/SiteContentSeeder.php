@@ -14,14 +14,14 @@ use Sunrice\Cms\Structure\StructureImporter;
 /** Struktur konten CMS */
 class SiteContentSeeder extends Seeder
 {
-    /** @var list<array{int, string, string, int|float, int|float, int, int, int, bool}> number, label, card image, LT, LB, bedrooms, bathrooms, floors, real facade */
+    /** @var list<array{int, string, string, int|float, int|float, int, int, int}> number, label, card image, LT, LB, bedrooms, bathrooms, floors */
     private const TYPES = [
-        [1, 'Ruko Hook', 'ruko-front-34.jpg', 120, 180, 2, 2, 2, true],
-        [2, '', 'ruko-34.jpg', 90, 150, 2, 2, 2, false],
-        [3, '', 'ruko-side-2.jpg', 100, 165, 3, 2, 2, false],
-        [4, '', 'ruko-front.jpg', 110, 170, 3, 3, 2, false],
-        [5, '', 'ruko-back-34.jpg', 126, 190, 3, 3, 2, false],
-        [6, '', 'ruko-side.jpg', 140, 240, 4, 3, 3, false],
+        [1, 'Ruko Hook', 'ruko-front-34.jpg', 120, 180, 2, 2, 2],
+        [2, '', 'ruko-34.jpg', 90, 150, 2, 2, 2],
+        [3, '', 'ruko-side-2.jpg', 100, 165, 3, 2, 2],
+        [4, '', 'ruko-front.jpg', 110, 170, 3, 3, 2],
+        [5, '', 'ruko-back-34.jpg', 126, 190, 3, 3, 2],
+        [6, '', 'ruko-side.jpg', 140, 240, 4, 3, 3],
     ];
 
     private const GALLERY = ['ruko-front.jpg', 'ruko-34.jpg', 'ruko-side.jpg', 'ruko-back.jpg', 'ruko-back-34.jpg', 'ruko-side-2.jpg', 'ruko-front-34.jpg'];
@@ -112,7 +112,6 @@ class SiteContentSeeder extends Seeder
                     ]),
                     $this->field('gallery', 'media', ['types' => ['image'], 'multiple' => true], ['translatable' => false]),
                     $text('vr_url', ['translatable' => false, 'instructions' => 'Alamat tur 3DVista yang sudah dipublikasikan.']),
-                    $this->field('real_facade', 'toggle', [], ['instructions' => 'Sekuens 360° sudah render tipe ini sendiri.']),
                     $this->field('placeholder', 'toggle', [], ['instructions' => 'Data contoh, belum dari klien.']),
                 ]],
                 ['handle' => 'unit', 'title' => 'Unit', 'fields' => [
@@ -143,14 +142,6 @@ class SiteContentSeeder extends Seeder
                     $image('siteplan', ['required' => true, 'instructions' => 'Mengganti siteplan berarti memeriksa ulang posisi setiap Unit (% dari gambar ini).']),
                     $this->field('siteplan_placeholder', 'toggle', [], ['instructions' => 'Siteplan contoh, bukan siteplan asli.']),
                     $this->field('protect_media', 'toggle', [], ['instructions' => 'Lindungi gambar & video: menutup menu simpan gambar/video di browser.']),
-                ]],
-                ['handle' => 'tipe_bersama', 'title' => 'Tipe: bersama', 'fields' => [
-                    $text('facade_name', ['required' => true]),
-                    $textarea('facade_text', ['required' => true]),
-                    $this->field('floor_texts', 'repeater', [], [
-                        'instructions' => 'Teks untuk Lantai 1, 2, 3 … di setiap halaman tipe; lantai tanpa teks memakai teks terakhir.',
-                        'fields' => [$textarea('text', ['required' => true])],
-                    ]),
                 ]],
                 $this->projectBlueprint(),
                 $this->footerBlueprint(),
@@ -415,15 +406,6 @@ class SiteContentSeeder extends Seeder
                 'logo' => $this->media('images/masterpiece-logo.png', 'Logo'),
                 'copyright' => '© '.date('Y').' PT Masterpiece Visual Production',
             ]]],
-            ['handle' => 'tipe_bersama', 'title' => 'Tipe: bersama', 'blueprint' => 'tipe_bersama', 'values' => ['id' => [
-                'facade_name' => 'Fasad',
-                'facade_text' => 'Fasad dengan rangka kayu dan teras terbuka ke jalan cluster. Geser gambar untuk melihat setiap sisi.',
-                'floor_texts' => [
-                    ['text' => 'Area usaha menghadap jalan, dengan dapur, kamar mandi, gudang, dan tangga ke lantai atas.'],
-                    ['text' => 'Ruang hunian: kamar tidur, ruang keluarga, dan kamar mandi, dengan bukaan ke arah jalan.'],
-                    ['text' => 'Lantai tambahan untuk ruang kerja atau kamar tidur, dengan akses ke atap.'],
-                ],
-            ]]],
         ];
     }
 
@@ -475,7 +457,6 @@ class SiteContentSeeder extends Seeder
                 'floor_plans' => $floorPlans,
                 'gallery' => $gallery,
                 'vr_url' => '/vr/placeholder/index.html',
-                'real_facade' => $type[8],
                 'placeholder' => true,
             ]))
             ->all();

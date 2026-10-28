@@ -36,13 +36,7 @@ if (root) {
   function setPart(i) {
     if (i === active) return;
     active = i;
-    const p = parts[i];
-    if (p.frames) {
-      showFrames(p);
-    } else {
-      tt.dataset.goto = String(p.frame); // Diambil saat siap
-      tt.dispatchEvent(new CustomEvent('tt:goto', { detail: { frame: p.frame } }));
-    }
+    showFrames(parts[i]);
     items.forEach((item, k) => {
       item.classList.toggle('is-open', k === i);
       tabs[k].setAttribute('aria-expanded', String(k === i));

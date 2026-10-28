@@ -39,7 +39,8 @@ test('the homepage shows every section from the CMS', function () {
 
     expect(substr_count($response->getContent(), '<li class="fac__slide">'))->toBe(6)
         ->and(substr_count($response->getContent(), 'class="card"'))->toBe(6)
-        ->and(substr_count($response->getContent(), 'style="left: '))->toBe(64);
+        // Unit kini milik proyek
+        ->and(substr_count($response->getContent(), 'style="left: '))->toBe(0);
 });
 
 test('the hero banner shows the heading, description and media from the CMS', function () {
