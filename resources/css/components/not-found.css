@@ -9,6 +9,16 @@ body:has(.nf) {
   background: #fff;
 }
 
+/* Garis samping seperti proyek */
+body:has(.nf) :is(.nf, .ft) {
+  --line: rgb(14 17 19 / 0.12);
+  --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
+  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
+  background-size: 1px 100%;
+  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
+  background-repeat: no-repeat;
+}
+
 .nf {
   flex: 1;
   display: flex;
@@ -35,7 +45,7 @@ body:has(.nf) {
 .nf__code {
   color: rgb(14 17 19 / 0.045);
   font-family: var(--display);
-  font-size: clamp(180px, 38vw, 480px);
+  font-size: clamp(130px, 24vw, 320px);
   font-weight: 500;
   line-height: 0.9;
   letter-spacing: -0.04em;
