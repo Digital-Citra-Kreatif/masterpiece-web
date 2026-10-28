@@ -343,7 +343,7 @@ class SiteContentSeeder extends Seeder
                 $this->field('units', 'entries', ['collections' => ['types'], 'multiple' => true], ['label' => 'Tipe unit', 'translatable' => false]),
             ], description: false),
             $section('availability', 'Ketersediaan unit', [
-                $image('siteplan', 'Siteplan', ['instructions' => 'Unit dari menu Units yang memilih proyek ini tampil di [peta titik unit](#peta-titik-unit) di bawah.']),
+                $image('siteplan', 'Siteplan'),
             ]),
         ];
     }

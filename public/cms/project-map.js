@@ -1,6 +1,7 @@
 // Peta titik unit di form proyek
 const EDITOR = /\/admin\/cms\/collections\/projects\/entries\/(\d+)\/edit/;
-const ANCHOR = 'a[href="#peta-titik-unit"]';
+// Field Siteplan proyek
+const FIELD = '[role="group"][aria-labelledby="data-availability-siteplan-label"]';
 const STATUS = { available: 'Tersedia', reserved: 'Dipesan', sold: 'Terjual' };
 const ZOOMS = [1, 1.5, 2, 3];
 
@@ -252,22 +253,19 @@ function setup(sunrice) {
   // Pasang di bawah Siteplan
   const sync = () => {
     const match = location.pathname.match(EDITOR);
-    const anchor = match && document.querySelector(ANCHOR);
-    if (!anchor) {
+    const field = match && document.querySelector(FIELD);
+    if (!field) {
       if (mounted && !mounted.el.isConnected) { mounted.root.unmount(); mounted = null; }
       return;
     }
     if (mounted?.el.isConnected && mounted.project === match[1]) return;
     if (mounted) { mounted.root.unmount(); mounted.el.remove(); }
 
-    anchor.removeAttribute('target');
-    anchor.onclick = (event) => { event.preventDefault(); document.getElementById('peta-titik-unit')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
-    const host = anchor.closest('p') ?? anchor.parentElement;
     const el = document.createElement('div');
     el.id = 'peta-titik-unit';
     el.className = 'pm';
     el.hidden = true;
-    host.after(el);
+    field.append(el);
     const root = createRoot(el);
     root.render(h(ProjectMap, { project: Number(match[1]), host: el }));
     mounted = { el, root, project: match[1] };
