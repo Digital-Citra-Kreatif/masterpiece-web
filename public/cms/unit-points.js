@@ -154,10 +154,8 @@ function UnitPoints({ projects, project, units: initial, createUrl, canUpdate })
   const header = h(ui.PageHeader, {
     title: 'Titik unit',
     description: 'Posisi setiap unit di siteplan proyek. Pilih unit lalu klik siteplan, atau geser titiknya.',
-    menu: [
-      ...(project ? [{ label: 'Buka proyek', href: project.editUrl }] : []),
-      { label: 'Tambah unit', href: createUrl },
-    ],
+    back: project ? { href: project.editUrl, label: project.title } : undefined,
+    menu: [{ label: 'Tambah unit', href: createUrl }],
     actions: h(
       'div',
       { style: { display: 'flex', gap: 8, alignItems: 'center' } },

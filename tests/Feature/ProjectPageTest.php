@@ -9,6 +9,7 @@ use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Cms\Actions\Entries\CreateEntry;
 use Sunrice\Cms\Actions\Entries\PublishEntry;
+use Sunrice\Cms\Actions\Entries\SaveDraft;
 use Sunrice\Cms\Models\Collection;
 use Sunrice\Cms\Models\EntryTranslation;
 
@@ -185,10 +186,15 @@ test('a project page shows each section with content and skips the empty ones', 
     ]);
     // Slug proyek URL
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id]]);
-    publishUnit('A-1', ['project' => $project->entry_id, 'sale_status' => 'sold', 'x' => 5.97, 'y' => 66]);
-    publishUnit('A-2', ['project' => $project->entry_id, 'sale_status' => 'available', 'x' => null, 'y' => null]);
+    $a1 = publishUnit('A-1', ['project' => $project->entry_id, 'sale_status' => 'sold']);
+    publishUnit('A-2', ['project' => $project->entry_id, 'sale_status' => 'available']);
     $other = publishProject($this->projects, ['whatsapp' => ['contacts' => []]], 'lain');
-    publishUnit('Z-9', ['project' => $other->entry_id, 'sale_status' => 'reserved', 'x' => 10, 'y' => 10]);
+    $z9 = publishUnit('Z-9', ['project' => $other->entry_id, 'sale_status' => 'reserved']);
+    // Titik di proyek
+    app(PublishEntry::class)->handle(app(SaveDraft::class)->handle($project->fresh(), ['version' => $project->fresh()->version, 'data' => ['availability' => [
+        ...$project->fresh()->draft_data['availability'],
+        'points' => [['unit' => $a1->entry_id, 'x' => 5.97, 'y' => 66], ['unit' => $z9->entry_id, 'x' => 10, 'y' => 10]],
+    ]]]));
 
     $response = $this->get('/projects/westlake')->assertOk();
 

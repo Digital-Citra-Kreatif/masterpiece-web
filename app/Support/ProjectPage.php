@@ -495,14 +495,17 @@ final class ProjectPage
             ->all();
 
         // Titik status unit
+        // Titik per unit
+        $points = collect($section['points'] ?? [])
+            ->filter(fn (mixed $row): bool => is_array($row) && ($row['unit'] ?? null) instanceof EntryTranslation && is_numeric($row['x'] ?? null) && is_numeric($row['y'] ?? null))
+            ->mapWithKeys(fn (array $row): array => [$row['unit']->entry_id => $row]);
         $units = Cms::entries('units')->whereEntry('project', $project)->alphabetical()->get()
-            ->map(fn (EntryTranslation $unit): array => [...$unit->values(), 'code' => (string) $unit->title])
-            ->filter(fn (array $row): bool => is_numeric($row['x'] ?? null) && is_numeric($row['y'] ?? null))
-            ->map(fn (array $row): array => [
-                'id' => $row['code'],
-                'x' => (float) $row['x'],
-                'y' => (float) $row['y'],
-                'status' => in_array($row['sale_status'] ?? null, Content::STATUSES, true) ? $row['sale_status'] : 'available',
+            ->filter(fn (EntryTranslation $unit): bool => $points->has($unit->entry_id))
+            ->map(fn (EntryTranslation $unit): array => [
+                'id' => (string) $unit->title,
+                'x' => (float) $points[$unit->entry_id]['x'],
+                'y' => (float) $points[$unit->entry_id]['y'],
+                'status' => in_array($unit->values()['sale_status'] ?? null, Content::STATUSES, true) ? $unit->values()['sale_status'] : 'available',
             ])
             ->values();
         $counts = collect(Content::STATUSES)->mapWithKeys(fn (string $status): array => [$status => $units->where('status', $status)->count()])->all();

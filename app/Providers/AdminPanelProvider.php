@@ -25,7 +25,7 @@ final class AdminPanelProvider extends PanelProvider
             ->middleware([AdminNavigationIcons::class])
             ->plugin(CmsPlugin::make())
             ->navigation(NavigationItem::make('unit-points')->label('Titik unit')->url('unit-points')->icon('map-pin')
-                ->group('Content')->sort(11)->visible(fn (Authorizable $user): bool => Access::entries($user, 'view', 'units')))
+                ->group('Content')->sort(11)->visible(fn (Authorizable $user): bool => Access::entries($user, 'view', 'projects')))
             ->routes(function (): void {
                 Route::get('unit-points', [UnitPointsController::class, 'index'])->name('unit-points.index');
                 Route::put('unit-points/{project}', [UnitPointsController::class, 'update'])->whereNumber('project')->name('unit-points.update');
