@@ -59,62 +59,93 @@
   overflow-wrap: anywhere;
 }
 
-.tph__text {
-  max-width: 46ch;
-  margin: 20px 0 0;
-  color: var(--ink-2);
-  font-size: 16px;
-  line-height: 1.75;
+/* Tab pill */
+.tph__tabs {
+  list-style: none;
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin: auto 0 0;
+  padding: 48px 0 0;
 }
 
-/* Tab bernomor */
-.tph__tabs {
-  display: grid;
+.tph__part {
+  position: relative;
   width: 100%;
-  max-width: 380px;
-  gap: 0;
-  margin-top: auto;
-  padding-top: 48px;
 }
 
 .tph__tab {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  padding: 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 20px 8px 12px;
   border: 0;
-  background: none;
-  color: var(--ink-2);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
   font: inherit;
-  text-align: left;
-  overflow-wrap: anywhere;
-  cursor: pointer;
-}
-
-/* Kontras teks besar */
-.tph__tab-no {
-  color: #777b7e;
-  font-family: var(--display);
-  font-size: clamp(32px, 3vw, 44px);
-  font-weight: 400;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  flex: 0 0 2ch; /* Lebar dua digit */
-  transition: color 0.2s var(--ease);
-}
-
-.tph__tab-name {
   font-size: 16px;
-  line-height: 1.4;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease);
 }
 
-.tph__tab:hover .tph__tab-no {
+.tph__tab svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+.tph__tab:hover {
+  background: var(--paper-2);
+}
+
+.tph__desc {
+  display: none;
+  margin: 0;
+  padding: 20px 24px;
+  border-radius: 20px;
+  background: var(--paper);
   color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-.tph__tab[aria-selected='true'],
-.tph__tab[aria-selected='true'] .tph__tab-no {
-  color: var(--room);
+.tph__desc strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Kartu terbuka */
+.tph__part.is-open .tph__tab {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.tph__part.is-open .tph__desc {
+  display: block;
+  animation: part-open 0.3s var(--ease);
+}
+
+.tph__part.is-open:has(.tph__tab:focus-visible) .tph__desc {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+@keyframes part-open {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }
 
 /* Viewer 360° */
@@ -139,6 +170,38 @@
 /* Tanpa kontrol */
 .tph__stage .tt__hud {
   display: none;
+}
+
+/* Chevron bagian */
+.tph__stage {
+  position: relative;
+}
+
+.tph__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  translate: 0 -50%;
+  border-color: rgb(255 255 255 / 0.4);
+  color: var(--room-ink);
+}
+
+.tph__nav--prev {
+  left: 16px;
+}
+
+.tph__nav--next {
+  right: 16px;
+}
+
+.tph__nav:hover {
+  background: var(--room-ink);
+  color: var(--room);
+}
+
+.tph__nav:focus-visible {
+  outline: 2px solid var(--room-ink);
+  outline-offset: 2px;
 }
 
 /* Baris konten */
@@ -320,10 +383,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .tph__tab-no {
-    font-size: 26px;
-  }
-
   /* Viewer lebih pendek */
   .tph__stage {
     min-height: clamp(320px, 42vw, 430px);
@@ -360,28 +419,14 @@
     font-size: clamp(36px, 7vw, 48px);
   }
 
-  .tph__text {
-    max-width: 48ch;
-    margin-top: 16px;
-    font-size: 15px;
-  }
-
   .tph__tabs {
     max-width: none;
     padding-top: 24px;
     margin-top: 0;
   }
 
-  .tph__tab {
-    min-height: 44px; /* Area sentuh */
-    padding-block: 0;
-    align-items: center;
-  }
-
-  /* Nomor besar */
-  .tph__tab-no {
-    color: #6a6e71;
-    font-size: 16px;
+  .tph__desc {
+    font-size: 15px;
   }
 
   .tpx__body,
@@ -449,8 +494,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tph__tab-no,
+  .tph__tab,
   .tpx__shot img {
     transition: none;
+  }
+
+  .tph__part.is-open .tph__desc {
+    animation: none;
   }
 }

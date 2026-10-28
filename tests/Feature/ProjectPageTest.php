@@ -307,7 +307,9 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('<a class="btn hd__btn" href="'.url('/projects/westlake').'" aria-label="Lihat Proyek Westlake">', false)
         ->assertSee('<span>Lihat Proyek</span>', false)
         ->assertSee('<h1 class="display tph__name" id="type-name">'.$types['tipe-1']->title.'</h1>', false)
-        ->assertSee('role="tablist"', false)
+        ->assertSee('<ul class="tph__tabs" aria-label="Bagian">', false)
+        ->assertSee('aria-expanded="true" aria-controls="part-desc-0"', false)
+        ->assertSee('aria-label="Bagian berikutnya"', false)
         ->assertSee('<section id="tipe-lain" class="types types--project"', false)
         ->assertSee('href="'.url('/westlake/tipe/tipe-2').'"', false)
         ->assertSee('data-wa', false);

@@ -7,7 +7,7 @@
   $galleryPayload = fn ($index = 0) => json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems, 'index' => $index]);
   $denahItems = collect($t['denah'])->map(fn ($d) => ['src' => asset($d['image']), 'caption' => $d['label'], 'alt' => "Denah {$d['label']}"]);
   $denahPayload = fn ($index) => json_encode(['title' => "{$t['name']}: Denah", 'items' => $denahItems, 'index' => $index]);
-  $vrPayload = filled($t['vr']['url']) ? json_encode(['src' => asset($t['vr']['url']), 'title' => "{$t['name']}: Tur VR"]) : null;
+  $vrUrl = filled($t['vr']['url']) ? asset($t['vr']['url']) : null;
 @endphp
 
 <x-layouts.base
@@ -35,30 +35,35 @@
       <div class="wrap tph__grid">
         <div class="tph__copy">
           <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
-          <p class="tph__text" data-part-text aria-live="polite">{{ $parts[0]['text'] }}</p>
 
-          <div class="tph__tabs" role="tablist" aria-label="Bagian" aria-orientation="vertical">
+          {{-- Tab bagian --}}
+          <ul class="tph__tabs" aria-label="Bagian">
             @foreach ($parts as $p)
-              <button
-                class="tph__tab"
-                type="button"
-                role="tab"
-                id="part-tab-{{ $loop->index }}"
-                aria-controls="part-panel"
-                aria-selected="{{ $loop->first ? 'true' : 'false' }}"
-                tabindex="{{ $loop->first ? 0 : -1 }}"
-                data-part-tab
-              >
-                <span class="tph__tab-no" aria-hidden="true">{{ sprintf('%02d', $loop->iteration) }}</span>
-                <span class="tph__tab-name">{{ $p['name'] }}</span>
-              </button>
+              <li @class(['tph__part', 'is-open' => $loop->first]) data-part>
+                <div class="tph__head">
+                  <button class="tph__tab" type="button" aria-expanded="{{ $loop->first ? 'true' : 'false' }}" aria-controls="part-desc-{{ $loop->index }}" data-part-tab>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></svg>
+                    {{ $p['name'] }}
+                  </button>
+                </div>
+                <div class="tph__body">
+                  <p class="tph__desc" id="part-desc-{{ $loop->index }}"><strong>{{ $p['name'] }}.</strong> {{ $p['text'] }}</p>
+                </div>
+              </li>
             @endforeach
-          </div>
-
+          </ul>
         </div>
 
-        <div class="tph__stage" id="part-panel" role="tabpanel" aria-labelledby="part-tab-0" data-part-panel>
+        <div class="tph__stage" aria-label="{{ $t['name'] }}, tampilan 360°" role="region">
           <x-turntable :id="'tt-'.$t['slug']" :label="$t['name'].', fasad dan lantai'" :turntable="$t['sequence']" tone="black" />
+          @if (count($parts) > 1)
+            <button class="icon-btn tph__nav tph__nav--prev" type="button" data-part-prev aria-label="Bagian sebelumnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <button class="icon-btn tph__nav tph__nav--next" type="button" data-part-next aria-label="Bagian berikutnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+            </button>
+          @endif
         </div>
       </div>
     </section>
@@ -118,17 +123,18 @@
       </section>
     @endif
 
-    @if ($t['gallery'] !== [] || $vrPayload)
+    @if ($t['gallery'] !== [] || $vrUrl)
       {{-- Galeri dan VR --}}
       <section class="tpx" aria-labelledby="gallery-title">
         <div class="wrap tpx__grid">
           <div class="tpx__side">
             <h2 class="display tpx__title" id="gallery-title">Galeri</h2>
-            @if ($vrPayload)
-              <button class="btn btn--solid tpx__vr" type="button" data-open="iframe" data-payload="{{ $vrPayload }}">
+            @if ($vrUrl)
+              <a class="btn btn--solid tpx__vr" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4l-3-3-3 3H5a2 2 0 0 1-2-2Z" /><circle cx="8.5" cy="11.5" r="1.5" /><circle cx="15.5" cy="11.5" r="1.5" /></svg>
                 Tur VR 360°
-              </button>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6" /></svg>
+              </a>
             @endif
           </div>
           <div class="tpx__body">

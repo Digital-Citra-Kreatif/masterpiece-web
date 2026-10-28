@@ -104,7 +104,7 @@ test('a type page shows its specs, its parts and its floor plans', function () {
         ->assertSee('Denah Lantai 1')
         ->assertSee('data-plans-swiper', false)
         ->assertSee('aria-label="Denah berikutnya"', false)
-        ->assertSee('vr\/placeholder\/index.html', false);
+        ->assertSee('href="'.asset('/vr/placeholder/index.html').'" target="_blank" rel="noopener"', false);
 });
 
 test('an unknown address shows the site\'s not found page', function () {
