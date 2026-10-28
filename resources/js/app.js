@@ -5,3 +5,4 @@ import './reveal.js';
 import './overlay.js';
 import './protect-media.js';
 import './menu.js';
+import './scroll-top.js';

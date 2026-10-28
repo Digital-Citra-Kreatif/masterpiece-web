@@ -22,6 +22,7 @@
   </head>
   <body @class([$bodyClass]) @if ($site['protectMedia']) data-protect-media @endif>
     {{ $slot }}
+    <x-scroll-top />
     <x-overlay />
   </body>
 </html>
