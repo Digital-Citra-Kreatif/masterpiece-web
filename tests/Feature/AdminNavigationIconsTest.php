@@ -25,8 +25,8 @@ test('the site\'s collections have their own icons in the admin sidebar', functi
                 ->pluck('icon', 'key');
 
             expect($icons['cms-collection-types'])->toBe('home')
-                ->and($icons['cms-collection-facilities'])->toBe('map-pin')
                 ->and($icons['cms-collection-units'])->toBe('clipboard-list')
-                ->and($icons['cms-collection-pages'])->toBe('file-text');
+                ->and($icons['cms-collection-pages'])->toBe('file-text')
+                ->and($icons)->not->toHaveKey('cms-collection-facilities');
         });
 });

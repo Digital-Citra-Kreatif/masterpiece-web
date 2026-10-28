@@ -2,7 +2,7 @@
 
 /*
  * Developer-only settings of the public site. Everything an editor changes
- * lives in the CMS instead (Globals → Situs, the homepage, Tipe, Fasilitas, Unit).
+ * lives in the CMS instead (Globals → Situs, the homepage, Tipe, Unit).
  */
 
 return [

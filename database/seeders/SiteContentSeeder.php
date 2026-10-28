@@ -24,16 +24,6 @@ class SiteContentSeeder extends Seeder
         [6, '', 'ruko-side.jpg', 140, 240, 4, 3, 3, false],
     ];
 
-    /** @var array<string, string> image => title */
-    private const FACILITIES = [
-        'fac-lake.jpg' => 'Danau & promenade',
-        'fac-sport.jpg' => 'Lapangan olahraga & kolam renang',
-        'fac-commercial.jpg' => 'Pusat komersial',
-        'fac-boulevard.jpg' => 'Boulevard utama',
-        'fac-plaza.jpg' => 'Deret ruko tepi air',
-        'fac-green.jpg' => 'Ruang hijau',
-    ];
-
     private const GALLERY = ['ruko-front.jpg', 'ruko-34.jpg', 'ruko-side.jpg', 'ruko-back.jpg', 'ruko-back-34.jpg', 'ruko-side-2.jpg', 'ruko-front-34.jpg'];
 
     /** Jalankan seeder */
@@ -50,7 +40,7 @@ class SiteContentSeeder extends Seeder
         $importer->import(['collections' => [$types]]);
         $importer->import([
             'globals' => $this->globals(),
-            'entries' => [...$this->facilities(), ...$this->types(), ...$this->units(), $this->homepage()],
+            'entries' => [...$this->types(), ...$this->units(), $this->homepage()],
             'settings' => ['site' => [
                 'description' => 'Kawasan ruko dan hunian. Jelajahi kawasan, cluster, fasilitas, dan tipe unit dalam 360°.',
             ]],
@@ -125,7 +115,6 @@ class SiteContentSeeder extends Seeder
                     $this->field('real_facade', 'toggle', [], ['instructions' => 'Sekuens 360° sudah render tipe ini sendiri.']),
                     $this->field('placeholder', 'toggle', [], ['instructions' => 'Data contoh, belum dari klien.']),
                 ]],
-                ['handle' => 'fasilitas', 'title' => 'Fasilitas', 'fields' => [$image('image', ['required' => true]), $textarea('description')]],
                 ['handle' => 'unit', 'title' => 'Unit', 'fields' => [
                     $this->field('x', 'number', ['min' => 0, 'max' => 100], ['required' => true, 'width' => 33, 'instructions' => '% dari lebar siteplan.']),
                     $this->field('y', 'number', ['min' => 0, 'max' => 100], ['required' => true, 'width' => 33, 'instructions' => '% dari tinggi siteplan.']),
@@ -164,7 +153,6 @@ class SiteContentSeeder extends Seeder
             'collections' => [
                 ['handle' => 'pages', 'title' => 'Pages', 'blueprint' => 'page', 'blueprints' => ['homepage'], 'hierarchical' => true, 'ordered' => true, 'route' => '/{slug}'],
                 ['handle' => 'types', 'title' => 'Types', 'blueprint' => 'tipe', 'ordered' => true, 'route' => '/{project}/tipe/{slug}'],
-                ['handle' => 'facilities', 'title' => 'Facilities', 'blueprint' => 'fasilitas', 'ordered' => true],
                 ['handle' => 'units', 'title' => 'Units', 'blueprint' => 'unit'],
                 ['handle' => 'projects', 'title' => 'Projects', 'blueprint' => 'project', 'ordered' => true, 'route' => '/projects/{slug}'],
             ],
@@ -353,7 +341,11 @@ class SiteContentSeeder extends Seeder
                 ]),
             ]),
             $section('facilities', 'Fasilitas', [
-                $entries('items', 'Fasilitas', 'facilities', 'Facilities'),
+                $this->field('items', 'repeater', [], ['label' => 'Fasilitas', 'fields' => [
+                    $text('name', 'Nama', ['required' => true]),
+                    $image('image', 'Gambar', ['required' => true, 'width' => 50]),
+                    $textarea('description', 'Deskripsi', ['width' => 50]),
+                ]]),
             ]),
             $section('types', 'Tipe', [
                 $image('hero_image', 'Gambar potongan', ['instructions' => 'Gambar hero di atas keunggulan unit.']),
@@ -489,19 +481,6 @@ class SiteContentSeeder extends Seeder
             'tipe' => ['title' => 'Pilih tipe', 'description' => 'Bandingkan luas tanah, luas bangunan, dan jumlah kamar. Buka satu tipe untuk menjelajahi fasad dan setiap lantainya.'],
             'unit_update' => ['title' => 'Status unit', 'description' => 'Status terbaru setiap unit di siteplan.'],
         ], blueprint: 'homepage');
-    }
-
-    /**
-     * @return list<array<string, mixed>>
-     */
-    private function facilities(): array
-    {
-        return collect(self::FACILITIES)
-            ->map(fn (string $title, string $image): array => $this->entry('facilities', pathinfo($image, PATHINFO_FILENAME), $title, [
-                'image' => $this->media("media/stills/{$image}", $title),
-            ]))
-            ->values()
-            ->all();
     }
 
     /**

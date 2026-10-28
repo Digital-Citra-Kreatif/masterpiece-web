@@ -29,10 +29,10 @@ class WestlakeProjectSeeder extends Seeder
     public function run(StructureImporter $importer, SaveDraft $saveDraft, PublishEntry $publish): void
     {
         $definitions = app(SiteContentSeeder::class);
-        $importer->import(['blueprints' => [$definitions->blueprint('fasilitas'), $definitions->blueprint('tipe')]]);
+        $importer->import(['blueprints' => [$definitions->blueprint('tipe')]]);
         // Paksa impor ulang
         $importer->import(['blueprints' => [$definitions->blueprint('project')]], force: true);
-        $importer->import(['entries' => [...$this->facilityEntries(), ...$this->typeEntries()]]);
+        $importer->import(['entries' => $this->typeEntries()]);
 
         $translation = EntryTranslation::query()->where('slug', self::SLUG)->where('locale', 'id')->firstOrFail();
         $stored = array_filter($translation->draft_data ?? []);
@@ -105,7 +105,12 @@ class WestlakeProjectSeeder extends Seeder
             'facilities' => fn (): array => [
                 'title' => 'Facilities',
                 'description' => 'Where lifestyle creates opportunity: a destination designed to elevate customer experiences while supporting thriving businesses.',
-                'items' => self::entryIds('facilities', array_column($this->facilityEntries(), 'slug')),
+                'items' => $this->rows([
+                    ['Lakeside Social Deck', '4 public social decks ranging from 90–120 sqm, designed for events, gatherings, and pop-up activities, overlooking the lake.', 'Data Facilities/Lakeside Social Deck.jpg'],
+                    ['Walkable Neighborhood', 'A fully connected pedestrian network encouraging movement, exploration, and longer dwell time.', 'Data Facilities/Walkable Neighborhood.jpg'],
+                    ['Prime Location in 10,5 Ha Area', '10,5 Ha area inside West Village Business District, ensuring that your business is in the spotlight.', 'Data Facilities/Prime Location In 10,5 Ha Area.jpg'],
+                    ['Stunning Sunset View', 'Selected lake-facing units are designed with private balconies, offering panoramic waterfront views and an elevated customer experience.', 'Data Facilities/Stunning Sunset View.jpg'],
+                ], fn (array $item): array => ['name' => $item[0], 'description' => $item[1], 'image' => $this->image($item[2])]),
             ],
             'types' => fn (): array => [
                 'title' => 'Type',
@@ -147,26 +152,6 @@ class WestlakeProjectSeeder extends Seeder
                 ),
             ],
         ];
-    }
-
-    /**
-     * Fasilitas proyek
-     *
-     * @return list<array<string, mixed>>
-     */
-    private function facilityEntries(): array
-    {
-        return collect([
-            ['Lakeside Social Deck', '4 public social decks ranging from 90–120 sqm, designed for events, gatherings, and pop-up activities, overlooking the lake.', 'Data Facilities/Lakeside Social Deck.jpg'],
-            ['Walkable Neighborhood', 'A fully connected pedestrian network encouraging movement, exploration, and longer dwell time.', 'Data Facilities/Walkable Neighborhood.jpg'],
-            ['Prime Location in 10,5 Ha Area', '10,5 Ha area inside West Village Business District, ensuring that your business is in the spotlight.', 'Data Facilities/Prime Location In 10,5 Ha Area.jpg'],
-            ['Stunning Sunset View', 'Selected lake-facing units are designed with private balconies, offering panoramic waterfront views and an elevated customer experience.', 'Data Facilities/Stunning Sunset View.jpg'],
-        ])
-            ->map(fn (array $facility): array => self::entry('facilities', 'westlake-'.str($facility[0])->slug(), $facility[0], [
-                'image' => $this->image($facility[2]),
-                'description' => $facility[1],
-            ]))
-            ->all();
     }
 
     /**
@@ -242,7 +227,7 @@ class WestlakeProjectSeeder extends Seeder
     {
         return match ($handle) {
             'hero' => str_contains((string) ($stored['heading'] ?? ''), "\n"),
-            'facilities' => collect($stored['items'] ?? [])->contains(fn (mixed $item): bool => ! is_int($item)),
+            'facilities' => collect($stored['items'] ?? [])->contains(fn (mixed $item): bool => ! is_array($item)),
             'types' => collect($stored['units'] ?? [])->contains(fn (mixed $unit): bool => ! is_int($unit)),
             default => false,
         };

@@ -350,7 +350,6 @@ final class ProjectPage
     private static function facilities(array $section): ?array
     {
         $items = collect($section['items'] ?? [])
-            ->map(fn (mixed $item): ?array => self::row($item))
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null) && ($row['image'] ?? null) instanceof Media)
             ->map(fn (array $row): array => [
                 'title' => (string) $row['name'],

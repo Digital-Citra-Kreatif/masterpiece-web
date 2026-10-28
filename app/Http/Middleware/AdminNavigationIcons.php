@@ -13,7 +13,6 @@ class AdminNavigationIcons
     /** @var array<string, string> navigation item key => icon */
     public const ICONS = [
         'cms-collection-types' => 'home',
-        'cms-collection-facilities' => 'map-pin',
         'cms-collection-units' => 'clipboard-list',
     ];
 

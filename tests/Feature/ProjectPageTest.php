@@ -140,7 +140,6 @@ test('the location shows only the map, without spots or area figures', function 
 });
 
 test('a project page shows each section with content and skips the empty ones', function () {
-    $facility = EntryTranslation::query()->whereHas('entry.collection', fn ($query) => $query->where('handle', 'facilities'))->firstOrFail();
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $type->update(['data' => [...$type->data, 'view' => 'lakeview', 'dimensions' => '4,5 x 10 m', 'lt' => 45, 'lb' => 93, 'floors' => 2]]);
 
@@ -155,7 +154,9 @@ test('a project page shows each section with content and skips the empty ones', 
             ['number' => '01', 'name' => 'Lakeview Units', 'description' => 'Lake views.', 'image' => projectImage('cluster.jpg')],
             ['number' => '06', 'name' => 'Lakefront Pods', 'description' => null, 'image' => null],
         ]],
-        'facilities' => ['title' => 'Facilities', 'items' => [$facility->entry_id]],
+        'facilities' => ['title' => 'Facilities', 'items' => [
+            ['name' => 'Lakeside Social Deck', 'description' => 'Decks by the lake.', 'image' => projectImage('deck.jpg')],
+        ]],
         'types' => [
             'title' => 'Type',
             'views' => [['view' => 'lakeview', 'name' => 'Lake View', 'description' => 'Facing the lake.', 'businesses' => "Cafe\nRestaurant"]],
@@ -191,7 +192,7 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertSee('<section id="type" class="types types--project"', false)
         ->assertSee('href="'.url('/westlake/tipe/tipe-1').'"', false)
         ->assertDontSee('data-sheet=', false)
-        ->assertSee($facility->title)
+        ->assertSee('Lakeside Social Deck')
         ->assertSee($type->title)
         ->assertSee('4,5 x 10 m')
         ->assertSee('93 m²')
