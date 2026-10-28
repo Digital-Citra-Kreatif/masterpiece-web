@@ -91,7 +91,8 @@ final class Content
                 'phone' => $phone ? ['label' => $phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $phone)] : null,
                 'email' => $email ? ['label' => $email, 'href' => 'mailto:'.$email] : null,
                 'whatsapp' => $whatsapp ? ['label' => '+'.$whatsapp, 'href' => 'https://wa.me/'.$whatsapp] : null,
-                'copyright' => $filled('copyright') ?? '© '.date('Y').' '.Cms::site()->name(),
+                // Tahun otomatis, nama dari Settings → Site
+                'copyright' => '© '.date('Y').' '.Cms::site()->name(),
             ];
         });
     }

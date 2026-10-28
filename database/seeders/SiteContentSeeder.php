@@ -369,7 +369,6 @@ class SiteContentSeeder extends Seeder
                 'validation' => ['regex:/^[0-9]{8,15}$/'],
                 'instructions' => 'Contoh: 6281234567890',
             ]),
-            $text('copyright', 'Copyright'),
         ]];
     }
 
@@ -405,7 +404,6 @@ class SiteContentSeeder extends Seeder
             // Diisi di CMS
             ['handle' => 'footer', 'title' => 'Footer', 'blueprint' => 'footer', 'values' => ['id' => [
                 'logo' => $this->media('images/masterpiece-logo.png', 'Logo'),
-                'copyright' => '© '.date('Y').' PT Masterpiece Visual Production',
             ]]],
         ];
     }
