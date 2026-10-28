@@ -33,11 +33,9 @@ class UnitPointsController extends Controller
                     'status' => $unit->draft_data['sale_status'] ?? 'available',
                     'x' => $points->get($unit->entry_id)?->x,
                     'y' => $points->get($unit->entry_id)?->y,
-                    'editUrl' => route('sunrice.admin.cms.collections.entries.edit', ['collection' => 'units', 'entry' => $unit->entry_id]),
                 ])
                 ->sortBy('code', SORT_NATURAL)
                 ->values(),
-            'createUrl' => route('sunrice.admin.cms.collections.entries.create', ['collection' => 'units']),
             'canUpdate' => Access::entries($request->user(), 'update', 'projects'),
         ]);
     }

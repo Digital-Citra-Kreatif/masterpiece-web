@@ -41,7 +41,6 @@ const css = `
 .pm-detail { display: flex; flex-wrap: wrap; align-items: end; gap: 8px 12px; padding: 10px 12px 12px; border-top: 1px solid var(--border); }
 .pm-detail strong { align-self: center; min-width: 48px; font-size: 14px; }
 .pm-detail label { display: grid; gap: 4px; width: 110px; font-size: 12px; color: var(--muted-foreground); }
-.pm-detail a { align-self: center; margin-left: auto; font-size: 13px; color: var(--primary); text-underline-offset: 3px; }
 .pm-empty { display: grid; gap: 10px; justify-items: start; padding: 16px 12px; }
 .pm-empty p { margin: 0; font-size: 13px; color: var(--muted-foreground); max-width: 56ch; }
 @media (prefers-reduced-motion: reduce) { .pm-dot::before { transition: none; } }
@@ -62,7 +61,7 @@ function setup(sunrice) {
   const notify = (text, error = false) => (error ? ui.toast?.error ?? ui.toast : ui.toast?.success ?? ui.toast)?.(text);
   const noEnter = (event) => event.key === 'Enter' && event.preventDefault();
 
-  function ProjectMap({ project }) {
+  function ProjectMap({ project, host }) {
     const [data, setData] = useState(null);
     const [failed, setFailed] = useState(false);
     const [units, setUnits] = useState([]);
@@ -88,6 +87,9 @@ function setup(sunrice) {
     }, [project]);
 
     useEffect(() => { load(); }, [load]);
+
+    // Tampil hanya jika ada unit
+    useEffect(() => { host.hidden = !failed && !data?.units.length; }, [host, data, failed]);
 
     const original = useMemo(() => new Map((data?.units ?? []).map((u) => [u.id, u])), [data]);
     const changed = units.filter((u) => { const o = original.get(u.id); return o && (o.x !== u.x || o.y !== u.y); });
@@ -172,12 +174,12 @@ function setup(sunrice) {
     const button = (props, label) => h(ui.Button, { type: 'button', ...props }, label);
 
     if (failed) return h('div', { className: 'pm-empty' }, h('p', null, 'Peta titik unit gagal dimuat.'), button({ variant: 'outline', size: 'sm', onClick: load }, 'Coba lagi'));
-    if (!data) return h('div', { className: 'pm-empty' }, h('p', null, 'Memuat peta titik unit…'));
+    if (!data?.units.length) return null;
 
     const bar = h(
       'div',
       { className: 'pm-bar' },
-      h('div', { className: 'pm-title' }, h('strong', null, 'Titik unit'), h('span', null, units.length ? `${units.length} unit · ${missing ? `${missing} belum ditempatkan` : 'semua sudah ditempatkan'}` : 'Belum ada unit')),
+      h('div', { className: 'pm-title' }, h('strong', null, 'Titik unit'), h('span', null, `${units.length} unit · ${missing ? `${missing} belum ditempatkan` : 'semua sudah ditempatkan'}`)),
       data.siteplan && h(
         'div',
         { className: 'pm-tools' },
@@ -189,11 +191,6 @@ function setup(sunrice) {
 
     if (!data.siteplan) {
       return h('div', null, bar, h('div', { className: 'pm-empty' }, h('p', null, 'Pilih gambar Siteplan lalu simpan proyek; petanya muncul di sini.')));
-    }
-    if (!units.length) {
-      return h('div', null, bar, h('div', { className: 'pm-empty' },
-        h('p', null, 'Tambahkan unit di menu Units dan pilih proyek ini; unitnya muncul di peta.'),
-        h(ui.Button, { asChild: true, variant: 'outline', size: 'sm' }, h('a', { href: data.createUrl }, 'Tambah unit'))));
     }
 
     const plan = h(
@@ -225,8 +222,7 @@ function setup(sunrice) {
     );
 
     const legend = h('div', { className: 'pm-legend' },
-      Object.entries(STATUS).map(([key, label]) => h('span', { key, className: `pm-${key}` }, h('i', { className: 'pm-swatch' }), label)),
-      h('span', null, 'Pilih unit lalu klik peta, atau geser titiknya. Panah: geser 0,1% (Shift: 1%).'));
+      Object.entries(STATUS).map(([key, label]) => h('span', { key, className: `pm-${key}` }, h('i', { className: 'pm-swatch' }), label)));
 
     const list = h('ul', { className: 'pm-units', 'aria-label': 'Unit' },
       units.map((u) => h('li', { key: u.id }, h(
@@ -246,7 +242,6 @@ function setup(sunrice) {
       }))),
       canUpdate && placed(current) && button({ variant: 'outline', size: 'sm', onClick: () => move(current.id, null, null) }, 'Hapus titik'),
       !placed(current) && h('span', { className: 'pm-note' }, canUpdate ? 'Klik peta untuk menempatkan unit ini.' : 'Belum ada titik.'),
-      h('a', { href: current.editUrl }, 'Edit unit'),
     );
 
     return h('div', null, bar, plan, legend, list, detail);
@@ -271,9 +266,10 @@ function setup(sunrice) {
     const el = document.createElement('div');
     el.id = 'peta-titik-unit';
     el.className = 'pm';
+    el.hidden = true;
     host.after(el);
     const root = createRoot(el);
-    root.render(h(ProjectMap, { project: Number(match[1]) }));
+    root.render(h(ProjectMap, { project: Number(match[1]), host: el }));
     mounted = { el, root, project: match[1] };
   };
 

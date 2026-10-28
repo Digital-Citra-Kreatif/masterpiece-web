@@ -194,63 +194,64 @@ class SiteContentSeeder extends Seeder
         ]);
         $text = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'text', [], ['label' => $label, ...$extra]);
 
+        $globalStyle = $this->field('global_style', 'group', [], ['label' => 'Global Style', 'fields' => [
+            $this->field('active', 'toggle', ['default' => false], ['label' => 'Aktif', 'translatable' => false, 'instructions' => 'Aktif: tampilan project mengikuti Global Style.']),
+            $image('logo', 'Logo', ['width' => 25, ...$whenActive]),
+            $this->field('palette', 'group', [], [
+                'label' => 'Warna',
+                'width' => 75,
+                ...$whenActive,
+                // Token warna situs
+                'fields' => collect([
+                    1 => 'Warna utama',
+                    2 => 'Warna utama gelap',
+                    3 => 'Warna utama terang',
+                    4 => 'Latar halaman',
+                    5 => 'Latar sekunder',
+                    6 => 'Teks',
+                    7 => 'Latar gelap',
+                    8 => 'Teks di latar gelap',
+                ])->map(fn (string $label, int $number): array => $hex("color_{$number}", $label, ['width' => 25]))->values()->all(),
+            ]),
+            $this->field('fonts', 'group', [], [
+                'label' => 'Font',
+                ...$whenActive,
+                'fields' => [$font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol')],
+            ]),
+            // Bentuk atau gambar
+            $this->field('marker', 'group', [], [
+                'label' => 'Penanda',
+                ...$whenActive,
+                'fields' => [
+                    $this->field('type', 'select', ['options' => [
+                        ['value' => 'shape', 'label' => 'Warna & bentuk'],
+                        ['value' => 'image', 'label' => 'Gambar / SVG'],
+                    ], 'default' => 'shape'], ['label' => 'Jenis', 'required' => true, 'translatable' => false, 'width' => 33]),
+                    $hex('color', 'Warna', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'not_equals', 'value' => 'image']]),
+                    $this->field('shape', 'select', ['options' => [
+                        ['value' => 'circle', 'label' => 'Lingkaran'],
+                        ['value' => 'square', 'label' => 'Kotak'],
+                        ['value' => 'diamond', 'label' => 'Belah ketupat'],
+                        ['value' => 'pin', 'label' => 'Pin'],
+                    ], 'default' => 'circle'], ['label' => 'Bentuk', 'required' => true, 'translatable' => false, 'width' => 33, 'condition' => ['field' => 'type', 'operator' => 'not_equals', 'value' => 'image']]),
+                    $image('image', 'Gambar / SVG', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'equals', 'value' => 'image']]),
+                ],
+            ]),
+            $this->field('corner', 'group', [], [
+                'label' => 'Sudut',
+                ...$whenActive,
+                'fields' => [
+                    $this->field('style', 'select', ['options' => [
+                        ['value' => 'rounded', 'label' => 'Membulat'],
+                        ['value' => 'chamfer', 'label' => 'Chamfer'],
+                    ], 'default' => 'rounded'], ['label' => 'Bentuk', 'translatable' => false, 'width' => 50]),
+                    $this->field('size', 'number', ['min' => 0, 'step' => 1, 'suffix' => 'px'], ['label' => 'Ukuran', 'translatable' => false]),
+                ],
+            ]),
+            $image('background', 'Background tema', $whenActive),
+        ]]);
+
         return ['handle' => 'project', 'title' => 'Project', 'fields' => [
-            $this->field('global_style', 'group', [], ['label' => 'Global Style', 'fields' => [
-                $this->field('active', 'toggle', ['default' => false], ['label' => 'Aktif', 'translatable' => false, 'instructions' => 'Aktif: tampilan project mengikuti Global Style.']),
-                $image('logo', 'Logo', ['width' => 25, ...$whenActive]),
-                $this->field('palette', 'group', [], [
-                    'label' => 'Warna',
-                    'width' => 75,
-                    ...$whenActive,
-                    // Token warna situs
-                    'fields' => collect([
-                        1 => 'Warna utama',
-                        2 => 'Warna utama gelap',
-                        3 => 'Warna utama terang',
-                        4 => 'Latar halaman',
-                        5 => 'Latar sekunder',
-                        6 => 'Teks',
-                        7 => 'Latar gelap',
-                        8 => 'Teks di latar gelap',
-                    ])->map(fn (string $label, int $number): array => $hex("color_{$number}", $label, ['width' => 25]))->values()->all(),
-                ]),
-                $this->field('fonts', 'group', [], [
-                    'label' => 'Font',
-                    ...$whenActive,
-                    'fields' => [$font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol')],
-                ]),
-                // Bentuk atau gambar
-                $this->field('marker', 'group', [], [
-                    'label' => 'Penanda',
-                    ...$whenActive,
-                    'fields' => [
-                        $this->field('type', 'select', ['options' => [
-                            ['value' => 'shape', 'label' => 'Warna & bentuk'],
-                            ['value' => 'image', 'label' => 'Gambar / SVG'],
-                        ], 'default' => 'shape'], ['label' => 'Jenis', 'required' => true, 'translatable' => false, 'width' => 33]),
-                        $hex('color', 'Warna', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'not_equals', 'value' => 'image']]),
-                        $this->field('shape', 'select', ['options' => [
-                            ['value' => 'circle', 'label' => 'Lingkaran'],
-                            ['value' => 'square', 'label' => 'Kotak'],
-                            ['value' => 'diamond', 'label' => 'Belah ketupat'],
-                            ['value' => 'pin', 'label' => 'Pin'],
-                        ], 'default' => 'circle'], ['label' => 'Bentuk', 'required' => true, 'translatable' => false, 'width' => 33, 'condition' => ['field' => 'type', 'operator' => 'not_equals', 'value' => 'image']]),
-                        $image('image', 'Gambar / SVG', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'equals', 'value' => 'image']]),
-                    ],
-                ]),
-                $this->field('corner', 'group', [], [
-                    'label' => 'Sudut',
-                    ...$whenActive,
-                    'fields' => [
-                        $this->field('style', 'select', ['options' => [
-                            ['value' => 'rounded', 'label' => 'Membulat'],
-                            ['value' => 'chamfer', 'label' => 'Chamfer'],
-                        ], 'default' => 'rounded'], ['label' => 'Bentuk', 'translatable' => false, 'width' => 50]),
-                        $this->field('size', 'number', ['min' => 0, 'step' => 1, 'suffix' => 'px'], ['label' => 'Ukuran', 'translatable' => false]),
-                    ],
-                ]),
-                $image('background', 'Background tema', $whenActive),
-            ]]),
             ...$this->projectSections(),
             $this->field('whatsapp', 'group', [], ['label' => 'WhatsApp Floating', 'fields' => [
                 $text('label', 'Label', ['width' => 50]),
@@ -269,6 +270,7 @@ class SiteContentSeeder extends Seeder
                     $this->field('message', 'textarea', [], ['label' => 'Pesan']),
                 ]]),
             ]]),
+            $globalStyle,
         ]];
     }
 
@@ -286,11 +288,6 @@ class SiteContentSeeder extends Seeder
         ]);
         $gallery = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'media', ['types' => ['image'], 'multiple' => true], [
             'label' => $label, 'translatable' => false, ...$extra,
-        ]);
-        $entries = fn (string $handle, string $label, string $collection, string $menu): array => $this->field($handle, 'entries', ['collections' => [$collection], 'multiple' => true], [
-            'label' => $label,
-            'translatable' => false,
-            'instructions' => "Pilih dari {$menu}; urutan pilihan jadi urutan tampil.",
         ]);
         $section = fn (string $handle, string $label, array $fields, bool $description = true): array => $this->field($handle, 'group', [], ['label' => $label, 'fields' => [
             $text('title', 'Judul'),
@@ -313,7 +310,7 @@ class SiteContentSeeder extends Seeder
                 $this->field('media', 'media', ['types' => ['image', 'video'], 'multiple' => true, 'max' => 6], [
                     'label' => 'Media',
                     'translatable' => false,
-                    'instructions' => 'Gambar/video 1920×1080. Lebih dari 1 file = slider.',
+                    'instructions' => 'Gambar/video 1920×1080.',
                 ]),
             ]]),
             $section('masterplan', 'Masterplan', [
@@ -324,7 +321,7 @@ class SiteContentSeeder extends Seeder
                 ]),
             ]),
             $section('location', 'Lokasi', [
-                $gallery('maps', 'Peta', ['instructions' => 'Peta lokasi; tandai akses jalan tol.']),
+                $gallery('maps', 'Peta'),
             ]),
             $section('cluster', 'Cluster', [
                 $points('Titik cluster', [
@@ -335,14 +332,15 @@ class SiteContentSeeder extends Seeder
                 ]),
             ], description: false),
             $section('facilities', 'Fasilitas', [
-                $this->field('items', 'repeater', [], ['label' => 'Fasilitas', 'fields' => [
-                    $text('name', 'Nama', ['required' => true, 'width' => 50]),
+                // Label baris tanpa akhiran "s"
+                $this->field('items', 'repeater', [], ['label' => 'Fasilitas proyek', 'fields' => [
                     $image('image', 'Gambar', ['required' => true, 'width' => 50]),
+                    $text('name', 'Nama', ['required' => true, 'width' => 50]),
                 ]]),
             ]),
             $section('types', 'Tipe', [
-                $image('hero_image', 'Gambar potongan', ['instructions' => 'Gambar lebar di atas kartu tipe.']),
-                $entries('units', 'Tipe unit', 'types', 'Types'),
+                $image('hero_image', 'Gambar potongan'),
+                $this->field('units', 'entries', ['collections' => ['types'], 'multiple' => true], ['label' => 'Tipe unit', 'translatable' => false]),
             ], description: false),
             $section('availability', 'Ketersediaan unit', [
                 $image('siteplan', 'Siteplan', ['instructions' => 'Unit dari menu Units yang memilih proyek ini tampil di [peta titik unit](#peta-titik-unit) di bawah.']),

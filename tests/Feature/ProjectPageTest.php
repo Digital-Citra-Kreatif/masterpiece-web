@@ -223,6 +223,20 @@ test('a project page shows each section with content and skips the empty ones', 
         ->and(substr_count($html, 'class="roll-host"'))->toBe(5);
 });
 
+test('the hero slides through every image and video of its media', function () {
+    $video = app(UploadMedia::class)->handle(UploadedFile::fake()->create('clip.mp4', 200, 'video/mp4'), [])->id;
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake', 'media' => [projectImage('one.jpg'), $video, projectImage('two.jpg')]],
+    ]);
+
+    $html = $this->get('/projects/westlake')->assertOk()->getContent();
+
+    expect(preg_match_all('/class="hero__slide[ "]/', $html))->toBe(3)
+        ->and(substr_count($html, '<video class="hero__media"'))->toBe(1)
+        ->and(preg_match_all('/<img\s+class="hero__media"/', $html))->toBe(2);
+});
+
 test('the Type cutaway image sits inside the section, above the title', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
