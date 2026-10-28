@@ -256,7 +256,7 @@ class SiteContentSeeder extends Seeder
                         'required' => true,
                         'translatable' => false,
                         'validation' => ['regex:/^[0-9]{8,15}$/'],
-                        'instructions' => 'Angka saja, diawali kode negara: 6281234567890.',
+                        'instructions' => 'Contoh: 6281234567890',
                     ]),
                     $this->field('message', 'textarea', [], ['label' => 'Pesan']),
                 ]]),
@@ -367,7 +367,7 @@ class SiteContentSeeder extends Seeder
                 'translatable' => false,
                 'width' => 33,
                 'validation' => ['regex:/^[0-9]{8,15}$/'],
-                'instructions' => 'Angka saja, diawali kode negara: 6281234567890.',
+                'instructions' => 'Contoh: 6281234567890',
             ]),
             $text('copyright', 'Copyright'),
         ]];
