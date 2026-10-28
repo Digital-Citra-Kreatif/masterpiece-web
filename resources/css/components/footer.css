@@ -103,7 +103,7 @@ body:has(.wa) .ft__meta {
 .ft__meta {
   margin: 0;
   color: var(--ink-2);
-  font-size: 13px;
+  font-size: 16px; /* Ukuran body */
 }
 
 /* Tablet */
