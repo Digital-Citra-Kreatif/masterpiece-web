@@ -1264,7 +1264,7 @@ button.pj-frame:focus-visible {
   background: #e3f6ec;
   color: #075e54;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 
