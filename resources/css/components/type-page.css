@@ -65,7 +65,8 @@
   line-height: 1.75;
 }
 
-/* Full rows make each floor easier to select; the inset marks the active view. */
+/* Tabs as numbered sheets: a large drawing number beside the part's name. The
+   open part's number takes the page's colour; the others step back. */
 .tph__tabs {
   display: grid;
   width: 100%;
@@ -76,33 +77,43 @@
 }
 
 .tph__tab {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  min-height: 52px;
-  padding: 12px 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 8px 0;
   border: 0;
-  border-bottom: 1px solid var(--sheet-line);
   background: none;
   color: var(--ink-2);
   font: inherit;
-  font-size: 16px;
   text-align: left;
   overflow-wrap: anywhere;
   cursor: pointer;
-  transition: color 0.2s var(--ease), background-color 0.2s var(--ease);
 }
 
-.tph__tab:hover,
-.tph__tab:active {
-  color: var(--ink);
-  background-color: #f3f4f2;
+/* Large text: #777b7e keeps 4.3:1 on white */
+.tph__tab-no {
+  color: #777b7e;
+  font-family: var(--display);
+  font-size: clamp(32px, 3vw, 44px);
+  font-weight: 400;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  flex: 0 0 2ch; /* two digits of this font, so the names line up */
+  transition: color 0.2s var(--ease);
 }
 
-.tph__tab[aria-selected='true'] {
+.tph__tab-name {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.tph__tab:hover .tph__tab-no {
+  color: var(--ink-2);
+}
+
+.tph__tab[aria-selected='true'],
+.tph__tab[aria-selected='true'] .tph__tab-no {
   color: var(--room);
-  background-color: #f3f4f2;
-  box-shadow: inset 3px 0 var(--accent);
 }
 
 /* The 360° viewer, against the top, the right line and the rule */
@@ -395,7 +406,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tph__tab,
+  .tph__tab-no,
   .tpx__shot img {
     transition: none;
   }

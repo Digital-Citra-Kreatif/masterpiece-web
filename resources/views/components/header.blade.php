@@ -52,7 +52,7 @@
       </button>
     @elseif ($back)
       <a class="btn hd__btn" href="{{ $back['href'] }}" aria-label="{{ $back['label'] }}">
-        Kembali<span class="hd__btn-more">&nbsp;ke proyek</span>
+        <span>Kembali<span class="hd__btn-more"> ke proyek</span></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <path d="M5 12h14M13 6l6 6-6 6" />
         </svg>

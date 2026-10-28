@@ -61,7 +61,10 @@
                 aria-selected="{{ $loop->first ? 'true' : 'false' }}"
                 tabindex="{{ $loop->first ? 0 : -1 }}"
                 data-part-tab
-              >{{ $p['name'] }}</button>
+              >
+                <span class="tph__tab-no" aria-hidden="true">{{ sprintf('%02d', $loop->iteration) }}</span>
+                <span class="tph__tab-name">{{ $p['name'] }}</span>
+              </button>
             @endforeach
           </div>
 
