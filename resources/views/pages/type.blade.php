@@ -162,8 +162,11 @@
           {{-- Popup grid --}}
           <dialog class="tpg__dialog" id="gallery-grid" aria-labelledby="gallery-grid-title" data-gallery-grid>
             <div class="tpg__bar">
-              <h3 class="display tpg__dialog-title" id="gallery-grid-title">Galeri {{ $t['name'] }}</h3>
-              <button class="icon-btn" type="button" aria-label="Tutup galeri" data-grid-close>
+              <div>
+                <h3 class="display tpg__dialog-title" id="gallery-grid-title">Galeri {{ $t['name'] }}</h3>
+                <p class="tpg__count">{{ count($galleryItems) }} gambar</p>
+              </div>
+              <button class="tpg__close" type="button" aria-label="Tutup galeri" data-grid-close>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
               </button>
             </div>
