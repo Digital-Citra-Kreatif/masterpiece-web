@@ -89,8 +89,6 @@ test('each section shows its title and description from the CMS, or the defaults
         ->assertSee('Intro fasilitas dari CMS')
         ->assertSee('Intro tipe dari CMS')
         ->assertDontSee('class="units"', false)
-        ->assertSee('aria-controls="hd-menu"', false)
-        ->assertSee('<div class="hd__menu" id="hd-menu" hidden>', false)
         ->assertDontSee('Diabaikan tanpa judul');
 });
 
@@ -116,10 +114,11 @@ test('an unknown address shows the site\'s not found page', function () {
         ->assertSee('Halaman tidak ditemukan');
 });
 
-test('the home header lists the homepage sections while the CMS menu has no links', function () {
+test('the home header has no menu while the CMS menu has no links', function () {
     $this->get('/')
-        ->assertSee('<nav class="hd__nav" aria-label="Menu utama">', false)
-        ->assertSee('href="#kawasan"', false);
+        ->assertDontSee('class="hd__nav"', false)
+        ->assertDontSee('data-menu-toggle', false)
+        ->assertDontSee('id="hd-menu"', false);
 });
 
 test('the home header shows the CMS menu', function () {
@@ -133,7 +132,7 @@ test('the home header shows the CMS menu', function () {
         ->assertSee('Kontak')
         ->assertSee('href="/kontak"', false)
         ->assertSee('target="_blank" rel="noopener"', false)
-        ->assertDontSee('href="#kawasan"', false);
+        ->assertSee('aria-controls="hd-menu"', false);
 });
 
 test('the browser icon is the built-in one while Settings → Branding has none', function () {

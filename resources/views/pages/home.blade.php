@@ -48,11 +48,6 @@
 
     <!-- Tipe unit -->
     <x-home.type-grid :types="$types" :heading="$headings['types']" />
-
-    <!-- Update unit -->
-    @if ($units !== [])
-      <x-home.unit-update :units="$units" :counts="$counts" :heading="$headings['units']" />
-    @endif
   </main>
 
   <x-footer />

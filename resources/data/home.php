@@ -56,7 +56,6 @@ return [
     'headings' => [
         'fasilitas' => ['title' => 'Ruang bersama', 'intro' => 'Fasilitas yang melengkapi kawasan, dari tepi danau hingga pusat komersial.'],
         'tipe' => ['title' => 'Pilih tipe', 'intro' => 'Bandingkan luas tanah, luas bangunan, dan jumlah kamar. Buka satu tipe untuk menjelajahi fasad dan setiap lantainya.'],
-        'unit_update' => ['title' => 'Status unit', 'intro' => 'Status terbaru setiap unit di siteplan.'],
     ],
     'fasilitas' => [
         ['title' => 'Danau & promenade', 'image' => 'media/stills/fac-lake.jpg'],

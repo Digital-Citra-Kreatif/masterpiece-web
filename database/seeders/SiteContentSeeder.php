@@ -129,18 +129,11 @@ class SiteContentSeeder extends Seeder
                     ], 'default' => 'available'], ['label' => 'Status', 'required' => true, 'width' => 50]),
                 ]],
                 ['handle' => 'situs', 'title' => 'Situs', 'fields' => [
-                    $this->field('nav', 'repeater', [], ['fields' => [
-                        $text('label', ['required' => true, 'width' => 50]),
-                        $this->field('section', 'select', ['options' => collect(['kawasan', 'peta', 'cluster', 'fasilitas', 'tipe', 'unit-update'])
-                            ->map(fn (string $section): array => ['value' => $section, 'label' => $section])->all()], ['required' => true, 'width' => 50]),
-                    ]]),
                     $this->field('status_labels', 'group', [], ['fields' => [
                         $text('sold', ['required' => true, 'width' => 33]),
                         $text('reserved', ['required' => true, 'width' => 33]),
                         $text('available', ['required' => true, 'width' => 33]),
                     ]]),
-                    $image('siteplan', ['required' => true, 'instructions' => 'Mengganti siteplan berarti memeriksa ulang posisi setiap Unit (% dari gambar ini).']),
-                    $this->field('siteplan_placeholder', 'toggle', [], ['instructions' => 'Siteplan contoh, bukan siteplan asli.']),
                     $this->field('protect_media', 'toggle', [], ['instructions' => 'Lindungi gambar & video: menutup menu simpan gambar/video di browser.']),
                 ]],
                 $this->projectBlueprint(),
@@ -391,14 +384,9 @@ class SiteContentSeeder extends Seeder
      */
     public function globals(): array
     {
-        $nav = ['kawasan' => 'Masterplan', 'peta' => 'Lokasi', 'cluster' => 'Cluster', 'fasilitas' => 'Fasilitas', 'tipe' => 'Tipe', 'unit-update' => 'Unit'];
-
         return [
             ['handle' => 'situs', 'title' => 'Situs', 'blueprint' => 'situs', 'values' => ['id' => [
-                'nav' => collect($nav)->map(fn (string $label, string $section): array => ['label' => $label, 'section' => $section])->values()->all(),
                 'status_labels' => ['sold' => 'Terjual', 'reserved' => 'Dipesan', 'available' => 'Tersedia'],
-                'siteplan' => $this->media('media/placeholder/siteplan.svg', 'Siteplan cluster'),
-                'siteplan_placeholder' => true,
                 'protect_media' => false,
             ]]],
             // Diisi di CMS

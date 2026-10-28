@@ -1,8 +1,6 @@
 {{-- Update unit --}}
 @props(['units', 'counts', 'heading', 'id' => 'unit-update', 'siteplan' => null])
 
-@php($siteplan ??= $site['siteplan'])
-
 <section id="{{ $id }}" class="units" data-unit-filter aria-labelledby="unit-title">
   <div class="wrap">
     <div class="units__layout">
@@ -13,6 +11,7 @@
         @endif
       </header>
 
+      @if ($siteplan)
       <div class="units__plan" data-reveal>
         <div class="units__frame" style="aspect-ratio: {{ $siteplan['width'] }} / {{ $siteplan['height'] }}">
           <img src="{{ asset($siteplan['image']) }}" alt="Siteplan cluster" loading="lazy" />
@@ -33,6 +32,7 @@
           @endif
         </div>
       </div>
+      @endif
 
       <aside class="units__legend" data-reveal>
         <ul>

@@ -1,6 +1,8 @@
 {{-- Header situs --}}
 @props(['variant' => 'home', 'nav' => null, 'logo' => null, 'back' => null])
 
+@php($items = $nav ?? $site['nav'])
+
 <header @class(['hd', "hd--{$variant}"])>
   <div class="hd__inner wrap">
     <a class="hd__mark" href="{{ url('/') }}" aria-label="{{ $site['logo']['alt'] }}, beranda">
@@ -20,27 +22,30 @@
     </a>
 
     @if ($variant === 'home' || $variant === 'project')
-      <nav class="hd__nav" aria-label="Menu utama">
-        @foreach ($nav ?? $site['nav'] as $item)
-          <a
-            class="roll-host"
-            href="{{ $item['href'] }}"
-            @if ($item['active']) aria-current="page" @endif
-            @if ($item['newTab']) target="_blank" rel="noopener" @endif
-          ><x-roll-text :text="$item['label']" /></a>
-        @endforeach
-      </nav>
+      {{-- Menu dari CMS → Menus --}}
+      @if ($items !== [])
+        <nav class="hd__nav" aria-label="Menu utama">
+          @foreach ($items as $item)
+            <a
+              class="roll-host"
+              href="{{ $item['href'] }}"
+              @if ($item['active']) aria-current="page" @endif
+              @if ($item['newTab']) target="_blank" rel="noopener" @endif
+            ><x-roll-text :text="$item['label']" /></a>
+          @endforeach
+        </nav>
 
-      {{-- Menu hamburger --}}
-      <button class="hd__burger" type="button" aria-expanded="false" aria-controls="hd-menu" data-menu-toggle>
-        <svg class="hd__burger-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <path d="M3 7h18M3 12h18M3 17h18" />
-        </svg>
-        <svg class="hd__burger-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <path d="M6 6l12 12M18 6L6 18" />
-        </svg>
-        <span class="visually-hidden">Menu</span>
-      </button>
+        {{-- Menu hamburger --}}
+        <button class="hd__burger" type="button" aria-expanded="false" aria-controls="hd-menu" data-menu-toggle>
+          <svg class="hd__burger-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M3 7h18M3 12h18M3 17h18" />
+          </svg>
+          <svg class="hd__burger-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+          <span class="visually-hidden">Menu</span>
+        </button>
+      @endif
     @elseif ($back)
       <a class="btn hd__btn" href="{{ $back['href'] }}" aria-label="{{ $back['label'] }}">
         <span>Lihat Proyek</span>
@@ -49,19 +54,19 @@
         </svg>
       </a>
     @else
-      <a class="hd__back roll-host" href="{{ url('/') }}#unit-update">
+      <a class="hd__back roll-host" href="{{ url('/') }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <path d="M19 12H5M11 6l-6 6 6 6" />
         </svg>
-        <x-roll-text text="Kembali ke Unit Update" />
+        <x-roll-text text="Kembali ke beranda" />
       </a>
     @endif
   </div>
 
-  @if ($variant === 'home' || $variant === 'project')
+  @if (($variant === 'home' || $variant === 'project') && $items !== [])
     <div class="hd__menu" id="hd-menu" hidden>
       <nav class="hd__menu-nav wrap" aria-label="Menu">
-        @foreach ($nav ?? $site['nav'] as $item)
+        @foreach ($items as $item)
           <a
             href="{{ $item['href'] }}"
             style="--i: {{ $loop->index }}"

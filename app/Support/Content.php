@@ -2,7 +2,6 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Collection;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Content as Cms;
@@ -17,14 +16,13 @@ final class Content
     /**
      * Data situs bersama
      *
-     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>, siteplan: array{image: ?string, width: int, height: int, placeholder: bool}}
+     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
      */
     public static function site(): array
     {
         return once(function (): array {
             $settings = Cms::global('situs');
             $labels = $settings['status_labels'] ?? [];
-            $siteplan = $settings['siteplan'] ?? null;
 
             return [
                 'lang' => str_replace('_', '-', app()->getLocale()),
@@ -34,17 +32,11 @@ final class Content
                 'protectMedia' => (bool) ($settings['protect_media'] ?? false),
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...config('site.logo'), 'alt' => Cms::site()->name()],
-                'nav' => self::nav($settings),
+                'nav' => self::nav(),
                 'statusLabels' => [
                     'sold' => $labels['sold'] ?? 'Terjual',
                     'reserved' => $labels['reserved'] ?? 'Dipesan',
                     'available' => $labels['available'] ?? 'Tersedia',
-                ],
-                'siteplan' => [
-                    'image' => self::url($siteplan),
-                    'width' => $siteplan?->width ?: 1600,
-                    'height' => $siteplan?->height ?: 1000,
-                    'placeholder' => (bool) ($settings['siteplan_placeholder'] ?? false),
                 ],
             ];
         });
@@ -98,21 +90,14 @@ final class Content
     }
 
     /**
-     * Link header
+     * Link header dari CMS → Menus
      *
-     * @param  array<string, mixed>  $settings
      * @return list<array{href: string, label: string, active: bool, newTab: bool}>
      */
-    private static function nav(array $settings): array
+    private static function nav(): array
     {
-        $menu = collect(Cms::menu((string) config('site.menu')))
-            ->map(fn (array $item): array => ['href' => $item['url'], 'label' => $item['label'], 'active' => $item['active'], 'newTab' => $item['new_tab']]);
-        if ($menu->isNotEmpty()) {
-            return $menu->values()->all();
-        }
-
-        return collect($settings['nav'] ?? [])
-            ->map(fn (array $item): array => ['href' => '#'.$item['section'], 'label' => $item['label'], 'active' => false, 'newTab' => false])
+        return collect(Cms::menu((string) config('site.menu')))
+            ->map(fn (array $item): array => ['href' => $item['url'], 'label' => $item['label'], 'active' => $item['active'], 'newTab' => $item['new_tab']])
             ->values()
             ->all();
     }
@@ -139,7 +124,6 @@ final class Content
             ->values()
             ->all();
         $slides = $cmsSlides !== [] ? $cmsSlides : $hero['slides'];
-        $units = self::units();
         // URL tipe CMS
         $typeUrls = Cms::entries('types')->get()->mapWithKeys(fn (EntryTranslation $type): array => [$type->slug => $type->url()]);
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
@@ -175,7 +159,6 @@ final class Content
             'headings' => [
                 'facilities' => $heading('fasilitas', $values['headings']['fasilitas']),
                 'types' => $heading('tipe', $values['headings']['tipe']),
-                'units' => $heading('unit_update', $values['headings']['unit_update']),
             ],
             'facilities' => $values['fasilitas'],
             'types' => collect($values['tipe'])
@@ -191,10 +174,6 @@ final class Content
                     'bathrooms' => $type[7],
                     'placeholder' => true,
                 ])
-                ->all(),
-            'units' => $units->all(),
-            'counts' => collect(self::STATUSES)
-                ->mapWithKeys(fn (string $status): array => [$status => $units->where('status', $status)->count()])
                 ->all(),
         ];
     }
@@ -320,27 +299,6 @@ final class Content
                 ]])
                 ->all(),
         ];
-    }
-
-    /**
-     * Titik siteplan
-     *
-     * @return Collection<int, array{id: string, x: float, y: float, status: string}>
-     */
-    private static function units(): Collection
-    {
-        return Cms::entries('units')->where('project', null)->alphabetical()->get()
-            ->map(function (EntryTranslation $unit): array {
-                $values = $unit->values();
-
-                return [
-                    'id' => $unit->title,
-                    'x' => (float) ($values['x'] ?? 0),
-                    'y' => (float) ($values['y'] ?? 0),
-                    'status' => in_array($values['sale_status'] ?? null, self::STATUSES, true) ? $values['sale_status'] : 'available',
-                ];
-            })
-            ->values();
     }
 
     private static function url(?Media $media): ?string
