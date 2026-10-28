@@ -148,7 +148,8 @@ test('the location shows only the map, without spots or area figures', function 
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSee('class="pj-loc__map is-main"', false)
+        ->assertSee('<div class="pj-loc__map is-main">', false)
+        ->assertDontSee('aria-label="Perbesar peta"', false)
         ->assertDontSee('pj-loc__pin', false)
         ->assertDontSee('West Lakeside')
         ->assertDontSee('500K+');

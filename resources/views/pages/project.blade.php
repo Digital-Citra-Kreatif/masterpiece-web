@@ -47,7 +47,7 @@
     @endisset
 
     @isset($s['location'])
-      <x-project.location :loc="$s['location']" :id="$sectionId('location')" :gallery="$gallery" />
+      <x-project.location :loc="$s['location']" :id="$sectionId('location')" />
     @endisset
 
     @isset($s['cluster'])
