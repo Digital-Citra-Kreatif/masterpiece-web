@@ -8,6 +8,10 @@ if (root) {
   const still = root.querySelector('[data-part-still]');
   const items = [...root.querySelectorAll('[data-part]')];
   const tabs = items.map((item) => item.querySelector('[data-part-tab]'));
+  // Lembar halaman tipe
+  const name = root.querySelector('[data-part-name]');
+  const text = root.querySelector('[data-part-text]');
+  const dots = [...root.querySelectorAll('[data-part-dot]')];
   let active = 0;
   let loaded = tt?.querySelector('.tt__stage')?.dataset.config ?? null;
 
@@ -43,8 +47,14 @@ if (root) {
     showFrames(parts[i]);
     items.forEach((item, k) => {
       item.classList.toggle('is-open', k === i);
-      tabs[k].setAttribute('aria-expanded', String(k === i));
+      tabs[k].setAttribute(tabs[k].hasAttribute('aria-pressed') ? 'aria-pressed' : 'aria-expanded', String(k === i));
     });
+    dots.forEach((dot, k) => dot.classList.toggle('is-on', k === i));
+    if (name) name.textContent = parts[i].name;
+    if (text) {
+      text.textContent = parts[i].text;
+      text.hidden = !parts[i].text;
+    }
   }
 
   // Chevron gambar
@@ -55,7 +65,7 @@ if (root) {
   tabs.forEach((tab, i) => {
     tab.addEventListener('click', () => setPart(i));
     tab.addEventListener('keydown', (e) => {
-      const step = { ArrowDown: 1, ArrowUp: -1 }[e.key];
+      const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
       if (!step) return;
       e.preventDefault();
       const next = (active + step + tabs.length) % tabs.length;

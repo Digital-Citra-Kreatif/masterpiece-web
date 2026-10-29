@@ -95,20 +95,20 @@ test('each section shows its title and description from the CMS, or the defaults
         ->assertDontSee('Diabaikan tanpa judul');
 });
 
-test('a type page shows its title, specs and floor plans, without the 360° viewer', function () {
+test('a type page without a project shows its title, specs, floor plans, gallery and VR in one sheet, without the 360° viewer', function () {
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name">Tipe 6</h1>', false)
         ->assertDontSee('data-turntable', false)
-        ->assertSee('140 m²')
-        ->assertSee('240 m²')
+        ->assertDontSee('data-parts', false)
+        ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>LT</dt>', '140 m²', '<dt>LB</dt>', '240 m²'], false)
+        ->assertSee('<dl class="tps__specs" aria-label="Spesifikasi">', false)
+        ->assertSee('<ul class="tps__plans" aria-label="Denah">', false)
         ->assertSee('Denah Lantai 1')
-        ->assertSee('data-plans-swiper', false)
-        ->assertSee('<div class="tpg__run"', false)
-        ->assertSee('aria-controls="gallery-grid" data-grid-open', false)
-        ->assertSee('<dialog class="tpg__dialog" id="gallery-grid"', false)
-        ->assertSee('aria-label="Denah berikutnya"', false)
-        ->assertSee('href="'.asset('/vr/placeholder/index.html').'" target="_blank" rel="noopener"', false);
+        ->assertSee('Tipe 6: Galeri')
+        ->assertSee('>Gallery</button>', false)
+        ->assertSee('href="'.asset('/vr/placeholder/index.html').'" target="_blank" rel="noopener"', false)
+        ->assertDontSee('tpg__run', false);
 });
 
 test('an unknown address shows the site\'s not found page', function () {

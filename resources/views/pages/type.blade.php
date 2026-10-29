@@ -1,9 +1,12 @@
 {{-- Halaman tipe --}}
 @php
   $pj = $t['project'];
+  $parts = $pj['turntable']['tabs'] ?? [];
+  // Tab pertama yang berputar
+  $spin = collect($parts)->first(fn (array $part): bool => count($part['frames']) > 1);
 
-  $galleryItems = collect($t['gallery'])->map(fn ($img, $i) => ['src' => asset($img['src']), 'thumb' => asset($img['thumb']), 'alt' => "{$t['name']}, gambar ".($i + 1)]);
-  $galleryPayload = fn ($index = 0) => json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems->map(fn ($img) => Arr::only($img, ['src', 'alt'])), 'index' => $index]);
+  $galleryItems = collect($t['gallery'])->map(fn ($img, $i) => ['src' => asset($img['src']), 'alt' => "{$t['name']}, gambar ".($i + 1)]);
+  $galleryPayload = json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems, 'index' => 0]);
   $denahItems = collect($t['denah'])->map(fn ($d) => ['src' => asset($d['image']), 'caption' => $d['label'], 'alt' => "Denah {$d['label']}"]);
   $denahPayload = fn ($index) => json_encode(['title' => "{$t['name']}: Denah", 'items' => $denahItems, 'index' => $index]);
   $vrUrl = filled($t['vr']['url']) ? asset($t['vr']['url']) : null;
@@ -11,7 +14,7 @@
 
 <x-layouts.base
   :title="$t['name']"
-  :description="$t['name'].': spesifikasi, denah, galeri, dan tur VR.'"
+  :description="$t['name'].': tampilan 360°, spesifikasi, denah, galeri, dan tur VR.'"
   :favicon="$pj['style']['favicon'] ?? null"
   :body-class="$pj ? 'is-type is-project' : 'is-type'"
   entry="resources/js/type.js"
@@ -36,15 +39,84 @@
       </div>
     </section>
 
-    {{-- Spesifikasi --}}
-    <section class="tpx tpx--spec" id="spesifikasi" aria-labelledby="spec-title">
-      <div class="wrap tpx__grid">
-        <h2 class="display tpx__title" id="spec-title">Spesifikasi</h2>
-        <div class="tpx__body">
-          @if ($t['intro'])
-            <p class="tpx__intro">{{ $t['intro'] }}</p>
+    {{-- Lembar tipe --}}
+    <section
+      class="tps"
+      aria-label="Detail {{ $t['name'] }}"
+      @if ($parts !== []) data-parts="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'config', 'root']))) }}" @endif
+    >
+      <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === [] && ! $t['image']])>
+        @if ($parts !== [])
+          {{-- Viewer 360° --}}
+          @php($first = $parts[0])
+          <div class="tps__view" style="--native: {{ ($spin ?? $first)['width'] }}px">
+            <div class="tps__head">
+              <h2 class="display tps__part" aria-live="polite" data-part-name>{{ $first['name'] }}</h2>
+              @if (count($parts) > 1)
+                <span class="tps__dots" aria-hidden="true">
+                  @foreach ($parts as $part)
+                    <span @class(['is-on' => $loop->first]) data-part-dot></span>
+                  @endforeach
+                </span>
+              @endif
+            </div>
+
+            <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°">
+              @if ($spin)
+                @php($shown = count($first['frames']) > 1 ? $first : $spin)
+                <div class="tps__spin" data-part-spin @if ($shown !== $first) hidden @endif>
+                  <x-turntable
+                    :id="'tt-'.$t['slug']"
+                    :label="$t['name']"
+                    :turntable="['config' => $shown['config'], 'root' => $shown['root'], 'width' => $shown['width'], 'height' => $shown['height'], 'frame' => $shown['frame'], 'poster' => $shown['frames'][$shown['frame']]]"
+                    tone="black"
+                  />
+                </div>
+              @endif
+              <img
+                class="tps__still"
+                src="{{ $first['frames'][0] }}"
+                alt="{{ $first['name'] }}"
+                width="{{ $first['width'] }}"
+                height="{{ $first['height'] }}"
+                loading="lazy"
+                data-part-still
+                @if (count($first['frames']) > 1) hidden @endif
+              />
+            </div>
+
+            @if (collect($parts)->contains(fn (array $part): bool => filled($part['text'])))
+              <p class="tps__desc" data-part-text @if (blank($first['text'])) hidden @endif>{{ $first['text'] }}</p>
+            @endif
+          </div>
+        @elseif ($t['image'])
+          {{-- Gambar tipe --}}
+          <div class="tps__view">
+            <div class="tps__stage tps__stage--image">
+              <img src="{{ asset($t['image']) }}" alt="{{ $t['name'] }}" loading="lazy" />
+            </div>
+          </div>
+        @endif
+
+        <div class="tps__info">
+          @if ($t['label'])
+            <p class="eyebrow tps__label">{{ $t['label'] }}</p>
           @endif
-          <dl class="tpx__specs">
+
+          <dl class="tps__facts">
+            @foreach ($t['facts'] as [$k, $v])
+              <div>
+                <dt>{{ $k }}</dt>
+                <dd>{{ $v }}</dd>
+              </div>
+            @endforeach
+          </dl>
+
+          @if ($t['intro'])
+            <p class="tps__intro">{{ $t['intro'] }}</p>
+          @endif
+
+          <dl class="tps__specs" aria-label="Spesifikasi">
             @foreach ($t['info'] as [$k, $v])
               <div>
                 <dt>{{ $k }}</dt>
@@ -52,105 +124,49 @@
               </div>
             @endforeach
           </dl>
+
+          @if (count($parts) > 1)
+            {{-- Tab bagian --}}
+            <ul class="tps__tabs" aria-label="Bagian 360°">
+              @foreach ($parts as $part)
+                <li data-part>
+                  <button class="tps__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" data-part-tab>
+                    <span class="tps__no">{{ sprintf('%02d', $loop->iteration) }}</span>
+                    {{ $part['name'] }}
+                  </button>
+                </li>
+              @endforeach
+            </ul>
+          @endif
+
+          @if ($t['denah'] !== [])
+            {{-- Denah --}}
+            <ul class="tps__plans" aria-label="Denah">
+              @foreach ($t['denah'] as $d)
+                <li>
+                  <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                    <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
+                    <span>{{ $d['label'] }}</span>
+                  </button>
+                </li>
+              @endforeach
+            </ul>
+          @endif
+
+          @if ($t['gallery'] !== [] || $vrUrl)
+            {{-- Galeri dan VR --}}
+            <div class="tps__actions">
+              @if ($t['gallery'] !== [])
+                <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Gallery</button>
+              @endif
+              @if ($vrUrl)
+                <a class="btn btn--solid" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">VR</a>
+              @endif
+            </div>
+          @endif
         </div>
       </div>
     </section>
-
-    @if ($t['denah'] !== [])
-      {{-- Denah --}}
-      {{-- Slider denah --}}
-      @php($slidePlans = count($t['denah']) > 1)
-      <section class="tpx" aria-labelledby="denah-title" data-view-cursor>
-        <div class="wrap tpx__grid">
-          <div class="tpx__side">
-            <h2 class="display tpx__title" id="denah-title">Denah</h2>
-            @if ($slidePlans)
-              <div class="tpx__arrows">
-                <button class="fac__arrow" type="button" data-plans-prev aria-label="Denah sebelumnya">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
-                </button>
-                <button class="fac__arrow" type="button" data-plans-next aria-label="Denah berikutnya">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
-                </button>
-              </div>
-            @endif
-          </div>
-          <div @class(['tpx__body', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
-            <ul @class(['tpx__plans', 'swiper-wrapper' => $slidePlans])>
-              @foreach ($t['denah'] as $d)
-                <li @class(['swiper-slide' => $slidePlans])>
-                  <button class="tpx__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
-                    <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
-                  </button>
-                </li>
-              @endforeach
-            </ul>
-          </div>
-        </div>
-        <x-view-cursor />
-      </section>
-    @endif
-
-    @if ($t['gallery'] !== [] || $vrUrl)
-      {{-- Galeri dan VR --}}
-      <section class="tpx tpg" aria-labelledby="gallery-title">
-        <div class="wrap tpg__head">
-          <h2 class="display tpx__title" id="gallery-title">Galeri</h2>
-          <div class="tpg__actions">
-            @if ($t['gallery'] !== [])
-              <button class="btn" type="button" aria-haspopup="dialog" aria-controls="gallery-grid" data-grid-open>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" /></svg>
-                Lihat Galeri
-              </button>
-            @endif
-            @if ($vrUrl)
-              <a class="btn btn--solid tpx__vr" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4l-3-3-3 3H5a2 2 0 0 1-2-2Z" /><circle cx="8.5" cy="11.5" r="1.5" /><circle cx="15.5" cy="11.5" r="1.5" /></svg>
-                Tur VR 360°
-              </a>
-            @endif
-          </div>
-        </div>
-
-        @if ($t['gallery'] !== [])
-          {{-- Strip berjalan --}}
-          @php($sets = (int) ceil(6 / count($galleryItems)))
-          <div class="tpg__run" style="--n: {{ count($galleryItems) * $sets }}">
-            <ul class="tpg__track">
-              @foreach (range(1, $sets * 2) as $copy)
-                @foreach ($galleryItems as $image)
-                  <li @if ($copy > 1) aria-hidden="true" @endif>
-                    <img src="{{ $image['thumb'] }}" decoding="async" alt="{{ $copy > 1 ? '' : $image['alt'] }}" loading="lazy" />
-                  </li>
-                @endforeach
-              @endforeach
-            </ul>
-          </div>
-
-          {{-- Popup grid --}}
-          <dialog class="tpg__dialog" id="gallery-grid" aria-labelledby="gallery-grid-title" data-gallery-grid>
-            <div class="tpg__bar">
-              <div>
-                <h3 class="display tpg__dialog-title" id="gallery-grid-title">Galeri {{ $t['name'] }}</h3>
-                <p class="tpg__count">{{ count($galleryItems) }} gambar</p>
-              </div>
-              <button class="tpg__close" type="button" aria-label="Tutup galeri" data-grid-close>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" /></svg>
-              </button>
-            </div>
-            <ul class="tpg__grid">
-              @foreach ($galleryItems as $image)
-                <li>
-                  <button class="tpx__shot" type="button" data-open="gallery" data-payload="{{ $galleryPayload($loop->index) }}" aria-label="Perbesar {{ $image['alt'] }}">
-                    <img src="{{ $image['thumb'] }}" decoding="async" alt="" loading="lazy" />
-                  </button>
-                </li>
-              @endforeach
-            </ul>
-          </dialog>
-        @endif
-      </section>
-    @endif
 
     @if ($pj && $pj['types'] !== [])
       <x-home.type-grid variant="project" id="tipe-lain" :types="$pj['types']" :heading="['title' => 'Tipe lain', 'intro' => null]" />

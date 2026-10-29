@@ -374,3 +374,34 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('href="'.url('/westlake/tipe/tipe-2').'"', false)
         ->assertSee('data-wa', false);
 });
+
+test('a project\'s type page shows the project\'s 360° tabs beside the type sheet', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $frames = collect(['frame_1.jpg', 'frame_2.jpg'])->map(fn (string $name): int => projectImage($name))->all();
+    $project = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'turntable' => ['title' => 'Explore the unit', 'tabs' => [
+            ['name' => 'Fasad', 'description' => 'Tampak depan.', 'images' => $frames, 'frame' => null],
+            ['name' => 'Lantai 1', 'description' => 'Area usaha.', 'images' => [projectImage('floor.jpg')], 'frame' => null],
+        ]],
+    ]);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id]]);
+
+    $html = $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        ->assertSee('<h1 class="display tph__name" id="type-name">'.$type->title.'</h1>', false)
+        ->assertSee('<h2 class="display tps__part" aria-live="polite" data-part-name>Fasad</h2>', false)
+        ->assertSee('<p class="tps__desc" data-part-text >Tampak depan.</p>', false)
+        ->assertSeeInOrder(['data-part-tab', '01', 'Fasad', 'data-part-tab', '02', 'Lantai 1'], false)
+        ->assertSee('aria-pressed="true"', false)
+        ->getContent();
+
+    preg_match('/data-parts="([^"]+)"/', $html, $match);
+    $parts = json_decode(html_entity_decode($match[1]), true);
+
+    expect($parts)->toHaveCount(2)
+        ->and(array_column($parts, 'text'))->toBe(['Tampak depan.', 'Area usaha.'])
+        ->and($html)->toContain('data-turntable')
+        ->and($html)->toContain('data-config="'.url('/turntable/'));
+});
