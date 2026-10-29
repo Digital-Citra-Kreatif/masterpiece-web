@@ -616,6 +616,47 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   height: auto;
 }
 
+.tpd__frame.swiper {
+  margin-block: 0; /* Reset margin Swiper */
+}
+
+/* Panah di dalam gambar */
+.tpd__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  translate: 0 -50%;
+  border-color: var(--tps-edge, rgb(14 17 19 / 0.16));
+  background: #fff;
+  color: var(--ink);
+}
+
+.tpd__nav--prev {
+  left: 16px;
+}
+
+.tpd__nav--next {
+  right: 16px;
+}
+
+.tpd__nav:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.tpd__nav:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Ujung slide */
+.tpd__nav:disabled,
+.tpd__nav.swiper-button-disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 /* Spesifikasi bangunan */
 .tpb {
   --tps-edge: rgb(14 17 19 / 0.16);

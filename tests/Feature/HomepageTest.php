@@ -147,6 +147,30 @@ test('a type page without building specs has no specs section', function () {
     $this->get('/-/tipe/tipe-6')->assertOk()->assertDontSee('class="tpb"', false);
 });
 
+test('a type page slides its floor plans when it has more than one', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    expect(count($type->data['floor_plans']))->toBeGreaterThan(1);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSee('class="tpd__frame swiper"', false)
+        ->assertSee('data-plans-swiper', false)
+        ->assertSee('<li class="swiper-slide">', false)
+        ->assertSee('data-plans-prev aria-label="Denah sebelumnya"', false)
+        ->assertSee('data-plans-next aria-label="Denah berikutnya"', false);
+});
+
+test('a type page with one floor plan shows it without a slider', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'floor_plans' => array_slice($type->data['floor_plans'], 0, 1)]]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSee('class="tpd__frame"', false)
+        ->assertDontSee('data-plans-swiper', false)
+        ->assertDontSee('data-plans-prev', false);
+});
+
 test('an unknown address shows the site\'s not found page', function () {
     $this->get('/-/tipe/tidak-ada')
         ->assertNotFound()

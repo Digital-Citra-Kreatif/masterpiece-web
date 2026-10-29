@@ -161,18 +161,27 @@
     </section>
 
     @if ($t['denah'] !== [])
-      {{-- Denah --}}
+      {{-- Denah, slide bila lebih dari satu --}}
+      @php($slidePlans = count($t['denah']) > 1)
       <section class="tpd" aria-label="Denah">
-        <div class="tpd__frame">
-          <ul class="tpd__plans">
+        <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
+          <ul @class(['tpd__plans', 'swiper-wrapper' => $slidePlans])>
             @foreach ($t['denah'] as $d)
-              <li>
+              <li @class(['swiper-slide' => $slidePlans])>
                 <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
                   <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
                 </button>
               </li>
             @endforeach
           </ul>
+          @if ($slidePlans)
+            <button class="icon-btn tpd__nav tpd__nav--prev" type="button" data-plans-prev aria-label="Denah sebelumnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <button class="icon-btn tpd__nav tpd__nav--next" type="button" data-plans-next aria-label="Denah berikutnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+            </button>
+          @endif
         </div>
       </section>
     @endif
