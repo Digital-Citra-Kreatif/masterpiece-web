@@ -662,6 +662,14 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   }
 }
 
+/* Tablet */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .tps .tps__actions {
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
 /* Section denah */
 .tpd {
   border-block: 1px solid var(--sheet-line);
