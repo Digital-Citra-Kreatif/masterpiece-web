@@ -163,12 +163,12 @@
     @if ($t['denah'] !== [])
       {{-- Denah, slide bila lebih dari satu --}}
       @php($slidePlans = count($t['denah']) > 1)
-      <section class="tpd" aria-label="Denah">
+      <section class="tpd" aria-label="Denah" data-view-cursor>
         <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
           <ul @class(['tpd__plans', 'swiper-wrapper' => $slidePlans])>
             @foreach ($t['denah'] as $d)
               <li @class(['swiper-slide' => $slidePlans])>
-                <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
                   <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
                 </button>
               </li>
@@ -183,6 +183,7 @@
             </button>
           @endif
         </div>
+        <x-view-cursor />
       </section>
     @endif
 
