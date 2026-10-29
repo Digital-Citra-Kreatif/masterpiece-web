@@ -83,7 +83,7 @@ final class ProjectPage
     /**
      * Proyek halaman tipe
      *
-     * @return array{title: string, url: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, types: list<array<string, mixed>>}|null
+     * @return array{title: string, url: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, turntable: ?array<string, mixed>, types: list<array<string, mixed>>}|null
      */
     public static function forType(EntryTranslation $type, mixed $project): ?array
     {
@@ -101,6 +101,8 @@ final class ProjectPage
             'style' => self::style(self::group($values, 'global_style')),
             'nav' => self::nav($sections, $url),
             'whatsapp' => self::whatsapp(self::group($values, 'whatsapp')),
+            // Tab 360° proyek
+            'turntable' => $sections['turntable'] ?? null,
             'types' => collect($sections['types']['cards'] ?? [])
                 ->filter(fn (array $card): bool => $card['url'] !== null && $card['url'] !== $type->url())
                 ->values()
