@@ -36,11 +36,12 @@ function frameSet(base) {
           const i = order[next++];
           const img = new Image();
           img.decoding = 'async';
-          img.onload = () => {
+          // Decode di luar thread utama dulu
+          img.onload = () => img.decode().catch(() => {}).then(() => {
             set.frames[i] = img;
             listeners.forEach((fn) => fn());
             loadOne();
-          };
+          });
           img.onerror = loadOne;
           img.src = base + m.pattern.replace('{size}', size).replace('{n}', String(i).padStart(3, '0'));
         };
@@ -53,10 +54,10 @@ function frameSet(base) {
           for (const f of m.detail.frames) {
             const img = new Image();
             img.decoding = 'async';
-            img.onload = () => {
+            img.onload = () => img.decode().catch(() => {}).then(() => {
               set.detail.set(f, img);
               listeners.forEach((fn) => fn());
-            };
+            });
             img.src = base + m.detail.pattern.replace('{n}', String(f).padStart(3, '0'));
           }
         };
@@ -245,10 +246,13 @@ async function init(root) {
     const range = root.offsetHeight - stage.clientHeight - intro;
     return range > 0 ? clamp((scrolled() - intro) / range, 0, 1) : 0;
   };
-  const onScreen = () => {
-    const r = root.getBoundingClientRect();
-    return r.bottom > -50 && r.top < window.innerHeight + 50;
-  };
+  // Terlihat, tanpa ukur tiap scroll
+  let inView = false;
+  new IntersectionObserver(([entry]) => {
+    inView = entry.isIntersecting;
+    if (inView) requestTick();
+  }, { rootMargin: '50px 0px' }).observe(root);
+  const onScreen = () => inView;
 
   // Tampilkan posisi frame
   function showFrame(f) {
@@ -518,6 +522,7 @@ async function init(root) {
     if (e.key === 'Escape' && placeKey && !document.querySelector('dialog[open]')) closePlace();
   });
 
+  let lastArea = '';
   function tick() {
     ticking = false;
     if (placeKey && Math.abs(window.scrollY - placeY) > 120) closePlace(); // Scroll menutup hotspot
@@ -528,9 +533,13 @@ async function init(root) {
     const intro = introLength();
     const from = panelFrom();
     const areaIn = hasIntro ? smooth(scrolled(), from, from + H * 0.3) : 1;
-    root.style.setProperty('--p-area', areaIn.toFixed(3));
-    root.style.setProperty('--v-area', areaIn > 0 ? 'visible' : 'hidden');
-    root.style.setProperty('--progress', p.toFixed(4));
+    // Tulis hanya bila berubah
+    const area = areaIn.toFixed(3);
+    if (area !== lastArea) {
+      lastArea = area;
+      root.style.setProperty('--p-area', area);
+      root.style.setProperty('--v-area', areaIn > 0 ? 'visible' : 'hidden');
+    }
     if (hasIntro && !hasVideo) root.classList.toggle('is-scrub', p > 0);
 
     if (hasVideo && p <= 0 && mode === 'scrub' && !placeKey && override === null && Math.abs(current - offset) < 0.05) {
