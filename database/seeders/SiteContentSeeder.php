@@ -101,7 +101,7 @@ class SiteContentSeeder extends Seeder
                     $this->field('bathrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('floors', 'number', ['min' => 1, 'step' => 1], ['required' => true]),
                     $textarea('intro'),
-                    $text('suitable_title', ['label' => 'Judul rekomendasi usaha', 'instructions' => 'Misalnya "Cocok untuk usaha yang butuh eksposur maksimal".']),
+                    $text('suitable_title', ['label' => 'Judul rekomendasi usaha', 'instructions' => 'Contoh: "Cocok untuk usaha yang butuh eksposur maksimal".']),
                     $this->field('suitable_for', 'repeater', [], [
                         'label' => 'Cocok untuk usaha',
                         'instructions' => 'Satu baris satu jenis usaha, misalnya "Klinik".',
