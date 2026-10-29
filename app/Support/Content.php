@@ -272,7 +272,6 @@ final class Content
     private static function projectCard(EntryTranslation $project): array
     {
         $values = $project->values();
-        $hero = $values['hero'] ?? [];
         $image = $values['card_image'] ?? null;
         $logo = $values['global_style']['logo'] ?? null;
 
@@ -281,7 +280,7 @@ final class Content
             'url' => (string) $project->url(),
             'image' => $image instanceof Media ? $image->url('large') : null,
             'logo' => $logo instanceof Media && $logo->isImage() ? $logo->url('medium') : null,
-            'description' => filled($hero['description'] ?? null) ? (string) $hero['description'] : null,
+            'description' => filled($values['card_description'] ?? null) ? (string) $values['card_description'] : null,
         ];
     }
 

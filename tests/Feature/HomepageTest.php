@@ -99,7 +99,8 @@ test('the homepage lists every published project with its card image and hero de
     $project = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
         'card_image' => $card->id,
         'global_style' => ['active' => false, 'logo' => $logo->id, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
-        'hero' => ['heading' => "A New Landmark\nby the Lake", 'description' => 'Ruko di tepi danau.'],
+        'card_description' => 'Ruko di tepi danau.',
+        'hero' => ['heading' => "A New Landmark\nby the Lake"],
     ]]);
     app(PublishEntry::class)->handle($project->fresh());
 

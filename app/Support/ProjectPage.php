@@ -56,7 +56,7 @@ final class ProjectPage
 
     /**
      * @param  array<string, mixed>  $values
-     * @return array{title: string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>}
+     * @return array{title: string, description: ?string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>}
      */
     public static function page(EntryTranslation $entry, array $values): array
     {
@@ -72,6 +72,8 @@ final class ProjectPage
 
         return [
             'title' => (string) $entry->title,
+            // Meta dari deskripsi kartu
+            'description' => filled($values['card_description'] ?? null) ? (string) $values['card_description'] : null,
             'style' => self::style(self::group($values, 'global_style')),
             'hero' => self::hero(self::group($values, 'hero'), (string) $entry->title),
             'sections' => $sections,
@@ -231,7 +233,7 @@ final class ProjectPage
      * Hero proyek
      *
      * @param  array<string, mixed>  $hero
-     * @return array{title: string, subtitle: string, background: string, slides: list<array{type: string, src: string, alt: string}>}
+     * @return array{title: string, background: string, slides: list<array{type: string, src: string, alt: string}>}
      */
     private static function hero(array $hero, string $fallbackTitle): array
     {
@@ -247,7 +249,6 @@ final class ProjectPage
 
         return [
             'title' => filled($hero['heading'] ?? null) ? (string) $hero['heading'] : $fallbackTitle,
-            'subtitle' => (string) ($hero['description'] ?? ''),
             'background' => $slides === [] ? 'none' : 'slider',
             'slides' => $slides,
         ];

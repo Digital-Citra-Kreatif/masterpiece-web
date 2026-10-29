@@ -432,3 +432,11 @@ test('the project header menu uses each section title from the CMS, or the defau
         ->assertSeeInOrder(['class="hd__nav"', 'href="#masterplan"', 'Rencana Induk', 'href="#view-360"', '360°'], false)
         ->assertDontSee('>Masterplan</a>', false);
 });
+
+test('a project page takes its meta description from the home card description', function () {
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake'], 'card_description' => 'Ruko tepi danau di BSD City.']);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('<meta name="description" content="Ruko tepi danau di BSD City." />', false);
+});

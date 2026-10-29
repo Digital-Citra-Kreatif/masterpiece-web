@@ -47,7 +47,10 @@ class WestlakeProjectSeeder extends Seeder
             ARRAY_FILTER_USE_BOTH,
         );
         // Gambar kartu Beranda
-        $card = blank($stored['card_image'] ?? null) ? ['card_image' => $this->image('Image Westlake/Ruko Hadap Danau.jpg')] : [];
+        $card = [
+            ...blank($stored['card_image'] ?? null) ? ['card_image' => $this->image('Image Westlake/Ruko Hadap Danau.jpg')] : [],
+            ...blank($stored['card_description'] ?? null) ? ['card_description' => 'Taman komunitas tepi danau terbaru di jantung West Village Business District, BSD City.'] : [],
+        ];
         if ($missing === [] && $card === []) {
             return;
         }
@@ -66,7 +69,6 @@ class WestlakeProjectSeeder extends Seeder
         return [
             'hero' => fn (): array => [
                 'heading' => 'A New Landmark by the Lake',
-                'description' => 'Taman komunitas tepi danau terbaru di jantung West Village Business District, BSD City.',
                 'media' => [$this->image('Image Westlake/Rk West LS BEV 1.jpg'), $this->image('Image Westlake/Rk West LS Danau Far.jpg')],
             ],
             'masterplan' => fn (): array => [

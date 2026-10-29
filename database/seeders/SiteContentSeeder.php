@@ -246,6 +246,7 @@ class SiteContentSeeder extends Seeder
 
         return ['handle' => 'project', 'title' => 'Project', 'fields' => [
             $image('card_image', 'Gambar kartu Beranda'),
+            $this->field('card_description', 'textarea', [], ['label' => 'Deskripsi kartu Beranda']),
             ...$this->projectSections(),
             $this->field('whatsapp', 'group', [], ['label' => 'WhatsApp Floating', 'fields' => [
                 $text('label', 'Label', ['width' => 50]),
@@ -300,7 +301,6 @@ class SiteContentSeeder extends Seeder
         return [
             $this->field('hero', 'group', [], ['label' => 'Hero', 'fields' => [
                 $text('heading', 'Heading'),
-                $textarea('description', 'Deskripsi'),
                 $this->field('media', 'media', ['types' => ['image', 'video'], 'multiple' => true, 'max' => 6], [
                     'label' => 'Media',
                     'translatable' => false,

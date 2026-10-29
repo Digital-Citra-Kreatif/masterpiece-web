@@ -10,7 +10,7 @@
   $sectionId = fn (string $handle): string => \App\Support\ProjectPage::SECTIONS[$handle]['id'];
 @endphp
 
-<x-layouts.base :favicon="$p['style']['favicon']" :title="$p['title']" :description="$p['hero']['subtitle'] ?: null" body-class="is-project" entry="resources/js/project.js">
+<x-layouts.base :favicon="$p['style']['favicon']" :title="$p['title']" :description="$p['description']" body-class="is-project" entry="resources/js/project.js">
   @if ($p['style']['css'] !== '')
     <x-slot:head>
       <style>{!! $p['style']['css'] !!}</style>
