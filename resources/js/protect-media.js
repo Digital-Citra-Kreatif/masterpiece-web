@@ -1,5 +1,5 @@
 // Proteksi media
-const MEDIA = 'img, video, canvas, picture, .hero, .scene__stage, .tt__stage, .ov__body';
+const MEDIA = 'img, video, canvas, picture, .hero, .scene__stage, .tps__stage, .ov__body';
 const all = document.body.hasAttribute('data-protect-media');
 
 if (all || document.querySelector('[data-protect]')) {

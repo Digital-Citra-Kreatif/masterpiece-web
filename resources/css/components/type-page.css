@@ -12,13 +12,7 @@
   --inset: calc(var(--gutter) - max(8px, var(--gutter) - 40px) - 1px);
 }
 
-/* Grid sampai garis */
-.tph__grid {
-  display: grid;
-  padding-right: calc(max(8px, var(--gutter) - 40px) + 1px);
-}
-
-:is(.tph__tab, .tps__tab, .tpd__plan):focus-visible {
+:is(.tps__tab, .tpd__plan):focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
@@ -58,18 +52,6 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   border-bottom: 1px solid var(--sheet-line);
 }
 
-.tph__grid {
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-}
-
-.tph__copy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
-  padding: clamp(32px, 4vw, 56px) clamp(24px, 4vw, 56px) clamp(32px, 4vw, 56px) 0;
-}
-
 .tph__name {
   margin: 0;
   color: var(--room);
@@ -77,171 +59,6 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   font-weight: 400;
   line-height: 1.05;
   overflow-wrap: anywhere;
-}
-
-/* Tab pill */
-.tph__tabs {
-  list-style: none;
-  display: grid;
-  justify-items: start;
-  gap: 10px;
-  width: 100%;
-  max-width: 400px;
-  margin: auto 0 0;
-  padding: 48px 0 0;
-}
-
-.tph__part {
-  position: relative;
-  width: 100%;
-}
-
-.tph__tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 8px 20px 8px 12px;
-  border: 0;
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--ink);
-  font: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.2s var(--ease);
-}
-
-.tph__tab svg {
-  flex: none;
-  width: 22px;
-  height: 22px;
-}
-
-.tph__tab:hover {
-  background: var(--paper-2);
-}
-
-.tph__desc {
-  display: none;
-  margin: 0;
-  padding: 20px 24px;
-  border-radius: 20px;
-  background: var(--paper);
-  color: var(--ink-2);
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.tph__desc strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-/* Kartu terbuka */
-.tph__part.is-open .tph__tab {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  min-height: 0;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-}
-
-.tph__part.is-open .tph__desc {
-  display: block;
-  animation: part-open 0.3s var(--ease);
-}
-
-.tph__part.is-open:has(.tph__tab:focus-visible) .tph__desc {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-
-@keyframes part-open {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-}
-
-/* Viewer 360° */
-/* Batas lebar WebRotate */
-.tph__stage {
-  display: grid;
-  place-items: center;
-  min-width: 0;
-  overflow: hidden;
-  min-height: clamp(480px, 43vw, 620px);
-  margin: 0 clamp(24px, 3vw, 48px) clamp(24px, 3vw, 48px) 0; /* Jarak dari garis */
-  background: #000; /* Hitam viewer */
-}
-
-.tph__stage .tt {
-  width: 100%;
-  min-width: 0;
-  margin-inline: 0;
-  color: var(--paper);
-}
-
-/* Tanpa kontrol */
-.tph__stage .tt__hud {
-  display: none;
-}
-
-/* Chevron bagian */
-.tph__stage {
-  position: relative;
-}
-
-.tph__nav {
-  position: absolute;
-  top: 50%;
-  z-index: 2;
-  translate: 0 -50%;
-  border-color: rgb(255 255 255 / 0.4);
-  color: var(--room-ink);
-}
-
-.tph__nav--prev {
-  left: 16px;
-}
-
-.tph__nav--next {
-  right: 16px;
-}
-
-.tph__nav:hover {
-  background: var(--room-ink);
-  color: var(--room);
-}
-
-.tph__nav:focus-visible {
-  outline: 2px solid var(--room-ink);
-  outline-offset: 2px;
-}
-
-/* Wadah viewer */
-.tph__spin {
-  width: 100%;
-  min-width: 0;
-}
-
-.tph__spin[hidden],
-.tph__still[hidden] {
-  display: none;
-}
-
-/* Tab gambar diam */
-.tph__still {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-height: clamp(480px, 43vw, 620px);
-  object-fit: contain;
 }
 
 /* Judul halaman tipe */
@@ -252,47 +69,6 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 @media (max-width: 760px) {
   .tph--title .wrap {
     padding-block: 24px;
-  }
-}
-
-/* Section di proyek */
-.tph.tph--section {
-  padding-block: 160px;
-  border: 0;
-  border-top: 1px solid var(--sheet-line);
-  background-color: var(--paper);
-}
-
-/* Tab sejajar tengah gambar */
-.tph--section .tph__copy {
-  justify-content: center;
-  gap: 32px;
-  padding-block: 0;
-}
-
-.tph--section .tph__tabs {
-  margin-top: 0;
-  padding-top: 0;
-}
-
-.tph--section .tph__stage {
-  margin-block: 0;
-}
-
-/* Pill di latar abu */
-.tph--section :is(.tph__tab, .tph__desc) {
-  background: #fff;
-}
-
-@media (max-width: 1024px) {
-  .tph.tph--section {
-    padding-block: 72px;
-  }
-}
-
-@media (max-width: 760px) {
-  .tph--section .tph__copy {
-    padding-block: 24px 0;
   }
 }
 
@@ -889,51 +665,14 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   }
 }
 
-@media (min-width: 761px) and (max-width: 1024px) {
-  .tph__copy {
-    padding-right: 24px;
-  }
-
-  /* Viewer lebih pendek */
-  .tph__stage {
-    min-height: clamp(320px, 42vw, 430px);
-  }
-}
-
 /* Mobile */
 @media (max-width: 760px) {
   .tph {
     padding-top: calc(var(--header-h) + 32px);
   }
 
-  /* Kolom tidak melebar */
-  .tph__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .tph__copy {
-    padding: 24px var(--inset) 72px 0; /* Jarak section berikutnya */
-  }
-
   .tph__name {
     font-size: clamp(36px, 7vw, 48px);
-  }
-
-  .tph__tabs {
-    max-width: none;
-    padding-top: 24px;
-    margin-top: 0;
-  }
-
-  .tph__desc {
-    font-size: 15px;
-  }
-
-  /* Viewer di atas */
-  .tph__stage {
-    order: -1;
-    min-height: 0;
-    margin: 0 var(--inset) 0 0;
   }
 }
 
@@ -960,12 +699,7 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tph__tab,
   .tps__tab {
     transition: none;
-  }
-
-  .tph__part.is-open .tph__desc {
-    animation: none;
   }
 }

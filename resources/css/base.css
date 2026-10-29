@@ -163,7 +163,7 @@ button {
 .scene,
 .room,
 .ov,
-.tt__stage {
+.tps__stage {
   --focus: var(--accent-light);
 }
 

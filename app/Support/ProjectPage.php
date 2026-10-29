@@ -362,12 +362,7 @@ final class ProjectPage
     private static function turntable(array $section, int $project): ?array
     {
         $tabs = collect(self::turntableTabs($section))
-            ->map(fn (array $tab): array => [
-                ...Arr::except($tab, 'source'),
-                // Tab bergambar sama, config sama
-                'config' => route('turntable.config', ['project' => $project, 'tab' => $tab['source']]),
-                'root' => Turntable::root($project),
-            ])
+            ->map(fn (array $tab): array => Arr::except($tab, 'source'))
             ->all();
 
         // Tanpa tab tidak tampil
