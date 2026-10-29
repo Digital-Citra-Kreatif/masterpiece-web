@@ -78,24 +78,27 @@ test('a hero banner without video or image keeps the hardcoded slides', function
 test('the homepage lists every published project with its card image and hero description', function () {
     $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
     $card = app(UploadMedia::class)->handle(UploadedFile::fake()->image('kartu.jpg', 40, 30), []);
+    $logo = app(UploadMedia::class)->handle(UploadedFile::fake()->image('logo.png', 40, 40), []);
     $project = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
         'card_image' => $card->id,
-        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
-        'hero' => ['heading' => 'Westlake', 'description' => 'Ruko di tepi danau.'],
+        'global_style' => ['active' => false, 'logo' => $logo->id, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'hero' => ['heading' => "A New Landmark\nby the Lake", 'description' => 'Ruko di tepi danau.'],
     ]]);
     app(PublishEntry::class)->handle($project->fresh());
 
     $this->get('/')
         ->assertOk()
-        ->assertSeeInOrder(['<section class="hero"', '<section id="proyek" class="types projects"', '>Proyek</h2>'], false)
-        ->assertSee('<a class="card card--project" href="'.url('/projects/westlake').'">', false)
-        ->assertSee('<h3 class="card__name display">Westlake</h3>', false)
-        ->assertSee('<p class="card__desc">Ruko di tepi danau.</p>', false)
-        ->assertSee($card->url('large'), false);
+        ->assertSee('<body class="is-home"', false)
+        ->assertSeeInOrder(['<section class="hero"', '<section id="projects" class="prj"', '>Proyek</h2>'], false)
+        ->assertSee('<a class="prj__card" href="'.url('/projects/westlake').'">', false)
+        ->assertSee($card->url('large'), false)
+        ->assertSee('<span class="prj__logo"><img src="'.$logo->url('medium').'" alt="Westlake"', false)
+        ->assertSee('<h3 class="prj__title">A New Landmark by the Lake</h3>', false)
+        ->assertSee('<p class="prj__desc">Ruko di tepi danau.</p>', false);
 });
 
 test('the homepage has no projects grid before a project is published', function () {
-    $this->get('/')->assertOk()->assertDontSee('id="proyek"', false);
+    $this->get('/')->assertOk()->assertDontSee('id="projects"', false);
 });
 
 test('the projects grid takes its title and description from the CMS', function () {
@@ -110,9 +113,11 @@ test('the projects grid takes its title and description from the CMS', function 
 
     $this->get('/')
         ->assertOk()
-        ->assertSeeInOrder(['id="proyek-title"', '>Proyek kami</h2>'], false)
+        ->assertSeeInOrder(['id="projects-title"', '>Proyek kami</h2>'], false)
         ->assertSee('<p class="sheet__intro">Intro proyek dari CMS</p>', false)
-        ->assertDontSee('card__desc', false);
+        ->assertSee('<h3 class="prj__title">Westlake</h3>', false)
+        ->assertDontSee('prj__desc', false)
+        ->assertDontSee('prj__logo', false);
 });
 
 test('a type page without a project shows its title, specs, floor plans, gallery and VR in one sheet, without the 360° viewer', function () {

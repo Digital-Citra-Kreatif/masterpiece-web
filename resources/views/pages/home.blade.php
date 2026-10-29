@@ -1,4 +1,4 @@
-<x-layouts.base entry="resources/js/home.js">
+<x-layouts.base entry="resources/js/home.js" body-class="is-home">
   <x-header variant="home" />
 
   <main>

@@ -1,0 +1,146 @@
+/* Grid proyek beranda */
+
+/* Garis samping beranda */
+.is-home {
+  --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
+}
+
+.is-home :is(.prj, .ft) {
+  --line: rgb(14 17 19 / 0.12);
+  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
+  background-size: 1px 100%;
+  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
+  background-repeat: no-repeat;
+}
+
+/* Garis di atas hero */
+.is-home .hero::before,
+.is-home .hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 1px;
+  background: rgb(255 255 255 / 0.35);
+  pointer-events: none;
+}
+
+.is-home .hero::before {
+  left: var(--line-x);
+}
+
+.is-home .hero::after {
+  right: var(--line-x);
+}
+
+.prj {
+  padding-bottom: var(--section, clamp(64px, 9vw, 120px));
+}
+
+/* Garis bawah judul */
+.prj__head {
+  border-bottom: 1px solid var(--line);
+}
+
+.prj__grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(48px, 5vw, 72px) clamp(16px, 2.4vw, 32px);
+  margin: 0;
+  padding: clamp(32px, 4vw, 48px) 0 0;
+}
+
+.prj__card {
+  display: block;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.prj__card:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.prj__media {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+/* Ruang logo menjorok */
+.prj__media:has(.prj__logo) {
+  margin-bottom: 44px;
+}
+
+.prj__frame {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--room);
+}
+
+.prj__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s var(--ease);
+}
+
+.prj__card:hover .prj__frame img {
+  transform: scale(1.04);
+}
+
+/* Logo proyek */
+.prj__logo {
+  position: absolute;
+  right: 16px;
+  bottom: -28px;
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  padding: 10px;
+  background: #fff;
+}
+
+.prj__logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.prj__title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 400;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.prj__desc {
+  max-width: 56ch;
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .prj__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prj__logo {
+    width: 72px;
+    height: 72px;
+    padding: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prj__frame img {
+    transition: none;
+  }
+}

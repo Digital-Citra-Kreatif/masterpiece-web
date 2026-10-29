@@ -123,22 +123,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Kartu proyek */
-.card--project .card__img {
-  aspect-ratio: 4 / 3;
-}
-
-.card--project .card__img img {
-  object-fit: cover; /* Foto memenuhi kartu */
-}
-
-.card__desc {
-  margin: 12px 0 0;
-  color: var(--ink-2);
-  font-size: 15px;
-  line-height: 1.6;
-}
-
 /* Kartu buka sheet */
 article.card {
   position: relative;
