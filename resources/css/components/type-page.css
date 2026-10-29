@@ -595,7 +595,8 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
 }
 
 .tps__tab:hover {
-  border-color: var(--ink);
+  background: #000;
+  color: #fff;
 }
 
 .tps__tab[aria-pressed='true'] {
