@@ -769,6 +769,21 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
 }
 
 @media (max-width: 480px) {
+  /* Lebih dari 4: turun baris */
+  .tps__facts:has(> :nth-child(5)) {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tps__facts:has(> :nth-child(5)) div:nth-child(4n + 1) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .tps__facts:has(> :nth-child(5)) div:nth-child(n + 5) {
+    border-top: 1px solid var(--tps-edge);
+  }
+
   .tpb__list {
     grid-template-columns: minmax(0, 1fr);
   }

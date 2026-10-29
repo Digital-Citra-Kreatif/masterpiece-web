@@ -192,6 +192,15 @@ test('a type page shows an old plain text intro as a paragraph', function () {
         ->assertSee('Baris dua &amp; tiga</p></div>', false);
 });
 
+test('a type page adds the extra summary data after the rooms', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'summary_extra' => [['label' => 'Carport', 'value' => '1']]]]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>KM</dt>', '<dt>Carport</dt>', '<dd>1</dd>', '</dl>'], false);
+});
+
 test('an unknown address shows the site\'s not found page', function () {
     $this->get('/-/tipe/tidak-ada')
         ->assertNotFound()

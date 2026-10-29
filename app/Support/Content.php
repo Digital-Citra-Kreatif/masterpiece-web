@@ -269,6 +269,7 @@ final class Content
                 ['Lantai', (string) $floors],
                 ...filled($values['bedrooms'] ?? null) ? [['KT', (string) $card['bedrooms']]] : [],
                 ...filled($values['bathrooms'] ?? null) ? [['KM', (string) $card['bathrooms']]] : [],
+                ...collect($values['summary_extra'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
             ],
             'info' => [
                 ['Luas tanah', "{$card['lt']} m²"],
