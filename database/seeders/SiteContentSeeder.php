@@ -87,7 +87,6 @@ class SiteContentSeeder extends Seeder
                     $this->field('project', 'entries', ['collections' => ['projects'], 'multiple' => false], [
                         'label' => 'Proyek',
                         'translatable' => false,
-                        'instructions' => 'Proyek tipe ini; slug-nya masuk ke URL tipe (/proyek/tipe/slug).',
                     ]),
                     $text('label', ['instructions' => 'Baris kecil di bawah nama, misalnya "Ruko Hook".']),
                     $this->field('view', 'select', ['options' => [
