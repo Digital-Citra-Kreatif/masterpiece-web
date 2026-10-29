@@ -137,16 +137,8 @@ final class Content
         $scenes = json_decode((string) file_get_contents(resource_path('data/area.json')), true);
         $hero = $values['hero'];
         $cmsHero = $entryValues['hero'] ?? [];
-        $cmsSlides = collect($cmsHero['media'] ?? [])
-            ->filter(fn (mixed $media): bool => $media instanceof Media)
-            ->map(fn (Media $media): array => [
-                'type' => $media->isImage() ? 'image' : 'video',
-                'src' => $media->url(),
-                'alt' => $media->altIn() ?? '',
-            ])
-            ->values()
-            ->all();
-        $slides = $cmsSlides !== [] ? $cmsSlides : $hero['slides'];
+        $video = ($cmsHero['video'] ?? null) instanceof Media ? $cmsHero['video'] : null;
+        $image = ($cmsHero['image'] ?? null) instanceof Media ? $cmsHero['image'] : null;
         // URL tipe CMS
         $typeUrls = Cms::entries('types')->get()->mapWithKeys(fn (EntryTranslation $type): array => [$type->slug => $type->url()]);
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
@@ -158,9 +150,12 @@ final class Content
                 ...$hero,
                 'title' => filled($cmsHero['heading'] ?? null) ? $cmsHero['heading'] : $hero['title'],
                 'subtitle' => $cmsHero === [] ? $hero['subtitle'] : ($cmsHero['description'] ?? ''),
-                // Cadangan video teaser
-                'background' => $cmsSlides !== [] || ($hero['background'] === 'slider' && $slides !== []) ? 'slider' : 'video',
-                'slides' => $slides,
+                // Video di atas gambar
+                ...match (true) {
+                    $video !== null => ['background' => 'video', 'teaser' => $video->url(), 'cover' => $image?->url()],
+                    $image !== null => ['background' => 'slider', 'slides' => [['type' => 'image', 'src' => $image->url(), 'alt' => $image->altIn() ?? '']]],
+                    default => [],
+                },
             ],
             'masterplan' => [
                 'title' => $masterplan['title'],

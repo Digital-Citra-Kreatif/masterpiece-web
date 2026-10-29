@@ -69,11 +69,8 @@ class SiteContentSeeder extends Seeder
                     $this->field('hero', 'group', [], ['label' => 'Hero banner', 'fields' => [
                         $textarea('heading', ['label' => 'Heading', 'required' => true, 'instructions' => 'Baris baru tetap jadi baris baru.']),
                         $textarea('description', ['label' => 'Deskripsi']),
-                        $this->field('media', 'media', ['types' => ['image', 'video'], 'multiple' => true, 'max' => 6], [
-                            'label' => 'Media',
-                            'translatable' => false,
-                            'instructions' => 'Gambar/video 1920×1080. Lebih dari 1 file = slider.',
-                        ]),
+                        $this->field('video', 'media', ['types' => ['video']], ['label' => 'Video background', 'translatable' => false, 'width' => 50]),
+                        $this->field('image', 'media', ['types' => ['image']], ['label' => 'Gambar background', 'translatable' => false, 'width' => 50]),
                     ]]),
                     ...collect(['masterplan' => 'Masterplan', 'lokasi' => 'Lokasi', 'cluster' => 'Cluster', 'fasilitas' => 'Fasilitas', 'tipe' => 'Tipe unit', 'unit_update' => 'Status siteplan'])
                         ->map(fn (string $label, string $handle): array => $this->field($handle, 'group', [], ['label' => $label, 'fields' => [
@@ -438,9 +435,7 @@ class SiteContentSeeder extends Seeder
             'hero' => [
                 'heading' => "Quiet Living,\nClose to Everything.",
                 'description' => "A residential cluster in Jakarta,\ndesigned for growing families.",
-                'media' => collect(['ruko-front-34.jpg', 'fac-lake.jpg', 'fac-boulevard.jpg'])
-                    ->map(fn (string $file): int => $this->media("media/stills/{$file}", ''))
-                    ->all(),
+                'image' => $this->media('media/stills/ruko-front-34.jpg', ''),
             ],
             'masterplan' => ['title' => 'Masterplan', 'description' => "A residential cluster in Jakarta,\ndesigned for growing families."],
             'lokasi' => ['title' => 'Lokasi', 'description' => 'Posisi proyek di dalam kawasan yang lebih besar.'],

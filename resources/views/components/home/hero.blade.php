@@ -27,7 +27,7 @@
       loop
       playsinline
       preload="auto"
-      poster="{{ asset($hero['cover']) }}"
+      @if (filled($hero['cover'])) poster="{{ asset($hero['cover']) }}" @endif
       data-src="{{ asset($hero['teaser']) }}"
       aria-hidden="true"
     ></video>

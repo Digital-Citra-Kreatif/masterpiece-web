@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Sunrice\Admin\Actions\Media\UploadMedia;
+use Sunrice\Admin\Media\Media;
 use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Actions\Globals\SaveGlobals;
 use Sunrice\Cms\Actions\Menus\SaveMenu;
@@ -46,7 +47,7 @@ test('the homepage shows every section from the CMS', function () {
         ->and(substr_count($response->getContent(), 'style="left: '))->toBe(0);
 });
 
-test('the hero banner shows the heading, description and media from the CMS', function () {
+test('the hero banner shows the heading, description and background image from the CMS', function () {
     $home = EntryTranslation::query()->where('slug', 'home')->firstOrFail();
     $home->update(['data' => array_replace_recursive($home->data, ['hero' => ['heading' => 'Judul dari CMS', 'description' => 'Deskripsi dari CMS']])]);
 
@@ -57,12 +58,25 @@ test('the hero banner shows the heading, description and media from the CMS', fu
         ->assertDontSee('class="hero__video"', false);
 
     expect($home->entry->blueprintHandle())->toBe('homepage')
-        ->and(substr_count($response->getContent(), 'class="hero__media"'))->toBe(3);
+        ->and(substr_count($response->getContent(), 'class="hero__media"'))->toBe(1);
 });
 
-test('a hero banner without media keeps the hardcoded slides', function () {
+test('a hero video plays over the background image, which becomes its poster', function () {
     $home = EntryTranslation::query()->where('slug', 'home')->firstOrFail();
-    $home->update(['data' => array_replace($home->data, ['hero' => [...$home->data['hero'], 'media' => []]])]);
+    $video = app(UploadMedia::class)->handle(UploadedFile::fake()->createWithContent('hero.mp4', "\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom"), []);
+    $image = Media::query()->findOrFail($home->data['hero']['image']);
+    $home->update(['data' => array_replace_recursive($home->data, ['hero' => ['video' => $video->id]])]);
+
+    $this->get('/')
+        ->assertSee('class="hero__video"', false)
+        ->assertSee('poster="'.asset($image->url()).'"', false)
+        ->assertSee('data-src="'.asset($video->url()).'"', false)
+        ->assertDontSee('data-hero-slides', false);
+});
+
+test('a hero banner without video or image keeps the hardcoded slides', function () {
+    $home = EntryTranslation::query()->where('slug', 'home')->firstOrFail();
+    $home->update(['data' => array_replace($home->data, ['hero' => [...$home->data['hero'], 'video' => null, 'image' => null]])]);
 
     $response = $this->get('/')
         ->assertSee('preload="none" data-src="'.asset('media/hero/teaser.mp4').'"', false);
