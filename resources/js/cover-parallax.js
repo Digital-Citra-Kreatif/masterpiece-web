@@ -4,13 +4,31 @@ export function coverParallax(box, target) {
   veil.className = 'cover-veil';
   veil.setAttribute('aria-hidden', 'true');
   target.append(veil);
+  let bottom = 0; // Bawah box di dokumen
+  let height = 0;
+  let shift = 0;
+  let last = NaN;
   let queued = false;
+  // Ukur sekali, bukan tiap frame
+  const measure = () => {
+    bottom = box.getBoundingClientRect().bottom + window.scrollY - (box === target ? shift : 0);
+    height = target.offsetHeight;
+    last = NaN;
+  };
   const draw = () => {
     queued = false;
-    const h = Math.min(target.offsetHeight, window.innerHeight);
-    const d = Math.min(Math.max(window.innerHeight - box.getBoundingClientRect().bottom, 0), h);
-    target.style.transform = d > 0 ? `translate3d(0, ${(d * 0.5).toFixed(1)}px, 0)` : '';
-    veil.style.opacity = ((d / h) * 0.6).toFixed(3);
+    const vh = window.innerHeight;
+    const h = Math.min(height, vh);
+    const d = Math.min(Math.max(vh - (bottom - window.scrollY), 0), h);
+    if (d === last) return;
+    last = d;
+    shift = d * 0.5;
+    target.style.transform = d > 0 ? `translate3d(0, ${shift.toFixed(1)}px, 0)` : '';
+    veil.style.opacity = h > 0 ? ((d / h) * 0.6).toFixed(3) : '0';
+  };
+  const refresh = () => {
+    measure();
+    draw();
   };
   window.addEventListener('scroll', () => {
     if (!queued) {
@@ -18,6 +36,10 @@ export function coverParallax(box, target) {
       requestAnimationFrame(draw);
     }
   }, { passive: true });
-  window.addEventListener('resize', draw);
-  draw();
+  // Posisi berubah bila konten di atasnya berubah
+  const observer = new ResizeObserver(refresh);
+  observer.observe(box);
+  observer.observe(document.body);
+  window.addEventListener('resize', refresh);
+  refresh();
 }
