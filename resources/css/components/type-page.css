@@ -345,6 +345,11 @@ body.is-type :is(.tph, .tpx, .tps, .tpd, .types, .ft) {
   color: var(--paper);
 }
 
+/* Tanpa dial derajat */
+.tps .tt__dial {
+  display: none;
+}
+
 .tps__spin[hidden],
 .tps__still[hidden] {
   display: none;
