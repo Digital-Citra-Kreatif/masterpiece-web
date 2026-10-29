@@ -140,9 +140,13 @@ final class Content
         $image = ($cmsHero['image'] ?? null) instanceof Media ? $cmsHero['image'] : null;
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
 
+        $cards = Cms::entries('projects')->ordered()->get()->map(self::projectCard(...))->values()->all();
+
         return [
             'hero' => [
                 ...$hero,
+                // Panah ke grid proyek
+                'scrollTo' => $cards !== [] ? '#projects' : null,
                 'title' => filled($cmsHero['heading'] ?? null) ? $cmsHero['heading'] : $hero['title'],
                 'subtitle' => $cmsHero === [] ? $hero['subtitle'] : ($cmsHero['description'] ?? ''),
                 // Video di atas gambar
@@ -155,7 +159,7 @@ final class Content
             // Semua proyek terbit
             'projects' => [
                 'heading' => $heading('projects', ['title' => 'Proyek', 'intro' => null]),
-                'cards' => Cms::entries('projects')->ordered()->get()->map(self::projectCard(...))->values()->all(),
+                'cards' => $cards,
             ],
         ];
     }

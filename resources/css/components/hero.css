@@ -111,9 +111,29 @@ img.hero__media {
 .hero__foot {
   position: relative;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-end; /* Deskripsi di kanan */
+  align-items: flex-end;
+  justify-content: space-between; /* Panah kiri, deskripsi kanan */
   gap: 24px;
+}
+
+/* Panah gulir */
+.hero__scroll {
+  flex: none;
+  border-color: rgb(255 255 255 / 0.5);
+  color: #fff;
+  pointer-events: auto;
+  animation: rise 1s 0.45s var(--ease) both;
+}
+
+.hero__scroll:hover {
+  border-color: #fff;
+  background: #fff;
+  color: var(--ink);
+}
+
+.hero__scroll:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 
 /* Animasi bertahap */
@@ -123,7 +143,7 @@ img.hero__media {
 
 .hero__lead {
   max-width: 420px;
-  margin: 0;
+  margin: 0 0 0 auto; /* Tetap kanan tanpa panah */
   font-size: clamp(17px, 1.67vw, 20px);
   line-height: 1.5;
 }
@@ -149,8 +169,7 @@ img.hero__media {
     );
   }
 
-  .hero__foot {
-    flex-direction: column;
-    align-items: stretch;
+  .hero__lead {
+    min-width: 0;
   }
 }

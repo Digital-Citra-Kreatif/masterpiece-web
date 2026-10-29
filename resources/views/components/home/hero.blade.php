@@ -51,9 +51,16 @@
     @if (filled($hero['cue'] ?? null))
       <p class="hero__cue" aria-hidden="true">{{ $hero['cue'] }}</p>
     @endif
-    @if (filled($hero['subtitle']))
+    @if (filled($hero['subtitle']) || filled($hero['scrollTo'] ?? null))
     <div class="hero__foot">
-      <p class="hero__lead">{!! nl2br(e($hero['subtitle']), false) !!}</p>
+      @if (filled($hero['scrollTo'] ?? null))
+        <a class="icon-btn hero__scroll" href="{{ $hero['scrollTo'] }}" aria-label="Gulir ke bagian berikutnya">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>
+        </a>
+      @endif
+      @if (filled($hero['subtitle']))
+        <p class="hero__lead">{!! nl2br(e($hero['subtitle']), false) !!}</p>
+      @endif
     </div>
     @endif
   </div>

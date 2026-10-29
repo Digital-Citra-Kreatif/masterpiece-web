@@ -89,6 +89,7 @@ test('the homepage lists every published project with its card image and hero de
     $this->get('/')
         ->assertOk()
         ->assertSee('<body class="is-home"', false)
+        ->assertSeeInOrder(['<a class="icon-btn hero__scroll" href="#projects" aria-label="Gulir ke bagian berikutnya">', 'class="hero__lead"'], false)
         ->assertSeeInOrder(['<section class="hero"', '<section id="projects" class="prj"', '>Proyek</h2>'], false)
         ->assertSee('<a class="prj__card" href="'.url('/projects/westlake').'">', false)
         ->assertSee($card->url('large'), false)
@@ -99,7 +100,7 @@ test('the homepage lists every published project with its card image and hero de
 });
 
 test('the homepage has no projects grid before a project is published', function () {
-    $this->get('/')->assertOk()->assertDontSee('id="projects"', false);
+    $this->get('/')->assertOk()->assertDontSee('id="projects"', false)->assertDontSee('hero__scroll', false);
 });
 
 test('the projects grid takes its title and description from the CMS', function () {
