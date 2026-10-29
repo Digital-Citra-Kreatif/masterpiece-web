@@ -78,7 +78,7 @@
     @endisset
 
     @isset($s['turntable'])
-      <x-project.turntable :section="$s['turntable']" :id="$sectionId('turntable')" />
+      <x-project.spin-scene :section="$s['turntable']" :id="$sectionId('turntable')" />
     @endisset
 
     @isset($s['types'])

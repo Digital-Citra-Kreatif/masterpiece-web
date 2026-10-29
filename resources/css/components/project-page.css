@@ -441,6 +441,44 @@ button.pj-frame:focus-visible {
   text-underline-offset: 4px;
 }
 
+/* Section 360° */
+.spin {
+  --range: 300vh; /* Satu putaran */
+}
+
+.spin__poster {
+  object-fit: cover;
+}
+
+.spin__poster[hidden] {
+  display: none;
+}
+
+.spin__canvas {
+  display: block;
+}
+
+.spin__tabs button[aria-pressed='true'] {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.spin__tabs button[aria-pressed='true'] span {
+  opacity: 1;
+}
+
+.spin__text {
+  max-width: 44ch;
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.86;
+}
+
+.spin__text[hidden] {
+  display: none;
+}
+
 /* Hotspot terbuka */
 .scene--project .scene__loc {
   width: min(520px, 100% - 2 * var(--gutter));
