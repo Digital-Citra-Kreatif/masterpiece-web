@@ -63,16 +63,15 @@ function frameSet(base) {
         };
         return set;
       }),
-    nearest(i) {
+    // Indeks frame termuat terdekat
+    nearestIndex(i) {
       const { frames } = set;
       const N = frames.length;
       for (let d = 0; d < N; d++) {
-        const a = frames[(i + d) % N];
-        if (a) return a;
-        const b = frames[(i - d + N) % N];
-        if (b) return b;
+        if (frames[(i + d) % N]) return (i + d) % N;
+        if (frames[(i - d + N) % N]) return (i - d + N) % N;
       }
-      return null;
+      return -1;
     },
   };
   sets.set(base, set);
@@ -105,7 +104,7 @@ function stillSet(src) {
       };
       img.src = src;
     }),
-    nearest: () => set.still,
+    nearestIndex: (i) => i,
   };
   return set;
 }
@@ -200,6 +199,7 @@ async function init(root) {
   let shownIndex = 0; // Frame terdekat
   let lastTarget = NaN; // Target sebelumnya
   let override = null; // Frame dari hotspot
+  let painted = 0; // Frame di canvas
   let ticking = false;
 
   // Tata letak
@@ -274,8 +274,11 @@ async function init(root) {
     const t = fw - Math.floor(fw);
     const near = Math.round(fw) % N;
     const whole = t < 0.01 || t > 0.99;
-    const img = (cam && whole && set.detail?.get(near)) || set.frames[near] || set.nearest(near);
+    const detail = cam && whole && set.detail?.get(near);
+    const index = detail || set.frames[near] ? near : set.nearestIndex(near);
+    const img = detail || set.frames[index];
     if (!img) return false;
+    painted = index;
     const k = cam ? W / cam[2] : 1;
     const tx = cam ? W / 2 - cam[0] * k : 0;
     const ty = cam ? H / 2 - cam[1] * k : 0;
@@ -318,7 +321,8 @@ async function init(root) {
 
   function placeMarkers(fw, visible) {
     for (const el of markers) {
-      const p = visible && trackAt(spots[el.dataset.spot].track, fw);
+      // Ikut frame yang tergambar
+      const p = visible && trackAt(spots[el.dataset.spot].track, set.still ? fw : painted);
       const x = p && ox + p[0] * scale;
       const y = p && oy + p[1] * scale;
       const show = p && x > 24 && y > 80 && x < W - 24 && y < H - 24 && !covered(x, y);
