@@ -1,7 +1,7 @@
 {{-- Banner hero --}}
 @props(['hero'])
 
-<section class="hero" aria-labelledby="hero-title">
+<section class="hero" @if (filled($hero['id'] ?? null)) id="{{ $hero['id'] }}" @endif aria-labelledby="hero-title">
   @if ($hero['background'] === 'slider')
     <div class="hero__slides" data-hero-slides>
       @foreach ($hero['slides'] as $slide)

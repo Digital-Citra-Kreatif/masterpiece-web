@@ -70,10 +70,12 @@ class SiteContentSeeder extends Seeder
                         $textarea('description', ['label' => 'Deskripsi']),
                         $this->field('video', 'media', ['types' => ['video']], ['label' => 'Video background', 'translatable' => false, 'width' => 50]),
                         $this->field('image', 'media', ['types' => ['image']], ['label' => 'Gambar background', 'translatable' => false, 'width' => 50]),
+                        $text('css_id', ['label' => 'CSS ID', 'translatable' => false, 'instructions' => 'Contoh: #beranda']),
                     ]]),
                     $this->field('projects', 'group', [], ['label' => 'Grid proyek', 'fields' => [
                         $text('title', ['label' => 'Judul']),
                         $textarea('description', ['label' => 'Deskripsi']),
+                        $text('css_id', ['label' => 'CSS ID', 'translatable' => false, 'instructions' => 'Contoh: #proyek']),
                     ]]),
                 ]],
                 ['handle' => 'tipe', 'title' => 'Tipe', 'fields' => [

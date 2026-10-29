@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Str;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Content as Cms;
@@ -141,12 +142,14 @@ final class Content
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
 
         $cards = Cms::entries('projects')->ordered()->get()->map(self::projectCard(...))->values()->all();
+        $projectsId = self::cssId($entryValues['projects']['css_id'] ?? null) ?? 'projects';
 
         return [
             'hero' => [
                 ...$hero,
+                'id' => self::cssId($cmsHero['css_id'] ?? null),
                 // Panah ke grid proyek
-                'scrollTo' => $cards !== [] ? '#projects' : null,
+                'scrollTo' => $cards !== [] ? "#{$projectsId}" : null,
                 'title' => filled($cmsHero['heading'] ?? null) ? $cmsHero['heading'] : $hero['title'],
                 'subtitle' => $cmsHero === [] ? $hero['subtitle'] : ($cmsHero['description'] ?? ''),
                 // Video di atas gambar
@@ -158,6 +161,7 @@ final class Content
             ],
             // Semua proyek terbit
             'projects' => [
+                'id' => $projectsId,
                 'heading' => $heading('projects', ['title' => 'Proyek', 'intro' => null]),
                 'cards' => $cards,
             ],
@@ -322,6 +326,14 @@ final class Content
                 ]])
                 ->all(),
         ];
+    }
+
+    /** CSS ID dari CMS, tanpa # */
+    private static function cssId(?string $value): ?string
+    {
+        $id = Str::slug(ltrim(trim((string) $value), '#'));
+
+        return $id === '' ? null : $id;
     }
 
     /** HTML rich text, teks lama jadi paragraf */

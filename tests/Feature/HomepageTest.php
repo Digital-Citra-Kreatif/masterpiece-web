@@ -99,6 +99,24 @@ test('the homepage lists every published project with its card image and hero de
         ->assertSee('<p class="prj__desc">Ruko di tepi danau.</p>', false);
 });
 
+test('the hero and projects grid take their CSS IDs from the CMS, with or without #', function () {
+    $home = EntryTranslation::query()->where('slug', 'home')->firstOrFail();
+    $home->update(['data' => array_replace_recursive($home->data, ['hero' => ['css_id' => 'Beranda Utama'], 'projects' => ['css_id' => '#proyek']])]);
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $project = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'hero' => ['heading' => 'Westlake'],
+    ]]);
+    app(PublishEntry::class)->handle($project->fresh());
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('<section class="hero"  id="beranda-utama"', false)
+        ->assertSee('<section id="proyek" class="prj" aria-labelledby="proyek-title">', false)
+        ->assertSee('href="#proyek" aria-label="Gulir ke bagian berikutnya"', false)
+        ->assertDontSee('id="projects"', false);
+});
+
 test('the homepage has no projects grid before a project is published', function () {
     $this->get('/')->assertOk()->assertDontSee('id="projects"', false)->assertDontSee('hero__scroll', false);
 });

@@ -1,10 +1,10 @@
 {{-- Grid proyek --}}
-@props(['projects', 'heading'])
+@props(['projects', 'heading', 'id' => 'projects'])
 
-<section id="projects" class="prj" aria-labelledby="projects-title">
+<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title">
   <div class="prj__head">
     <div class="wrap">
-      <x-sheet-header id="projects-title" :title="$heading['title']" :intro="$heading['intro']" />
+      <x-sheet-header id="{{ $id }}-title" :title="$heading['title']" :intro="$heading['intro']" />
     </div>
   </div>
 
