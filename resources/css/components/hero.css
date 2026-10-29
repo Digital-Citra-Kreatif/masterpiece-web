@@ -128,44 +128,6 @@ img.hero__media {
   line-height: 1.5;
 }
 
-/* Garis gulir */
-.hero__rule {
-  position: absolute;
-  left: 0;
-  top: -2px;
-  bottom: calc(-1 * var(--hero-pb) - env(safe-area-inset-bottom, 0px));
-  width: 1px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.hero__rule::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 40%;
-  background: linear-gradient(rgba(255, 255, 255, 0), #fff);
-  animation: rule-run 2.4s linear infinite;
-}
-
-/* Animasi segmen */
-@keyframes rule-run {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(250%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero__rule::after {
-    animation: none;
-    height: 100%;
-    background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.2));
-  }
-}
-
 @keyframes rise {
   from {
     opacity: 0;

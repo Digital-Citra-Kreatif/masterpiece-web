@@ -53,7 +53,6 @@
     @endif
     @if (filled($hero['subtitle']))
     <div class="hero__foot">
-      <span class="hero__rule" aria-hidden="true"></span>
       <p class="hero__lead">{!! nl2br(e($hero['subtitle']), false) !!}</p>
     </div>
     @endif
