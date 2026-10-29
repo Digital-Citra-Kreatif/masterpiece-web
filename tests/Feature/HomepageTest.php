@@ -26,8 +26,8 @@ beforeEach(function () {
 test('the homepage shows only the hero and the projects grid', function () {
     $this->get('/')
         ->assertOk()
-        // Judul per kata, baris tetap
-        ->assertSeeInOrder(['>Hidup</span>', '>Tenang,</span>', '<br>', '>Dekat</span>', '>Saja.</span>'], false)
+        // Judul per kata
+        ->assertSeeInOrder(['>Hidup</span>', '>Tenang,</span>', '>Dekat</span>', '>Saja.</span>'], false)
         ->assertSee("Kawasan hunian di Jakarta,<br>\ndirancang untuk keluarga yang terus bertumbuh.", false)
         ->assertSee('<section class="hero"', false)
         ->assertDontSee('id="kawasan"', false)

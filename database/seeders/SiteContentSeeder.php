@@ -66,7 +66,7 @@ class SiteContentSeeder extends Seeder
                 ['handle' => 'page', 'title' => 'Halaman', 'fields' => [$textarea('intro'), $this->field('body', 'rich_text')]],
                 ['handle' => 'homepage', 'title' => 'Beranda', 'fields' => [
                     $this->field('hero', 'group', [], ['label' => 'Hero banner', 'fields' => [
-                        $textarea('heading', ['label' => 'Heading', 'required' => true, 'instructions' => 'Baris baru tetap jadi baris baru.']),
+                        $text('heading', ['label' => 'Heading', 'required' => true]),
                         $textarea('description', ['label' => 'Deskripsi']),
                         $this->field('video', 'media', ['types' => ['video']], ['label' => 'Video background', 'translatable' => false, 'width' => 50]),
                         $this->field('image', 'media', ['types' => ['image']], ['label' => 'Gambar background', 'translatable' => false, 'width' => 50]),
@@ -437,7 +437,7 @@ class SiteContentSeeder extends Seeder
     {
         return $this->entry('pages', 'home', 'Beranda', [
             'hero' => [
-                'heading' => "Hidup Tenang,\nDekat ke Mana Saja.",
+                'heading' => 'Hidup Tenang, Dekat ke Mana Saja.',
                 'description' => "Kawasan hunian di Jakarta,\ndirancang untuk keluarga yang terus bertumbuh.",
                 'image' => $this->media('media/stills/ruko-front-34.jpg', ''),
             ],

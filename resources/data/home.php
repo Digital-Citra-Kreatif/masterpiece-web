@@ -6,7 +6,7 @@ $hotspot = fn (string $key, string $title, string $short, string $text): array =
 
 return [
     'hero' => [
-        'title' => "Hidup Tenang,\nDekat ke Mana Saja.",
+        'title' => 'Hidup Tenang, Dekat ke Mana Saja.',
         'subtitle' => "Kawasan hunian di Jakarta,\ndirancang untuk keluarga yang terus bertumbuh.",
         'background' => 'slider',
         'slides' => [
