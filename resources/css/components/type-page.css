@@ -461,6 +461,35 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   line-height: 1.75;
 }
 
+/* Cocok untuk usaha */
+.tps__uses {
+  margin: 0 0 24px;
+}
+
+.tps__uses-title {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.tps__uses ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+.tps__uses li {
+  padding: 6px 10px;
+  background: rgb(14 17 19 / 0.05);
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
 /* Baris spesifikasi */
 .tps__specs {
   margin: 0;

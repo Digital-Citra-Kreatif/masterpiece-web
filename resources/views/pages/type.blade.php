@@ -110,6 +110,18 @@
             <p class="tps__intro">{{ $t['intro'] }}</p>
           @endif
 
+          @if ($t['suitable']['items'] !== [])
+            {{-- Cocok untuk usaha --}}
+            <div class="tps__uses">
+              <p class="tps__uses-title" id="uses-title">{{ $t['suitable']['title'] }}</p>
+              <ul aria-labelledby="uses-title">
+                @foreach ($t['suitable']['items'] as $use)
+                  <li>{{ $use }}</li>
+                @endforeach
+              </ul>
+            </div>
+          @endif
+
           <dl class="tps__specs" aria-label="Spesifikasi">
             @foreach ($t['info'] as [$k, $v])
               <div>

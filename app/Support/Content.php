@@ -278,6 +278,11 @@ final class Content
                 ...filled($values['bathrooms'] ?? null) ? [['Kamar mandi', (string) $card['bathrooms']]] : [],
                 ...collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
             ],
+            // Usaha sesuai view
+            'suitable' => [
+                'title' => filled($values['suitable_title'] ?? null) ? (string) $values['suitable_title'] : 'Cocok untuk',
+                'items' => collect($values['suitable_for'] ?? [])->pluck('name')->filter()->values()->all(),
+            ],
             'denah' => $denah->all(),
             'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url(), 'thumb' => $image->url('medium')])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],

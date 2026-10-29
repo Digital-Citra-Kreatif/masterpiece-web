@@ -121,6 +121,19 @@ test('a type page shows its size under the label and its floors in the summary',
         ->assertSeeInOrder(['<dt>LB</dt>', '<dt>Lantai</dt>', '<dd>3</dd>', '<dt>KT</dt>'], false);
 });
 
+test('a type page lists the businesses its view suits, under the intro', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'suitable_title' => 'Cocok untuk usaha yang butuh eksposur maksimal', 'suitable_for' => [['name' => 'Klinik'], ['name' => 'Apotek']]]]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSeeInOrder(['class="tps__intro"', '<p class="tps__uses-title" id="uses-title">Cocok untuk usaha yang butuh eksposur maksimal</p>', '<li>Klinik</li>', '<li>Apotek</li>', 'class="tps__specs"'], false);
+});
+
+test('a type page without businesses has no suitable list', function () {
+    $this->get('/-/tipe/tipe-6')->assertOk()->assertDontSee('tps__uses', false);
+});
+
 test('an unknown address shows the site\'s not found page', function () {
     $this->get('/-/tipe/tidak-ada')
         ->assertNotFound()
