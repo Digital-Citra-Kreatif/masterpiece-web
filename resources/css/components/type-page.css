@@ -336,13 +336,34 @@ body.is-type :is(.tph, .tpx, .tps, .tpd, .types, .ft) {
 }
 
 .tps__stage .tt {
+  position: relative;
   margin-inline: 0;
-  color: var(--ink);
+}
+
+/* Panah di dalam gambar */
+.tps .tt__hud {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  justify-content: space-between;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.tps .tt__step {
+  pointer-events: auto;
+  border-color: rgb(255 255 255 / 0.4);
+  color: var(--room-ink);
 }
 
 .tps .tt__step:hover {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--room-ink);
+  color: var(--room);
+}
+
+.tps .tt__step:focus-visible {
+  outline: 2px solid var(--room-ink);
+  outline-offset: 2px;
 }
 
 /* Tanpa dial derajat */
