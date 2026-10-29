@@ -102,16 +102,29 @@ class SiteContentSeeder extends Seeder
                     $this->field('bathrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('floors', 'number', ['min' => 1, 'step' => 1], ['required' => true, 'instructions' => 'Satu bagian per lantai di halaman tipe.']),
                     $textarea('intro'),
+                    $text('suitable_title', ['label' => 'Judul cocok untuk', 'instructions' => 'Misalnya "Cocok untuk usaha yang butuh eksposur maksimal".']),
+                    $this->field('suitable_for', 'repeater', [], [
+                        'label' => 'Cocok untuk usaha',
+                        'instructions' => 'Satu baris satu jenis usaha, misalnya "Klinik".',
+                        'fields' => [$text('name', ['label' => 'Usaha', 'required' => true])],
+                    ]),
                     $this->field('info_rows', 'repeater', [], [
                         'instructions' => 'Info tambahan selain luas, lantai, dan kamar (yang sudah diambil dari isian di atas).',
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $text('value', ['required' => true, 'width' => 50])],
                     ]),
+                    $this->field('building_specs', 'repeater', [], [
+                        'label' => 'Spesifikasi bangunan',
+                        'instructions' => 'Material bangunan, misalnya Pondasi: Mini pile.',
+                        'fields' => [$text('label', ['label' => 'Bagian', 'required' => true, 'width' => 50]), $text('value', ['label' => 'Material', 'required' => true, 'width' => 50])],
+                    ]),
+                    $text('building_specs_note', ['label' => 'Catatan spesifikasi', 'instructions' => 'Tampil di bawah daftar spesifikasi.']),
                     $this->field('floor_plans', 'repeater', ['max' => 6], [
                         'instructions' => 'Label "Lantai 1", "Lantai 2" … tampil bersama bagian lantai yang sama.',
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $image('image', ['required' => true, 'width' => 50])],
                     ]),
                     $this->field('gallery', 'media', ['types' => ['image'], 'multiple' => true], ['translatable' => false]),
                     $text('vr_url', ['translatable' => false, 'instructions' => 'Alamat tur 3DVista yang sudah dipublikasikan.']),
+                    $this->field('real_facade', 'toggle', [], ['instructions' => 'Sekuens 360° sudah render tipe ini sendiri.']),
                     $this->field('placeholder', 'toggle', [], ['instructions' => 'Data contoh, belum dari klien.']),
                 ]],
                 ['handle' => 'unit', 'title' => 'Unit', 'fields' => [
