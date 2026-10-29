@@ -107,7 +107,7 @@ class SiteContentSeeder extends Seeder
                         'fields' => [$text('name', ['label' => 'Jenis usaha', 'required' => true])],
                     ]),
                     $this->field('info_rows', 'repeater', [], [
-                        'instructions' => 'Info tambahan selain luas, lantai, dan kamar (yang sudah diambil dari isian di atas).',
+                        'instructions' => 'Info selain luas, lantai, dan kamar.',
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $text('value', ['required' => true, 'width' => 50])],
                     ]),
                     $this->field('building_specs', 'repeater', [], [
