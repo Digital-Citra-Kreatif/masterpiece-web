@@ -48,6 +48,12 @@
   text-transform: uppercase;
 }
 
+/* Deskripsi tanpa garis atas */
+.prj .sheet__intro {
+  padding-top: 0;
+  border-top: 0;
+}
+
 .prj__grid {
   list-style: none;
   display: grid;
