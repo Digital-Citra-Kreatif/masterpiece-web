@@ -112,7 +112,6 @@ class SiteContentSeeder extends Seeder
                     ]),
                     $this->field('building_specs', 'repeater', [], [
                         'label' => 'Spesifikasi bangunan',
-                        'instructions' => 'Material bangunan, misalnya Pondasi: Mini pile.',
                         'fields' => [$text('label', ['label' => 'Bagian', 'required' => true, 'width' => 50]), $text('value', ['label' => 'Material', 'required' => true, 'width' => 50])],
                     ]),
                     $text('building_specs_note', ['label' => 'Catatan spesifikasi', 'instructions' => 'Tampil di bawah daftar spesifikasi.']),
