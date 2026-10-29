@@ -670,7 +670,7 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
 
 .tpb__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); /* Daftar lebih lebar */
   gap: 32px clamp(40px, 5vw, 88px);
 }
 
