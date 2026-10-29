@@ -118,8 +118,7 @@ img.hero__media {
 }
 
 /* Animasi bertahap */
-.hero__lead,
-.hero__play {
+.hero__lead {
   animation: rise 1s 0.45s var(--ease) both;
 }
 
@@ -167,67 +166,6 @@ img.hero__media {
   }
 }
 
-/* Kartu buram */
-.hero__play {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 17px;
-  width: 320px;
-  max-width: 100%;
-  padding: 11px 11px 11px 9px;
-  border: 0;
-  background: rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: #fff;
-  text-align: left;
-  pointer-events: auto;
-  transition: background 0.3s var(--ease);
-}
-
-.hero__play:hover {
-  background: rgba(0, 0, 0, 0.28);
-}
-
-.hero__play-thumb {
-  flex: none;
-  width: 98px;
-  height: 98px;
-  object-fit: cover;
-}
-
-.hero__play-label {
-  margin-top: -2px;
-  font-size: 18px;
-  line-height: 1.25;
-}
-
-.hero__play-icon {
-  position: absolute;
-  right: 11px;
-  bottom: 11px;
-  display: grid;
-  place-items: center;
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background: #fff;
-  color: #555;
-  transition: transform 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease);
-}
-
-.hero__play-icon svg {
-  width: 19px;
-  height: 19px;
-}
-
-.hero__play:hover .hero__play-icon {
-  transform: scale(1.12);
-  background: var(--accent);
-  color: #fff;
-}
-
 @keyframes rise {
   from {
     opacity: 0;
@@ -252,9 +190,5 @@ img.hero__media {
   .hero__foot {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .hero__play {
-    width: auto;
   }
 }

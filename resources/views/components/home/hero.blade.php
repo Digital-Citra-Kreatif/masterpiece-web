@@ -51,24 +51,10 @@
     @if (filled($hero['cue'] ?? null))
       <p class="hero__cue" aria-hidden="true">{{ $hero['cue'] }}</p>
     @endif
-    @if (filled($hero['subtitle']) || ! empty($hero['full']))
+    @if (filled($hero['subtitle']))
     <div class="hero__foot">
       <span class="hero__rule" aria-hidden="true"></span>
       <p class="hero__lead">{!! nl2br(e($hero['subtitle']), false) !!}</p>
-      @if (! empty($hero['full']))
-      <button
-        class="hero__play"
-        type="button"
-        data-open="video"
-        data-payload="{{ json_encode(['src' => asset($hero['full']), 'title' => $site['fullName']]) }}"
-      >
-        <img class="hero__play-thumb" src="{{ asset($hero['fullThumb']) }}" alt="" width="98" height="98" />
-        <span class="hero__play-label">Play Full Video</span>
-        <span class="hero__play-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M9 6.5v11l9-5.5z" fill="currentColor" /></svg>
-        </span>
-      </button>
-      @endif
     </div>
     @endif
   </div>

@@ -16,9 +16,7 @@ return [
             ['type' => 'image', 'src' => 'media/stills/fac-boulevard.jpg', 'alt' => ''],
         ],
         'cover' => 'media/hero/cover.jpg',
-        'fullThumb' => 'images/hero-video-thumb.jpg',
         'teaser' => 'media/hero/teaser.mp4',
-        'full' => 'media/hero/full.mp4',
     ],
     'kawasan' => [
         'title' => 'Masterplan',
