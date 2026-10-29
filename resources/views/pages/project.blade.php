@@ -17,7 +17,7 @@
     </x-slot:head>
   @endif
 
-  <x-header variant="project" :nav="$p['nav']" :logo="$p['style']['logo']" />
+  <x-header variant="project" :nav="$p['nav']" :logo="$p['style']['logo']" :mark="['href' => request()->url(), 'label' => $p['title'].', muat ulang halaman proyek']" />
 
   <main>
     {{-- Hero proyek --}}

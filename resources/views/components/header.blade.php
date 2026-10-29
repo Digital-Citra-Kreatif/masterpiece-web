@@ -1,11 +1,12 @@
 {{-- Header situs --}}
-@props(['variant' => 'home', 'nav' => null, 'logo' => null, 'back' => null])
+@props(['variant' => 'home', 'nav' => null, 'logo' => null, 'back' => null, 'mark' => null])
 
 @php($items = $nav ?? $site['nav'])
 
 <header @class(['hd', "hd--{$variant}"])>
   <div class="hd__inner wrap">
-    <a class="hd__mark" href="{{ url('/') }}" aria-label="{{ $site['logo']['alt'] }}, beranda">
+    {{-- Logo proyek ke halaman proyek --}}
+    <a class="hd__mark" href="{{ $mark['href'] ?? url('/') }}" aria-label="{{ $mark['label'] ?? $site['logo']['alt'].', beranda' }}">
       @if ($logo)
         <img class="hd__logo hd__logo--own" src="{{ $logo['src'] }}" alt="" @if ($logo['width']) width="{{ $logo['width'] }}" height="{{ $logo['height'] }}" @endif />
       @else

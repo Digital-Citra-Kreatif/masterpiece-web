@@ -26,7 +26,7 @@
   @endif
 
   @if ($pj)
-    <x-header variant="type" :logo="$pj['style']['logo']" :back="['href' => $pj['url'], 'label' => $pj['title']]" />
+    <x-header variant="type" :logo="$pj['style']['logo']" :back="['href' => $pj['url'], 'label' => $pj['title']]" :mark="['href' => $pj['url'], 'label' => $pj['title'].', halaman proyek']" />
   @else
     <x-header variant="type" />
   @endif

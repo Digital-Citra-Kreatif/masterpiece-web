@@ -365,6 +365,7 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertOk()
         ->assertSee('<header class="hd hd--type">', false)
         ->assertDontSee('hd__nav', false)
+        ->assertSee('<a class="hd__mark" href="'.url('/projects/westlake').'" aria-label="Westlake, halaman proyek">', false)
         ->assertSee('<a class="btn hd__btn" href="'.url('/projects/westlake').'">', false)
         ->assertSee('<span>Kembali <span class="hd__btn-more">ke Westlake</span></span>', false)
         ->assertDontSee('Lihat Proyek')
@@ -406,4 +407,12 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->and(array_column($parts, 'text'))->toBe(['Tampak depan.', 'Area usaha.'])
         ->and($html)->toContain('data-turntable')
         ->and($html)->toContain('data-config="'.url('/turntable/'));
+});
+
+test('the logo on a project page reloads that project page', function () {
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('<a class="hd__mark" href="'.url('/projects/westlake').'" aria-label="Westlake, muat ulang halaman proyek">', false);
 });
