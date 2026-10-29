@@ -46,11 +46,13 @@ class WestlakeProjectSeeder extends Seeder
             fn (callable $section, string $handle): bool => ! isset($stored[$handle]) || self::isOutdated($handle, $stored[$handle]),
             ARRAY_FILTER_USE_BOTH,
         );
-        if ($missing === []) {
+        // Gambar kartu Beranda
+        $card = blank($stored['card_image'] ?? null) ? ['card_image' => $this->image('Image Westlake/Ruko Hadap Danau.jpg')] : [];
+        if ($missing === [] && $card === []) {
             return;
         }
 
-        $data = collect($missing)->map(fn (callable $section): array => $section())->all();
+        $data = [...$card, ...collect($missing)->map(fn (callable $section): array => $section())->all()];
         $publish->handle($saveDraft->handle($translation, ['data' => $data, 'version' => $translation->version]));
     }
 
