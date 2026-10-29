@@ -3,7 +3,9 @@
 
   <main>
     <!-- Hero -->
-    <x-home.hero :hero="$hero" />
+    <div data-hero-parallax>
+      <x-home.hero :hero="$hero" />
+    </div>
 
     @if ($projects['cards'] !== [])
       <!-- Grid proyek -->

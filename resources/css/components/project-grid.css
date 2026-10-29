@@ -15,28 +15,27 @@
   background-repeat: no-repeat;
 }
 
-/* Garis di atas hero */
-.is-home .hero::before,
-.is-home .hero::after {
+/* Garis di atas hero, ::after untuk parallax */
+.is-home .hero::before {
   content: '';
   position: absolute;
-  top: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 3;
-  width: 1px;
-  background: rgb(255 255 255 / 0.35);
+  background-image: linear-gradient(rgb(255 255 255 / 0.35), rgb(255 255 255 / 0.35)), linear-gradient(rgb(255 255 255 / 0.35), rgb(255 255 255 / 0.35));
+  background-size: 1px 100%;
+  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
+  background-repeat: no-repeat;
   pointer-events: none;
 }
 
-.is-home .hero::before {
-  left: var(--line-x);
-}
-
-.is-home .hero::after {
-  right: var(--line-x);
+/* Menutup hero saat digulir */
+.is-home main > :not([data-hero-parallax]) {
+  position: relative;
+  z-index: 1;
 }
 
 .prj {
+  background-color: var(--paper);
   padding-bottom: var(--section, clamp(64px, 9vw, 120px));
 }
 
