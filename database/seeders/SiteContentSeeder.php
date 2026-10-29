@@ -104,7 +104,6 @@ class SiteContentSeeder extends Seeder
                     $text('suitable_title', ['label' => 'Judul rekomendasi usaha', 'instructions' => 'Contoh: "Cocok untuk usaha yang butuh eksposur maksimal".']),
                     $this->field('suitable_for', 'repeater', [], [
                         'label' => 'Cocok untuk usaha',
-                        'instructions' => 'Satu baris satu jenis usaha, misalnya "Klinik".',
                         'fields' => [$text('name', ['label' => 'Usaha', 'required' => true])],
                     ]),
                     $this->field('info_rows', 'repeater', [], [
