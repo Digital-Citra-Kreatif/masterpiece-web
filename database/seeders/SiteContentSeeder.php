@@ -119,7 +119,7 @@ class SiteContentSeeder extends Seeder
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $image('image', ['required' => true, 'width' => 50])],
                     ]),
                     $this->field('gallery', 'media', ['types' => ['image'], 'multiple' => true], ['translatable' => false]),
-                    $text('vr_url', ['translatable' => false, 'instructions' => 'Alamat tur 3DVista yang sudah dipublikasikan.']),
+                    $text('vr_url', ['translatable' => false]),
                     $this->field('real_facade', 'toggle', [], ['instructions' => 'Sekuens 360° sudah render tipe ini sendiri.']),
                     $this->field('placeholder', 'toggle', [], ['instructions' => 'Data contoh, belum dari klien.']),
                 ]],
