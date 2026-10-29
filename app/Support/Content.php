@@ -254,6 +254,7 @@ final class Content
             ],
             'denah' => $denah->all(),
             'buildingSpecs' => collect($values['building_specs'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
+            'specsTitle' => filled($values['building_specs_title'] ?? null) ? (string) $values['building_specs_title'] : 'Spesifikasi bangunan',
             'specsNote' => filled($values['building_specs_note'] ?? null) ? (string) $values['building_specs_note'] : null,
             'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url(), 'thumb' => $image->url('medium')])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],

@@ -355,7 +355,7 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
     $project = publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
-        'types' => ['title' => 'Type', 'units' => [$types['tipe-1']->entry_id, $types['tipe-2']->entry_id]],
+        'types' => ['title' => 'Type', 'others_title' => 'Tipe lainnya di Westlake', 'units' => [$types['tipe-1']->entry_id, $types['tipe-2']->entry_id]],
         'whatsapp' => ['contacts' => [['title' => 'Marketing', 'number' => '6281234567890']]],
     ]);
     foreach ($types as $type) {
@@ -374,6 +374,7 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertDontSee('tph__tabs', false)
         ->assertDontSee('data-turntable', false)
         ->assertSee('<section id="tipe-lain" class="types types--project"', false)
+        ->assertSee('Tipe lainnya di Westlake')
         ->assertSee('href="'.url('/westlake/tipe/tipe-2').'"', false)
         ->assertSee('data-wa', false);
 });

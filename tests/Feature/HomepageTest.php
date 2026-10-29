@@ -189,6 +189,15 @@ test('a type page shows its building specs and note in their own section after t
         ->assertSeeInOrder(['<section class="tpd"', '<section class="tpb" aria-labelledby="build-title">', '>Spesifikasi bangunan</h2>', '<dt>Pondasi</dt>', '<dd>Mini pile</dd>', '<dt>Listrik</dt>', '<dd>3500 VA</dd>', '<p class="tpb__note">*Spesifikasi dapat berubah.</p>'], false);
 });
 
+test('the building specs heading comes from the CMS, or Spesifikasi bangunan without one', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'building_specs' => [['label' => 'Pondasi', 'value' => 'Mini pile']], 'building_specs_title' => 'Material bangunan']]);
+    $this->get('/-/tipe/tipe-6')->assertOk()->assertSee('id="build-title">Material bangunan</h2>', false);
+
+    $type->update(['data' => [...$type->fresh()->data, 'building_specs_title' => '']]);
+    $this->get('/-/tipe/tipe-6')->assertOk()->assertSee('id="build-title">Spesifikasi bangunan</h2>', false);
+});
+
 test('a type page without building specs has no specs section', function () {
     $this->get('/-/tipe/tipe-6')->assertOk()->assertDontSee('class="tpb"', false);
 });

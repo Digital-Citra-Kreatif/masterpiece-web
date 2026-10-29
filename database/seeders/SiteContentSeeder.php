@@ -113,6 +113,7 @@ class SiteContentSeeder extends Seeder
                         'label' => 'Spesifikasi bangunan',
                         'fields' => [$text('label', ['label' => 'Bagian', 'required' => true, 'width' => 50]), $text('value', ['label' => 'Material', 'required' => true, 'width' => 50])],
                     ]),
+                    $text('building_specs_title', ['label' => 'Judul spesifikasi bangunan']),
                     $text('building_specs_note', ['label' => 'Catatan spesifikasi']),
                     $this->field('floor_plans', 'repeater', ['max' => 6], [
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $image('image', ['required' => true, 'width' => 50])],
@@ -340,6 +341,7 @@ class SiteContentSeeder extends Seeder
             $section('types', 'Tipe', [
                 $image('hero_image', 'Gambar potongan'),
                 $this->field('units', 'entries', ['collections' => ['types'], 'multiple' => true], ['label' => 'Tipe unit', 'translatable' => false]),
+                $text('others_title', 'Judul tipe lain di halaman unit'),
             ], description: false),
             $section('availability', 'Ketersediaan unit', [
                 $image('siteplan', 'Siteplan'),

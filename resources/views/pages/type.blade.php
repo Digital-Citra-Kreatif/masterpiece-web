@@ -190,7 +190,7 @@
       {{-- Spesifikasi bangunan --}}
       <section class="tpb" aria-labelledby="build-title">
         <div class="wrap tpb__grid">
-          <h2 class="display tpb__title" id="build-title">Spesifikasi bangunan</h2>
+          <h2 class="display tpb__title" id="build-title">{{ $t['specsTitle'] }}</h2>
           <div class="tpb__body">
             <dl class="tpb__list">
               @foreach ($t['buildingSpecs'] as [$k, $v])
@@ -209,7 +209,7 @@
     @endif
 
     @if ($pj && $pj['types'] !== [])
-      <x-home.type-grid variant="project" id="tipe-lain" :types="$pj['types']" :heading="['title' => 'Tipe lain', 'intro' => null]" />
+      <x-home.type-grid variant="project" id="tipe-lain" :types="$pj['types']" :heading="['title' => $pj['othersTitle'], 'intro' => null]" />
     @endif
   </main>
 
