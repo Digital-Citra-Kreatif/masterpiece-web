@@ -40,12 +40,6 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   background-repeat: no-repeat;
 }
 
-/* Footer menutup Tipe lain */
-.is-type .ft {
-  position: relative;
-  z-index: 2;
-}
-
 /* Tipe lain */
 .is-type .types {
   background-color: #f9faf9;

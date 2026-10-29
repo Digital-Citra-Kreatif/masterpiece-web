@@ -3,12 +3,6 @@ import './lightbox.js';
 import './view-cursor.js';
 import './whatsapp.js';
 
-// Parallax Tipe lain, ditutup footer
-const others = document.querySelector('#tipe-lain');
-if (others && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  import('./cover-parallax.js').then(({ coverParallax }) => coverParallax(others, others));
-}
-
 // Slider denah
 if (document.querySelector('[data-plans-swiper]')) {
   import('./plans-swiper.js');
