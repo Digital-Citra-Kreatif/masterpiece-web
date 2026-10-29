@@ -157,7 +157,6 @@
               <li>
                 <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
                   <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
-                  <span>{{ $d['label'] }}</span>
                 </button>
               </li>
             @endforeach

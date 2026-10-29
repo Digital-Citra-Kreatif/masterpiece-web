@@ -561,7 +561,6 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
 
 /* Section denah */
 .tpd {
-  --tps-edge: rgb(14 17 19 / 0.16);
   padding-block: clamp(40px, 5vw, 72px);
   border-block: 1px solid var(--sheet-line);
 }
@@ -569,62 +568,25 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
 .tpd__plans {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 24px;
   margin: 0;
   padding: 0;
 }
 
+/* Gambar penuh */
 .tpd__plan {
-  display: flex;
-  flex-direction: column;
+  display: block;
   width: 100%;
-  height: 100%;
   padding: 0;
-  border: 1px solid var(--tps-edge);
-  background: #fff;
-  color: var(--ink);
-  font: inherit;
-  text-align: left;
+  border: 0;
+  background: none;
   cursor: zoom-in;
-  transition: border-color 0.2s var(--ease);
 }
 
 .tpd__plan img {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  padding: 16px;
-  object-fit: contain;
-}
-
-.tpd__plan span {
-  margin-top: auto;
-  padding: 14px 16px;
-  border-top: 1px solid var(--tps-edge);
-  font-family: var(--label);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
-}
-
-.tpd__plan:hover {
-  border-color: var(--ink);
-}
-
-@media (max-width: 760px) {
-  .tpd__plans {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .tpd__plans {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  height: auto;
 }
 
 @media (min-width: 761px) and (max-width: 1024px) {
@@ -699,8 +661,7 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
 
 @media (prefers-reduced-motion: reduce) {
   .tph__tab,
-  .tps__tab,
-  .tpd__plan {
+  .tps__tab {
     transition: none;
   }
 
