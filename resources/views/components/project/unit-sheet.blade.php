@@ -55,7 +55,7 @@
       @if ($unit['gallery'] !== [] || $unit['vr'])
         <div class="panel__actions pj-sheet__actions">
           @if ($unit['gallery'] !== [])
-            <button class="btn" type="button" data-open="gallery" data-payload="{{ $gallery("{$title}: Gallery", $unit['gallery']) }}">Gallery</button>
+            <button class="btn" type="button" data-open="gallery" data-payload="{{ $gallery("{$title}: Galeri", $unit['gallery']) }}">Galeri</button>
           @endif
           @if ($unit['vr'])
             <button class="btn btn--solid" type="button" data-open="iframe" data-payload="{{ json_encode(['src' => $unit['vr'], 'title' => "{$title}: VR"]) }}">VR</button>

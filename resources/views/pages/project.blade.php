@@ -24,7 +24,7 @@
     {{-- Lindungi gambar hero --}}
     <div data-protect data-hero-parallax>
       {{-- Tanpa deskripsi --}}
-      <x-home.hero :hero="[...$p['hero'], 'eyebrow' => $p['title'], 'cue' => 'Scroll Down', 'subtitle' => '']" />
+      <x-home.hero :hero="[...$p['hero'], 'eyebrow' => $p['title'], 'cue' => 'Gulir ke bawah', 'subtitle' => '']" />
     </div>
 
     {{-- Scene Masterplan Cluster --}}

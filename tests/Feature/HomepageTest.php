@@ -152,7 +152,7 @@ test('a type page without a project shows its title, specs, floor plans, gallery
         ->assertSee('data-view-target', false)
         ->assertSee('Denah Lantai 1')
         ->assertSee('Tipe 6: Galeri')
-        ->assertSee('>Gallery</button>', false)
+        ->assertSee('>Galeri</button>', false)
         ->assertSee('href="'.asset('/vr/placeholder/index.html').'" target="_blank" rel="noopener"', false)
         ->assertDontSee('tpg__run', false);
 });

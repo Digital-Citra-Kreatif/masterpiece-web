@@ -41,11 +41,11 @@ final class ProjectPage
     /** Urutan section */
     public const SECTIONS = [
         'masterplan' => ['id' => 'masterplan', 'label' => 'Masterplan'],
-        'location' => ['id' => 'location', 'label' => 'Location'],
+        'location' => ['id' => 'location', 'label' => 'Lokasi'],
         'cluster' => ['id' => 'cluster', 'label' => 'Cluster'],
-        'facilities' => ['id' => 'facility', 'label' => 'Facility'],
+        'facilities' => ['id' => 'facility', 'label' => 'Fasilitas'],
         'turntable' => ['id' => 'view-360', 'label' => '360°'],
-        'types' => ['id' => 'type', 'label' => 'Type'],
+        'types' => ['id' => 'type', 'label' => 'Tipe'],
         'availability' => ['id' => 'unit', 'label' => 'Unit'],
     ];
 
@@ -461,8 +461,8 @@ final class ProjectPage
                     'url' => $unit['url'],
                     'sheet' => $unit['url'] === null ? $unit['id'] : null,
                     'image' => $unit['image']['src'] ?? null,
-                    'size' => collect($unit['facts'])->firstWhere(0, 'Size')[1] ?? null,
-                    'specs' => collect($unit['facts'])->reject(fn (array $fact): bool => $fact[0] === 'Size')->values()->all(),
+                    'size' => collect($unit['facts'])->firstWhere(0, 'Ukuran')[1] ?? null,
+                    'specs' => collect($unit['facts'])->reject(fn (array $fact): bool => $fact[0] === 'Ukuran')->values()->all(),
                 ])
                 ->values()
                 ->all(),
@@ -479,10 +479,10 @@ final class ProjectPage
     {
         $view = isset(self::VIEWS[$row['view'] ?? '']) ? $row['view'] : null;
         $facts = array_values(array_filter([
-            filled($row['dimensions'] ?? null) ? ['Size', (string) $row['dimensions']] : null,
+            filled($row['dimensions'] ?? null) ? ['Ukuran', (string) $row['dimensions']] : null,
             is_numeric($row['lt'] ?? null) && $row['lt'] > 0 ? ['LT', self::number($row['lt']).' m²'] : null,
             is_numeric($row['lb'] ?? null) && $row['lb'] > 0 ? ['LB', self::number($row['lb']).' m²'] : null,
-            is_numeric($row['floors'] ?? null) && $row['floors'] > 0 ? ['Floor', (string) (int) $row['floors']] : null,
+            is_numeric($row['floors'] ?? null) && $row['floors'] > 0 ? ['Lantai', (string) (int) $row['floors']] : null,
         ]));
 
         return [

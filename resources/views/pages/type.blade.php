@@ -148,7 +148,7 @@
             {{-- Galeri dan VR --}}
             <div class="tps__actions">
               @if ($t['gallery'] !== [])
-                <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Gallery</button>
+                <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Galeri</button>
               @endif
               @if ($vrUrl)
                 <a class="btn btn--solid" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">VR</a>
