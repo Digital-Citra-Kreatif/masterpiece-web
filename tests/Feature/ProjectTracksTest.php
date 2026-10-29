@@ -97,7 +97,7 @@ test('retracking runs the tracker only for the points that moved or are new', fu
         ]],
     ]]);
     app(PublishEntry::class)->handle($translation->fresh());
-    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => $hash, 'points' => $old, 'tracks' => ['masterplan-1' => [[640, 360]], 'masterplan-2' => [[128, 72]]]]]));
+    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => $hash, 'tracker' => 2, 'points' => $old, 'tracks' => ['masterplan-1' => [[640, 360]], 'masterplan-2' => [[128, 72]]]]]));
 
     ProjectTracks::make($translation->fresh());
 
@@ -105,6 +105,33 @@ test('retracking runs the tracker only for the points that moved or are new', fu
     $stored = json_decode(Storage::get("tracks/entry-{$translation->entry_id}.json"), true)['masterplan'];
     expect($stored['tracks'])->toBe(['masterplan-1' => [[640, 360]], 'masterplan-2' => [[200, 100]]])
         ->and($stored['points'])->toEqual(['masterplan-1' => [50, 50], 'masterplan-2' => [20, 20]]);
+});
+
+test('tracks from an older tracker version are tracked again for every point', function () {
+    Storage::fake('local');
+    Queue::fake();
+    Storage::fake('public');
+    $this->seed(SiteContentSeeder::class);
+    $placed = ['masterplan-1' => [50.0, 50.0]];
+    $hash = (new ReflectionMethod(ProjectTracks::class, 'hash'))->invoke(null, 'masterplan', $placed);
+    Process::fake(['*' => Process::result(output: json_encode(['masterplan-1' => [[641.5, 360.2]]]))]);
+
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $translation = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'masterplan' => ['title' => 'Masterplan', 'points' => [['number' => '01', 'name' => 'Tetap', 'x' => 50, 'y' => 50]]],
+    ]]);
+    app(PublishEntry::class)->handle($translation->fresh());
+    // Tanpa versi pelacak
+    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => md5('lama'), 'points' => $placed, 'tracks' => ['masterplan-1' => [[640, 360]]]]]));
+
+    ProjectTracks::make($translation->fresh());
+
+    Process::assertRan(fn ($process): bool => json_decode($process->input, true) === ['points' => ['masterplan-1' => [640, 360]]]);
+    $stored = json_decode(Storage::get("tracks/entry-{$translation->entry_id}.json"), true)['masterplan'];
+    expect($stored['hash'])->toBe($hash)
+        ->and($stored['tracker'])->toBe(2)
+        ->and($stored['tracks'])->toBe(['masterplan-1' => [[641.5, 360.2]]]);
 });
 
 test('a save while tracking runs still queues a new tracking job', function () {

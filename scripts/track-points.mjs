@@ -7,6 +7,8 @@ import path from 'node:path';
 const PATCH = 16; // Setengah ukuran blok
 const SEARCH = 40; // Jendela pencarian
 const MIN_MATCH = 0.3; // Batas korelasi
+const OUTLIER = 6; // Lonjakan salah cocok (px)
+const SIGMA = 1.2; // Penghalusan (frame)
 
 const dir = process.argv[2];
 const manifest = JSON.parse(readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
@@ -71,7 +73,14 @@ function match(frame, tpl, px, py) {
       if (c > best) [best, rx, ry] = [c, bx + dx, by + dy];
     }
   }
-  return [rx, ry, best];
+  // Puncak sub-piksel
+  const peak = (l, r) => {
+    const d = l - 2 * best + r;
+    return d < 0 ? Math.max(-0.5, Math.min(0.5, (l - r) / (2 * d))) : 0;
+  };
+  const sx = peak(correlation(frame, tpl, rx - 1, ry), correlation(frame, tpl, rx + 1, ry));
+  const sy = peak(correlation(frame, tpl, rx, ry - 1), correlation(frame, tpl, rx, ry + 1));
+  return [rx, ry, best, rx + sx, ry + sy];
 }
 
 const inside = (x, y) => x > PATCH && y > PATCH && x < W - PATCH && y < H - PATCH;
@@ -83,13 +92,43 @@ function run(start, order) {
   out[order[0]] = [x, y];
   for (let s = 1; s < order.length; s++) {
     const frame = frames[order[s]];
-    const [nx, ny, c] = match(frame, tpl, x, y);
+    const [nx, ny, c, fx, fy] = match(frame, tpl, x, y);
     if (!inside(nx, ny) || c < MIN_MATCH) break;
     [x, y] = [nx, ny];
-    out[order[s]] = [x, y];
+    out[order[s]] = [fx, fy];
     tpl = block(frame, x, y);
   }
   return out;
+}
+
+const median = (values) => values.sort((a, b) => a - b)[values.length >> 1];
+const wrap = (i) => ((i % N) + N) % N;
+
+// Buang lonjakan, lalu haluskan (orbit melingkar)
+function clean(track) {
+  const near = (list, i, reach) => {
+    const out = [];
+    for (let d = -reach; d <= reach; d++) {
+      const q = list[wrap(i + d)];
+      if (q) out.push([q, d]);
+    }
+    return out;
+  };
+  const steady = track.map((p, i) => {
+    if (!p) return null;
+    const around = near(track, i, 3).map(([q]) => q);
+    const mid = [median(around.map((q) => q[0])), median(around.map((q) => q[1]))];
+    return Math.hypot(p[0] - mid[0], p[1] - mid[1]) > OUTLIER ? mid : p;
+  });
+  return steady.map((p, i) => {
+    if (!p) return null;
+    let [sx, sy, sw] = [0, 0, 0];
+    for (const [q, d] of near(steady, i, 3)) {
+      const w = Math.exp(-(d * d) / (2 * SIGMA * SIGMA));
+      [sx, sy, sw] = [sx + w * q[0], sy + w * q[1], sw + w];
+    }
+    return [Math.round((sx / sw) * 10) / 10, Math.round((sy / sw) * 10) / 10];
+  });
 }
 
 const forward = [...Array(N).keys()];
@@ -99,14 +138,21 @@ for (const [key, start] of Object.entries(points)) {
   const p = [Math.round(start[0]), Math.round(start[1])];
   const fw = run(p, forward);
   const bw = run(p, backward);
-  tracks[key] = fw.map((a, i) => {
+  // Rentang tumpang tindih
+  let lastForward = 0;
+  while (lastForward + 1 < N && fw[lastForward + 1]) lastForward++;
+  let firstBackward = N;
+  while (firstBackward - 1 > 0 && bw[firstBackward - 1]) firstBackward--;
+  const span = lastForward - firstBackward + 2;
+  tracks[key] = clean(fw.map((a, i) => {
     const b = bw[i];
-    if (a && b) {
-      const t = i / N;
-      return [Math.round(a[0] * (1 - t) + b[0] * t), Math.round(a[1] * (1 - t) + b[1] * t)];
+    if (i > 0 && a && b) {
+      // Pindah bertahap, tanpa lompatan
+      const t = (i - firstBackward + 1) / span;
+      return [a[0] * (1 - t) + b[0] * t, a[1] * (1 - t) + b[1] * t];
     }
     return a || b;
-  });
+  }));
 }
 
 process.stdout.write(JSON.stringify(tracks));

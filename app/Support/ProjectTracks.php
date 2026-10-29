@@ -10,6 +10,9 @@ use Sunrice\Cms\Models\EntryTranslation;
 /** Jalur titik proyek */
 final class ProjectTracks
 {
+    /** Versi pelacak; naikkan agar semua titik dilacak ulang */
+    private const TRACKER = 2;
+
     /** @var array<string, array<string, mixed>> manifest per folder frame */
     private static array $manifests = [];
 
@@ -117,7 +120,7 @@ final class ProjectTracks
                 continue;
             }
             // Lacak ulang hanya titik yang berubah
-            $old = $stored[$section]['points'] ?? [];
+            $old = ($stored[$section]['tracker'] ?? 1) === self::TRACKER ? ($stored[$section]['points'] ?? []) : [];
             $kept = [];
             $todo = [];
             foreach ($placed as $key => $point) {
@@ -128,7 +131,7 @@ final class ProjectTracks
                 }
             }
             $tracks = [...$kept, ...($todo === [] ? [] : self::track($base, $todo))];
-            $stored[$section] = ['hash' => $hash, 'points' => $placed, 'tracks' => array_intersect_key($tracks, $placed)];
+            $stored[$section] = ['hash' => $hash, 'tracker' => self::TRACKER, 'points' => $placed, 'tracks' => array_intersect_key($tracks, $placed)];
             $changed = true;
         }
 
@@ -195,13 +198,13 @@ final class ProjectTracks
      */
     private static function hash(string $section, array $placed): string
     {
-        return md5(json_encode([self::sections()[$section], $placed]));
+        return md5(json_encode([self::TRACKER, self::sections()[$section], $placed]));
     }
 
     /**
      * Per entri, cadangan file lama per slug
      *
-     * @return array<string, array{hash: string, tracks: array<string, list<array{0: int, 1: int}|null>>}>
+     * @return array<string, array{hash: string, tracker?: int, points?: array<string, array{0: float, 1: float}>, tracks: array<string, list<array{0: float, 1: float}|null>>}>
      */
     private static function stored(int $entryId, ?string $slug = null): array
     {
