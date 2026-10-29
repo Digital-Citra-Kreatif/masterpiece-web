@@ -648,6 +648,12 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   .tps .tps__part {
     font-size: 32px;
   }
+
+  /* Spesifikasi tanpa garis */
+  .tpb .tpb__list div {
+    padding-block: 10px;
+    border-bottom: 0;
+  }
 }
 
 /* Section denah */
