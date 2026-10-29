@@ -16,14 +16,14 @@
             <div class="prj__media">
               <div class="prj__frame">
                 @if ($p['image'])
-                  <img src="{{ $p['image'] }}" alt="{{ $p['logo'] ? '' : $p['name'] }}" loading="lazy" />
+                  <img src="{{ $p['image'] }}" alt="" loading="lazy" />
                 @endif
               </div>
               @if ($p['logo'])
-                <span class="prj__logo"><img src="{{ $p['logo'] }}" alt="{{ $p['name'] }}" loading="lazy" /></span>
+                <span class="prj__logo"><img src="{{ $p['logo'] }}" alt="" loading="lazy" /></span>
               @endif
             </div>
-            <h3 class="prj__title">{{ $p['title'] }}</h3>
+            <h3 class="prj__title">{{ $p['name'] }}</h3>
             @if ($p['description'])
               <p class="prj__desc">{{ $p['description'] }}</p>
             @endif

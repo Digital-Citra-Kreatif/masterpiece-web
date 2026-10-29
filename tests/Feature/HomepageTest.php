@@ -92,8 +92,9 @@ test('the homepage lists every published project with its card image and hero de
         ->assertSeeInOrder(['<section class="hero"', '<section id="projects" class="prj"', '>Proyek</h2>'], false)
         ->assertSee('<a class="prj__card" href="'.url('/projects/westlake').'">', false)
         ->assertSee($card->url('large'), false)
-        ->assertSee('<span class="prj__logo"><img src="'.$logo->url('medium').'" alt="Westlake"', false)
-        ->assertSee('<h3 class="prj__title">A New Landmark by the Lake</h3>', false)
+        ->assertSee('<span class="prj__logo"><img src="'.$logo->url('medium').'" alt=""', false)
+        ->assertSee('<h3 class="prj__title">Westlake</h3>', false)
+        ->assertDontSee('A New Landmark')
         ->assertSee('<p class="prj__desc">Ruko di tepi danau.</p>', false);
 });
 

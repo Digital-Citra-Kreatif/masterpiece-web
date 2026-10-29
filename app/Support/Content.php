@@ -256,7 +256,7 @@ final class Content
     /**
      * Kartu proyek beranda
      *
-     * @return array{name: string, title: string, url: string, image: ?string, logo: ?string, description: ?string}
+     * @return array{name: string, url: string, image: ?string, logo: ?string, description: ?string}
      */
     private static function projectCard(EntryTranslation $project): array
     {
@@ -267,8 +267,6 @@ final class Content
 
         return [
             'name' => (string) $project->title,
-            // Judul hero proyek
-            'title' => filled($hero['heading'] ?? null) ? (string) preg_replace('/\s+/', ' ', trim($hero['heading'])) : (string) $project->title,
             'url' => (string) $project->url(),
             'image' => $image instanceof Media ? $image->url('large') : null,
             'logo' => $logo instanceof Media && $logo->isImage() ? $logo->url('medium') : null,
