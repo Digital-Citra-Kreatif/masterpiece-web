@@ -99,7 +99,7 @@ class SiteContentSeeder extends Seeder
                     $number('lb'),
                     $this->field('bedrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('bathrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
-                    $this->field('floors', 'number', ['min' => 1, 'step' => 1], ['required' => true, 'instructions' => 'Satu bagian per lantai di halaman tipe.']),
+                    $this->field('floors', 'number', ['min' => 1, 'step' => 1], ['required' => true]),
                     $textarea('intro'),
                     $text('suitable_title', ['label' => 'Judul cocok untuk', 'instructions' => 'Misalnya "Cocok untuk usaha yang butuh eksposur maksimal".']),
                     $this->field('suitable_for', 'repeater', [], [
