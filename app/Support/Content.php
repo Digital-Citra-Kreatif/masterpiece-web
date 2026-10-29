@@ -100,7 +100,7 @@ final class Content
             $whatsapp = $filled('whatsapp');
 
             return [
-                'logo' => $logo instanceof Media && $logo->isImage() ? ['src' => $logo->url(), 'width' => $logo->width, 'height' => $logo->height] : null,
+                'logo' => $logo instanceof Media && $logo->isImage() ? ['src' => $logo->url('medium'), 'width' => $logo->width, 'height' => $logo->height] : null,
                 'description' => $filled('description'),
                 'address' => $filled('address'),
                 'hours' => $filled('hours'),
@@ -258,7 +258,7 @@ final class Content
             'buildingSpecs' => collect($values['building_specs'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
             'specsTitle' => filled($values['building_specs_title'] ?? null) ? (string) $values['building_specs_title'] : 'Spesifikasi bangunan',
             'specsNote' => filled($values['building_specs_note'] ?? null) ? (string) $values['building_specs_note'] : null,
-            'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url(), 'thumb' => $image->url('medium')])->values()->all(),
+            'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url('large'), 'thumb' => $image->url('medium'), ...self::largeSize($image)])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],
             'project' => ProjectPage::forType($entry, $values['project'] ?? null),
         ];
@@ -352,6 +352,22 @@ final class Content
         }
 
         return $logo;
+    }
+
+    /**
+     * Ukuran varian large (lebar maks 1600)
+     *
+     * @return array{w: ?int, h: ?int}
+     */
+    private static function largeSize(Media $image): array
+    {
+        $w = (int) $image->width;
+        $h = (int) $image->height;
+        if ($w === 0 || $h === 0) {
+            return ['w' => null, 'h' => null];
+        }
+
+        return $w > 1600 ? ['w' => 1600, 'h' => (int) round($h * 1600 / $w)] : ['w' => $w, 'h' => $h];
     }
 
     /** CSS ID dari CMS, tanpa # */

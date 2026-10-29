@@ -51,8 +51,9 @@ document.addEventListener(
     e.preventDefault();
     e.stopPropagation();
     const { items = [], index = 0 } = JSON.parse(trigger.dataset.payload || '{}');
+    // Ukuran dari CMS bila ada
     const slides = await Promise.all(
-      items.map(async (item) => ({ src: item.src, alt: item.alt || '', caption: item.caption || '', ...(await sizeOf(item.src)) })),
+      items.map(async (item) => ({ src: item.src, alt: item.alt || '', caption: item.caption || '', ...(item.w && item.h ? { w: item.w, h: item.h } : await sizeOf(item.src)) })),
     );
     if (slides.length) lightbox.loadAndOpen(index, slides);
   },
