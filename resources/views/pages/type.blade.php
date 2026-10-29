@@ -50,16 +50,7 @@
           {{-- Viewer 360° --}}
           @php($first = $parts[0])
           <div class="tps__view" style="--native: {{ ($spin ?? $first)['width'] }}px">
-            <div class="tps__head">
-              <h2 class="display tps__part" aria-live="polite" data-part-name>{{ $first['name'] }}</h2>
-              @if (count($parts) > 1)
-                <span class="tps__dots" aria-hidden="true">
-                  @foreach ($parts as $part)
-                    <span @class(['is-on' => $loop->first]) data-part-dot></span>
-                  @endforeach
-                </span>
-              @endif
-            </div>
+            <h2 class="display tps__part" aria-live="polite" data-part-name>{{ $first['name'] }}</h2>
 
             <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°">
               @if ($spin)

@@ -11,7 +11,6 @@ if (root) {
   // Lembar halaman tipe
   const name = root.querySelector('[data-part-name]');
   const text = root.querySelector('[data-part-text]');
-  const dots = [...root.querySelectorAll('[data-part-dot]')];
   let active = 0;
   let loaded = tt?.querySelector('.tt__stage')?.dataset.config ?? null;
 
@@ -49,7 +48,6 @@ if (root) {
       item.classList.toggle('is-open', k === i);
       tabs[k].setAttribute(tabs[k].hasAttribute('aria-pressed') ? 'aria-pressed' : 'aria-expanded', String(k === i));
     });
-    dots.forEach((dot, k) => dot.classList.toggle('is-on', k === i));
     if (name) name.textContent = parts[i].name;
     if (text) {
       text.textContent = parts[i].text;

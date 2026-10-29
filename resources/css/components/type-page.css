@@ -321,40 +321,13 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
   max-width: var(--native, none); /* Selebar viewer */
 }
 
-.tps__head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
 .tps__part {
-  margin: 0;
+  margin: 0 0 16px;
   color: var(--room);
   font-size: clamp(24px, 2.2vw, 32px);
   font-weight: 300;
   line-height: 1.1;
   overflow-wrap: anywhere;
-}
-
-/* Penanda bagian */
-.tps__dots {
-  display: flex;
-  flex: none;
-  gap: 6px;
-  padding-bottom: 10px;
-}
-
-.tps__dots span {
-  width: 22px;
-  height: 2px;
-  background: var(--tps-edge);
-  transition: background-color 0.3s var(--ease);
-}
-
-.tps__dots .is-on {
-  background: var(--ink);
 }
 
 .tps__stage {
@@ -1051,7 +1024,6 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
 @media (prefers-reduced-motion: reduce) {
   .tph__tab,
   .tpx__shot img,
-  .tps__dots span,
   .tps__tab,
   .tps__plan {
     transition: none;
