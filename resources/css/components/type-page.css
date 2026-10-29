@@ -654,6 +654,12 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
     padding-block: 10px;
     border-bottom: 0;
   }
+
+  /* Tombol tanpa garis atas */
+  .tps .tps__actions {
+    padding-top: 0;
+    border-top: 0;
+  }
 }
 
 /* Section denah */
