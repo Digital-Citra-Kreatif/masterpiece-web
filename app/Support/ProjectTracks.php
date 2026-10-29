@@ -47,9 +47,9 @@ final class ProjectTracks
      * @param  array<string, array{0: float, 1: float}>  $placed
      * @return array<string, list<array{0: int, 1: int}|null>>|null
      */
-    public static function for(string $slug, string $section, array $placed): ?array
+    public static function for(int $entryId, string $section, array $placed, ?string $slug = null): ?array
     {
-        $stored = self::stored($slug)[$section] ?? null;
+        $stored = self::stored($entryId, $slug)[$section] ?? null;
 
         return $placed !== [] && ($stored['hash'] ?? null) === self::hash($section, $placed) ? $stored['tracks'] : null;
     }
@@ -61,9 +61,10 @@ final class ProjectTracks
      */
     public static function make(EntryTranslation $translation): void
     {
-        $slug = (string) $translation->slug;
-        $stored = self::stored($slug);
-        $changed = false;
+        $file = self::file($translation->entry_id);
+        $stored = self::stored($translation->entry_id, (string) $translation->slug);
+        // File lama per slug
+        $changed = ! Storage::exists($file);
 
         foreach (self::sections() as $section => $base) {
             $placed = self::placed($translation->data[$section]['points'] ?? [], $section);
@@ -76,7 +77,7 @@ final class ProjectTracks
         }
 
         if ($changed) {
-            Storage::put(self::file($slug), json_encode($stored));
+            Storage::put($file, json_encode($stored));
         }
     }
 
@@ -113,17 +114,24 @@ final class ProjectTracks
     }
 
     /**
+     * Per entri, cadangan file lama per slug
+     *
      * @return array<string, array{hash: string, tracks: array<string, list<array{0: int, 1: int}|null>>}>
      */
-    private static function stored(string $slug): array
+    private static function stored(int $entryId, ?string $slug = null): array
     {
-        $file = self::file($slug);
+        foreach (array_filter([self::file($entryId), $slug !== null ? "tracks/{$slug}.json" : null]) as $file) {
+            if (Storage::exists($file)) {
+                return json_decode((string) Storage::get($file), true) ?: [];
+            }
+        }
 
-        return Storage::exists($file) ? (json_decode((string) Storage::get($file), true) ?: []) : [];
+        return [];
     }
 
-    private static function file(string $slug): string
+    /** Tetap walau slug proyek diganti */
+    private static function file(int $entryId): string
     {
-        return "tracks/{$slug}.json";
+        return "tracks/entry-{$entryId}.json";
     }
 }

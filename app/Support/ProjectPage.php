@@ -66,7 +66,7 @@ final class ProjectPage
         foreach (array_keys(ProjectTracks::sections()) as $handle) {
             if (isset($sections[$handle]['scene'])) {
                 $placed = ProjectTracks::placed($sections[$handle]['points'], $handle);
-                $sections[$handle]['scene']['tracks'] = ProjectTracks::for((string) $entry->slug, $handle, $placed);
+                $sections[$handle]['scene']['tracks'] = ProjectTracks::for($entry->entry_id, $handle, $placed, (string) $entry->slug);
             }
         }
 

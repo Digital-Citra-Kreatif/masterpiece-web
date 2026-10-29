@@ -27,11 +27,21 @@ test('stored paths are used only while they were made for the same places', func
     Storage::fake('local');
     $placed = ['masterplan-1' => [50.0, 52.0]];
     $hash = (new ReflectionMethod(ProjectTracks::class, 'hash'))->invoke(null, 'masterplan', $placed);
-    Storage::put('tracks/westlake.json', json_encode(['masterplan' => ['hash' => $hash, 'tracks' => ['masterplan-1' => [[640, 374], null]]]]));
+    Storage::put('tracks/entry-7.json', json_encode(['masterplan' => ['hash' => $hash, 'tracks' => ['masterplan-1' => [[640, 374], null]]]]));
 
-    expect(ProjectTracks::for('westlake', 'masterplan', $placed))->toBe(['masterplan-1' => [[640, 374], null]])
-        ->and(ProjectTracks::for('westlake', 'masterplan', ['masterplan-1' => [51.0, 52.0]]))->toBeNull()
-        ->and(ProjectTracks::for('other', 'masterplan', $placed))->toBeNull();
+    expect(ProjectTracks::for(7, 'masterplan', $placed))->toBe(['masterplan-1' => [[640, 374], null]])
+        ->and(ProjectTracks::for(7, 'masterplan', ['masterplan-1' => [51.0, 52.0]]))->toBeNull()
+        ->and(ProjectTracks::for(8, 'masterplan', $placed))->toBeNull();
+});
+
+test('paths are kept by entry, so renaming the project does not lose them, and old files by slug still count', function () {
+    Storage::fake('local');
+    $placed = ['masterplan-1' => [50.0, 52.0]];
+    $hash = (new ReflectionMethod(ProjectTracks::class, 'hash'))->invoke(null, 'masterplan', $placed);
+    Storage::put('tracks/westlake.json', json_encode(['masterplan' => ['hash' => $hash, 'tracks' => ['masterplan-1' => [[640, 374]]]]]));
+
+    expect(ProjectTracks::for(7, 'masterplan', $placed, 'westlake'))->toBe(['masterplan-1' => [[640, 374]]])
+        ->and(ProjectTracks::for(7, 'masterplan', $placed, 'westlake-baru'))->toBeNull();
 });
 
 test('publishing a project queues its point tracking', function () {
