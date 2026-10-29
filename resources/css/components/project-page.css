@@ -759,9 +759,6 @@ button.pj-frame:focus-visible {
   margin: calc(-1 * (var(--head) + var(--stem))) 0 0 calc(var(--head) / -2);
   border: 0;
   background: none;
-  transform-origin: 50% calc(100% + var(--stem));
-  transform: perspective(200px) rotateY(calc(var(--spin, 0) * 35deg)) rotateZ(calc(var(--spin, 0) * -8deg));
-  transition: transform 0.35s var(--ease);
 }
 
 .spot--marker.spot--flip .spot__dot {
@@ -796,8 +793,7 @@ button.pj-frame:focus-visible {
   border-radius: 50%;
   background: rgb(0 0 0 / 0.5);
   filter: blur(2px);
-  translate: calc(-50% + var(--spin, 0) * -10px) 0;
-  transition: translate 0.35s var(--ease);
+  translate: -50% 0; /* Pin tetap tegak */
   pointer-events: none;
 }
 

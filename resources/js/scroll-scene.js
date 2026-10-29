@@ -554,8 +554,6 @@ async function init(root) {
 
     const fw = showFrame(override ?? current);
     placeMarkers(fw, areaIn > 0.3);
-    // Arah putaran
-    root.style.setProperty('--spin', clamp((goal - current) * 0.35, -1, 1).toFixed(3));
 
     if (current !== goal || !idle) requestTick();
   }
