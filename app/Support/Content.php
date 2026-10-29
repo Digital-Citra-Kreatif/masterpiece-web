@@ -157,6 +157,11 @@ final class Content
                     default => [],
                 },
             ],
+            // Semua proyek terbit
+            'projects' => [
+                'heading' => $heading('projects', ['title' => 'Proyek', 'intro' => null]),
+                'cards' => Cms::entries('projects')->ordered()->get()->map(self::projectCard(...))->values()->all(),
+            ],
             'masterplan' => [
                 'title' => $masterplan['title'],
                 'text' => $masterplan['intro'],
@@ -286,6 +291,24 @@ final class Content
             'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url(), 'thumb' => $image->url('medium')])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],
             'project' => ProjectPage::forType($entry, $values['project'] ?? null),
+        ];
+    }
+
+    /**
+     * Kartu proyek beranda
+     *
+     * @return array{name: string, url: string, image: ?string, description: ?string}
+     */
+    private static function projectCard(EntryTranslation $project): array
+    {
+        $values = $project->values();
+        $image = $values['card_image'] ?? null;
+
+        return [
+            'name' => (string) $project->title,
+            'url' => (string) $project->url(),
+            'image' => $image instanceof Media ? $image->url('large') : null,
+            'description' => filled($values['hero']['description'] ?? null) ? (string) $values['hero']['description'] : null,
         ];
     }
 

@@ -72,6 +72,10 @@ class SiteContentSeeder extends Seeder
                         $this->field('video', 'media', ['types' => ['video']], ['label' => 'Video background', 'translatable' => false, 'width' => 50]),
                         $this->field('image', 'media', ['types' => ['image']], ['label' => 'Gambar background', 'translatable' => false, 'width' => 50]),
                     ]]),
+                    $this->field('projects', 'group', [], ['label' => 'Grid proyek', 'fields' => [
+                        $text('title', ['label' => 'Judul']),
+                        $textarea('description', ['label' => 'Deskripsi']),
+                    ]]),
                     ...collect(['masterplan' => 'Masterplan', 'lokasi' => 'Lokasi', 'cluster' => 'Cluster', 'fasilitas' => 'Fasilitas', 'tipe' => 'Tipe unit', 'unit_update' => 'Status siteplan'])
                         ->map(fn (string $label, string $handle): array => $this->field($handle, 'group', [], ['label' => $label, 'fields' => [
                             $text('title', ['label' => 'Judul']),
@@ -437,6 +441,7 @@ class SiteContentSeeder extends Seeder
                 'description' => "A residential cluster in Jakarta,\ndesigned for growing families.",
                 'image' => $this->media('media/stills/ruko-front-34.jpg', ''),
             ],
+            'projects' => ['title' => 'Proyek', 'description' => 'Pilih proyek untuk melihat kawasan, tipe unit, dan ketersediaannya.'],
             'masterplan' => ['title' => 'Masterplan', 'description' => "A residential cluster in Jakarta,\ndesigned for growing families."],
             'lokasi' => ['title' => 'Lokasi', 'description' => 'Posisi proyek di dalam kawasan yang lebih besar.'],
             'cluster' => ['title' => 'Cluster', 'description' => 'Lebih dekat ke cluster ruko. Gulir untuk mengelilingi blok, klik penanda untuk menuju setiap titik.'],

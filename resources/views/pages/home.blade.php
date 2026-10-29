@@ -5,6 +5,11 @@
     <!-- Hero -->
     <x-home.hero :hero="$hero" />
 
+    @if ($projects['cards'] !== [])
+      <!-- Grid proyek -->
+      <x-home.project-grid :projects="$projects['cards']" :heading="$projects['heading']" />
+    @endif
+
     <!-- Masterplan dan area -->
     <x-scroll-scene
       id="kawasan"

@@ -7,8 +7,11 @@ use Illuminate\Support\Facades\Storage;
 use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Admin\Settings\BrandingSettings;
+use Sunrice\Cms\Actions\Entries\CreateEntry;
+use Sunrice\Cms\Actions\Entries\PublishEntry;
 use Sunrice\Cms\Actions\Globals\SaveGlobals;
 use Sunrice\Cms\Actions\Menus\SaveMenu;
+use Sunrice\Cms\Models\Collection;
 use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Models\GlobalSet;
 use Sunrice\Cms\Models\Menu;
@@ -82,6 +85,29 @@ test('a hero banner without video or image keeps the hardcoded slides', function
         ->assertSee('preload="none" data-src="'.asset('media/hero/teaser.mp4').'"', false);
 
     expect(substr_count($response->getContent(), 'class="hero__media"'))->toBe(4);
+});
+
+test('the homepage lists every published project with its card image and hero description', function () {
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $card = app(UploadMedia::class)->handle(UploadedFile::fake()->image('kartu.jpg', 40, 30), []);
+    $project = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'card_image' => $card->id,
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'hero' => ['heading' => 'Westlake', 'description' => 'Ruko di tepi danau.'],
+    ]]);
+    app(PublishEntry::class)->handle($project->fresh());
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSeeInOrder(['<section class="hero"', '<section id="proyek" class="types projects"', '>Proyek</h2>'], false)
+        ->assertSee('<a class="card card--project" href="'.url('/projects/westlake').'">', false)
+        ->assertSee('<h3 class="card__name display">Westlake</h3>', false)
+        ->assertSee('<p class="card__desc">Ruko di tepi danau.</p>', false)
+        ->assertSee($card->url('large'), false);
+});
+
+test('the homepage has no projects grid before a project is published', function () {
+    $this->get('/')->assertOk()->assertDontSee('id="proyek"', false);
 });
 
 test('each section shows its title and description from the CMS, or the defaults without a title', function () {
