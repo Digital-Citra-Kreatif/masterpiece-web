@@ -177,6 +177,28 @@
       </section>
     @endif
 
+    @if ($t['buildingSpecs'] !== [])
+      {{-- Spesifikasi bangunan --}}
+      <section class="tpb" aria-labelledby="build-title">
+        <div class="wrap tpb__grid">
+          <h2 class="display tpb__title" id="build-title">Spesifikasi bangunan</h2>
+          <div class="tpb__body">
+            <dl class="tpb__list">
+              @foreach ($t['buildingSpecs'] as [$k, $v])
+                <div>
+                  <dt>{{ $k }}</dt>
+                  <dd>{{ $v }}</dd>
+                </div>
+              @endforeach
+            </dl>
+            @if ($t['specsNote'])
+              <p class="tpb__note">{{ $t['specsNote'] }}</p>
+            @endif
+          </div>
+        </div>
+      </section>
+    @endif
+
     @if ($pj && $pj['types'] !== [])
       <x-home.type-grid variant="project" id="tipe-lain" :types="$pj['types']" :heading="['title' => 'Tipe lain', 'intro' => null]" />
     @endif

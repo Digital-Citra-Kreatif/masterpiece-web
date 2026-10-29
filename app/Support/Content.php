@@ -284,6 +284,8 @@ final class Content
                 'items' => collect($values['suitable_for'] ?? [])->pluck('name')->filter()->values()->all(),
             ],
             'denah' => $denah->all(),
+            'buildingSpecs' => collect($values['building_specs'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
+            'specsNote' => filled($values['building_specs_note'] ?? null) ? (string) $values['building_specs_note'] : null,
             'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url(), 'thumb' => $image->url('medium')])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],
             'project' => ProjectPage::forType($entry, $values['project'] ?? null),

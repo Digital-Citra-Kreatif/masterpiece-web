@@ -2,7 +2,8 @@
 
 .tph,
 .tps,
-.tpd {
+.tpd,
+.tpb {
   background-color: #fff; /* Latar garis samping */
   --sheet-line: var(--line, var(--rule));
   /* Jarak garis samping */
@@ -22,7 +23,7 @@
 }
 
 /* Garis lebih tipis */
-body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
+body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   --line: rgb(14 17 19 / 0.07);
   --rule: rgb(14 17 19 / 0.07);
 }
@@ -32,7 +33,7 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
 }
 
-.is-type :is(.tph, .tps, .tpd, .types, .ft) {
+.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
   background-size: 1px 100%;
   background-position: left var(--line-x) top 0, right var(--line-x) top 0;
@@ -610,6 +611,85 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Spesifikasi bangunan */
+.tpb {
+  --tps-edge: rgb(14 17 19 / 0.16);
+  padding-block: clamp(56px, 7vw, 112px);
+  border-bottom: 1px solid var(--sheet-line);
+}
+
+.tps + .tpb {
+  border-top: 1px solid var(--sheet-line);
+}
+
+.tpb__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px clamp(40px, 5vw, 88px);
+}
+
+.tpb .tpb__title {
+  margin: 0;
+  color: var(--room);
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.tpb__body {
+  min-width: 0;
+}
+
+.tpb__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 32px;
+  margin: 0;
+}
+
+.tpb__list div {
+  padding-block: 14px;
+  border-bottom: 1px solid var(--tps-edge);
+}
+
+.tpb__list dt {
+  color: var(--muted);
+  font-family: var(--label);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tpb__list dd {
+  margin: 6px 0 0;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.tpb__note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 960px) {
+  .tpb__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .tpb__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tpb .tpb__title {
+    font-size: 32px;
+  }
 }
 
 @media (min-width: 761px) and (max-width: 1024px) {
