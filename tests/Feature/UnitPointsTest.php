@@ -8,10 +8,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Actions\Permissions\SyncPermissions;
 use Sunrice\Cms\Actions\Entries\CreateEntry;
 use Sunrice\Cms\Actions\Entries\PublishEntry;
+use Sunrice\Cms\Actions\Entries\SaveDraft;
 use Sunrice\Cms\Models\Collection;
 use Sunrice\Cms\Models\EntryTranslation;
 
@@ -108,4 +110,14 @@ test('admin pages load the map script on full page loads only', function () {
         ->assertSee('<script type="module" src="'.$script, false);
     $this->actingAs($this->admin)->get('/admin', ['X-Inertia' => 'true'])
         ->assertDontSee($script, false);
+});
+
+test('a unit entry needs a title, on create and on save', function () {
+    $units = Collection::query()->where('handle', 'units')->firstOrFail();
+    $data = ['project' => $this->project->entry_id, 'sale_status' => 'available'];
+
+    expect(fn () => app(CreateEntry::class)->handle($units, ['title' => '', 'locale' => 'id', 'data' => $data]))
+        ->toThrow(ValidationException::class);
+    expect(fn () => app(SaveDraft::class)->handle($this->placed->fresh(), ['title' => '  ', 'data' => $data, 'version' => $this->placed->fresh()->version]))
+        ->toThrow(ValidationException::class);
 });
