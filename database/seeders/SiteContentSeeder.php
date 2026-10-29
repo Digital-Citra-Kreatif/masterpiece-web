@@ -135,6 +135,8 @@ class SiteContentSeeder extends Seeder
                     ], 'default' => 'available'], ['label' => 'Status', 'required' => true, 'width' => 50]),
                 ]],
                 ['handle' => 'situs', 'title' => 'Situs', 'fields' => [
+                    $image('logo_light', ['label' => 'Logo header terang', 'translatable' => false, 'width' => 50, 'instructions' => 'Di atas foto hero.']),
+                    $image('logo_dark', ['label' => 'Logo header gelap', 'translatable' => false, 'width' => 50, 'instructions' => 'Di header berlatar terang.']),
                     $this->field('status_labels', 'group', [], ['fields' => [
                         $text('sold', ['required' => true, 'width' => 33]),
                         $text('reserved', ['required' => true, 'width' => 33]),

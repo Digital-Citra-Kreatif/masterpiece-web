@@ -38,6 +38,23 @@ test('the homepage shows only the hero and the projects grid', function () {
         ->assertDontSee('mp__title', false);
 });
 
+test('the header uses the config logos while Globals → Situs has none', function () {
+    $this->get('/')->assertOk()->assertSee('src="'.asset('images/masterpiece-logo.png').'"', false);
+});
+
+test('the header logos come from Globals → Situs', function () {
+    $light = app(UploadMedia::class)->handle(UploadedFile::fake()->image('logo-terang.png', 300, 60), []);
+    $dark = app(UploadMedia::class)->handle(UploadedFile::fake()->image('logo-gelap.png', 300, 60), []);
+    $set = GlobalSet::query()->where('handle', 'situs')->firstOrFail();
+    app(SaveGlobals::class)->handle($set, ['logo_light' => $light->id, 'logo_dark' => $dark->id, 'status_labels' => ['sold' => 'Terjual', 'reserved' => 'Dipesan', 'available' => 'Tersedia']], 'id');
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSeeInOrder(['class="hd__logo hd__logo--light"', 'src="'.asset($light->url('medium')).'"', 'width="300"', 'height="60"'], false)
+        ->assertSeeInOrder(['class="hd__logo hd__logo--dark"', 'src="'.asset($dark->url('medium')).'"'], false)
+        ->assertDontSee('images/masterpiece-logo.png', false);
+});
+
 test('the hero banner shows the heading, description and background image from the CMS', function () {
     $home = EntryTranslation::query()->where('slug', 'home')->firstOrFail();
     $home->update(['data' => array_replace_recursive($home->data, ['hero' => ['heading' => 'Judul dari CMS', 'description' => 'Deskripsi dari CMS']])]);

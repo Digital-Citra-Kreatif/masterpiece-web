@@ -33,7 +33,7 @@ final class Content
                 'favicon' => self::favicon(),
                 'protectMedia' => (bool) ($settings['protect_media'] ?? false),
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
-                'logo' => [...config('site.logo'), 'alt' => Cms::site()->name()],
+                'logo' => [...self::headerLogo($settings), 'alt' => Cms::site()->name()],
                 'nav' => self::nav(),
                 'statusLabels' => [
                     'sold' => $labels['sold'] ?? 'Terjual',
@@ -329,6 +329,30 @@ final class Content
                 ]])
                 ->all(),
         ];
+    }
+
+    /**
+     * Logo header dari Globals Situs, cadangan config
+     *
+     * @param  array<string, mixed>  $settings
+     * @return array{light: string, dark: string, width: int, height: int}
+     */
+    private static function headerLogo(array $settings): array
+    {
+        $logo = config('site.logo');
+        $size = null;
+        foreach (['light' => 'logo_light', 'dark' => 'logo_dark'] as $tone => $field) {
+            $media = $settings[$field] ?? null;
+            if ($media instanceof Media && $media->isImage()) {
+                $logo[$tone] = $media->url('medium');
+                $size ??= [$media->width, $media->height];
+            }
+        }
+        if ($size !== null && $size[0] && $size[1]) {
+            [$logo['width'], $logo['height']] = [(int) $size[0], (int) $size[1]];
+        }
+
+        return $logo;
     }
 
     /** CSS ID dari CMS, tanpa # */
