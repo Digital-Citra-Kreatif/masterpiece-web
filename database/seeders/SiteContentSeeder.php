@@ -103,8 +103,8 @@ class SiteContentSeeder extends Seeder
                     $textarea('intro'),
                     $text('suitable_title', ['label' => 'Judul rekomendasi usaha', 'instructions' => 'Contoh: "Cocok untuk usaha yang butuh eksposur maksimal".']),
                     $this->field('suitable_for', 'repeater', [], [
-                        'label' => 'Cocok untuk usaha',
-                        'fields' => [$text('name', ['label' => 'Usaha', 'required' => true])],
+                        'label' => 'Rekomendasi jenis usaha',
+                        'fields' => [$text('name', ['label' => 'Jenis usaha', 'required' => true])],
                     ]),
                     $this->field('info_rows', 'repeater', [], [
                         'instructions' => 'Info tambahan selain luas, lantai, dan kamar (yang sudah diambil dari isian di atas).',
