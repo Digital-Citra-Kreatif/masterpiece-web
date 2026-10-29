@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Http\Controllers\Admin\OrbitFramesController;
+use App\Http\Controllers\Admin\OrbitUploadController;
 use App\Http\Controllers\Admin\UnitPointsController;
 use App\Http\Middleware\AdminNavigationIcons;
 use App\Http\Middleware\AdminProjectMap;
@@ -26,6 +27,9 @@ final class AdminPanelProvider extends PanelProvider
                 Route::get('unit-points/{project}', [UnitPointsController::class, 'show'])->whereNumber('project')->name('unit-points.show');
                 Route::put('unit-points/{project}', [UnitPointsController::class, 'update'])->whereNumber('project')->name('unit-points.update');
                 Route::get('orbit-frames', OrbitFramesController::class)->name('orbit-frames');
+                Route::get('orbit-upload/{project}/{section}', [OrbitUploadController::class, 'show'])->whereNumber('project')->whereIn('section', ['masterplan', 'cluster'])->name('orbit-upload.show');
+                Route::post('orbit-upload/{project}/{section}', [OrbitUploadController::class, 'store'])->whereNumber('project')->whereIn('section', ['masterplan', 'cluster'])->name('orbit-upload.store');
+                Route::delete('orbit-upload/{project}/{section}', [OrbitUploadController::class, 'destroy'])->whereNumber('project')->whereIn('section', ['masterplan', 'cluster'])->name('orbit-upload.destroy');
             });
     }
 }

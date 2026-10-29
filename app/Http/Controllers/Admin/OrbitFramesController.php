@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Support\OrbitFrames;
 use App\Support\ProjectTracks;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,18 +19,20 @@ class OrbitFramesController extends Controller
     {
         abort_unless(Access::entries($request->user(), 'view', 'projects'), 403);
 
-        $data = self::draft($request->integer('project'));
+        $project = $request->integer('project');
+        $data = self::draft($project);
         $frames = [];
-        foreach (ProjectTracks::sections() as $section => $base) {
-            // Gambar diam dari CMS
-            $media = is_int($data[$section]['image'] ?? null) ? Media::query()->find($data[$section]['image']) : null;
+        foreach ($project > 0 ? ProjectTracks::bases($project) : ProjectTracks::sections() as $section => $base) {
+            // Gambar diam dari CMS, kalah oleh frame ZIP
+            $uploaded = $base !== ProjectTracks::sections()[$section];
+            $media = ! $uploaded && is_int($data[$section]['image'] ?? null) ? Media::query()->find($data[$section]['image']) : null;
             if ($media instanceof Media && $media->isImage()) {
                 $frames[$section] = ['src' => $media->url('large'), 'width' => (int) $media->width, 'height' => (int) $media->height];
 
                 continue;
             }
             $dir = trim($base, '/');
-            $manifest = json_decode((string) @file_get_contents(public_path("{$dir}/manifest.json")), true);
+            $manifest = json_decode((string) @file_get_contents(OrbitFrames::directory($base).'/manifest.json'), true);
             if (! is_array($manifest)) {
                 continue;
             }

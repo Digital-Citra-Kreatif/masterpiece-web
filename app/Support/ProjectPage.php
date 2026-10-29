@@ -122,9 +122,9 @@ final class ProjectPage
     private static function sections(array $values, int $project): array
     {
         return array_filter([
-            'masterplan' => self::masterplan(self::group($values, 'masterplan')),
+            'masterplan' => self::masterplan(self::group($values, 'masterplan'), $project),
             'location' => self::location(self::group($values, 'location')),
-            'cluster' => self::cluster(self::group($values, 'cluster')),
+            'cluster' => self::cluster(self::group($values, 'cluster'), $project),
             'facilities' => self::facilities(self::group($values, 'facilities')),
             'turntable' => self::turntable(self::group($values, 'turntable'), $project),
             'types' => self::types(self::group($values, 'types')),
@@ -260,7 +260,7 @@ final class ProjectPage
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
      */
-    private static function masterplan(array $section): ?array
+    private static function masterplan(array $section, int $project): ?array
     {
         $percent = fn (mixed $value): ?float => is_numeric($value) ? max(0.0, min(100.0, (float) $value)) : null;
         $points = collect($section['points'] ?? [])
@@ -281,7 +281,7 @@ final class ProjectPage
 
         // Orbit dengan titik
         $hotspots = self::hotspots($points, 'masterplan');
-        $scene = $points === [] ? null : self::still([...Content::sampleArea(), 'hotspots' => $hotspots], $section['image'] ?? null);
+        $scene = $points === [] ? null : self::frames([...Content::sampleArea(), 'hotspots' => $hotspots], $section['image'] ?? null, $project, 'masterplan');
 
         return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
     }
@@ -305,7 +305,7 @@ final class ProjectPage
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, description: ?string, image: ?array<string, mixed>, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
      */
-    private static function cluster(array $section): ?array
+    private static function cluster(array $section, int $project): ?array
     {
         $percent = fn (mixed $value): ?float => is_numeric($value) ? max(0.0, min(100.0, (float) $value)) : null;
         $points = collect($section['points'] ?? [])
@@ -326,19 +326,23 @@ final class ProjectPage
             ->all();
 
         $hotspots = self::hotspots($points, 'cluster');
-        $scene = $points === [] ? null : self::still([...Content::sampleCluster(), 'hotspots' => $hotspots], $section['image'] ?? null);
+        $scene = $points === [] ? null : self::frames([...Content::sampleCluster(), 'hotspots' => $hotspots], $section['image'] ?? null, $project, 'cluster');
 
         return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
     }
 
     /**
-     * Gambar diam dari CMS, menggantikan frame contoh
+     * Gambar scene: frame ZIP, gambar diam CMS, atau frame contoh
      *
      * @param  array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video?: string}  $scene
      * @return array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video?: ?string}
      */
-    private static function still(array $scene, mixed $media): array
+    private static function frames(array $scene, mixed $media, int $project, string $section): array
     {
+        $base = OrbitFrames::base($project, $section);
+        if ($base !== null) {
+            return ['scene' => ['base' => $base], 'hotspots' => $scene['hotspots'], 'video' => null];
+        }
         $image = self::image($media);
         if ($image === null) {
             return $scene;
