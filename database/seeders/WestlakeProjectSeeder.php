@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Sunrice\Admin\Actions\Media\SaveMediaFolder;
 use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Media\Media;
@@ -20,6 +21,9 @@ class WestlakeProjectSeeder extends Seeder
 
     private const SOURCE = 'project-one/Data & Image';
 
+    /** Field tipe yang diisi bila kosong */
+    private const TYPE_DETAILS = ['suitable_title', 'suitable_for', 'building_specs', 'building_specs_note'];
+
     /** @var array<string, int> file content hash => media id */
     private array $uploaded = [];
 
@@ -33,6 +37,7 @@ class WestlakeProjectSeeder extends Seeder
         // Paksa impor ulang
         $importer->import(['blueprints' => [$definitions->blueprint('project')]], force: true);
         $importer->import(['entries' => $this->typeEntries()]);
+        $this->fillTypeDetails($saveDraft, $publish);
 
         $translation = EntryTranslation::query()->where('slug', self::SLUG)->where('locale', 'id')->firstOrFail();
         $stored = array_filter($translation->draft_data ?? []);
@@ -131,6 +136,11 @@ class WestlakeProjectSeeder extends Seeder
             'E' => ['Ruko Hook', '5 x 10 m', 50, 103],
         ];
         $views = ['streetview' => 'Streetview', 'lakeview' => 'Lakeview'];
+        // Presentasi hal. 35
+        $suitable = [
+            'streetview' => ['Cocok untuk usaha yang butuh eksposur maksimal', ['Klinik', 'Studio pilates', 'Minimarket', 'Ritel', 'Apotek', 'Kantor']],
+            'lakeview' => ['Cocok untuk usaha berbasis pengalaman pelanggan', ['Kafe', 'Restoran', 'Toko teh artisan', 'Wellness', 'Restoran keluarga']],
+        ];
 
         return collect($views)
             ->flatMap(fn (string $prefix, string $view): array => collect($sizes)->map(fn (array $size, string $type): array => self::entry(
@@ -147,10 +157,67 @@ class WestlakeProjectSeeder extends Seeder
                     'floors' => 2,
                     'floor_plans' => [['label' => 'Lantai 1 & 2', 'image' => $this->image("Data Type Unit/Denah {$prefix} Type {$type} - LT LB.webp")]],
                     'gallery' => [],
+                    'suitable_title' => $suitable[$view][0],
+                    'suitable_for' => array_map(fn (string $name): array => ['name' => $name], $suitable[$view][1]),
+                    'building_specs' => self::buildingSpecs(),
+                    'building_specs_note' => '*Spesifikasi dan material dapat berubah sewaktu-waktu tanpa pemberitahuan.',
                     'placeholder' => false,
                 ],
             ))->values()->all())
             ->all();
+    }
+
+    /**
+     * Spesifikasi bangunan, presentasi hal. 54
+     *
+     * @return list<array{label: string, value: string}>
+     */
+    private static function buildingSpecs(): array
+    {
+        return collect([
+            'Pondasi' => 'Mini pile',
+            'Struktur utama' => 'Beton bertulang',
+            'Dinding' => 'Bata ringan (AAC), diplester dan dicat',
+            'Plafon' => 'Gypsum board',
+            'Atap' => 'Zincalume gelombang, rangka baja ringan dan insulasi',
+            'Pintu utama' => 'Rangka aluminium dengan kaca',
+            'Jendela' => 'Rangka aluminium dengan kaca',
+            'Fasad' => 'Dinding plester cat, rangka aluminium dengan kaca',
+            'Lantai teras' => 'Homogenous tile anti-slip',
+            'Lantai dalam' => 'Homogenous tile',
+            'Lantai toilet' => 'Homogenous tile anti-slip',
+            'Sanitasi' => 'Standard set',
+            'Listrik' => '3500 VA',
+            'Internet' => 'Fiber optic',
+            'Air bersih' => 'PAM',
+        ])->map(fn (string $value, string $label): array => ['label' => $label, 'value' => $value])->values()->all();
+    }
+
+    /** Isi field tipe yang masih kosong */
+    private function fillTypeDetails(SaveDraft $saveDraft, PublishEntry $publish): void
+    {
+        foreach ($this->typeEntries() as $type) {
+            $translation = EntryTranslation::query()
+                ->whereRelation('entry.collection', 'handle', 'types')
+                ->where('locale', 'id')
+                ->where('slug', $type['slug'])
+                ->first();
+            if ($translation === null) {
+                continue;
+            }
+
+            $stored = $translation->draft_data ?? [];
+            $missing = array_filter(
+                Arr::only($type['translations']['id']['data'], self::TYPE_DETAILS),
+                fn (mixed $value, string $handle): bool => blank($stored[$handle] ?? null),
+                ARRAY_FILTER_USE_BOTH,
+            );
+            if ($missing === []) {
+                continue;
+            }
+
+            $publish->handle($saveDraft->handle($translation, ['data' => $missing, 'version' => $translation->version]));
+        }
     }
 
     /**
