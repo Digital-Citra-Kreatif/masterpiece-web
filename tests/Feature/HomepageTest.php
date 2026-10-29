@@ -103,7 +103,7 @@ test('a type page without a project shows its title, specs, floor plans, gallery
         ->assertDontSee('data-parts', false)
         ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>LT</dt>', '140 m²', '<dt>LB</dt>', '240 m²'], false)
         ->assertSee('<dl class="tps__specs" aria-label="Spesifikasi">', false)
-        ->assertSee('<ul class="tps__plans" aria-label="Denah">', false)
+        ->assertSee('<section class="tpd" aria-label="Denah">', false)
         ->assertSee('Denah Lantai 1')
         ->assertSee('Tipe 6: Galeri')
         ->assertSee('>Gallery</button>', false)

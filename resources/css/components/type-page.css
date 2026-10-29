@@ -2,7 +2,8 @@
 
 .tph,
 .tpx,
-.tps {
+.tps,
+.tpd {
   background-color: #fff; /* Latar garis samping */
   --sheet-line: var(--line, var(--rule));
   /* Jarak garis samping */
@@ -17,13 +18,13 @@
   padding-right: calc(max(8px, var(--gutter) - 40px) + 1px);
 }
 
-:is(.tph__tab, .tpx__plan, .tpx__shot, .tps__tab, .tps__plan):focus-visible {
+:is(.tph__tab, .tpx__plan, .tpx__shot, .tps__tab, .tpd__plan):focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
 /* Garis lebih tipis */
-body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
+body.is-type :is(.tph, .tpx, .tps, .tpd, .types, .ft) {
   --line: rgb(14 17 19 / 0.07);
   --rule: rgb(14 17 19 / 0.07);
 }
@@ -33,7 +34,7 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
 }
 
-.is-type :is(.tph, .tps, .types, .ft) {
+.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
   background-size: 1px 100%;
   background-position: left var(--line-x) top 0, right var(--line-x) top 0;
@@ -298,7 +299,7 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
 /* Lembar tipe */
 .tps {
   --tps-edge: rgb(14 17 19 / 0.16);
-  padding-block: clamp(32px, 4vw, 56px) clamp(72px, 10vw, 160px);
+  padding-block: clamp(32px, 4vw, 56px) clamp(56px, 7vw, 112px);
 }
 
 .tps__grid {
@@ -496,55 +497,6 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
   color: var(--paper);
 }
 
-/* Kartu denah */
-.tps__plans {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin: 16px 0 0;
-  padding: 0;
-}
-
-.tps__plan {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 1px solid var(--tps-edge);
-  background: #fff;
-  color: var(--ink);
-  font: inherit;
-  text-align: left;
-  cursor: zoom-in;
-  transition: border-color 0.2s var(--ease);
-}
-
-.tps__plan img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  padding: 8px;
-  object-fit: contain;
-}
-
-.tps__plan span {
-  margin-top: auto;
-  padding: 10px 12px;
-  border-top: 1px solid var(--tps-edge);
-  font-family: var(--label);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
-}
-
-.tps__plan:hover {
-  border-color: var(--ink);
-}
-
 /* Tombol bawah */
 .tps__actions {
   display: grid;
@@ -570,9 +522,71 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
   }
 }
 
-@media (max-width: 480px) {
-  .tps__plans {
+/* Section denah */
+.tpd {
+  --tps-edge: rgb(14 17 19 / 0.16);
+  padding-block: clamp(40px, 5vw, 72px);
+  border-block: 1px solid var(--sheet-line);
+}
+
+.tpd__plans {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.tpd__plan {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 1px solid var(--tps-edge);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: zoom-in;
+  transition: border-color 0.2s var(--ease);
+}
+
+.tpd__plan img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 16px;
+  object-fit: contain;
+}
+
+.tpd__plan span {
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid var(--tps-edge);
+  font-family: var(--label);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.tpd__plan:hover {
+  border-color: var(--ink);
+}
+
+@media (max-width: 760px) {
+  .tpd__plans {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tpd__plans {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1025,7 +1039,7 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
   .tph__tab,
   .tpx__shot img,
   .tps__tab,
-  .tps__plan {
+  .tpd__plan {
     transition: none;
   }
 

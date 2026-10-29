@@ -130,20 +130,6 @@
             </ul>
           @endif
 
-          @if ($t['denah'] !== [])
-            {{-- Denah --}}
-            <ul class="tps__plans" aria-label="Denah">
-              @foreach ($t['denah'] as $d)
-                <li>
-                  <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
-                    <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
-                    <span>{{ $d['label'] }}</span>
-                  </button>
-                </li>
-              @endforeach
-            </ul>
-          @endif
-
           @if ($t['gallery'] !== [] || $vrUrl)
             {{-- Galeri dan VR --}}
             <div class="tps__actions">
@@ -158,6 +144,24 @@
         </div>
       </div>
     </section>
+
+    @if ($t['denah'] !== [])
+      {{-- Denah --}}
+      <section class="tpd" aria-label="Denah">
+        <div class="wrap">
+          <ul class="tpd__plans">
+            @foreach ($t['denah'] as $d)
+              <li>
+                <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                  <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
+                  <span>{{ $d['label'] }}</span>
+                </button>
+              </li>
+            @endforeach
+          </ul>
+        </div>
+      </section>
+    @endif
 
     @if ($pj && $pj['types'] !== [])
       <x-home.type-grid variant="project" id="tipe-lain" :types="$pj['types']" :heading="['title' => 'Tipe lain', 'intro' => null]" />
