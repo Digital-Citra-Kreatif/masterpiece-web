@@ -622,6 +622,25 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
 @media (max-width: 960px) {
   .tps__grid {
     grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+
+  /* Tab tepat di bawah viewer */
+  .tps__info {
+    display: contents;
+  }
+
+  .tps__view {
+    order: -2;
+  }
+
+  .tps__tabs {
+    order: -1;
+    margin-top: 24px;
+  }
+
+  .tps__info > :first-child {
+    margin-top: 40px;
   }
 }
 
