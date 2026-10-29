@@ -3,7 +3,9 @@
 use App\Jobs\TrackProjectPoints;
 use App\Support\ProjectTracks;
 use Database\Seeders\SiteContentSeeder;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Sunrice\Cms\Actions\Entries\CreateEntry;
@@ -57,4 +59,54 @@ test('publishing a project queues its point tracking', function () {
     app(PublishEntry::class)->handle($translation->fresh());
 
     Queue::assertPushed(TrackProjectPoints::class, fn (TrackProjectPoints $job): bool => $job->translationId === $translation->id);
+});
+
+test('while a moved point waits for tracking, unchanged points keep their path and the moved one follows its old path shifted', function () {
+    Storage::fake('local');
+    $old = ['masterplan-1' => [50.0, 50.0], 'masterplan-2' => [10.0, 10.0]];
+    $hash = (new ReflectionMethod(ProjectTracks::class, 'hash'))->invoke(null, 'masterplan', $old);
+    Storage::put('tracks/entry-7.json', json_encode(['masterplan' => ['hash' => $hash, 'points' => $old, 'tracks' => [
+        'masterplan-1' => [[640, 360], null],
+        'masterplan-2' => [[128, 72], [130, 72]],
+    ]]]));
+
+    // Manifest Kawasan 1280 x 720: 10% = 128 x 72 px
+    $tracks = ProjectTracks::for(7, 'masterplan', ['masterplan-1' => [60.0, 60.0], 'masterplan-2' => [10.0, 10.0], 'masterplan-3' => [5.0, 5.0]]);
+
+    expect($tracks)->toBe([
+        'masterplan-1' => [[768, 432], null],
+        'masterplan-2' => [[128, 72], [130, 72]],
+    ]);
+});
+
+test('retracking runs the tracker only for the points that moved or are new', function () {
+    Storage::fake('local');
+    Queue::fake();
+    Storage::fake('public');
+    $this->seed(SiteContentSeeder::class);
+    $old = ['masterplan-1' => [50.0, 50.0], 'masterplan-2' => [10.0, 10.0]];
+    $hash = (new ReflectionMethod(ProjectTracks::class, 'hash'))->invoke(null, 'masterplan', $old);
+    Process::fake(['*' => Process::result(output: json_encode(['masterplan-2' => [[200, 100]]]))]);
+
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $translation = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'masterplan' => ['title' => 'Masterplan', 'points' => [
+            ['number' => '01', 'name' => 'Tetap', 'x' => 50, 'y' => 50],
+            ['number' => '02', 'name' => 'Pindah', 'x' => 20, 'y' => 20],
+        ]],
+    ]]);
+    app(PublishEntry::class)->handle($translation->fresh());
+    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => $hash, 'points' => $old, 'tracks' => ['masterplan-1' => [[640, 360]], 'masterplan-2' => [[128, 72]]]]]));
+
+    ProjectTracks::make($translation->fresh());
+
+    Process::assertRan(fn ($process): bool => json_decode($process->input, true) === ['points' => ['masterplan-2' => [256, 144]]]);
+    $stored = json_decode(Storage::get("tracks/entry-{$translation->entry_id}.json"), true)['masterplan'];
+    expect($stored['tracks'])->toBe(['masterplan-1' => [[640, 360]], 'masterplan-2' => [[200, 100]]])
+        ->and($stored['points'])->toEqual(['masterplan-1' => [50, 50], 'masterplan-2' => [20, 20]]);
+});
+
+test('a save while tracking runs still queues a new tracking job', function () {
+    expect(new TrackProjectPoints(1))->toBeInstanceOf(ShouldBeUniqueUntilProcessing::class);
 });

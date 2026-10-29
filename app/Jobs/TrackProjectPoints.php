@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use App\Support\ProjectTracks;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Sunrice\Cms\Models\EntryTranslation;
 
-/** Lacak ulang titik */
-class TrackProjectPoints implements ShouldBeUnique, ShouldQueue
+/** Lacak ulang titik; simpanan saat job jalan tetap diantrekan */
+class TrackProjectPoints implements ShouldBeUniqueUntilProcessing, ShouldQueue
 {
     use Queueable;
 

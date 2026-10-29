@@ -10,6 +10,9 @@ use Sunrice\Cms\Models\EntryTranslation;
 /** Jalur titik proyek */
 final class ProjectTracks
 {
+    /** @var array<string, array<string, mixed>> manifest per folder frame */
+    private static array $manifests = [];
+
     /**
      * Section dengan orbit
      *
@@ -50,8 +53,43 @@ final class ProjectTracks
     public static function for(int $entryId, string $section, array $placed, ?string $slug = null): ?array
     {
         $stored = self::stored($entryId, $slug)[$section] ?? null;
+        if ($placed === [] || $stored === null) {
+            return null;
+        }
+        if (($stored['hash'] ?? null) === self::hash($section, $placed)) {
+            return $stored['tracks'];
+        }
 
-        return $placed !== [] && ($stored['hash'] ?? null) === self::hash($section, $placed) ? $stored['tracks'] : null;
+        // Per titik sambil menunggu pelacakan ulang
+        $tracks = self::reuse($section, $placed, $stored);
+
+        return $tracks === [] ? null : $tracks;
+    }
+
+    /**
+     * Jalur lama yang masih bisa dipakai: titik sama dipakai utuh, titik geser ikut digeser
+     *
+     * @param  array<string, array{0: float, 1: float}>  $placed
+     * @param  array{tracks?: array<string, list<array{0: int, 1: int}|null>>, points?: array<string, array{0: float, 1: float}>}  $stored
+     * @return array<string, list<array{0: int, 1: int}|null>>
+     */
+    private static function reuse(string $section, array $placed, array $stored): array
+    {
+        $old = $stored['points'] ?? [];
+        [$width, $height] = self::size(self::sections()[$section]);
+        $tracks = [];
+        foreach ($placed as $key => [$x, $y]) {
+            $track = $stored['tracks'][$key] ?? null;
+            $from = $old[$key] ?? null;
+            if ($track === null || $from === null) {
+                continue;
+            }
+            $dx = (int) round(($x - $from[0]) / 100 * $width);
+            $dy = (int) round(($y - $from[1]) / 100 * $height);
+            $tracks[$key] = $dx === 0 && $dy === 0 ? $track : array_map(fn (?array $p): ?array => $p === null ? null : [$p[0] + $dx, $p[1] + $dy], $track);
+        }
+
+        return $tracks;
     }
 
     /**
@@ -70,9 +108,27 @@ final class ProjectTracks
             $placed = self::placed($translation->data[$section]['points'] ?? [], $section);
             $hash = self::hash($section, $placed);
             if (($stored[$section]['hash'] ?? null) === $hash) {
+                // File lama tanpa posisi titik
+                if (! isset($stored[$section]['points'])) {
+                    $stored[$section]['points'] = $placed;
+                    $changed = true;
+                }
+
                 continue;
             }
-            $stored[$section] = ['hash' => $hash, 'tracks' => $placed === [] ? [] : self::track($base, $placed)];
+            // Lacak ulang hanya titik yang berubah
+            $old = $stored[$section]['points'] ?? [];
+            $kept = [];
+            $todo = [];
+            foreach ($placed as $key => $point) {
+                if (isset($stored[$section]['tracks'][$key]) && self::same($old[$key] ?? null, $point)) {
+                    $kept[$key] = $stored[$section]['tracks'][$key];
+                } else {
+                    $todo[$key] = $point;
+                }
+            }
+            $tracks = [...$kept, ...($todo === [] ? [] : self::track($base, $todo))];
+            $stored[$section] = ['hash' => $hash, 'points' => $placed, 'tracks' => array_intersect_key($tracks, $placed)];
             $changed = true;
         }
 
@@ -90,7 +146,7 @@ final class ProjectTracks
     private static function track(string $base, array $placed): array
     {
         $dir = public_path(trim($base, '/'));
-        $manifest = json_decode((string) file_get_contents("{$dir}/manifest.json"), true);
+        $manifest = self::manifest($base);
         $points = array_map(fn (array $p): array => [$p[0] / 100 * $manifest['width'], $p[1] / 100 * $manifest['height']], $placed);
 
         $result = Process::path(base_path())
@@ -103,6 +159,35 @@ final class ProjectTracks
         }
 
         return json_decode($result->output(), true);
+    }
+
+    /**
+     * Posisi sama (JSON menyimpan 50.0 sebagai 50)
+     *
+     * @param  array{0: float|int, 1: float|int}|null  $a
+     * @param  array{0: float, 1: float}  $b
+     */
+    private static function same(?array $a, array $b): bool
+    {
+        return $a !== null && abs($a[0] - $b[0]) < 0.001 && abs($a[1] - $b[1]) < 0.001;
+    }
+
+    /**
+     * Manifest frame orbit
+     *
+     * @return array<string, mixed>
+     */
+    private static function manifest(string $base): array
+    {
+        return self::$manifests[$base] ??= json_decode((string) file_get_contents(public_path(trim($base, '/')).'/manifest.json'), true) ?: [];
+    }
+
+    /** @return array{0: int, 1: int} ukuran frame dalam piksel */
+    private static function size(string $base): array
+    {
+        $manifest = self::manifest($base);
+
+        return [(int) ($manifest['width'] ?? 0), (int) ($manifest['height'] ?? 0)];
     }
 
     /**
