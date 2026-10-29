@@ -288,6 +288,26 @@ function setup(sunrice) {
       return () => { observer.disconnect(); group.removeEventListener('input', bump); };
     }, [group, section]);
 
+    // Sembunyikan X/Y repeater
+    useEffect(() => {
+      // Tanpa gambar tetap tampil
+      const hide = Boolean(frame);
+      for (const row of rows) {
+        for (const key of ['x', 'y']) {
+          const input = inputOf(section, row.index, key);
+          if (!input) continue;
+          const label = group.querySelector(`label[for="${input.id}"]`);
+          let wrapper = input.parentElement;
+          if (label) {
+            while (wrapper && !wrapper.contains(label)) wrapper = wrapper.parentElement;
+          }
+          // Jangan sampai baris
+          if (!wrapper || wrapper.id.endsWith('-fields') || wrapper === group) wrapper = input.parentElement;
+          if (wrapper && wrapper.hidden !== hide) wrapper.hidden = hide;
+        }
+      }
+    });
+
     useEffect(() => {
       if (selected === null && rows.length) setSelected((rows.find((r) => !placed(r)) ?? rows[0]).index);
     }, [rows.length, selected]);
@@ -318,6 +338,14 @@ function setup(sunrice) {
       if (!delta) return;
       event.preventDefault();
       write(row.index, row.x + delta[0], row.y + delta[1]);
+    };
+    const setAxis = (axis, value) => {
+      const input = current && inputOf(section, current.index, axis);
+      if (!input) return;
+      if (value === '') return setInput(input, '');
+      const n = Number(value);
+      if (Number.isNaN(n)) return;
+      setInput(input, String(round(n)));
     };
 
     const bar = h('div', { className: 'pm-bar' },
@@ -356,6 +384,10 @@ function setup(sunrice) {
 
     const detail = current && h('div', { className: 'pm-detail' },
       h('strong', null, current.name),
+      ['x', 'y'].map((axis) => h('label', { key: axis }, `Posisi ${axis.toUpperCase()} (%)`, h(ui.Input, {
+        type: 'number', min: 0, max: 100, step: 0.01, value: current[axis] ?? '',
+        onChange: (e) => setAxis(axis, e.target.value), onKeyDown: noEnter,
+      }))),
       placed(current)
         ? button({ variant: 'outline', size: 'sm', onClick: () => write(current.index, null, null) }, 'Hapus posisi')
         : h('span', { className: 'pm-note' }, 'Klik gambar untuk menempatkan titik ini.'));
