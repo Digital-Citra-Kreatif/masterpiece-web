@@ -405,6 +405,19 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   color: var(--muted);
 }
 
+.tps__label:has(+ .tps__size) {
+  margin-bottom: 8px;
+}
+
+/* Ukuran kavling */
+.tps__size {
+  margin: 0 0 20px;
+  color: var(--room);
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 300;
+  line-height: 1.1;
+}
+
 /* Ringkasan LT LB */
 .tps__facts {
   display: grid;

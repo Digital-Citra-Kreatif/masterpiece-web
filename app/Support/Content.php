@@ -259,11 +259,13 @@ final class Content
 
         return [
             ...$card,
+            'dimensions' => filled($values['dimensions'] ?? null) ? (string) $values['dimensions'] : null,
             'intro' => $values['intro'] ?? '',
             // Ringkasan atas
             'facts' => [
                 ['LT', "{$card['lt']} m²"],
                 ['LB', "{$card['lb']} m²"],
+                ['Lantai', (string) $floors],
                 ...filled($values['bedrooms'] ?? null) ? [['KT', (string) $card['bedrooms']]] : [],
                 ...filled($values['bathrooms'] ?? null) ? [['KM', (string) $card['bathrooms']]] : [],
             ],

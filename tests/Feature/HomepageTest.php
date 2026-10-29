@@ -111,6 +111,16 @@ test('a type page without a project shows its title, specs, floor plans, gallery
         ->assertDontSee('tpg__run', false);
 });
 
+test('a type page shows its size under the label and its floors in the summary', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m']]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSeeInOrder(['<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', '<dl class="tps__facts">'], false)
+        ->assertSeeInOrder(['<dt>LB</dt>', '<dt>Lantai</dt>', '<dd>3</dd>', '<dt>KT</dt>'], false);
+});
+
 test('an unknown address shows the site\'s not found page', function () {
     $this->get('/-/tipe/tidak-ada')
         ->assertNotFound()

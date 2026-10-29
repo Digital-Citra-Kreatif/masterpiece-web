@@ -93,6 +93,9 @@
           @if ($t['label'])
             <p class="eyebrow tps__label">{{ $t['label'] }}</p>
           @endif
+          @if ($t['dimensions'])
+            <p class="display tps__size">{{ $t['dimensions'] }}</p>
+          @endif
 
           <dl class="tps__facts">
             @foreach ($t['facts'] as [$k, $v])
