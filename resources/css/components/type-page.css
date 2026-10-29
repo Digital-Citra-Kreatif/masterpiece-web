@@ -71,7 +71,7 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
 .tph__name {
   margin: 0;
   color: var(--room);
-  font-size: clamp(40px, 4.6vw, 72px);
+  font-size: 40px;
   font-weight: 400;
   line-height: 1.05;
   overflow-wrap: anywhere;
@@ -654,7 +654,7 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   }
 
   .tph__name {
-    font-size: clamp(36px, 7vw, 48px);
+    font-size: clamp(32px, 7vw, 40px);
   }
 
   .tph__tabs {
