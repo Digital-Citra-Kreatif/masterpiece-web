@@ -94,7 +94,7 @@ class SiteContentSeeder extends Seeder
                         ['value' => 'streetview', 'label' => 'Street View'],
                     ]], ['translatable' => false, 'width' => 50, 'instructions' => 'Untuk project dengan pilihan view.']),
                     $text('dimensions', ['translatable' => false, 'width' => 50, 'instructions' => 'Misalnya "4,5 x 10 m".']),
-                    $image('image', ['required' => true, 'instructions' => 'Gambar kartu di beranda, rasio 6:5.']),
+                    $image('image', ['required' => true, 'instructions' => 'Rasio 6:5.']),
                     $number('lt'),
                     $number('lb'),
                     $this->field('bedrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25, 'instructions' => 'Kosongkan untuk ruko tanpa kamar tidur.']),
