@@ -43,6 +43,8 @@ const css = `
 .pm-detail { display: flex; flex-wrap: wrap; align-items: end; gap: 8px 12px; padding: 10px 12px 12px; border-top: 1px solid var(--border); }
 .pm-detail strong { align-self: center; min-width: 48px; font-size: 14px; }
 .pm-detail label { display: grid; gap: 4px; width: 110px; font-size: 12px; color: var(--muted-foreground); }
+.pm-error { font-size: 12px; color: var(--destructive, #dc2626); }
+.pm-upload progress { width: 100%; max-width: 280px; height: 6px; accent-color: var(--primary); }
 .pm-empty { display: grid; gap: 10px; justify-items: start; padding: 16px 12px; }
 .pm-empty p { margin: 0; font-size: 13px; color: var(--muted-foreground); max-width: 56ch; }
 @media (prefers-reduced-motion: reduce) { .pm-dot::before { transition: none; } }
@@ -396,6 +398,89 @@ function setup(sunrice) {
   }
   const button = (props, label) => h(ui.Button, { type: 'button', ...props }, label);
 
+  // Unggah ZIP frame 360°, per potongan
+  const CHUNK = 1024 * 1024;
+  const mb = (n) => `${(n / 1048576).toFixed(1)} MB`;
+  function OrbitUpload({ section, project, onChange }) {
+    const [state, setState] = useState(null);
+    const [sent, setSent] = useState(null); // [terkirim, total] byte
+    const [error, setError] = useState(null);
+    const inputRef = useRef(null);
+    const request = useCallback(async (method, body) => {
+      const response = await fetch(sunrice.adminUrl(`orbit-upload/${project}/${section}`), {
+        method, body, credentials: 'same-origin', headers: { Accept: 'application/json', 'X-XSRF-TOKEN': xsrf() },
+      });
+      const json = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(json.message ?? 'Permintaan gagal. Coba lagi.');
+      return json;
+    }, [project, section]);
+
+    useEffect(() => { request('GET').then(setState).catch(() => setState(null)); }, [request]);
+
+    // Pantau proses
+    const busy = state?.state === 'queued' || state?.state === 'processing';
+    useEffect(() => {
+      if (!busy) return undefined;
+      const timer = setInterval(() => request('GET').then((json) => {
+        setState(json);
+        if (json.state === 'ready' || json.state === 'failed') onChange();
+      }).catch(() => {}), 3000);
+      return () => clearInterval(timer);
+    }, [busy, request]);
+
+    const upload = async (file) => {
+      setError(null);
+      const total = Math.max(1, Math.ceil(file.size / CHUNK));
+      const id = crypto.randomUUID();
+      try {
+        for (let index = 0; index < total; index++) {
+          setSent([index * CHUNK, file.size]);
+          const body = new FormData();
+          body.append('upload', id);
+          body.append('index', String(index));
+          body.append('total', String(total));
+          body.append('chunk', file.slice(index * CHUNK, (index + 1) * CHUNK), 'chunk');
+          const json = await request('POST', body);
+          if (index === total - 1) setState(json);
+        }
+      } catch (e) {
+        setError(e.message);
+      }
+      setSent(null);
+    };
+    const remove = async () => {
+      if (!window.confirm('Hapus frame 360° ini? Scene kembali memakai Gambar atau frame contoh.')) return;
+      setError(null);
+      try {
+        setState(await request('DELETE'));
+        onChange();
+      } catch (e) {
+        setError(e.message);
+      }
+    };
+
+    let note = 'Satu ZIP berisi semua frame orbit (JPG, PNG, atau WebP), diurutkan menurut nama file. Bila ada, menggantikan Gambar.';
+    if (sent) note = `Mengunggah ${mb(sent[0])} dari ${mb(sent[1])}…`;
+    else if (state?.state === 'queued') note = 'Menunggu antrean. Pastikan composer run dev (queue) berjalan.';
+    else if (state?.state === 'processing') note = 'Memproses frame. Titik dilacak ulang setelahnya.';
+    else if (state?.active) note = `${state.count ? `${state.count} frame` : 'Frame 360°'} aktif, menggantikan Gambar di section ini.`;
+    const failed = error ?? (state?.state === 'failed' ? state.message : null);
+
+    return h('div', { className: 'pm-bar pm-upload' },
+      h('div', { className: 'pm-title' },
+        h('strong', null, 'Frame 360° (ZIP)'),
+        h('span', { role: 'status' }, note),
+        failed && h('span', { className: 'pm-error', role: 'alert' }, failed),
+        sent && h('progress', { max: sent[1], value: sent[0], 'aria-label': 'Progres unggah ZIP' })),
+      h('div', { className: 'pm-tools' },
+        h('input', {
+          ref: inputRef, type: 'file', accept: '.zip,application/zip', hidden: true,
+          onChange: (e) => { const file = e.target.files[0]; e.target.value = ''; if (file) upload(file); },
+        }),
+        button({ variant: 'outline', size: 'sm', disabled: Boolean(sent) || busy, onClick: () => inputRef.current.click() }, state?.active ? 'Ganti ZIP' : 'Unggah ZIP'),
+        state?.active && !busy && !sent && button({ variant: 'outline', size: 'sm', onClick: remove }, 'Hapus frame')));
+  }
+
   const ORBITS = [{ section: 'masterplan', title: 'Titik kawasan' }, { section: 'cluster', title: 'Titik cluster' }];
   let frames = null;
   let framesFor = null; // Proyek pemilik frame
@@ -438,7 +523,9 @@ function setup(sunrice) {
       el.className = 'pm';
       group.append(el);
       const root = createRoot(el);
-      const render = () => root.render(h(OrbitPicker, { section, title, frame: frames?.[section] ?? null, group }));
+      const render = () => root.render(h('div', null,
+        h(OrbitUpload, { section, project, onChange: () => loadFrames(project) }),
+        h(OrbitPicker, { section, title, frame: frames?.[section] ?? null, group })));
       orbitMounts.set(section, { el, root, group, render });
       if (frames) {
         render();
