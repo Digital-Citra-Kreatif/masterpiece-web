@@ -23,31 +23,19 @@ beforeEach(function () {
     $this->seed(SiteContentSeeder::class);
 });
 
-test('the homepage shows every section from the CMS', function () {
-    $response = $this->get('/')->assertOk();
-
-    $response
+test('the homepage shows only the hero and the projects grid', function () {
+    $this->get('/')
+        ->assertOk()
         // Judul per kata, baris tetap
         ->assertSeeInOrder(['>Quiet</span>', '>Living,</span>', '<br>', '>Close</span>', '>Everything.</span>'], false)
         ->assertSee("A residential cluster in Jakarta,<br>\ndesigned for growing families.", false)
         ->assertSee('<section class="hero"', false)
-        ->assertSee('<h2 class="display mp__title" data-mp-title>Masterplan</h2>', false)
-        ->assertSee('data-zoom-end', false)
-        ->assertSee('class="mp__img scene__video"', false)
-        ->assertDontSee('scene__meter', false)
-        ->assertDontSee('Gulir untuk mengelilingi kawasan')
-        ->assertSee('<h2 class="display scene__area-title" id="kawasan-title">Masterplan</h2>', false)
-        ->assertSee('id="peta-title"', false)
-        ->assertSee('id="cluster-title"', false)
-        ->assertSee('Danau &amp; promenade', false)
-        ->assertSee('Plaza &amp; boulevard ruko', false)
-        ->assertSee(url('/-/tipe/tipe-1'))
-        ->assertSee(url('/-/tipe/tipe-6'));
-
-    expect(substr_count($response->getContent(), '<li class="fac__slide">'))->toBe(6)
-        ->and(substr_count($response->getContent(), 'class="card"'))->toBe(6)
-        // Unit kini milik proyek
-        ->and(substr_count($response->getContent(), 'style="left: '))->toBe(0);
+        ->assertDontSee('id="kawasan"', false)
+        ->assertDontSee('id="peta"', false)
+        ->assertDontSee('id="cluster"', false)
+        ->assertDontSee('fac__slide', false)
+        ->assertDontSee('id="tipe"', false)
+        ->assertDontSee('mp__title', false);
 });
 
 test('the hero banner shows the heading, description and background image from the CMS', function () {
@@ -110,29 +98,21 @@ test('the homepage has no projects grid before a project is published', function
     $this->get('/')->assertOk()->assertDontSee('id="proyek"', false);
 });
 
-test('each section shows its title and description from the CMS, or the defaults without a title', function () {
+test('the projects grid takes its title and description from the CMS', function () {
     $home = EntryTranslation::query()->where('slug', 'home')->firstOrFail();
-    $home->update(['data' => array_replace($home->data, [
-        'masterplan' => ['title' => 'Rencana induk', 'description' => 'Teks masterplan dari CMS'],
-        'lokasi' => ['title' => 'Lokasi proyek', 'description' => 'Intro lokasi dari CMS'],
-        'cluster' => ['title' => 'Cluster ruko', 'description' => 'Intro cluster dari CMS'],
-        'fasilitas' => ['title' => 'Fasilitas kawasan', 'description' => 'Intro fasilitas dari CMS'],
-        'tipe' => ['title' => 'Tipe unit', 'description' => 'Intro tipe dari CMS'],
-        'unit_update' => ['title' => '', 'description' => 'Diabaikan tanpa judul'],
-    ])]);
+    $home->update(['data' => array_replace($home->data, ['projects' => ['title' => 'Proyek kami', 'description' => 'Intro proyek dari CMS']])]);
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $project = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'hero' => ['heading' => 'Westlake'],
+    ]]);
+    app(PublishEntry::class)->handle($project->fresh());
 
     $this->get('/')
-        ->assertSee('<h2 class="display mp__title" data-mp-title>Rencana induk</h2>', false)
-        ->assertSee('Teks masterplan dari CMS')
-        ->assertSee('Lokasi proyek')
-        ->assertSee('Intro lokasi dari CMS')
-        ->assertSee('<h2 class="display scene__area-title" id="cluster-title">Cluster ruko</h2>', false)
-        ->assertSee('Intro cluster dari CMS')
-        ->assertSee('Fasilitas kawasan')
-        ->assertSee('Intro fasilitas dari CMS')
-        ->assertSee('Intro tipe dari CMS')
-        ->assertDontSee('class="units"', false)
-        ->assertDontSee('Diabaikan tanpa judul');
+        ->assertOk()
+        ->assertSeeInOrder(['id="proyek-title"', '>Proyek kami</h2>'], false)
+        ->assertSee('<p class="sheet__intro">Intro proyek dari CMS</p>', false)
+        ->assertDontSee('card__desc', false);
 });
 
 test('a type page without a project shows its title, specs, floor plans, gallery and VR in one sheet, without the 360° viewer', function () {

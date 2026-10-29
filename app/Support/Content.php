@@ -134,16 +134,11 @@ final class Content
     public static function home(array $entryValues = []): array
     {
         $values = require resource_path('data/home.php');
-        $scenes = json_decode((string) file_get_contents(resource_path('data/area.json')), true);
         $hero = $values['hero'];
         $cmsHero = $entryValues['hero'] ?? [];
         $video = ($cmsHero['video'] ?? null) instanceof Media ? $cmsHero['video'] : null;
         $image = ($cmsHero['image'] ?? null) instanceof Media ? $cmsHero['image'] : null;
-        // URL tipe CMS
-        $typeUrls = Cms::entries('types')->get()->mapWithKeys(fn (EntryTranslation $type): array => [$type->slug => $type->url()]);
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
-        $masterplan = $heading('masterplan', ['title' => $values['masterplan']['title'], 'intro' => $values['masterplan']['text']]);
-        $areaMap = $heading('lokasi', $values['lokasi']);
 
         return [
             'hero' => [
@@ -162,42 +157,6 @@ final class Content
                 'heading' => $heading('projects', ['title' => 'Proyek', 'intro' => null]),
                 'cards' => Cms::entries('projects')->ordered()->get()->map(self::projectCard(...))->values()->all(),
             ],
-            'masterplan' => [
-                'title' => $masterplan['title'],
-                'text' => $masterplan['intro'],
-                // Orbit Kawasan
-                'video' => $hero['teaser'],
-            ],
-            'area' => self::scene($values['kawasan'], $scenes['area']),
-            'areaMap' => [
-                'title' => $areaMap['title'],
-                'intro' => $areaMap['intro'],
-                'image' => $values['lokasi']['map'],
-                'alt' => $values['lokasi']['alt'],
-                'width' => $values['lokasi']['width'],
-                'height' => $values['lokasi']['height'],
-                'placeholder' => $values['lokasi']['placeholder'],
-            ],
-            'cluster' => self::scene([...$values['cluster'], ...$heading('cluster', $values['cluster'])], $scenes['cluster']),
-            'headings' => [
-                'facilities' => $heading('fasilitas', $values['headings']['fasilitas']),
-                'types' => $heading('tipe', $values['headings']['tipe']),
-            ],
-            'facilities' => $values['fasilitas'],
-            'types' => collect($values['tipe'])
-                ->map(fn (array $type): array => [
-                    'slug' => $type[0],
-                    'name' => $type[1],
-                    'label' => $type[2],
-                    'url' => $typeUrls[$type[0]] ?? url("/tipe/{$type[0]}"),
-                    'image' => $type[3],
-                    'lt' => self::number($type[4]),
-                    'lb' => self::number($type[5]),
-                    'bedrooms' => $type[6],
-                    'bathrooms' => $type[7],
-                    'placeholder' => true,
-                ])
-                ->all(),
         ];
     }
 

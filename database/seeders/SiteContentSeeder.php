@@ -64,7 +64,6 @@ class SiteContentSeeder extends Seeder
         return [
             'blueprints' => [
                 ['handle' => 'page', 'title' => 'Halaman', 'fields' => [$textarea('intro'), $this->field('body', 'rich_text')]],
-                // Section lain hardcoded
                 ['handle' => 'homepage', 'title' => 'Beranda', 'fields' => [
                     $this->field('hero', 'group', [], ['label' => 'Hero banner', 'fields' => [
                         $textarea('heading', ['label' => 'Heading', 'required' => true, 'instructions' => 'Baris baru tetap jadi baris baru.']),
@@ -76,13 +75,6 @@ class SiteContentSeeder extends Seeder
                         $text('title', ['label' => 'Judul']),
                         $textarea('description', ['label' => 'Deskripsi']),
                     ]]),
-                    ...collect(['masterplan' => 'Masterplan', 'lokasi' => 'Lokasi', 'cluster' => 'Cluster', 'fasilitas' => 'Fasilitas', 'tipe' => 'Tipe unit', 'unit_update' => 'Status siteplan'])
-                        ->map(fn (string $label, string $handle): array => $this->field($handle, 'group', [], ['label' => $label, 'fields' => [
-                            $text('title', ['label' => 'Judul']),
-                            $textarea('description', ['label' => 'Deskripsi']),
-                        ]]))
-                        ->values()
-                        ->all(),
                 ]],
                 ['handle' => 'tipe', 'title' => 'Tipe', 'fields' => [
                     $this->field('project', 'entries', ['collections' => ['projects'], 'multiple' => false], [
@@ -442,12 +434,6 @@ class SiteContentSeeder extends Seeder
                 'image' => $this->media('media/stills/ruko-front-34.jpg', ''),
             ],
             'projects' => ['title' => 'Proyek', 'description' => 'Pilih proyek untuk melihat kawasan, tipe unit, dan ketersediaannya.'],
-            'masterplan' => ['title' => 'Masterplan', 'description' => "A residential cluster in Jakarta,\ndesigned for growing families."],
-            'lokasi' => ['title' => 'Lokasi', 'description' => 'Posisi proyek di dalam kawasan yang lebih besar.'],
-            'cluster' => ['title' => 'Cluster', 'description' => 'Lebih dekat ke cluster ruko. Gulir untuk mengelilingi blok, klik penanda untuk menuju setiap titik.'],
-            'fasilitas' => ['title' => 'Ruang bersama', 'description' => 'Fasilitas yang melengkapi kawasan, dari tepi danau hingga pusat komersial.'],
-            'tipe' => ['title' => 'Pilih tipe', 'description' => 'Bandingkan luas tanah, luas bangunan, dan jumlah kamar. Buka satu tipe untuk menjelajahi fasad dan setiap lantainya.'],
-            'unit_update' => ['title' => 'Status unit', 'description' => 'Status terbaru setiap unit di siteplan.'],
         ], blueprint: 'homepage');
     }
 
