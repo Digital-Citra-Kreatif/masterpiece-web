@@ -45,6 +45,10 @@
   border-bottom: 1px solid var(--line);
 }
 
+.prj .sheet__title {
+  text-transform: uppercase;
+}
+
 .prj__grid {
   list-style: none;
   display: grid;
