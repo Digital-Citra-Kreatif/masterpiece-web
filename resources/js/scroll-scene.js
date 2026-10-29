@@ -418,11 +418,19 @@ async function init(root) {
   const picture = root.querySelector('[data-scene-card]');
   const panelImg = root.querySelector('.scene__loc-img');
   const figure = root.querySelector('[data-place-figure]');
-  // Pramuat gambar titik
+  // Pramuat gambar titik saat scene dekat, waktu senggang
   if (figure) {
-    for (const { image } of Object.values(spots)) {
-      if (image) Object.assign(new Image(), { fetchPriority: 'high', src: image });
-    }
+    const preload = () => {
+      for (const { image } of Object.values(spots)) {
+        if (image) Object.assign(new Image(), { fetchPriority: 'low', src: image });
+      }
+    };
+    const near = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      near.disconnect();
+      (window.requestIdleCallback || setTimeout)(preload);
+    }, { rootMargin: '50% 0px' });
+    near.observe(root);
   }
   const fillPanel = (key) => {
     const c = spots[key];

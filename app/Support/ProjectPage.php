@@ -271,7 +271,7 @@ final class ProjectPage
                 return [
                     'number' => filled($row['number'] ?? null) ? (string) $row['number'] : null,
                     'name' => (string) $row['name'],
-                    'image' => self::image($row['image'] ?? null),
+                    'image' => self::image($row['image'] ?? null, 'medium'),
                     'x' => $x !== null && $y !== null ? $x : null,
                     'y' => $x !== null && $y !== null ? $y : null,
                 ];
@@ -317,7 +317,7 @@ final class ProjectPage
                     'number' => filled($row['number'] ?? null) ? (string) $row['number'] : null,
                     'name' => (string) $row['name'],
                     'description' => filled($row['description'] ?? null) ? (string) $row['description'] : null,
-                    'image' => self::image($row['image'] ?? null),
+                    'image' => self::image($row['image'] ?? null, 'medium'),
                     'x' => $x !== null && $y !== null ? $x : null,
                     'y' => $x !== null && $y !== null ? $y : null,
                 ];
