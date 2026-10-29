@@ -107,7 +107,7 @@
           </dl>
 
           @if ($t['intro'])
-            <p class="tps__intro">{{ $t['intro'] }}</p>
+            <div class="tps__intro">{!! $t['intro'] !!}</div>
           @endif
 
           @if ($t['suitable']['items'] !== [])

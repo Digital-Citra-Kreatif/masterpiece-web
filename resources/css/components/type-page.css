@@ -463,6 +463,48 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   line-height: 1.75;
 }
 
+/* Isi rich text */
+.tps__intro :is(p, ul, ol, blockquote) {
+  margin: 0 0 12px;
+}
+
+.tps__intro :is(ul, ol) {
+  padding-left: 1.25em;
+}
+
+.tps__intro :is(h1, h2, h3, h4) {
+  margin: 20px 0 8px;
+  color: var(--ink);
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.tps__intro h1 {
+  font-size: 26px;
+}
+
+.tps__intro h2 {
+  font-size: 22px;
+}
+
+.tps__intro :is(h3, h4) {
+  font-size: 18px;
+}
+
+.tps__intro :is(strong, b, a) {
+  color: var(--ink);
+}
+
+.tps__intro > :first-child {
+  margin-top: 0;
+}
+
+.tps__intro > :last-child {
+  margin-bottom: 0;
+}
+
 /* Cocok untuk usaha */
 .tps__uses {
   margin: 0 0 24px;

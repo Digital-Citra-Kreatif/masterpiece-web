@@ -6,6 +6,7 @@ use Sunrice\Admin\Media\Media;
 use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Content as Cms;
 use Sunrice\Cms\Models\EntryTranslation;
+use Sunrice\Cms\Support\HtmlSanitizer;
 
 /** Konten CMS situs */
 final class Content
@@ -260,7 +261,7 @@ final class Content
         return [
             ...$card,
             'dimensions' => filled($values['dimensions'] ?? null) ? (string) $values['dimensions'] : null,
-            'intro' => $values['intro'] ?? '',
+            'intro' => self::richText($values['intro'] ?? null),
             // Ringkasan atas
             'facts' => [
                 ['LT', "{$card['lt']} m²"],
@@ -337,6 +338,16 @@ final class Content
                 ]])
                 ->all(),
         ];
+    }
+
+    /** HTML rich text, teks lama jadi paragraf */
+    private static function richText(?string $value): ?string
+    {
+        if (blank($value)) {
+            return null;
+        }
+
+        return HtmlSanitizer::sanitize(str_contains($value, '<') ? $value : '<p>'.nl2br(e($value), false).'</p>');
     }
 
     private static function url(?Media $media): ?string

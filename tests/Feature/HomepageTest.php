@@ -172,6 +172,26 @@ test('a type page with one floor plan shows it without a slider', function () {
         ->assertDontSee('data-plans-prev', false);
 });
 
+test('a type page renders its intro as rich text with headings and lists, without scripts', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'intro' => '<h2>Keunggulan</h2><ul><li>Dua akses</li></ul><ol><li>Satu</li></ol><script>alert(1)</script>']]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSee('<div class="tps__intro"><h2>Keunggulan</h2><ul><li>Dua akses</li></ul><ol><li>Satu</li></ol></div>', false)
+        ->assertDontSee('alert(1)', false);
+});
+
+test('a type page shows an old plain text intro as a paragraph', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'intro' => "Baris satu\nBaris dua & tiga"]]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSee('<div class="tps__intro"><p>Baris satu<br />', false)
+        ->assertSee('Baris dua &amp; tiga</p></div>', false);
+});
+
 test('an unknown address shows the site\'s not found page', function () {
     $this->get('/-/tipe/tidak-ada')
         ->assertNotFound()
