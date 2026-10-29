@@ -118,17 +118,25 @@ img.hero__media {
 
 /* Panah gulir */
 .hero__scroll {
+  display: grid;
+  place-items: center;
   flex: none;
-  border-color: rgb(255 255 255 / 0.5);
+  width: 44px; /* Area sentuh */
+  height: 72px;
+  margin-left: -14px;
   color: #fff;
   pointer-events: auto;
   animation: rise 1s 0.45s var(--ease) both;
 }
 
-.hero__scroll:hover {
-  border-color: #fff;
-  background: #fff;
-  color: var(--ink);
+.hero__scroll svg {
+  width: 16px;
+  height: 64px;
+  transition: transform 0.3s var(--ease);
+}
+
+.hero__scroll:hover svg {
+  transform: translateY(4px);
 }
 
 .hero__scroll:focus-visible {
