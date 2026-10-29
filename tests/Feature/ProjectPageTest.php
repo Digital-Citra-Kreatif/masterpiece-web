@@ -114,6 +114,35 @@ test('the masterplan orbit carries the CMS points with a position as its hotspot
     expect(json_decode(html_entity_decode($match[1]), true)['masterplan-1']['point'])->toBe([50, 52]);
 });
 
+test('a masterplan or cluster image from the CMS replaces the sample orbit frames, without tracks or the teaser video', function () {
+    $masterplan = app(UploadMedia::class)->handle(UploadedFile::fake()->image('masterplan.jpg', 1600, 900), []);
+    $cluster = app(UploadMedia::class)->handle(UploadedFile::fake()->image('cluster.jpg', 1200, 800), []);
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'masterplan' => ['title' => 'Masterplan', 'image' => $masterplan->id, 'points' => [
+            ['number' => '01', 'name' => 'West Lakeside', 'image' => null, 'x' => 50, 'y' => 52],
+        ]],
+        'cluster' => ['title' => 'Cluster', 'image' => $cluster->id, 'points' => [
+            ['number' => '01', 'name' => 'Lakeview Units', 'description' => null, 'image' => null, 'x' => 45, 'y' => 56],
+        ]],
+    ]);
+
+    $html = $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('data-still="'.$masterplan->url('large').'"', false)
+        ->assertSee('data-still="'.$cluster->url('large').'"', false)
+        ->assertDontSee('data-base=', false)
+        ->assertDontSee('data-tracks=', false)
+        ->assertDontSee('media/hero/teaser.mp4', false)
+        ->assertSee('data-spot-open="masterplan-1"', false)
+        ->assertSee('data-spot-open="cluster-1"', false)
+        ->getContent();
+
+    preg_match('/data-spots="([^"]+)"/', $html, $match);
+    expect(json_decode(html_entity_decode($match[1]), true)['masterplan-1']['point'])->toBe([50, 52]);
+});
+
 test('the cluster is the homepage Cluster scene with the CMS points that have a position as hotspots', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),

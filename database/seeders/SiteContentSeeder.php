@@ -308,6 +308,7 @@ class SiteContentSeeder extends Seeder
                 ]),
             ]]),
             $section('masterplan', 'Masterplan', [
+                $image('image', 'Gambar', ['instructions' => 'Gambar diam masterplan; titik ditempatkan di atas gambar ini. Maks 2 MB.']),
                 $points('Titik kawasan', [
                     $image('image', 'Gambar'),
                     $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Masterplan. Kosong: titik tidak tampil.'),
@@ -318,6 +319,7 @@ class SiteContentSeeder extends Seeder
                 $gallery('maps', 'Peta'),
             ]),
             $section('cluster', 'Cluster', [
+                $image('image', 'Gambar', ['instructions' => 'Gambar diam cluster; titik ditempatkan di atas gambar ini. Maks 2 MB.']),
                 $points('Titik cluster', [
                     $image('image', 'Gambar', ['width' => 50]),
                     $textarea('description', 'Deskripsi', ['width' => 50]),

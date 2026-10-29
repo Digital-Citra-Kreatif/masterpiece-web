@@ -366,9 +366,32 @@ function setup(sunrice) {
 
   const ORBITS = [{ section: 'masterplan', title: 'Titik kawasan' }, { section: 'cluster', title: 'Titik cluster' }];
   let frames = null;
+  let framesFor = null; // Proyek pemilik frame
   const orbitMounts = new Map();
+  // Frame per proyek: gambar CMS atau frame orbit
+  const loadFrames = (project) => {
+    framesFor = project;
+    fetch(sunrice.adminUrl(`orbit-frames?project=${project}`), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => ({}))
+      .then((json) => {
+        if (framesFor !== project) return;
+        frames = json;
+        orbitMounts.forEach((m) => m.render());
+      });
+  };
+  // Muat ulang setelah simpan
+  router.on('success', () => {
+    const project = location.pathname.match(EDITOR)?.[1];
+    if (project && orbitMounts.size) loadFrames(project);
+  });
   const syncOrbits = () => {
     const editing = EDITOR.test(location.pathname);
+    const project = location.pathname.match(EDITOR)?.[1] ?? null;
+    if (project !== framesFor) {
+      frames = null;
+      framesFor = null;
+    }
     for (const { section, title } of ORBITS) {
       const label = editing && document.getElementById(`data-${section}-points-label`);
       const group = label && (label.closest('[role="group"]') ?? label.parentElement?.parentElement);
@@ -387,11 +410,8 @@ function setup(sunrice) {
       orbitMounts.set(section, { el, root, group, render });
       if (frames) {
         render();
-      } else {
-        fetch(sunrice.adminUrl('orbit-frames'), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
-          .then((r) => (r.ok ? r.json() : {}))
-          .catch(() => ({}))
-          .then((json) => { frames = json; orbitMounts.forEach((m) => m.render()); });
+      } else if (framesFor !== project) {
+        loadFrames(project);
       }
     }
   };

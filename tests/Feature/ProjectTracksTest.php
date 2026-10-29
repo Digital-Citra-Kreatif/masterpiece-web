@@ -5,9 +5,11 @@ use App\Support\ProjectTracks;
 use Database\Seeders\SiteContentSeeder;
 use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Cms\Actions\Entries\CreateEntry;
 use Sunrice\Cms\Actions\Entries\PublishEntry;
 use Sunrice\Cms\Models\Collection;
@@ -132,6 +134,26 @@ test('tracks from an older tracker version are tracked again for every point', f
     expect($stored['hash'])->toBe($hash)
         ->and($stored['tracker'])->toBe(2)
         ->and($stored['tracks'])->toBe(['masterplan-1' => [[641.5, 360.2]]]);
+});
+
+test('a section with a still image from the CMS is not tracked', function () {
+    Storage::fake('local');
+    Queue::fake();
+    Storage::fake('public');
+    $this->seed(SiteContentSeeder::class);
+    Process::fake();
+    $image = app(UploadMedia::class)->handle(UploadedFile::fake()->image('masterplan.jpg', 1600, 900), []);
+
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $translation = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'masterplan' => ['title' => 'Masterplan', 'image' => $image->id, 'points' => [['number' => '01', 'name' => 'Tetap', 'x' => 50, 'y' => 50]]],
+    ]]);
+    app(PublishEntry::class)->handle($translation->fresh());
+
+    ProjectTracks::make($translation->fresh());
+
+    Process::assertNothingRan();
 });
 
 test('a save while tracking runs still queues a new tracking job', function () {

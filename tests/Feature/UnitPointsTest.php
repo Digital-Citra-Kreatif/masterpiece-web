@@ -119,6 +119,19 @@ test('the project form gets the first orbit frame of masterplan and cluster for 
         ->assertJsonPath('cluster.height', 720);
 });
 
+test('the picker places points on the project\'s saved masterplan image, and on the orbit frame for a section without one', function () {
+    $image = app(UploadMedia::class)->handle(UploadedFile::fake()->image('masterplan.jpg', 1600, 900), []);
+    $project = publishedEntry('projects', 'Lakeside', ['masterplan' => ['image' => $image->id], 'whatsapp' => ['contacts' => []]]);
+
+    $this->actingAs($this->admin)
+        ->getJson('/admin/orbit-frames?project='.$project->entry_id)
+        ->assertOk()
+        ->assertJsonPath('masterplan.src', $image->url('large'))
+        ->assertJsonPath('masterplan.width', 1600)
+        ->assertJsonPath('masterplan.height', 900)
+        ->assertJsonPath('cluster.src', asset('media/scroll/kawasan/lg/f_000.jpg'));
+});
+
 test('guests cannot read the orbit frames', function () {
     $this->getJson('/admin/orbit-frames')->assertUnauthorized();
 });

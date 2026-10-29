@@ -64,7 +64,7 @@ final class ProjectPage
 
         // Jalur titik orbit
         foreach (array_keys(ProjectTracks::sections()) as $handle) {
-            if (isset($sections[$handle]['scene'])) {
+            if (isset($sections[$handle]['scene']) && ! isset($sections[$handle]['scene']['scene']['still'])) {
                 $placed = ProjectTracks::placed($sections[$handle]['points'], $handle);
                 $sections[$handle]['scene']['tracks'] = ProjectTracks::for($entry->entry_id, $handle, $placed, (string) $entry->slug);
             }
@@ -281,7 +281,7 @@ final class ProjectPage
 
         // Orbit dengan titik
         $hotspots = self::hotspots($points, 'masterplan');
-        $scene = $points === [] ? null : [...Content::sampleArea(), 'hotspots' => $hotspots];
+        $scene = $points === [] ? null : self::still([...Content::sampleArea(), 'hotspots' => $hotspots], $section['image'] ?? null);
 
         return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
     }
@@ -326,9 +326,29 @@ final class ProjectPage
             ->all();
 
         $hotspots = self::hotspots($points, 'cluster');
-        $scene = $points === [] ? null : [...Content::sampleCluster(), 'hotspots' => $hotspots];
+        $scene = $points === [] ? null : self::still([...Content::sampleCluster(), 'hotspots' => $hotspots], $section['image'] ?? null);
 
         return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
+    }
+
+    /**
+     * Gambar diam dari CMS, menggantikan frame contoh
+     *
+     * @param  array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video?: string}  $scene
+     * @return array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video?: ?string}
+     */
+    private static function still(array $scene, mixed $media): array
+    {
+        $image = self::image($media);
+        if ($image === null) {
+            return $scene;
+        }
+
+        return [
+            'scene' => ['still' => ['src' => $image['full'], 'width' => $image['width'] ?: 1600, 'height' => $image['height'] ?: 900]],
+            'hotspots' => $scene['hotspots'],
+            'video' => null,
+        ];
     }
 
     /**

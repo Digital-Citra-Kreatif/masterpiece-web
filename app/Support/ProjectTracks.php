@@ -108,6 +108,10 @@ final class ProjectTracks
         $changed = ! Storage::exists($file);
 
         foreach (self::sections() as $section => $base) {
+            // Gambar diam tanpa jalur
+            if (filled($translation->data[$section]['image'] ?? null)) {
+                continue;
+            }
             $placed = self::placed($translation->data[$section]['points'] ?? [], $section);
             $hash = self::hash($section, $placed);
             if (($stored[$section]['hash'] ?? null) === $hash) {
