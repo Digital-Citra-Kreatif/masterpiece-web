@@ -303,7 +303,7 @@ body.is-type :is(.tph, .tpx, .tps, .types, .ft) {
 
 .tps__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* Setengah-setengah */
   align-items: start;
   gap: clamp(40px, 5vw, 88px);
 }
