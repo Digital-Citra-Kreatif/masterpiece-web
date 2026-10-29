@@ -137,7 +137,6 @@
               @foreach ($parts as $part)
                 <li data-part>
                   <button class="tps__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" data-part-tab>
-                    <span class="tps__no">{{ sprintf('%02d', $loop->iteration) }}</span>
                     {{ $part['name'] }}
                   </button>
                 </li>

@@ -393,7 +393,8 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->assertSee('<h1 class="display tph__name" id="type-name">'.$type->title.'</h1>', false)
         ->assertSee('<h2 class="display tps__part" aria-live="polite" data-part-name>Fasad</h2>', false)
         ->assertSee('<p class="tps__desc" data-part-text >Tampak depan.</p>', false)
-        ->assertSeeInOrder(['data-part-tab', '01', 'Fasad', 'data-part-tab', '02', 'Lantai 1'], false)
+        ->assertSeeInOrder(['data-part-tab', 'Fasad', 'data-part-tab', 'Lantai 1'], false)
+        ->assertDontSee('tps__no', false)
         ->assertSee('aria-pressed="true"', false)
         ->getContent();
 

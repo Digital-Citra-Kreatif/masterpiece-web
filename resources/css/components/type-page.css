@@ -588,12 +588,6 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 
-.tps__no {
-  font-family: var(--label);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-}
-
 .tps__tab:hover {
   background: #000;
   color: #fff;
