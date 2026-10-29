@@ -312,10 +312,7 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   grid-template-columns: minmax(0, 560px);
 }
 
-/* Viewer tetap terlihat */
 .tps__view {
-  position: sticky;
-  top: 32px;
   min-width: 0;
   max-width: var(--native, none); /* Selebar viewer */
 }
@@ -552,10 +549,6 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
 @media (max-width: 960px) {
   .tps__grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .tps__view {
-    position: static;
   }
 }
 
