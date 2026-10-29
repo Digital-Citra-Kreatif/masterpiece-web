@@ -112,9 +112,8 @@ img.hero__media {
   position: relative;
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: flex-end; /* Deskripsi di kanan */
   gap: 24px;
-  padding-left: 23px;
 }
 
 /* Animasi bertahap */
@@ -123,6 +122,7 @@ img.hero__media {
 }
 
 .hero__lead {
+  max-width: 420px;
   margin: 0;
   font-size: clamp(17px, 1.67vw, 20px);
   line-height: 1.5;
