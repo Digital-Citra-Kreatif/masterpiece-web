@@ -431,8 +431,8 @@ class SiteContentSeeder extends Seeder
     {
         return $this->entry('pages', 'home', 'Beranda', [
             'hero' => [
-                'heading' => "Quiet Living,\nClose to Everything.",
-                'description' => "A residential cluster in Jakarta,\ndesigned for growing families.",
+                'heading' => "Hidup Tenang,\nDekat ke Mana Saja.",
+                'description' => "Kawasan hunian di Jakarta,\ndirancang untuk keluarga yang terus bertumbuh.",
                 'image' => $this->media('media/stills/ruko-front-34.jpg', ''),
             ],
             'projects' => ['title' => 'Proyek', 'description' => 'Pilih proyek untuk melihat kawasan, tipe unit, dan ketersediaannya.'],

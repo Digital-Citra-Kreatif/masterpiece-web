@@ -17,7 +17,7 @@ use Sunrice\Cms\Structure\StructureImporter;
 /** Proyek Westlake Village */
 class WestlakeProjectSeeder extends Seeder
 {
-    private const SLUG = 'ruko-westlake-village';
+    private const SLUG = 'westlake-village';
 
     private const SOURCE = 'project-one/Data & Image';
 
@@ -66,12 +66,12 @@ class WestlakeProjectSeeder extends Seeder
         return [
             'hero' => fn (): array => [
                 'heading' => 'A New Landmark by the Lake',
-                'description' => 'Introducing a new lakeside community park in the heart of West Village Business District, BSD City.',
+                'description' => 'Taman komunitas tepi danau terbaru di jantung West Village Business District, BSD City.',
                 'media' => [$this->image('Image Westlake/Rk West LS BEV 1.jpg'), $this->image('Image Westlake/Rk West LS Danau Far.jpg')],
             ],
             'masterplan' => fn (): array => [
                 'title' => 'Masterplan',
-                'description' => 'Perfectly positioned in the heart of West Village Business District, surrounded by residentials, communities, business hubs, and lifestyle destinations.',
+                'description' => 'Berada di jantung West Village Business District, dikelilingi kawasan hunian, komunitas, pusat bisnis, dan destinasi gaya hidup.',
                 'points' => $this->rows([
                     ['01', 'West Lakeside', 'Data Masterplan/West-Lakeside-BSD-Position.webp'],
                     ['02', 'West Village Business Park 1', 'Data Masterplan/West Village 1.jpg'],
@@ -87,39 +87,39 @@ class WestlakeProjectSeeder extends Seeder
                 ], fn (array $point): array => ['number' => $point[0], 'name' => $point[1], 'image' => $this->image($point[2])]),
             ],
             'location' => fn (): array => [
-                'title' => 'Location',
-                'description' => 'Direct access to the toll road, with residential, education and public facilities within a 1–3 km range.',
+                'title' => 'Lokasi',
+                'description' => 'Akses langsung ke jalan tol, dengan kawasan hunian, sekolah, dan fasilitas umum dalam radius 1–3 km.',
                 'maps' => [$this->image('Data Location/Maps Westlake.png'), $this->image('Data Location/Maps_page-0001.jpg')],
             ],
             'cluster' => fn (): array => [
                 'title' => 'Cluster',
                 'points' => $this->rows([
-                    ['01', 'Lakeview Units', 'Uninterrupted lake views create a unique destination, enhancing every visit with a relaxing waterfront ambience.', 'Image Westlake/Ruko Hadap Danau.jpg'],
-                    ['02', 'Streetview Units', 'Position your business at the front of West Lakeside, with ROW 20–24 providing strong visibility and easy access for customers.', 'Image Westlake/Rk West LS Frontal Boulevard 1.jpg'],
-                    ['03', 'Main Plaza', 'The main entrance to the promenade area: integrated pedestrian shortcuts provide immediate and convenient access to the Lakeside Social Deck.', 'Image Westlake/Rk West LS Plaza.jpg'],
-                    ['04', 'Lakeside Social Deck', '4 public social decks ranging from 90–120 sqm, designed for events, gatherings, and pop-up activities, overlooking the lake.', 'Image Westlake/Rk West LS Deck.jpg'],
-                    ['05', 'Lakeside Jogging Track', 'A scenic lakeside jogging track lined with cafes and shops, seamlessly blending fitness with vibrant social spaces.', 'Image Westlake/Rk West LS Jogging Track.jpg'],
+                    ['01', 'Unit Lakeview', 'Pemandangan danau tanpa penghalang menjadikannya destinasi yang khas, dengan suasana tepi air yang menenangkan di setiap kunjungan.', 'Image Westlake/Ruko Hadap Danau.jpg'],
+                    ['02', 'Unit Streetview', 'Tempatkan usaha Anda di bagian depan West Lakeside. Jalan ROW 20–24 membuat unit mudah terlihat dan mudah dijangkau pelanggan.', 'Image Westlake/Rk West LS Frontal Boulevard 1.jpg'],
+                    ['03', 'Plaza Utama', 'Pintu masuk utama ke area promenade. Jalur pejalan kaki yang terhubung memberi akses cepat dan nyaman ke Lakeside Social Deck.', 'Image Westlake/Rk West LS Plaza.jpg'],
+                    ['04', 'Lakeside Social Deck', 'Empat dek publik seluas 90–120 m² untuk acara, pertemuan, dan aktivitas pop-up, menghadap langsung ke danau.', 'Image Westlake/Rk West LS Deck.jpg'],
+                    ['05', 'Jogging Track Tepi Danau', 'Jalur lari di tepi danau yang diapit kafe dan toko, memadukan olahraga dengan ruang sosial yang hidup.', 'Image Westlake/Rk West LS Jogging Track.jpg'],
                     ['06', 'Lakefront Pods', '', null],
                 ], fn (array $point): array => ['number' => $point[0], 'name' => $point[1], 'description' => $point[2], 'image' => $this->image($point[3])]),
             ],
             'facilities' => fn (): array => [
-                'title' => 'Facilities',
-                'description' => 'Where lifestyle creates opportunity: a destination designed to elevate customer experiences while supporting thriving businesses.',
+                'title' => 'Fasilitas',
+                'description' => 'Tempat gaya hidup membuka peluang: destinasi yang dirancang untuk memperkaya pengalaman pelanggan sekaligus mendukung usaha yang terus bertumbuh.',
                 'items' => $this->rows([
                     ['Lakeside Social Deck', 'Data Facilities/Lakeside Social Deck.jpg'],
-                    ['Walkable Neighborhood', 'Data Facilities/Walkable Neighborhood.jpg'],
-                    ['Prime Location in 10,5 Ha Area', 'Data Facilities/Prime Location In 10,5 Ha Area.jpg'],
-                    ['Stunning Sunset View', 'Data Facilities/Stunning Sunset View.jpg'],
+                    ['Kawasan Ramah Pejalan Kaki', 'Data Facilities/Walkable Neighborhood.jpg'],
+                    ['Lokasi Strategis di Area 10,5 Ha', 'Data Facilities/Prime Location In 10,5 Ha Area.jpg'],
+                    ['Pemandangan Matahari Terbenam', 'Data Facilities/Stunning Sunset View.jpg'],
                 ], fn (array $item): array => ['name' => $item[0], 'image' => $this->image($item[1])]),
             ],
             'types' => fn (): array => [
-                'title' => 'Type',
+                'title' => 'Tipe Unit',
                 'hero_image' => $this->image('Data Type Unit/Rk West LS Potongan.jpg'),
                 'units' => self::entryIds('types', array_column($this->typeEntries(), 'slug')),
             ],
             'availability' => fn (): array => [
-                'title' => 'Unit Availability',
-                'description' => 'Siteplan of every block. Status: available, reserved, sold.',
+                'title' => 'Ketersediaan Unit',
+                'description' => 'Siteplan dan block plan setiap blok, lengkap dengan status unit: tersedia, dipesan, dan terjual.',
                 'siteplan' => $this->image('Data Unit/Unit Avalability.png'),
             ],
         ];
@@ -148,7 +148,7 @@ class WestlakeProjectSeeder extends Seeder
             ->flatMap(fn (string $prefix, string $view): array => collect($sizes)->map(fn (array $size, string $type): array => self::entry(
                 'types',
                 'westlake-'.str("{$prefix} type {$type}")->slug(),
-                $prefix.' '.($type === 'BCD' ? 'Type B/C/D' : "Type {$type}"),
+                $prefix.' '.($type === 'BCD' ? 'Tipe B/C/D' : "Tipe {$type}"),
                 [
                     'label' => $size[0],
                     'view' => $view,

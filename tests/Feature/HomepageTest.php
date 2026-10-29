@@ -27,8 +27,8 @@ test('the homepage shows only the hero and the projects grid', function () {
     $this->get('/')
         ->assertOk()
         // Judul per kata, baris tetap
-        ->assertSeeInOrder(['>Quiet</span>', '>Living,</span>', '<br>', '>Close</span>', '>Everything.</span>'], false)
-        ->assertSee("A residential cluster in Jakarta,<br>\ndesigned for growing families.", false)
+        ->assertSeeInOrder(['>Hidup</span>', '>Tenang,</span>', '<br>', '>Dekat</span>', '>Saja.</span>'], false)
+        ->assertSee("Kawasan hunian di Jakarta,<br>\ndirancang untuk keluarga yang terus bertumbuh.", false)
         ->assertSee('<section class="hero"', false)
         ->assertDontSee('id="kawasan"', false)
         ->assertDontSee('id="peta"', false)

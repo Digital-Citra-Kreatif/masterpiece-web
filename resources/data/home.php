@@ -6,8 +6,8 @@ $hotspot = fn (string $key, string $title, string $short, string $text): array =
 
 return [
     'hero' => [
-        'title' => "Quiet Living,\nClose to Everything.",
-        'subtitle' => "A residential cluster in Jakarta,\ndesigned for growing families.",
+        'title' => "Hidup Tenang,\nDekat ke Mana Saja.",
+        'subtitle' => "Kawasan hunian di Jakarta,\ndirancang untuk keluarga yang terus bertumbuh.",
         'background' => 'slider',
         'slides' => [
             ['type' => 'image', 'src' => 'media/stills/ruko-front-34.jpg', 'alt' => ''],
