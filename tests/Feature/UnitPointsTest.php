@@ -109,3 +109,16 @@ test('admin pages load the map script on full page loads only', function () {
     $this->actingAs($this->admin)->get('/admin', ['X-Inertia' => 'true'])
         ->assertDontSee($script, false);
 });
+
+test('the project form gets the first orbit frame of masterplan and cluster for placing points', function () {
+    $this->actingAs($this->admin)
+        ->getJson('/admin/orbit-frames')
+        ->assertOk()
+        ->assertJsonPath('masterplan.src', asset('media/scroll/kawasan/lg/f_000.jpg'))
+        ->assertJsonPath('masterplan.width', 1280)
+        ->assertJsonPath('cluster.height', 720);
+});
+
+test('guests cannot read the orbit frames', function () {
+    $this->getJson('/admin/orbit-frames')->assertUnauthorized();
+});

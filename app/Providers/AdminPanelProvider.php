@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Http\Controllers\Admin\OrbitFramesController;
 use App\Http\Controllers\Admin\UnitPointsController;
 use App\Http\Middleware\AdminNavigationIcons;
 use App\Http\Middleware\AdminProjectMap;
@@ -24,6 +25,7 @@ final class AdminPanelProvider extends PanelProvider
             ->routes(function (): void {
                 Route::get('unit-points/{project}', [UnitPointsController::class, 'show'])->whereNumber('project')->name('unit-points.show');
                 Route::put('unit-points/{project}', [UnitPointsController::class, 'update'])->whereNumber('project')->name('unit-points.update');
+                Route::get('orbit-frames', OrbitFramesController::class)->name('orbit-frames');
             });
     }
 }
