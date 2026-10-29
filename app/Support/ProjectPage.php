@@ -139,7 +139,13 @@ final class ProjectPage
     {
         return collect(self::SECTIONS)
             ->filter(fn (array $section, string $handle): bool => isset($sections[$handle]))
-            ->map(fn (array $section): array => ['href' => $base.'#'.$section['id'], 'label' => $section['label'], 'active' => false, 'newTab' => false])
+            // Judul section dari CMS
+            ->map(fn (array $section, string $handle): array => [
+                'href' => $base.'#'.$section['id'],
+                'label' => filled($sections[$handle]['title'] ?? null) ? (string) $sections[$handle]['title'] : $section['label'],
+                'active' => false,
+                'newTab' => false,
+            ])
             ->values()
             ->all();
     }

@@ -416,3 +416,17 @@ test('the logo on a project page reloads that project page', function () {
         ->assertOk()
         ->assertSee('<a class="hd__mark" href="'.url('/projects/westlake').'" aria-label="Westlake, muat ulang halaman proyek">', false);
 });
+
+test('the project header menu uses each section title from the CMS, or the default label without one', function () {
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'masterplan' => ['title' => 'Rencana Induk', 'points' => [['number' => '01', 'name' => 'West Lakeside', 'image' => null]]],
+        'turntable' => ['title' => '', 'tabs' => [['name' => 'Fasad', 'description' => '', 'images' => [projectImage('frame_1.jpg')], 'frame' => null]]],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSeeInOrder(['class="hd__nav"', 'href="#masterplan"', 'Rencana Induk', 'href="#view-360"', '360°'], false)
+        ->assertDontSee('>Masterplan</a>', false);
+});
