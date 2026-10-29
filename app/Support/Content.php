@@ -85,7 +85,7 @@ final class Content
     /**
      * Isi footer
      *
-     * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, copyright: string}
+     * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, contactTitle: string, hoursTitle: string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, copyright: string}
      */
     public static function footer(): array
     {
@@ -104,6 +104,8 @@ final class Content
                 'description' => $filled('description'),
                 'address' => $filled('address'),
                 'hours' => $filled('hours'),
+                'contactTitle' => $filled('contact_title') ?? 'Kontak',
+                'hoursTitle' => $filled('hours_title') ?? 'Jam operasional',
                 'phone' => $phone ? ['label' => $phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $phone)] : null,
                 'email' => $email ? ['label' => $email, 'href' => 'mailto:'.$email] : null,
                 'whatsapp' => $whatsapp ? ['label' => '+'.$whatsapp, 'href' => 'https://wa.me/'.$whatsapp] : null,

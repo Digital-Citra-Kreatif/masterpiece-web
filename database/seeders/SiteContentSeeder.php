@@ -361,6 +361,8 @@ class SiteContentSeeder extends Seeder
         return ['handle' => 'footer', 'title' => 'Footer', 'fields' => [
             $this->field('logo', 'media', ['types' => ['image']], ['label' => 'Logo', 'translatable' => false, 'width' => 33]),
             $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat', 'width' => 66]),
+            $text('contact_title', 'Judul kontak', ['width' => 50]),
+            $text('hours_title', 'Judul jam operasional', ['width' => 50]),
             $this->field('address', 'textarea', [], ['label' => 'Alamat']),
             $this->field('hours', 'textarea', [], ['label' => 'Jam operasional', 'instructions' => 'Satu baris per jadwal, mis. Senin–Jumat, 09.00–17.00.']),
             $text('phone', 'Telepon', ['translatable' => false, 'width' => 33]),

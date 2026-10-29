@@ -21,7 +21,7 @@
 
     @if ($ft['address'] || $ft['phone'] || $ft['email'] || $ft['whatsapp'])
       <div class="ft__col">
-        <h2 class="ft__head">Kontak</h2>
+        <h2 class="ft__head">{{ $ft['contactTitle'] }}</h2>
         @if ($ft['address'])
           <address class="ft__text">{!! nl2br(e($ft['address']), false) !!}</address>
         @endif
@@ -40,7 +40,7 @@
 
     @if ($ft['hours'])
       <div class="ft__col">
-        <h2 class="ft__head">Jam operasional</h2>
+        <h2 class="ft__head">{{ $ft['hoursTitle'] }}</h2>
         <p class="ft__text">{!! nl2br(e($ft['hours']), false) !!}</p>
       </div>
     @endif

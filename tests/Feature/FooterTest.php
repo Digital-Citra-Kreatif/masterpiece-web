@@ -54,3 +54,19 @@ test('the footer shows the contacts and opening hours filled in under Globals �
         ->assertSee('href="https://wa.me/6281234567890" target="_blank" rel="noopener">WhatsApp +6281234567890</a>', false)
         ->assertDontSee('ft__cta', false);
 });
+
+test('the footer column headings come from Globals → Footer, or the defaults without them', function () {
+    $set = GlobalSet::query()->where('handle', 'footer')->firstOrFail();
+    app(SaveGlobals::class)->handle($set, [
+        'address' => 'Jl. BSD Raya',
+        'hours' => 'Senin–Jumat, 09.00–17.00',
+        'contact_title' => 'Hubungi kami',
+        'hours_title' => 'Jam buka',
+    ], 'id');
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('<h2 class="ft__head">Hubungi kami</h2>', false)
+        ->assertSee('<h2 class="ft__head">Jam buka</h2>', false)
+        ->assertDontSee('<h2 class="ft__head">Kontak</h2>', false);
+});
