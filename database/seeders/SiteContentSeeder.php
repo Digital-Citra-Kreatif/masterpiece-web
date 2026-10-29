@@ -88,7 +88,7 @@ class SiteContentSeeder extends Seeder
                         'label' => 'Proyek',
                         'translatable' => false,
                     ]),
-                    $text('label', ['instructions' => 'Baris kecil di bawah nama, misalnya "Ruko Hook".']),
+                    $text('label'),
                     $this->field('view', 'select', ['options' => [
                         ['value' => 'lakeview', 'label' => 'Lake View'],
                         ['value' => 'streetview', 'label' => 'Street View'],
