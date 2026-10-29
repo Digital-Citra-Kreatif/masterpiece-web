@@ -625,6 +625,12 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   }
 }
 
+@media (max-width: 760px) {
+  .tps .tps__part {
+    font-size: 32px;
+  }
+}
+
 /* Section denah */
 .tpd {
   border-block: 1px solid var(--sheet-line);
