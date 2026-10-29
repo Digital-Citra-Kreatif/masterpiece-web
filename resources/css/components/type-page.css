@@ -3,6 +3,7 @@
 .tph,
 .tps,
 .tpd,
+.tpi,
 .tpb {
   background-color: #fff; /* Latar garis samping */
   --sheet-line: var(--line, var(--rule));
@@ -23,7 +24,7 @@
 }
 
 /* Garis lebih tipis */
-body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
+body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   --line: rgb(14 17 19 / 0.07);
   --rule: rgb(14 17 19 / 0.07);
 }
@@ -33,7 +34,7 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
 }
 
-.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
+.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
   background-size: 1px 100%;
   background-position: left var(--line-x) top 0, right var(--line-x) top 0;
@@ -507,7 +508,7 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
 
 /* Cocok untuk usaha */
 .tps__uses {
-  margin: 0 0 24px;
+  min-width: 0;
 }
 
 .tps__uses-title {
@@ -636,6 +637,11 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
     margin-top: 24px;
   }
 
+  /* Margin tidak collapse */
+  .tps__intro {
+    margin-block: 4px 0;
+  }
+
   .tps__info > :first-child {
     margin-top: 40px;
   }
@@ -739,6 +745,35 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
 .tpd__nav.swiper-button-disabled {
   opacity: 0.35;
   cursor: default;
+}
+
+/* Ringkasan unit */
+.tpi {
+  --tps-edge: rgb(14 17 19 / 0.16);
+  padding-block: clamp(56px, 7vw, 112px);
+  border-bottom: 1px solid var(--sheet-line);
+}
+
+.tps + .tpi {
+  border-top: 1px solid var(--sheet-line);
+}
+
+/* Sejajar lembar tipe */
+.tpi__top {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px clamp(40px, 5vw, 88px);
+}
+
+.tpi .tps__specs {
+  margin-top: clamp(32px, 4vw, 56px);
+}
+
+@media (max-width: 960px) {
+  .tpi__top {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* Spesifikasi bangunan */

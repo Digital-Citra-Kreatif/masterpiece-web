@@ -97,39 +97,9 @@
             <p class="display tps__size">{{ $t['dimensions'] }}</p>
           @endif
 
-          <dl class="tps__facts">
-            @foreach ($t['facts'] as [$k, $v])
-              <div>
-                <dt>{{ $k }}</dt>
-                <dd>{{ $v }}</dd>
-              </div>
-            @endforeach
-          </dl>
-
           @if ($t['intro'])
             <div class="tps__intro">{!! $t['intro'] !!}</div>
           @endif
-
-          @if ($t['suitable']['items'] !== [])
-            {{-- Cocok untuk usaha --}}
-            <div class="tps__uses">
-              <p class="tps__uses-title" id="uses-title">{{ $t['suitable']['title'] }}</p>
-              <ul aria-labelledby="uses-title">
-                @foreach ($t['suitable']['items'] as $use)
-                  <li>{{ $use }}</li>
-                @endforeach
-              </ul>
-            </div>
-          @endif
-
-          <dl class="tps__specs" aria-label="Spesifikasi">
-            @foreach ($t['info'] as [$k, $v])
-              <div>
-                <dt>{{ $k }}</dt>
-                <dd>{{ $v }}</dd>
-              </div>
-            @endforeach
-          </dl>
 
           @if (count($parts) > 1)
             {{-- Tab bagian --}}
@@ -183,6 +153,47 @@
           @endif
         </div>
         <x-view-cursor />
+      </section>
+    @endif
+
+    @if ($t['facts'] !== [] || $t['suitable']['items'] !== [] || $t['info'] !== [])
+      {{-- Ringkasan unit --}}
+      <section class="tpi" aria-label="Ringkasan unit">
+        <div class="wrap">
+          <div class="tpi__top">
+            <dl class="tps__facts">
+              @foreach ($t['facts'] as [$k, $v])
+                <div>
+                  <dt>{{ $k }}</dt>
+                  <dd>{{ $v }}</dd>
+                </div>
+              @endforeach
+            </dl>
+
+            @if ($t['suitable']['items'] !== [])
+              {{-- Cocok untuk usaha --}}
+              <div class="tps__uses">
+                <p class="tps__uses-title" id="uses-title">{{ $t['suitable']['title'] }}</p>
+                <ul aria-labelledby="uses-title">
+                  @foreach ($t['suitable']['items'] as $use)
+                    <li>{{ $use }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            @endif
+          </div>
+
+          @if ($t['info'] !== [])
+            <dl class="tps__specs" aria-label="Spesifikasi">
+              @foreach ($t['info'] as [$k, $v])
+                <div>
+                  <dt>{{ $k }}</dt>
+                  <dd>{{ $v }}</dd>
+                </div>
+              @endforeach
+            </dl>
+          @endif
+        </div>
       </section>
     @endif
 
