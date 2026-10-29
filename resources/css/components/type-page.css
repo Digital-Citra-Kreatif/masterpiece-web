@@ -585,14 +585,17 @@ body.is-type :is(.tph, .tps, .tpd, .tpb, .types, .ft) {
 
 /* Section denah */
 .tpd {
-  padding-block: clamp(40px, 5vw, 72px);
   border-block: 1px solid var(--sheet-line);
+}
+
+/* Nempel garis samping */
+.tpd__frame {
+  position: relative;
+  margin-inline: calc(var(--line-x) + 1px);
 }
 
 .tpd__plans {
   list-style: none;
-  display: grid;
-  gap: 24px;
   margin: 0;
   padding: 0;
 }

@@ -163,7 +163,7 @@
     @if ($t['denah'] !== [])
       {{-- Denah --}}
       <section class="tpd" aria-label="Denah">
-        <div class="wrap">
+        <div class="tpd__frame">
           <ul class="tpd__plans">
             @foreach ($t['denah'] as $d)
               <li>
