@@ -153,18 +153,26 @@ final class OrbitFrames
     /**
      * Status unggahan terakhir
      *
-     * @return array{state: string, message: ?string, count: ?int}
+     * @return array{state: string, message: ?string, count: ?int, source: ?int}
      */
     public static function status(int $entryId, string $section): array
     {
         $status = json_decode((string) Storage::disk('local')->get(self::upload($entryId, $section).'.json'), true);
 
-        return is_array($status) ? $status : ['state' => 'idle', 'message' => null, 'count' => null];
+        return is_array($status) ? [...$status, 'source' => $status['source'] ?? null] : ['state' => 'idle', 'message' => null, 'count' => null, 'source' => null];
     }
 
+    /** Status baru, sumber ZIP tetap */
     public static function setStatus(int $entryId, string $section, string $state, ?string $message = null, ?int $count = null): void
     {
-        Storage::disk('local')->put(self::upload($entryId, $section).'.json', json_encode(['state' => $state, 'message' => $message, 'count' => $count]));
+        $source = self::status($entryId, $section)['source'];
+        Storage::disk('local')->put(self::upload($entryId, $section).'.json', json_encode(['state' => $state, 'message' => $message, 'count' => $count, 'source' => $source]));
+    }
+
+    /** Media ZIP asal frame; null untuk unggahan panel */
+    public static function setSource(int $entryId, string $section, ?int $mediaId): void
+    {
+        Storage::disk('local')->put(self::upload($entryId, $section).'.json', json_encode([...self::status($entryId, $section), 'source' => $mediaId]));
     }
 
     /**

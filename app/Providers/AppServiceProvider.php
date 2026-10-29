@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Jobs\TrackProjectPoints;
 use App\Support\Content;
+use App\Support\OrbitZips;
 use App\Support\ProjectFonts;
 use App\Support\ProjectImages;
 use Illuminate\Foundation\Http\Events\RequestHandled;
@@ -30,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
 
         EntryTranslation::saved(fn (EntryTranslation $translation) => app(ProjectFonts::class)->handle($translation));
         EntryTranslation::saved(fn (EntryTranslation $translation) => app(ProjectImages::class)->handle($translation));
+        EntryTranslation::saved(fn (EntryTranslation $translation) => OrbitZips::handle($translation));
         // Lacak ulang titik
         EntryTranslation::saved(function (EntryTranslation $translation): void {
             if ($translation->wasChanged('data') && $translation->entry?->collection?->handle === 'projects') {
@@ -38,5 +40,6 @@ class AppServiceProvider extends ServiceProvider
         });
         Event::listen(RequestHandled::class, fn (RequestHandled $event) => app(ProjectFonts::class)->handleRequest($event->request));
         Event::listen(RequestHandled::class, fn (RequestHandled $event) => app(ProjectImages::class)->handleRequest($event->request));
+        Event::listen(RequestHandled::class, fn (RequestHandled $event) => OrbitZips::handleRequest($event->request));
     }
 }

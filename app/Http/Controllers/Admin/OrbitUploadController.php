@@ -67,6 +67,7 @@ class OrbitUploadController extends Controller
         $zip = OrbitFrames::upload($project, $section).'.zip';
         $disk->delete($zip);
         $disk->move($part, $zip);
+        OrbitFrames::setSource($project, $section, null);
         OrbitFrames::setStatus($project, $section, 'queued');
         ProcessOrbitFrames::dispatch($project, $section);
 

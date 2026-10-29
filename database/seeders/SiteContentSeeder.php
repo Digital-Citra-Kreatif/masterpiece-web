@@ -292,6 +292,12 @@ class SiteContentSeeder extends Seeder
         $percent = fn (string $handle, string $label, string $instructions): array => $this->field($handle, 'number', ['min' => 0, 'max' => 100], [
             'label' => $label, 'translatable' => false, 'width' => 50, 'instructions' => $instructions,
         ]);
+        // Gambar diam atau ZIP frame 360°
+        $scene = fn (string $section): array => $this->field('image', 'media', ['types' => ['image', 'document']], [
+            'label' => 'Gambar atau ZIP 360°',
+            'translatable' => false,
+            'instructions' => "Gambar diam, atau ZIP berisi semua frame orbit {$section} (diurutkan menurut nama file) untuk tampilan 360°. Titik ditempatkan di atas gambar atau frame pertama.",
+        ]);
         $points = fn (string $label, array $fields): array => $this->field('points', 'repeater', [], ['label' => $label, 'fields' => [
             $text('number', 'Nomor', ['translatable' => false, 'width' => 25]),
             $text('name', 'Nama', ['required' => true, 'width' => 75]),
@@ -308,7 +314,7 @@ class SiteContentSeeder extends Seeder
                 ]),
             ]]),
             $section('masterplan', 'Masterplan', [
-                $image('image', 'Gambar', ['instructions' => 'Gambar diam masterplan; titik ditempatkan di atas gambar ini. Maks 2 MB.']),
+                $scene('masterplan'),
                 $points('Titik kawasan', [
                     $image('image', 'Gambar'),
                     $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Masterplan. Kosong: titik tidak tampil.'),
@@ -319,7 +325,7 @@ class SiteContentSeeder extends Seeder
                 $gallery('maps', 'Peta'),
             ]),
             $section('cluster', 'Cluster', [
-                $image('image', 'Gambar', ['instructions' => 'Gambar diam cluster; titik ditempatkan di atas gambar ini. Maks 2 MB.']),
+                $scene('cluster'),
                 $points('Titik cluster', [
                     $image('image', 'Gambar', ['width' => 50]),
                     $textarea('description', 'Deskripsi', ['width' => 50]),

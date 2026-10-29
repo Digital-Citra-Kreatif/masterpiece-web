@@ -415,7 +415,12 @@ function setup(sunrice) {
       return json;
     }, [project, section]);
 
-    useEffect(() => { request('GET').then(setState).catch(() => setState(null)); }, [request]);
+    // Status awal dan setelah Simpan
+    useEffect(() => {
+      const load = () => request('GET').then(setState).catch(() => setState(null));
+      load();
+      return router.on('success', load);
+    }, [request]);
 
     // Pantau proses
     const busy = state?.state === 'queued' || state?.state === 'processing';
@@ -459,11 +464,12 @@ function setup(sunrice) {
       }
     };
 
-    let note = 'Satu ZIP berisi semua frame orbit (JPG, PNG, atau WebP), diurutkan menurut nama file. Bila ada, menggantikan Gambar.';
+    const fromField = Boolean(state?.source);
+    let note = 'Pilih ZIP di field "Gambar atau ZIP 360°" lalu Simpan, atau unggah di sini untuk ZIP yang lebih besar dari batas media.';
     if (sent) note = `Mengunggah ${mb(sent[0])} dari ${mb(sent[1])}…`;
     else if (state?.state === 'queued') note = 'Menunggu antrean. Pastikan composer run dev (queue) berjalan.';
     else if (state?.state === 'processing') note = 'Memproses frame. Titik dilacak ulang setelahnya.';
-    else if (state?.active) note = `${state.count ? `${state.count} frame` : 'Frame 360°'} aktif, menggantikan Gambar di section ini.`;
+    else if (state?.active) note = `${state.count ? `${state.count} frame` : 'Frame 360°'} aktif${fromField ? ' dari ZIP di field Gambar. Kosongkan field itu untuk menghapusnya' : ''}.`;
     const failed = error ?? (state?.state === 'failed' ? state.message : null);
 
     return h('div', { className: 'pm-bar pm-upload' },
@@ -478,7 +484,7 @@ function setup(sunrice) {
           onChange: (e) => { const file = e.target.files[0]; e.target.value = ''; if (file) upload(file); },
         }),
         button({ variant: 'outline', size: 'sm', disabled: Boolean(sent) || busy, onClick: () => inputRef.current.click() }, state?.active ? 'Ganti ZIP' : 'Unggah ZIP'),
-        state?.active && !busy && !sent && button({ variant: 'outline', size: 'sm', onClick: remove }, 'Hapus frame')));
+        state?.active && !busy && !sent && !fromField && button({ variant: 'outline', size: 'sm', onClick: remove }, 'Hapus frame')));
   }
 
   const ORBITS = [{ section: 'masterplan', title: 'Titik kawasan' }, { section: 'cluster', title: 'Titik cluster' }];

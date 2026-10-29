@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
+use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Actions\Permissions\SyncPermissions;
+use Sunrice\Admin\Media\Media;
 use Sunrice\Cms\Actions\Entries\CreateEntry;
 use Sunrice\Cms\Actions\Entries\PublishEntry;
 use Sunrice\Cms\Models\Collection;
@@ -127,7 +129,7 @@ test('processing makes both sizes in file name order with a manifest, then retra
     expect($manifest)->toMatchArray(['count' => 10, 'width' => 1280, 'height' => 720, 'sizes' => ['lg' => 1280, 'sm' => 800], 'pattern' => '{size}/f_{n}.jpg'])
         ->and(getimagesize("{$dir}/lg/f_009.jpg"))->toMatchArray([1280, 720])
         ->and(getimagesize("{$dir}/sm/f_000.jpg"))->toMatchArray([800, 450])
-        ->and(OrbitFrames::status($this->project->entry_id, 'masterplan'))->toBe(['state' => 'ready', 'message' => null, 'count' => 10])
+        ->and(OrbitFrames::status($this->project->entry_id, 'masterplan'))->toBe(['state' => 'ready', 'message' => null, 'count' => 10, 'source' => null])
         ->and(Storage::disk('local')->exists(OrbitFrames::upload($this->project->entry_id, 'masterplan').'.zip'))->toBeFalse();
     Queue::assertPushed(TrackProjectPoints::class);
 });
@@ -212,4 +214,54 @@ test('guests and editors without update access cannot upload frames', function (
     $this->actingAs($this->admin)
         ->getJson('/admin/orbit-upload/999/masterplan')
         ->assertNotFound();
+});
+
+/** Isi field Gambar Masterplan lalu simpan */
+function saveSceneMedia(EntryTranslation $translation, ?int $mediaId): void
+{
+    $fresh = $translation->fresh();
+    $data = $fresh->draft_data;
+    $data['masterplan']['image'] = $mediaId;
+    $fresh->forceFill(['draft_data' => $data])->save();
+}
+
+/** ZIP frame di media library */
+function zipMedia(): Media
+{
+    return app(UploadMedia::class)->handle(new UploadedFile(frameZip(array_map(fn (int $n): string => "f_{$n}.jpg", range(1, 8))), 'masterplan-orbit.zip', 'application/zip', null, true), []);
+}
+
+test('a ZIP chosen in the masterplan image field is queued once as the frames source', function () {
+    $zip = zipMedia();
+
+    saveSceneMedia($this->project, $zip->id);
+    saveSceneMedia($this->project, $zip->id);
+
+    Queue::assertPushed(ProcessOrbitFrames::class, 1);
+    expect(OrbitFrames::status($this->project->entry_id, 'masterplan'))->toMatchArray(['state' => 'queued', 'source' => $zip->id])
+        ->and(Storage::disk('local')->size(OrbitFrames::upload($this->project->entry_id, 'masterplan').'.zip'))->toBe($zip->size);
+
+    // Diproses, lalu tampil di halaman
+    (new ProcessOrbitFrames($this->project->entry_id, 'masterplan'))->handle();
+    expect(OrbitFrames::status($this->project->entry_id, 'masterplan'))->toMatchArray(['state' => 'ready', 'count' => 8, 'source' => $zip->id]);
+    $this->get('/projects/westlake')->assertSee('data-base="'.rtrim(asset(OrbitFrames::base($this->project->entry_id, 'masterplan')), '/').'/"', false);
+});
+
+test('clearing the ZIP from the image field removes its frames', function () {
+    saveSceneMedia($this->project, zipMedia()->id);
+    (new ProcessOrbitFrames($this->project->entry_id, 'masterplan'))->handle();
+
+    saveSceneMedia($this->project, null);
+
+    expect(OrbitFrames::base($this->project->entry_id, 'masterplan'))->toBeNull()
+        ->and(OrbitFrames::status($this->project->entry_id, 'masterplan')['source'])->toBeNull();
+});
+
+test('frames uploaded through the panel are kept when the image field has no ZIP', function () {
+    Storage::disk('local')->put(OrbitFrames::upload($this->project->entry_id, 'masterplan').'.zip', (string) file_get_contents(frameZip(array_map(fn (int $n): string => "f_{$n}.jpg", range(1, 8)))));
+    (new ProcessOrbitFrames($this->project->entry_id, 'masterplan'))->handle();
+
+    saveSceneMedia($this->project, null);
+
+    expect(OrbitFrames::base($this->project->entry_id, 'masterplan'))->not->toBeNull();
 });
