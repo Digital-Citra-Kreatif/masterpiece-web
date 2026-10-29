@@ -31,9 +31,6 @@
               <span class="card__open" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M9 7h8v8" /></svg>
               </span>
-              @if ($site['showPlaceholderBadges'] && ($t['placeholder'] ?? false))
-                <span class="badge card__badge">Data contoh</span>
-              @endif
             </div>
             <div class="card__body">
               <div class="card__head">

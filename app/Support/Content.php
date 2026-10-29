@@ -297,7 +297,7 @@ final class Content
      * Kartu tipe beranda
      *
      * @param  array<string, mixed>  $values
-     * @return array{slug: string, name: string, label: ?string, url: ?string, image: ?string, lt: string, lb: string, bedrooms: int, bathrooms: int, placeholder: bool}
+     * @return array{slug: string, name: string, label: ?string, url: ?string, image: ?string, lt: string, lb: string, bedrooms: int, bathrooms: int}
      */
     private static function card(EntryTranslation $type, array $values): array
     {
@@ -311,7 +311,6 @@ final class Content
             'lb' => self::number($values['lb'] ?? 0),
             'bedrooms' => (int) ($values['bedrooms'] ?? 0),
             'bathrooms' => (int) ($values['bathrooms'] ?? 0),
-            'placeholder' => (bool) ($values['placeholder'] ?? false),
         ];
     }
 

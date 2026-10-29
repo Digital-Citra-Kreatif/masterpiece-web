@@ -161,7 +161,6 @@ class WestlakeProjectSeeder extends Seeder
                     'suitable_for' => array_map(fn (string $name): array => ['name' => $name], $suitable[$view][1]),
                     'building_specs' => self::buildingSpecs(),
                     'building_specs_note' => '*Spesifikasi dan material dapat berubah sewaktu-waktu tanpa pemberitahuan.',
-                    'placeholder' => false,
                 ],
             ))->values()->all())
             ->all();

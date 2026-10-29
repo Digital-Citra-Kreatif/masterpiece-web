@@ -120,7 +120,6 @@ class SiteContentSeeder extends Seeder
                     ]),
                     $this->field('gallery', 'media', ['types' => ['image'], 'multiple' => true], ['translatable' => false]),
                     $text('vr_url', ['translatable' => false]),
-                    $this->field('placeholder', 'toggle', [], ['instructions' => 'Data contoh, belum dari klien.']),
                 ]],
                 ['handle' => 'unit', 'title' => 'Unit', 'fields' => [
                     $this->field('project', 'entries', ['collections' => ['projects'], 'multiple' => false], [
@@ -472,7 +471,6 @@ class SiteContentSeeder extends Seeder
                 'floor_plans' => $floorPlans,
                 'gallery' => $gallery,
                 'vr_url' => '/vr/placeholder/index.html',
-                'placeholder' => true,
             ]))
             ->all();
     }
