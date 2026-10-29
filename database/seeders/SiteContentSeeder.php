@@ -131,7 +131,6 @@ class SiteContentSeeder extends Seeder
                         'required' => true,
                         'translatable' => false,
                         'width' => 50,
-                        'instructions' => 'Judul entri = kode unit, misalnya "A-1".',
                     ]),
                     $this->field('sale_status', 'select', ['options' => [
                         ['value' => 'available', 'label' => 'Tersedia'],
