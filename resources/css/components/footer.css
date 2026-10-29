@@ -95,13 +95,15 @@
   border-top: 1px solid var(--rule);
 }
 
-/* Geser untuk WhatsApp */
+/* Jarak tombol WhatsApp */
 body:has(.wa) .ft__meta {
-  text-align: right;
+  padding-inline: 78px;
 }
 
+/* Copyright tengah */
 .ft__meta {
   margin: 0;
+  text-align: center;
   color: var(--ink-2);
   font-size: 16px; /* Ukuran body */
 }
