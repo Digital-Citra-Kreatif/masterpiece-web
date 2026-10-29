@@ -96,6 +96,18 @@
   height: 16px;
 }
 
+/* Nama proyek tersembunyi di layar sempit */
+@media (max-width: 480px) {
+  .hd__btn-more {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 760px) {
   .hd__logo {
     height: 28px;
