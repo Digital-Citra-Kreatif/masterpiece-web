@@ -330,56 +330,75 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 }
 
 .tps__stage {
+  position: relative;
   min-width: 0;
+  overflow: hidden;
+  background: #000;
 }
 
-.tps__stage .tt {
-  position: relative;
-  margin-inline: 0;
+.tps__poster,
+.tps__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tps__poster {
+  object-fit: cover;
+}
+
+.tps__poster[hidden] {
+  display: none;
+}
+
+/* Geser untuk memutar */
+.tps__canvas {
+  display: block;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.tps__canvas:active {
+  cursor: grabbing;
+}
+
+.tps__canvas:focus-visible {
+  outline: 2px solid var(--room-ink);
+  outline-offset: -4px;
 }
 
 /* Panah di dalam gambar */
-.tps .tt__hud {
+.tps__nav {
   position: absolute;
-  inset: 0;
-  z-index: 7;
-  justify-content: space-between;
-  padding: 0 16px;
-  pointer-events: none;
-}
-
-.tps .tt__step {
-  pointer-events: auto;
+  top: 50%;
+  z-index: 2;
+  translate: 0 -50%;
   border-color: rgb(255 255 255 / 0.4);
   color: var(--room-ink);
 }
 
-.tps .tt__step:hover {
+.tps__nav--prev {
+  left: 16px;
+}
+
+.tps__nav--next {
+  right: 16px;
+}
+
+.tps__nav:hover {
   background: var(--room-ink);
   color: var(--room);
 }
 
-.tps .tt__step:focus-visible {
+.tps__nav:focus-visible {
   outline: 2px solid var(--room-ink);
   outline-offset: 2px;
 }
 
-/* Tanpa dial derajat */
-.tps .tt__dial {
-  display: none;
-}
-
-.tps__spin[hidden],
-.tps__still[hidden] {
-  display: none;
-}
-
-/* Tab gambar diam */
-.tps__still {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: #000;
+.tps__stage--image {
+  aspect-ratio: auto;
+  background: none;
 }
 
 .tps__stage--image img {

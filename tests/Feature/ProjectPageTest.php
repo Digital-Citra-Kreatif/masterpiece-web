@@ -396,20 +396,22 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
     $html = $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name">'.$type->title.'</h1>', false)
-        ->assertSee('<h2 class="display tps__part" aria-live="polite" data-part-name>Fasad</h2>', false)
-        ->assertSee('<p class="tps__desc" data-part-text >Tampak depan.</p>', false)
-        ->assertSeeInOrder(['data-part-tab', 'Fasad', 'data-part-tab', 'Lantai 1'], false)
+        ->assertSee('<h2 class="display tps__part" aria-live="polite" data-spin-name>Fasad</h2>', false)
+        ->assertSee('<p class="tps__desc" data-spin-text >Tampak depan.</p>', false)
+        ->assertSeeInOrder(['data-spin-tab="0"', 'Fasad', 'data-spin-tab="1"', 'Lantai 1'], false)
+        ->assertSee('data-spin="drag"', false)
+        ->assertSee('data-spin-step="1" aria-label="Putar ke kanan"', false)
         ->assertDontSee('tps__no', false)
         ->assertSee('aria-pressed="true"', false)
         ->getContent();
 
-    preg_match('/data-parts="([^"]+)"/', $html, $match);
+    preg_match('/data-tabs="([^"]+)"/', $html, $match);
     $parts = json_decode(html_entity_decode($match[1]), true);
 
     expect($parts)->toHaveCount(2)
         ->and(array_column($parts, 'text'))->toBe(['Tampak depan.', 'Area usaha.'])
-        ->and($html)->toContain('data-turntable')
-        ->and($html)->toContain('data-config="'.url('/turntable/'));
+        ->and($html)->not->toContain('data-turntable')
+        ->and($html)->not->toContain('wr360');
 });
 
 test('the logo on a project page reloads that project page', function () {

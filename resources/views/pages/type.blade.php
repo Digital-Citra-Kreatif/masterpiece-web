@@ -2,8 +2,8 @@
 @php
   $pj = $t['project'];
   $parts = $pj['turntable']['tabs'] ?? [];
-  // Tab pertama yang berputar
-  $spin = collect($parts)->first(fn (array $part): bool => count($part['frames']) > 1);
+  // Ada tab berputar
+  $spins = collect($parts)->contains(fn (array $part): bool => count($part['frames']) > 1);
 
   $galleryItems = collect($t['gallery'])->map(fn ($img, $i) => ['src' => asset($img['src']), 'alt' => "{$t['name']}, gambar ".($i + 1), 'w' => $img['w'] ?? null, 'h' => $img['h'] ?? null]);
   $galleryPayload = json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems, 'index' => 0]);
@@ -43,41 +43,31 @@
     <section
       class="tps"
       aria-label="Detail {{ $t['name'] }}"
-      @if ($parts !== []) data-parts="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'config', 'root']))) }}" @endif
+      @if ($parts !== []) data-spin="drag" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame']))) }}" @endif
     >
       <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === [] && ! $t['image']])>
         @if ($parts !== [])
           {{-- Viewer 360° --}}
           @php($first = $parts[0])
-          <div class="tps__view" style="--native: {{ ($spin ?? $first)['width'] }}px">
-            <h2 class="display tps__part" aria-live="polite" data-part-name>{{ $first['name'] }}</h2>
+          <div class="tps__view" style="--native: {{ $first['width'] }}px">
+            <h2 class="display tps__part" aria-live="polite" data-spin-name>{{ $first['name'] }}</h2>
 
-            <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°">
-              @if ($spin)
-                @php($shown = count($first['frames']) > 1 ? $first : $spin)
-                <div class="tps__spin" data-part-spin @if ($shown !== $first) hidden @endif>
-                  <x-turntable
-                    :id="'tt-'.$t['slug']"
-                    :label="$t['name']"
-                    :turntable="['config' => $shown['config'], 'root' => $shown['root'], 'width' => $shown['width'], 'height' => $shown['height'], 'frame' => $shown['frame'], 'poster' => $shown['frames'][$shown['frame']]]"
-                    tone="black"
-                  />
-                </div>
+            <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}">
+              {{-- Gambar awal sebelum kanvas siap --}}
+              <img class="tps__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
+              <canvas class="tps__canvas" tabindex="0" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: geser untuk memutar" data-spin-canvas></canvas>
+              @if ($spins)
+                <button class="icon-btn tps__nav tps__nav--prev" type="button" data-spin-step="-1" aria-label="Putar ke kiri">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+                </button>
+                <button class="icon-btn tps__nav tps__nav--next" type="button" data-spin-step="1" aria-label="Putar ke kanan">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+                </button>
               @endif
-              <img
-                class="tps__still"
-                src="{{ $first['frames'][0] }}"
-                alt="{{ $first['name'] }}"
-                width="{{ $first['width'] }}"
-                height="{{ $first['height'] }}"
-                loading="lazy"
-                data-part-still
-                @if (count($first['frames']) > 1) hidden @endif
-              />
             </div>
 
             @if (collect($parts)->contains(fn (array $part): bool => filled($part['text'])))
-              <p class="tps__desc" data-part-text @if (blank($first['text'])) hidden @endif>{{ $first['text'] }}</p>
+              <p class="tps__desc" data-spin-text @if (blank($first['text'])) hidden @endif>{{ $first['text'] }}</p>
             @endif
           </div>
         @elseif ($t['image'])
@@ -105,8 +95,8 @@
             {{-- Tab bagian --}}
             <ul class="tps__tabs" aria-label="Bagian 360°">
               @foreach ($parts as $part)
-                <li data-part>
-                  <button class="tps__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" data-part-tab>
+                <li>
+                  <button class="tps__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" data-spin-tab="{{ $loop->index }}">
                     {{ $part['name'] }}
                   </button>
                 </li>

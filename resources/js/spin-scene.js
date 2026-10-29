@@ -56,6 +56,7 @@ export function spin(root) {
   const canvas = root.querySelector('[data-spin-canvas]');
   const poster = root.querySelector('[data-spin-poster]');
   const text = root.querySelector('[data-spin-text]');
+  const name = root.querySelector('[data-spin-name]');
   const buttons = [...root.querySelectorAll('[data-spin-tab]')];
   const ctx = canvas.getContext('2d');
   let active = 0;
@@ -125,6 +126,7 @@ export function spin(root) {
       text.textContent = tab().text;
       text.hidden = !tab().text;
     }
+    if (name) name.textContent = tab().name;
     canvas.setAttribute('aria-label', canvas.getAttribute('aria-label').replace(/, [^:]+:/, `, ${tab().name}:`));
     measure();
   };
