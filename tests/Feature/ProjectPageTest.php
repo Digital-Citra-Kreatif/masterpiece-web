@@ -65,7 +65,7 @@ function inactiveStyle(): array
     return ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']];
 }
 
-test('the masterplan is the homepage Kawasan scene as it is, with its opening and sample hotspots', function () {
+test('the masterplan is the Kawasan scene with its opening, and points without a position add no sample hotspots', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
@@ -78,7 +78,8 @@ test('the masterplan is the homepage Kawasan scene as it is, with its opening an
         ->assertOk()
         ->assertDontSee('scene--project', false)
         ->assertSee('data-base="'.url('media/scroll/kawasan').'/"', false)
-        ->assertSee('data-spot-open="area-plaza"', false)
+        ->assertDontSee('area-plaza', false)
+        ->assertDontSee('Plaza &amp; boulevard ruko', false)
         ->assertSee('scene--masterplan', false)
         ->assertSee('data-src="'.asset('media/hero/teaser.mp4').'"', false)
         ->assertSee('data-mp-title>Masterplan</h2>', false)
@@ -199,8 +200,8 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertSee('data-hero-slides', false)
         ->assertDontSee('Play Full Video')
         ->assertSee('scene scene--masterplan', false)
-        // Contoh hotspot Cluster
-        ->assertSee('data-spot-open="cluster-plaza"', false)
+        // Tanpa hotspot contoh
+        ->assertDontSee('cluster-plaza', false)
         ->assertDontSee('Lakefront Pods')
         ->assertSee('<section id="facility" class="fac fac--split"', false)
         ->assertSee('<section id="type" class="types types--project"', false)

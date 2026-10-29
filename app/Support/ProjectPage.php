@@ -279,7 +279,7 @@ final class ProjectPage
 
         // Orbit dengan titik
         $hotspots = self::hotspots($points, 'masterplan');
-        $scene = $points === [] ? null : [...Content::sampleArea(), ...($hotspots !== [] ? ['hotspots' => $hotspots] : [])];
+        $scene = $points === [] ? null : [...Content::sampleArea(), 'hotspots' => $hotspots];
 
         return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
     }
@@ -324,7 +324,7 @@ final class ProjectPage
             ->all();
 
         $hotspots = self::hotspots($points, 'cluster');
-        $scene = $points === [] ? null : [...Content::sampleCluster(), ...($hotspots !== [] ? ['hotspots' => $hotspots] : [])];
+        $scene = $points === [] ? null : [...Content::sampleCluster(), 'hotspots' => $hotspots];
 
         return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
     }
