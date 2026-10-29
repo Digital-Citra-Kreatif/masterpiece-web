@@ -424,7 +424,7 @@ body.is-type :is(.tph, .tps, .tpd, .types, .ft) {
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   margin: 0;
-  border-block: 1px solid var(--ink);
+  border-block: 1px solid var(--tps-edge);
 }
 
 .tps__facts div {
