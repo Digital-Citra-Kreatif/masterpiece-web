@@ -506,20 +506,47 @@ body.is-type .tps--scroll::before {
   display: flow-root;
 }
 
-.tps__about > :first-child {
+.tps__lead > :first-child {
   margin-top: 0;
 }
 
+.tps__lead > :last-child {
+  margin-bottom: 0;
+}
+
+/* Deskripsi kiri, LT LB dan tombol kanan */
 .tps__about {
-  max-width: 720px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  column-gap: clamp(40px, 5vw, 88px);
 }
 
-/* LT LB lantai dan usaha, di bawah deskripsi */
-.tps__about .tps__facts {
-  margin-top: 28px;
+.tps__lead,
+.tps__uses {
+  grid-column: 1;
 }
 
-.tps__about .tps__uses {
+.tps__side {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+/* Layar kecil: bertumpuk */
+@media (max-width: 960px) {
+  .tps__about {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tps__side {
+    grid-column: 1;
+    grid-row: auto;
+    margin-top: 40px;
+  }
+}
+
+/* Usaha di bawah deskripsi */
+.tps__lead + .tps__uses {
   margin-top: 24px;
 }
 

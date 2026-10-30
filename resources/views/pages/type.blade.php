@@ -113,27 +113,20 @@
       <section class="tps tps--about" aria-label="Keterangan {{ $t['name'] }}">
         <div class="wrap">
           <div class="tps__about">
-            @if ($aboutHead && $t['label'])
-              <p class="eyebrow tps__label">{{ $t['label'] }}</p>
-            @endif
-            @if ($aboutHead && $t['dimensions'])
-              <p class="display tps__size">{{ $t['dimensions'] }}</p>
-            @endif
+            @if (($aboutHead && ($t['label'] || $t['dimensions'])) || $t['intro'])
+              {{-- Kolom kiri: deskripsi --}}
+              <div class="tps__lead">
+                @if ($aboutHead && $t['label'])
+                  <p class="eyebrow tps__label">{{ $t['label'] }}</p>
+                @endif
+                @if ($aboutHead && $t['dimensions'])
+                  <p class="display tps__size">{{ $t['dimensions'] }}</p>
+                @endif
 
-            @if ($t['intro'])
-              <div class="tps__intro">{!! $t['intro'] !!}</div>
-            @endif
-
-            {{-- LT LB lantai, di bawah deskripsi --}}
-            @if ($t['facts'] !== [])
-              <dl class="tps__facts">
-                @foreach ($t['facts'] as [$k, $v])
-                  <div>
-                    <dt>{{ $k }}</dt>
-                    <dd>{{ $v }}</dd>
-                  </div>
-                @endforeach
-              </dl>
+                @if ($t['intro'])
+                  <div class="tps__intro">{!! $t['intro'] !!}</div>
+                @endif
+              </div>
             @endif
 
             @if ($t['suitable']['items'] !== [])
@@ -148,14 +141,30 @@
               </div>
             @endif
 
-            @if ($t['gallery'] !== [] || $vrUrl)
-              {{-- Galeri dan VR --}}
-              <div class="tps__actions">
-                @if ($t['gallery'] !== [])
-                  <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Galeri</button>
+            @if ($t['facts'] !== [] || $t['gallery'] !== [] || $vrUrl)
+              {{-- Kolom kanan: LT LB lantai dan tombol --}}
+              <div class="tps__side">
+                @if ($t['facts'] !== [])
+                  <dl class="tps__facts">
+                    @foreach ($t['facts'] as [$k, $v])
+                      <div>
+                        <dt>{{ $k }}</dt>
+                        <dd>{{ $v }}</dd>
+                      </div>
+                    @endforeach
+                  </dl>
                 @endif
-                @if ($vrUrl)
-                  <a class="btn btn--solid" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">VR</a>
+
+                @if ($t['gallery'] !== [] || $vrUrl)
+                  {{-- Galeri dan VR --}}
+                  <div class="tps__actions">
+                    @if ($t['gallery'] !== [])
+                      <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Galeri</button>
+                    @endif
+                    @if ($vrUrl)
+                      <a class="btn btn--solid" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">VR</a>
+                    @endif
+                  </div>
                 @endif
               </div>
             @endif
