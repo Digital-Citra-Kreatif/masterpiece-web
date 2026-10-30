@@ -43,7 +43,9 @@ const css = `
 .pm-detail strong { align-self: center; min-width: 48px; font-size: 14px; }
 .pm-detail label { display: grid; gap: 4px; width: 110px; font-size: 12px; color: var(--muted-foreground); }
 .pm-error { font-size: 12px; color: var(--destructive, #dc2626); }
-.pm-upload { border-bottom: 0; }
+.pm-orbit { --pm-c: var(--primary); }
+.pm-plan.is-preview { touch-action: auto; }
+.pm-dot.is-static { cursor: default; pointer-events: none; }
 .pm-upload progress { width: 100%; max-width: 280px; height: 6px; accent-color: var(--primary); }
 .pm-empty { display: grid; gap: 10px; justify-items: start; padding: 16px 12px; }
 .pm-empty p { margin: 0; font-size: 13px; color: var(--muted-foreground); max-width: 56ch; }
@@ -256,7 +258,7 @@ function setup(sunrice) {
   // Unggah ZIP frame 360°, per potongan
   const CHUNK = 1024 * 1024;
   const mb = (n) => `${(n / 1048576).toFixed(1)} MB`;
-  function OrbitUpload({ section, project }) {
+  function OrbitUpload({ section, project, onChange }) {
     const [state, setState] = useState(null);
     const [sent, setSent] = useState(null); // [terkirim, total] byte
     const [error, setError] = useState(null);
@@ -281,7 +283,10 @@ function setup(sunrice) {
     const busy = state?.state === 'queued' || state?.state === 'processing';
     useEffect(() => {
       if (!busy) return undefined;
-      const timer = setInterval(() => request('GET').then(setState).catch(() => {}), 3000);
+      const timer = setInterval(() => request('GET').then((json) => {
+        setState(json);
+        if (json.state === 'ready' || json.state === 'failed') onChange();
+      }).catch(() => {}), 3000);
       return () => clearInterval(timer);
     }, [busy, request]);
 
@@ -310,6 +315,7 @@ function setup(sunrice) {
       setError(null);
       try {
         setState(await request('DELETE'));
+        onChange();
       } catch (e) {
         setError(e.message);
       }
@@ -338,12 +344,90 @@ function setup(sunrice) {
         state?.active && !busy && !sent && !fromField && button({ variant: 'outline', size: 'sm', onClick: remove }, 'Hapus frame')));
   }
 
-  const ORBITS = ['masterplan', 'cluster'];
+  // Pratinjau titik orbit dari kolom X/Y
+  const rowsPattern = (section) => new RegExp(`^data-${section}-points-(\\d+)-`);
+  const inputOf = (section, index, key) => document.getElementById(`data-${section}-points-${index}-${key}`);
+  const readRows = (group, section) => [...group.querySelectorAll(`[id^="data-${section}-points-"][id$="-fields"]`)]
+    .map((el) => {
+      const index = Number(el.id.match(rowsPattern(section))?.[1] ?? NaN);
+      if (Number.isNaN(index)) return null;
+      const num = (key) => { const v = inputOf(section, index, key)?.value; return v === undefined || v === '' ? null : Number(v); };
+      const toggle = group.querySelector(`button[aria-controls="${el.id}"]`);
+      const name = inputOf(section, index, 'name')?.value || toggle?.textContent.trim() || `Titik ${index + 1}`;
+      return { index, name, x: num('x'), y: num('y') };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.index - b.index);
+
+  function OrbitPreview({ section, title, frame, group }) {
+    const [, setTick] = useState(0);
+    const [active, setActive] = useState(null);
+    const rows = readRows(group, section);
+    const missing = rows.filter((r) => !placed(r)).length;
+
+    // Baca ulang saat form berubah
+    useEffect(() => {
+      const bump = () => setTick((t) => t + 1);
+      const focus = (event) => {
+        const index = event.target.id?.match(rowsPattern(section))?.[1];
+        if (index !== undefined) setActive(Number(index));
+      };
+      const observer = new MutationObserver(bump);
+      observer.observe(group, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+      group.addEventListener('input', bump);
+      group.addEventListener('focusin', focus);
+      // Baris tertutup dibuka agar X/Y terbaca
+      for (const button of group.querySelectorAll(`button[aria-controls^="data-${section}-points-"][aria-expanded="false"]`)) button.click();
+      return () => { observer.disconnect(); group.removeEventListener('input', bump); group.removeEventListener('focusin', focus); };
+    }, [group, section]);
+
+    const bar = h('div', { className: 'pm-bar' },
+      h('div', { className: 'pm-title' },
+        h('strong', null, `Pratinjau ${title.toLowerCase()}`),
+        h('span', null, rows.length ? `${rows.length} titik · ${missing ? `${missing} belum diisi X/Y` : 'semua sudah diisi X/Y'} · posisi dari kiri dan atas gambar ini` : 'Tambah titik dulu, lalu isi Posisi X/Y.')));
+    if (!frame) return h('div', null, bar, h('div', { className: 'pm-empty' }, h('p', null, 'Gambar orbit belum tersedia.')));
+    if (!rows.length) return h('div', null, bar);
+
+    return h('div', null, bar,
+      h('div', { className: 'pm-viewport' },
+        h('div', { className: 'pm-plan is-idle is-preview' },
+          h('img', { src: frame.src, alt: `Gambar pertama orbit ${section}`, width: frame.width, height: frame.height, draggable: false }),
+          rows.filter(placed).map((r) => h('span', {
+            key: r.index,
+            className: `pm-dot pm-orbit is-static${r.index === active ? ' is-on' : ''}`,
+            style: { left: `${Math.min(100, Math.max(0, r.x))}%`, top: `${Math.min(100, Math.max(0, r.y))}%` },
+          }, r.index === active && h('span', { className: 'pm-tag' }, r.name))))));
+  }
+
+  const ORBITS = [{ section: 'masterplan', title: 'Titik kawasan' }, { section: 'cluster', title: 'Titik cluster' }];
+  let frames = null;
+  let framesFor = null; // Proyek pemilik frame
   const orbitMounts = new Map();
+  // Frame per proyek: gambar CMS atau frame orbit
+  const loadFrames = (project) => {
+    framesFor = project;
+    fetch(sunrice.adminUrl(`orbit-frames?project=${project}`), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => ({}))
+      .then((json) => {
+        if (framesFor !== project) return;
+        frames = json;
+        orbitMounts.forEach((m) => m.render());
+      });
+  };
+  // Muat ulang setelah simpan
+  router.on('success', () => {
+    const project = location.pathname.match(EDITOR)?.[1];
+    if (project && orbitMounts.size) loadFrames(project);
+  });
   const syncOrbits = () => {
     const editing = EDITOR.test(location.pathname);
     const project = location.pathname.match(EDITOR)?.[1] ?? null;
-    for (const section of ORBITS) {
+    if (project !== framesFor) {
+      frames = null;
+      framesFor = null;
+    }
+    for (const { section, title } of ORBITS) {
       const label = editing && document.getElementById(`data-${section}-points-label`);
       const group = label && (label.closest('[role="group"]') ?? label.parentElement?.parentElement);
       const mount = orbitMounts.get(section);
@@ -351,14 +435,21 @@ function setup(sunrice) {
         if (mount && !mount.el.isConnected) { mount.root.unmount(); orbitMounts.delete(section); }
         continue;
       }
-      if (mount?.el.isConnected && mount.group === group && mount.project === project) continue;
+      if (mount?.el.isConnected && mount.group === group) continue;
       if (mount) { mount.root.unmount(); mount.el.remove(); }
       const el = document.createElement('div');
       el.className = 'pm';
       group.append(el);
       const root = createRoot(el);
-      root.render(h(OrbitUpload, { section, project }));
-      orbitMounts.set(section, { el, root, group, project });
+      const render = () => root.render(h('div', null,
+        h(OrbitUpload, { section, project, onChange: () => loadFrames(project) }),
+        h(OrbitPreview, { section, title, frame: frames?.[section] ?? null, group })));
+      orbitMounts.set(section, { el, root, group, render });
+      if (frames) {
+        render();
+      } else if (framesFor !== project) {
+        loadFrames(project);
+      }
     }
   };
 
