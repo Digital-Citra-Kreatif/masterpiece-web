@@ -22,7 +22,6 @@ const css = `
 .pm-dot:hover::before { transform: scale(1.25); }
 .pm-dot.is-on { z-index: 2; }
 .pm-dot.is-on::before { transform: scale(1.5); box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary), 0 1px 3px rgb(0 0 0 / 0.45); }
-.pm-dot.is-drag { cursor: grabbing; }
 .pm-dot:focus-visible { outline: none; }
 .pm-dot:focus-visible::before { box-shadow: 0 0 0 2px #fff, 0 0 0 5px var(--ring); }
 .pm-tag { position: absolute; left: 50%; bottom: calc(100% + 2px); transform: translateX(-50%); padding: 1px 6px; border-radius: 4px; background: var(--foreground); color: var(--background); font-size: 11px; font-weight: 600; white-space: nowrap; pointer-events: none; }
@@ -76,8 +75,6 @@ function setup(sunrice) {
     const [selected, setSelected] = useState(null);
     const [zoom, setZoom] = useState(1);
     const [saving, setSaving] = useState(false);
-    const [drag, setDrag] = useState(null);
-    const planRef = useRef(null);
     const dirtyRef = useRef(false);
 
     const load = useCallback(async () => {
@@ -141,37 +138,6 @@ function setup(sunrice) {
     };
 
     const move = (id, x, y) => setUnits((list) => list.map((u) => (u.id === id ? { ...u, x: x === null ? null : round(x), y: y === null ? null : round(y) } : u)));
-    const pointAt = (event) => {
-      const rect = planRef.current.getBoundingClientRect();
-      return [((event.clientX - rect.left) / rect.width) * 100, ((event.clientY - rect.top) / rect.height) * 100];
-    };
-    const onPlanClick = (event) => {
-      if (!canUpdate || !current || event.target !== event.currentTarget) return;
-      const [x, y] = pointAt(event);
-      move(current.id, x, y);
-      // Lanjut unit kosong
-      const next = units.find((u) => u.id !== current.id && !placed(u));
-      if (!placed(current) && next) setSelected(next.id);
-    };
-    const onDotDown = (event, unit) => {
-      setSelected(unit.id);
-      if (!canUpdate || event.button !== 0) return;
-      event.currentTarget.setPointerCapture(event.pointerId);
-      setDrag(unit.id);
-    };
-    const onDotMove = (event, unit) => {
-      if (drag !== unit.id) return;
-      const [x, y] = pointAt(event);
-      move(unit.id, x, y);
-    };
-    const onDotKey = (event, unit) => {
-      const step = event.shiftKey ? 1 : 0.1;
-      const delta = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[event.key];
-      if (event.key === 'Enter') event.preventDefault();
-      if (!delta || !canUpdate) return;
-      event.preventDefault();
-      move(unit.id, unit.x + delta[0], unit.y + delta[1]);
-    };
     const setAxis = (axis, value) => {
       if (!current) return;
       if (value === '') return move(current.id, null, null);
@@ -206,25 +172,21 @@ function setup(sunrice) {
       { className: 'pm-viewport' },
       h(
         'div',
-        { ref: planRef, className: `pm-plan${current && canUpdate ? '' : ' is-idle'}`, style: { width: `${zoom * 100}%` }, onClick: onPlanClick },
+        { className: 'pm-plan is-idle is-preview', style: { width: `${zoom * 100}%` } },
         h('img', { src: data.siteplan.src, alt: 'Siteplan', width: data.siteplan.width, height: data.siteplan.height, draggable: false }),
+        // Klik titik hanya memilih
         units.filter(placed).map((u) => h(
           'button',
           {
             key: u.id,
             type: 'button',
-            className: `pm-dot pm-${u.status}${u.id === selected ? ' is-on' : ''}${drag === u.id ? ' is-drag' : ''}`,
+            className: `pm-dot pm-${u.status} is-pick${u.id === selected ? ' is-on' : ''}`,
             style: { left: `${u.x}%`, top: `${u.y}%` },
             'aria-label': `${u.code}, ${STATUS[u.status] ?? u.status}`,
             'aria-pressed': u.id === selected,
-            onPointerDown: (e) => onDotDown(e, u),
-            onPointerMove: (e) => onDotMove(e, u),
-            onPointerUp: () => setDrag(null),
-            onPointerCancel: () => setDrag(null),
-            onKeyDown: (e) => onDotKey(e, u),
-            onFocus: () => setSelected(u.id),
+            onClick: () => setSelected(u.id),
           },
-          (u.id === selected || drag === u.id) && h('span', { className: 'pm-tag' }, u.code),
+          u.id === selected && h('span', { className: 'pm-tag' }, u.code),
         )),
       ),
     );
@@ -249,7 +211,7 @@ function setup(sunrice) {
         onChange: (e) => setAxis(axis, e.target.value), onKeyDown: noEnter,
       }))),
       canUpdate && placed(current) && button({ variant: 'outline', size: 'sm', onClick: () => move(current.id, null, null) }, 'Hapus titik'),
-      !placed(current) && h('span', { className: 'pm-note' }, canUpdate ? 'Klik peta untuk menempatkan unit ini.' : 'Belum ada titik.'),
+      !placed(current) && h('span', { className: 'pm-note' }, canUpdate ? 'Isi Posisi X dan Y untuk menempatkan unit ini.' : 'Belum ada titik.'),
     );
 
     return h('div', null, bar, plan, legend, list, detail);
