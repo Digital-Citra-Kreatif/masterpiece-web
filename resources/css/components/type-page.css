@@ -902,3 +902,14 @@ body.is-type .tps--scroll::before {
     width: 16px;
   }
 }
+
+/* HP: tetap tulis nama proyek */
+@media (max-width: 480px) {
+  .is-type .hd__btn-more {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+}
