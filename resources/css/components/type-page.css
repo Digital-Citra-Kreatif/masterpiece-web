@@ -406,6 +406,14 @@ body.is-type .tps--scroll::before {
   line-height: 1.75;
 }
 
+/* Desktop: deskripsi lebih besar */
+@media (min-width: 1025px) {
+  .tps__intro {
+    font-size: 18px;
+    line-height: 1.7;
+  }
+}
+
 /* Isi rich text */
 .tps__intro :is(p, ul, ol, blockquote) {
   margin: 0 0 12px;
