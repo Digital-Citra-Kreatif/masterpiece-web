@@ -108,7 +108,7 @@ test('the homepage lists every published project with its card image and hero de
         ->assertSee('<body class="is-home"', false)
         ->assertSeeInOrder(['<a class="hero__scroll" href="#projects" aria-label="Gulir ke bagian berikutnya">', 'class="hero__lead"'], false)
         ->assertSeeInOrder(['<section class="hero"', '<section id="projects" class="prj"', '>Proyek</h2>'], false)
-        ->assertSee('<a class="prj__card" href="'.url('/projects/westlake').'">', false)
+        ->assertSee('<a class="prj__card" href="'.url('/projects/westlake').'" data-view-target>', false)
         ->assertSee($card->url('large'), false)
         ->assertSee('<span class="prj__logo"><img src="'.$logo->url('medium').'" alt=""', false)
         ->assertSee('<h3 class="prj__title">Westlake</h3>', false)
@@ -129,7 +129,7 @@ test('the hero and projects grid take their CSS IDs from the CMS, with or withou
     $this->get('/')
         ->assertOk()
         ->assertSee('<section class="hero"  id="beranda-utama"', false)
-        ->assertSee('<section id="proyek" class="prj" aria-labelledby="proyek-title">', false)
+        ->assertSee('<section id="proyek" class="prj" aria-labelledby="proyek-title" data-view-cursor>', false)
         ->assertSee('href="#proyek" aria-label="Gulir ke bagian berikutnya"', false)
         ->assertDontSee('id="projects"', false);
 });
