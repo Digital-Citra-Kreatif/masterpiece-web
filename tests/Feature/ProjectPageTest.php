@@ -298,7 +298,8 @@ test('the 360° section sits above Type as a full screen scroll scene, with spin
         ->and($tabs[1]['frames'])->toHaveCount(1)
         // Tab tanpa gambar memutar gambar Fasad
         ->and($tabs[2]['frames'])->toBe($tabs[0]['frames'])
-        ->and($tabs[2]['frame'])->toBe(2)
+        // Frame awal lama diabaikan
+        ->and($tabs[2]['frame'])->toBe(0)
         ->and($tabs[0])->not->toHaveKey('config');
 });
 

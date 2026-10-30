@@ -430,7 +430,8 @@ final class ProjectPage
                     'frames' => $frames->map(fn (Media $media): string => $media->url())->all(),
                     'width' => (int) ($frames->first()->width ?: 1600),
                     'height' => (int) ($frames->first()->height ?: 1200),
-                    'frame' => min(max(0, (int) ($item['row']['frame'] ?? 0)), $frames->count() - 1),
+                    // Selalu gambar pertama
+                    'frame' => 0,
                     'source' => $source,
                 ];
             })
