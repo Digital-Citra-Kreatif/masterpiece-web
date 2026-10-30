@@ -66,6 +66,11 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   position: relative; /* Tempat veil parallax */
 }
 
+/* Parallax tanpa gelap */
+.is-type [data-hero-parallax] [data-hero]::after {
+  content: none;
+}
+
 /* Menutup judul saat digulir */
 .is-type main > :not([data-hero-parallax]) {
   position: relative;
