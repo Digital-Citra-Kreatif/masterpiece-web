@@ -265,18 +265,19 @@ final class ProjectPage
         $percent = fn (mixed $value): ?float => is_numeric($value) ? max(0.0, min(100.0, (float) $value)) : null;
         $points = collect($section['points'] ?? [])
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
-            ->map(function (array $row) use ($percent): array {
+            ->values()
+            ->map(function (array $row, int $index) use ($percent): array {
                 [$x, $y] = [$percent($row['x'] ?? null), $percent($row['y'] ?? null)];
 
                 return [
-                    'number' => filled($row['number'] ?? null) ? (string) $row['number'] : null,
+                    // Nomor dari urutan
+                    'number' => sprintf('%02d', $index + 1),
                     'name' => (string) $row['name'],
                     'image' => self::image($row['image'] ?? null, 'medium'),
                     'x' => $x !== null && $y !== null ? $x : null,
                     'y' => $x !== null && $y !== null ? $y : null,
                 ];
             })
-            ->values()
             ->all();
 
         // Orbit dengan titik

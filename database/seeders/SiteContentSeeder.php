@@ -290,7 +290,8 @@ class SiteContentSeeder extends Seeder
             ...($description ? [$textarea('description', 'Deskripsi')] : []),
             ...$fields,
         ]]);
-        $percent = fn (string $handle, string $label, string $instructions): array => $this->field($handle, 'number', ['min' => 0, 'max' => 100], [
+        // Diisi dari panel di bawah gambar
+        $percent = fn (string $handle, string $label, string $instructions = ''): array => $this->field($handle, 'number', ['min' => 0, 'max' => 100], [
             'label' => $label, 'translatable' => false, 'width' => 50, 'instructions' => $instructions,
         ]);
         // Gambar diam atau ZIP frame 360°
@@ -299,11 +300,7 @@ class SiteContentSeeder extends Seeder
             'translatable' => false,
             'instructions' => 'Gambar diam, atau ZIP frame 360° (urut nama file).',
         ]);
-        $points = fn (string $label, array $fields): array => $this->field('points', 'repeater', [], ['label' => $label, 'fields' => [
-            $text('number', 'Nomor', ['translatable' => false, 'width' => 25]),
-            $text('name', 'Nama', ['required' => true, 'width' => 75]),
-            ...$fields,
-        ]]);
+        $points = fn (string $label, array $fields): array => $this->field('points', 'repeater', [], ['label' => $label, 'fields' => $fields]);
 
         return [
             $this->field('hero', 'group', [], ['label' => 'Hero', 'fields' => [
@@ -317,9 +314,10 @@ class SiteContentSeeder extends Seeder
             $section('masterplan', 'Masterplan', [
                 $scene(),
                 $points('Titik kawasan', [
-                    $image('image', 'Gambar'),
-                    $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Masterplan. Kosong: titik tidak tampil.'),
-                    $percent('y', 'Posisi Y (%)', 'Dari atas gambar pertama orbit Masterplan.'),
+                    $text('name', 'Nama', ['required' => true, 'width' => 50]),
+                    $image('image', 'Gambar', ['width' => 50]),
+                    $percent('x', 'Posisi X (%)'),
+                    $percent('y', 'Posisi Y (%)'),
                 ]),
             ]),
             $section('location', 'Lokasi', [
@@ -328,6 +326,8 @@ class SiteContentSeeder extends Seeder
             $section('cluster', 'Cluster', [
                 $scene(),
                 $points('Titik cluster', [
+                    $text('number', 'Nomor', ['translatable' => false, 'width' => 25]),
+                    $text('name', 'Nama', ['required' => true, 'width' => 75]),
                     $image('image', 'Gambar', ['width' => 50]),
                     $textarea('description', 'Deskripsi', ['width' => 50]),
                     $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Cluster. Kosong: titik tidak tampil.'),

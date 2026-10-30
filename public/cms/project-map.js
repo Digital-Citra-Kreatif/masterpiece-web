@@ -391,8 +391,6 @@ function setup(sunrice) {
 
     // Sembunyikan X/Y repeater
     useEffect(() => {
-      // Tanpa gambar tetap tampil
-      const hide = Boolean(frame);
       for (const row of rows) {
         for (const key of ['x', 'y']) {
           const input = inputOf(section, row.index, key);
@@ -404,7 +402,7 @@ function setup(sunrice) {
           }
           // Jangan sampai baris
           if (!wrapper || wrapper.id.endsWith('-fields') || wrapper === group) wrapper = input.parentElement;
-          if (wrapper && wrapper.hidden !== hide) wrapper.hidden = hide;
+          if (wrapper && !wrapper.hidden) wrapper.hidden = true;
         }
       }
     });
