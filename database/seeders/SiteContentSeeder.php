@@ -192,7 +192,7 @@ class SiteContentSeeder extends Seeder
         $text = fn (string $handle, string $label, array $extra = []): array => $this->field($handle, 'text', [], ['label' => $label, ...$extra]);
 
         $globalStyle = $this->field('global_style', 'group', [], ['label' => 'Global Style', 'fields' => [
-            $this->field('active', 'toggle', ['default' => false], ['label' => 'Aktif', 'translatable' => false, 'instructions' => 'Aktif: tampilan project mengikuti Global Style.']),
+            $this->field('active', 'toggle', ['default' => false], ['label' => 'Aktif', 'translatable' => false, 'instructions' => 'Tampilan project mengikuti global style.']),
             $image('logo', 'Logo', ['width' => 25, ...$whenActive]),
             $this->field('palette', 'group', [], [
                 'label' => 'Warna',
@@ -248,12 +248,16 @@ class SiteContentSeeder extends Seeder
             $image('background', 'Background tema', $whenActive),
         ]]);
 
+        // Kartu proyek tepat di bawah Hero
+        $sections = $this->projectSections();
+
         return ['handle' => 'project', 'title' => 'Project', 'fields' => [
-            $this->field('card', 'group', [], ['label' => 'Kartu Beranda', 'fields' => [
+            $sections[0],
+            $this->field('card', 'group', [], ['label' => 'Kartu Proyek', 'fields' => [
                 $image('image', 'Thumbnail', ['width' => 50]),
                 $this->field('description', 'textarea', [], ['label' => 'Short description', 'width' => 50]),
             ]]),
-            ...$this->projectSections(),
+            ...array_slice($sections, 1),
             $this->field('whatsapp', 'group', [], ['label' => 'WhatsApp Floating', 'fields' => [
                 $text('label', 'Label', ['width' => 50]),
                 $text('heading', 'Heading', ['width' => 50]),
