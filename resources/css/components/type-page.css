@@ -109,6 +109,25 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   touch-action: auto;
 }
 
+/* Desktop: jarak 72px, bukan setinggi layar */
+@media (min-width: 1025px) {
+  .tps--scroll {
+    height: auto;
+  }
+
+  /* Jarak putaran di bawah isi */
+  .tps--scroll::after {
+    content: '';
+    display: block;
+    height: calc(var(--spin-tabs, 1) * 70svh);
+  }
+
+  .tps__pin {
+    min-height: 0;
+    padding-block: 72px;
+  }
+}
+
 .tps__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr)); /* Setengah-setengah */

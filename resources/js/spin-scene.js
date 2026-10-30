@@ -60,6 +60,7 @@ export function spin(root) {
   const name = root.querySelector('[data-spin-name]');
   const buttons = [...root.querySelectorAll('[data-spin-tab]')];
   const steps = [...root.querySelectorAll('[data-spin-step]')];
+  const pin = root.querySelector('[data-spin-pin]'); // Isi yang tertahan saat gulir
   const ctx = canvas.getContext('2d');
   const same = (a, b) => a.frames.join('|') === b.frames.join('|');
   // Potongan bersambung jadi satu putaran
@@ -100,7 +101,7 @@ export function spin(root) {
     canvas.height = Math.max(1, Math.round(H * ratio));
     if (mode === 'scroll') {
       top = root.getBoundingClientRect().top + window.scrollY;
-      range = Math.max(1, root.offsetHeight - window.innerHeight);
+      range = Math.max(1, root.offsetHeight - (pin ? pin.offsetHeight : window.innerHeight));
     }
     drawn = '';
     request();
