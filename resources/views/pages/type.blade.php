@@ -60,8 +60,14 @@
             </div>
           </div>
 
-          {{-- Label, tab, deskripsi tab --}}
+          {{-- Label ruko, ukuran, label tab, tab, deskripsi tab --}}
           <div class="tps__info">
+            @if ($t['label'])
+              <p class="eyebrow tps__label">{{ $t['label'] }}</p>
+            @endif
+            @if ($t['dimensions'])
+              <p class="display tps__size">{{ $t['dimensions'] }}</p>
+            @endif
             <h2 class="display tps__part" aria-live="polite" data-spin-name>{{ $first['name'] }}</h2>
 
             @if (count($parts) > 1)
@@ -93,15 +99,17 @@
     </section>
     @endif
 
-    @if ($t['label'] || $t['dimensions'] || $t['intro'] || $t['gallery'] !== [] || $vrUrl)
+    {{-- Label dan ukuran di section 360° bila ada --}}
+    @php($aboutHead = $parts === [])
+    @if (($aboutHead && ($t['label'] || $t['dimensions'])) || $t['intro'] || $t['gallery'] !== [] || $vrUrl)
       {{-- Keterangan tipe --}}
       <section class="tps tps--about" aria-label="Keterangan {{ $t['name'] }}">
         <div class="wrap">
           <div class="tps__about">
-            @if ($t['label'])
+            @if ($aboutHead && $t['label'])
               <p class="eyebrow tps__label">{{ $t['label'] }}</p>
             @endif
-            @if ($t['dimensions'])
+            @if ($aboutHead && $t['dimensions'])
               <p class="display tps__size">{{ $t['dimensions'] }}</p>
             @endif
 

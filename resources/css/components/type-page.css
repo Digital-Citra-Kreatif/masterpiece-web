@@ -528,6 +528,12 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
     order: -3;
     margin-top: 0;
   }
+
+  /* Label ruko dan ukuran paling atas */
+  .tps__info > :is(.tps__label, .tps__size) {
+    order: -4;
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 760px) {

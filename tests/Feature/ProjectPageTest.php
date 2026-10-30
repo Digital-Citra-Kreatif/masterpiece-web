@@ -480,7 +480,8 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->assertSee('class="tps tps--scroll"', false)
         ->assertSee('data-spin="scroll"', false)
         ->assertSee('style="--spin-tabs: 2"', false)
-        ->assertSee('<div class="tps__pin">', false)
+        ->assertSee('<div class="tps__pin"', false)
+        ->assertSee('data-spin-pin', false)
         ->assertDontSee('data-spin-step', false)
         ->assertDontSee('tps__no', false)
         ->assertSee('aria-pressed="true"', false)
@@ -495,7 +496,7 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->and($html)->not->toContain('wr360');
 });
 
-test('a type page\'s 360° section holds only the viewer, tab label, tabs and tab text; the rest sits below it', function () {
+test('a type page\'s 360° section holds the viewer, unit label and size, tab label, tabs and tab text; the rest sits below it', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, [
         'global_style' => inactiveStyle(),
@@ -513,11 +514,12 @@ test('a type page\'s 360° section holds only the viewer, tab label, tabs and ta
     expect($viewer)->toContain('data-spin-name>Fasad</h2>')
         ->and($viewer)->toContain('data-spin-tab="1"')
         ->and($viewer)->toContain('data-spin-text >Tampak depan.</p>')
-        ->and($viewer)->not->toContain('Ruko Hook')
-        ->and($viewer)->not->toContain('4,5 x 10 m')
         ->and($viewer)->not->toContain('tps__intro');
     $this->get('/westlake/tipe/tipe-1')
-        ->assertSeeInOrder(['data-spin-text', 'class="tps tps--about"', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+        // Label ruko dan ukuran di section 360, di atas label tab
+        ->assertSeeInOrder(['data-spin="scroll"', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'data-spin-name>Fasad</h2>', 'data-spin-text', 'class="tps tps--about"', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+    expect(substr_count($html, 'tps__label'))->toBe(1)
+        ->and(substr_count($html, 'tps__size'))->toBe(1);
 });
 
 test('a type with its own 360° tabs shows them on its page instead of the project\'s', function () {
