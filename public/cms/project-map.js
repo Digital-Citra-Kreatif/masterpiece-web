@@ -326,7 +326,7 @@ function setup(sunrice) {
     if (sent) note = `Mengunggah ${mb(sent[0])} dari ${mb(sent[1])}…`;
     else if (state?.state === 'queued') note = 'Menunggu antrean. Pastikan composer run dev (queue) berjalan.';
     else if (state?.state === 'processing') note = 'Memproses frame. Titik dilacak ulang setelahnya.';
-    else if (state?.active) note = `${state.count ? `${state.count} frame` : 'Frame 360°'} aktif${fromField ? ' dari ZIP di field Gambar. Kosongkan field itu untuk menghapusnya' : ''}.`;
+    else if (state?.active) note = `${state.count ? `${state.count} frame` : 'Frame 360°'} aktif${fromField ? ' dari ZIP di field Gambar' : ''}.`;
     const failed = error ?? (state?.state === 'failed' ? state.message : null);
 
     return h('div', { className: 'pm-bar pm-upload' },
