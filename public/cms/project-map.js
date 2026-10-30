@@ -461,8 +461,7 @@ function setup(sunrice) {
         onBlur: () => setDraft((d) => { const next = { ...d }; delete next[keyOf(axis)]; return next; }),
         onKeyDown: noEnter,
       }))),
-      h('span', { className: wrong ? 'pm-error' : 'pm-note', role: wrong ? 'alert' : undefined },
-        wrong ? 'Isi angka 0 sampai 100.' : 'X dari kiri, Y dari atas gambar. Kosongkan untuk menyembunyikan titik.'));
+      wrong && h('span', { className: 'pm-error', role: 'alert' }, 'Isi angka 0 sampai 100.'));
 
     return h('div', null, bar, plan, list, detail);
   }
