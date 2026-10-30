@@ -330,6 +330,17 @@ body.is-type .tps--scroll::before {
   right: 16px;
 }
 
+/* HP: panah ke tepi, area sentuh tetap di layar */
+@media (max-width: 760px) {
+  .tps__nav--prev {
+    left: -10px;
+  }
+
+  .tps__nav--next {
+    right: -10px;
+  }
+}
+
 .tps__nav:hover {
   background: none;
 }
