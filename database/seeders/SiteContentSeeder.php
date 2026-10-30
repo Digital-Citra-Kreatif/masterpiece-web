@@ -99,7 +99,7 @@ class SiteContentSeeder extends Seeder
                         'fields' => [$text('label', ['label' => 'Label singkat', 'required' => true, 'width' => 50]), $text('value', ['label' => 'Nilai', 'required' => true, 'width' => 50])],
                     ]),
                     $this->field('floors', 'number', ['min' => 1, 'step' => 1], ['required' => true]),
-                    $this->field('intro', 'rich_text'),
+                    $this->field('intro', 'rich_text', [], ['label' => 'Short Description']),
                     $text('suitable_title', ['label' => 'Judul rekomendasi usaha', 'instructions' => 'Contoh: "Cocok untuk usaha yang butuh eksposur maksimal".']),
                     $this->field('suitable_for', 'repeater', [], [
                         'label' => 'Rekomendasi jenis usaha',
