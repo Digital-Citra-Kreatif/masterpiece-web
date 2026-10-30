@@ -22,7 +22,7 @@
     <ul class="types__grid">
       @foreach ($types as $t)
         @php($specs = $t['specs'] ?? [['LT', "{$t['lt']} m²"], ['LB', "{$t['lb']} m²"], ['K. tidur', $t['bedrooms']], ['K. mandi', $t['bathrooms']]])
-        <li data-reveal style="transition-delay: {{ ($loop->index % 3) * 90 }}ms">
+        <li>
           <{{ isset($t['sheet']) ? 'article' : 'a' }} class="card" @if ($project) data-view-target @endif @unless (isset($t['sheet'])) href="{{ $t['url'] }}" @endunless>
             <div class="card__img">
               @if ($t['image'])
