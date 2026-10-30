@@ -342,7 +342,7 @@ class SiteContentSeeder extends Seeder
             ]),
             $section('turntable', '360°', [
                 $this->field('tabs', 'repeater', [], ['label' => 'Tab', 'fields' => [
-                    $text('name', 'Nama', ['required' => true, 'instructions' => 'Misalnya "Fasad" atau "Lantai 1".']),
+                    $text('name', 'Nama', ['required' => true]),
                     $textarea('description', 'Deskripsi'),
                     $gallery('images', 'Gambar', ['instructions' => '1 gambar: gambar diam. Banyak gambar: diputar 360°, urut sesuai nama file. Kosong: memakai gambar tab pertama.']),
                     $this->field('frame', 'number', ['min' => 0, 'step' => 1], ['label' => 'Frame awal', 'translatable' => false, 'instructions' => 'Gambar ke berapa yang tampil saat tab dibuka, mulai 0.']),
