@@ -454,11 +454,10 @@ button.pj-frame:focus-visible {
   background-color: var(--paper);
 }
 
-/* Grid sampai garis */
+/* Gambar berjarak dari garis kanan */
 .tph__grid {
   display: grid;
   grid-template-columns: minmax(0, 35fr) minmax(0, 65fr); /* Tab 35%, gambar 65% */
-  padding-right: calc(max(8px, var(--gutter) - 40px) + 1px);
 }
 
 /* Tab sejajar tengah gambar */
