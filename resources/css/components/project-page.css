@@ -1061,8 +1061,29 @@ button.pj-frame:focus-visible {
 }
 
 .spot--marker .pj-marker--image {
+  width: 100%;
+  height: var(--head);
+  object-fit: contain; /* Ikon kustom muat di kepala pin */
   background: none;
   box-shadow: none;
+}
+
+/* Ikon kustom: tanpa batang dan bayangan, tengahnya di titik */
+.spot--marker:has(.pj-marker--image) .spot__dot {
+  margin: calc(var(--head) / -2) 0 0 calc(var(--head) / -2);
+}
+
+.spot--marker.spot--flip:has(.pj-marker--image) .spot__dot {
+  margin: calc(var(--head) / -2) calc(var(--head) / -2) 0 0;
+}
+
+.spot--marker:has(.pj-marker--image) .spot__dot::before,
+.spot--marker:has(.pj-marker--image) .spot__dot::after {
+  content: none;
+}
+
+.spot--marker:has(.pj-marker--image) .spot__label {
+  margin-top: 0;
 }
 
 .spot--marker .spot__no {
