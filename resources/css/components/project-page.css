@@ -565,8 +565,7 @@ button.pj-frame:focus-visible {
 .tph__stage {
   position: relative;
   min-width: 0;
-  overflow: hidden;
-  background: #000; /* Hitam viewer */
+  overflow: hidden; /* Gambar tampil apa adanya */
 }
 
 .tph__poster,
@@ -606,7 +605,7 @@ button.pj-frame:focus-visible {
 }
 
 .tph__canvas:focus-visible {
-  outline: 2px solid var(--room-ink);
+  outline: 2px solid var(--ink);
   outline-offset: -4px;
 }
 
@@ -616,8 +615,9 @@ button.pj-frame:focus-visible {
   top: 50%;
   z-index: 2;
   translate: 0 -50%;
-  border-color: rgb(255 255 255 / 0.4);
-  color: var(--room-ink);
+  border-color: rgb(14 17 19 / 0.12);
+  background: rgb(255 255 255 / 0.9); /* Terlihat di gambar terang dan gelap */
+  color: var(--ink);
 }
 
 .tph__nav--prev {
@@ -629,12 +629,12 @@ button.pj-frame:focus-visible {
 }
 
 .tph__nav:hover {
-  background: var(--room-ink);
-  color: var(--room);
+  background: var(--ink);
+  color: #fff;
 }
 
 .tph__nav:focus-visible {
-  outline: 2px solid var(--room-ink);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
