@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
         // Lacak ulang titik
         EntryTranslation::saved(function (EntryTranslation $translation): void {
             if ($translation->wasChanged('data') && $translation->entry?->collection?->handle === 'projects') {
-                TrackProjectPoints::dispatch($translation->id)->afterCommit();
+                TrackProjectPoints::afterSave($translation);
             }
         });
         Event::listen(RequestHandled::class, fn (RequestHandled $event) => app(ProjectFonts::class)->handleRequest($event->request));

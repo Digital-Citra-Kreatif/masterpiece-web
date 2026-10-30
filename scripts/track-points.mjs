@@ -1,7 +1,7 @@
 // Lacak titik orbit
 
 import sharp from 'sharp';
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const LEVELS = 4; // Tingkat piramida
@@ -18,6 +18,7 @@ const MIN_MATCH = 0.6; // Batas korelasi
 const TEXTURE = 150; // Pola terlalu polos
 const OUTLIER = 6; // Lonjakan salah cocok (px)
 const SIGMA = 1.2; // Penghalusan (frame)
+const PIN = 6; // Jangkauan kunci frame awal
 
 const dir = process.argv[2];
 const manifest = JSON.parse(readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
@@ -226,6 +227,8 @@ function homography(pairs) {
 }
 
 function ransac(pairs) {
+  // Pasangan kurang
+  if (pairs.length < 8) return { H: null, inliers: 0, total: pairs.length };
   let best = [];
   let seed = 7;
   const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
@@ -240,7 +243,7 @@ function ransac(pairs) {
     });
     if (inliers.length > best.length) best = inliers;
   }
-  return { H: homography(best), inliers: best.length, total: pairs.length };
+  return { H: best.length >= 8 ? homography(best) : null, inliers: best.length, total: pairs.length };
 }
 
 // Bidang tanah antarframe
@@ -256,23 +259,41 @@ function between(A, B) {
   return ransac(pairs);
 }
 
-const frames = [];
-let W = 0;
-let Hh = 0;
-for (let i = 0; i < N; i++) {
-  const { data, info } = await sharp(file('sm', i)).greyscale().raw().toBuffer({ resolveWithObject: true });
-  [W, Hh] = [info.width, info.height];
-  frames.push(pyramid(data, W, Hh));
+// Gerak antarframe
+const MOTION = 1; // Versi cache gerak
+const cacheFile = process.argv[3];
+let motion = null;
+if (cacheFile && existsSync(cacheFile)) {
+  const cached = JSON.parse(readFileSync(cacheFile, 'utf8'));
+  if (cached.version === MOTION && cached.count === N) motion = cached;
 }
-const k = W / manifest.width; // lg ke sm
+if (!motion) {
+  const frames = [];
+  let W = 0;
+  for (let i = 0; i < N; i++) {
+    const { data, info } = await sharp(file('sm', i)).greyscale().raw().toBuffer({ resolveWithObject: true });
+    W = info.width;
+    frames.push(pyramid(data, W, info.height));
+  }
+  const steps = [];
+  for (let i = 0; i < N; i++) {
+    const step = between(frames[i], frames[(i + 1) % N]);
+    if (process.env.TRACK_DEBUG) process.stderr.write(`${i}->${(i + 1) % N} ${step.inliers}/${step.total}\n`);
+    steps.push(step.H ?? [1, 0, 0, 0, 1, 0, 0, 0, 1]);
+  }
+  motion = { version: MOTION, count: N, k: W / manifest.width, steps };
+  if (cacheFile) {
+    mkdirSync(path.dirname(cacheFile), { recursive: true });
+    writeFileSync(cacheFile, JSON.stringify(motion));
+  }
+}
+const { k, steps } = motion; // k: lg ke sm
+// Hanya siapkan cache
+if (Object.keys(points).length === 0) {
+  process.stdout.write('{}');
+  process.exit(0);
+}
 
-// Langkah antarframe
-const steps = [];
-for (let i = 0; i < N; i++) {
-  const step = between(frames[i], frames[(i + 1) % N]);
-  if (process.env.TRACK_DEBUG) process.stderr.write(`${i}->${(i + 1) % N} ${step.inliers}/${step.total}\n`);
-  steps.push(step.H ?? [1, 0, 0, 0, 1, 0, 0, 0, 1]);
-}
 // Frame besar koreksi
 const big = [];
 for (let i = 0; i < N; i++) {
@@ -402,7 +423,15 @@ for (const [key, start] of Object.entries(points)) {
     const t = i / N;
     return [a[0] * (1 - t) + bw[i][0] * t, a[1] * (1 - t) + bw[i][1] * t];
   });
-  tracks[key] = clean(merged).map((q) => (inside(q) ? [Math.round(q[0] * 10) / 10, Math.round(q[1] * 10) / 10] : null));
+  // Kunci frame awal
+  const smooth = clean(merged);
+  const dx = start[0] - smooth[0][0];
+  const dy = start[1] - smooth[0][1];
+  tracks[key] = smooth.map((q, i) => {
+    const w = Math.max(0, 1 - Math.min(i, N - i) / PIN);
+    const p = [q[0] + dx * w, q[1] + dy * w];
+    return inside(p) ? [Math.round(p[0] * 10) / 10, Math.round(p[1] * 10) / 10] : null;
+  });
 }
 
 process.stdout.write(JSON.stringify(tracks));

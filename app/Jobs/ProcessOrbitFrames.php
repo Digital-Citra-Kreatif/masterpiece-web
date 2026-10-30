@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Support\OrbitFrames;
+use App\Support\ProjectTracks;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +34,16 @@ class ProcessOrbitFrames implements ShouldQueue
             return;
         } finally {
             Storage::disk('local')->delete($zip);
+        }
+
+        // Cache gerak
+        $base = OrbitFrames::base($this->entryId, $this->section);
+        try {
+            if ($base !== null) {
+                ProjectTracks::prepare($base);
+            }
+        } catch (RuntimeException $e) {
+            report($e);
         }
 
         OrbitFrames::setStatus($this->entryId, $this->section, 'ready', null, $count);

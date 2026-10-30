@@ -11,7 +11,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 final class ProjectTracks
 {
     /** Versi pelacak; naikkan agar semua titik dilacak ulang */
-    private const TRACKER = 3;
+    private const TRACKER = 4;
 
     /** @var array<string, array<string, mixed>> manifest per folder frame */
     private static array $manifests = [];
@@ -180,7 +180,7 @@ final class ProjectTracks
         $result = Process::path(base_path())
             ->timeout(900)
             ->input(json_encode(['points' => $points]))
-            ->run(['node', base_path('scripts/track-points.mjs'), $dir]);
+            ->run(['node', base_path('scripts/track-points.mjs'), $dir, Storage::path(self::motion($base))]);
 
         if ($result->failed()) {
             throw new RuntimeException('Tracking the project points failed: '.$result->errorOutput());
@@ -250,6 +250,36 @@ final class ProjectTracks
         }
 
         return [];
+    }
+
+    /** Cache gerak antarframe */
+    private static function motion(string $base): string
+    {
+        return 'orbit-motion/'.md5($base).'.json';
+    }
+
+    /**
+     * Siapkan cache gerak
+     *
+     * @throws RuntimeException when the tracking script fails
+     */
+    public static function prepare(string $base): void
+    {
+        if (! Storage::exists(self::motion($base))) {
+            self::track($base, []);
+        }
+    }
+
+    /** Cache gerak siap */
+    public static function ready(int $entryId): bool
+    {
+        foreach (self::bases($entryId) as $base) {
+            if (! Storage::exists(self::motion($base))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** Tetap walau slug proyek diganti */

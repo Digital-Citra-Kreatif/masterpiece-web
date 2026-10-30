@@ -788,6 +788,7 @@ button.pj-frame:focus-visible {
 .spot--marker {
   --head: 30px;
   --stem: 12px;
+  align-items: flex-start; /* Ujung pin tepat di titik */
 }
 
 .spot--marker .spot__dot {

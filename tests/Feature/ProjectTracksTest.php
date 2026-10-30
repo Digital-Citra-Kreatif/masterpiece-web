@@ -50,6 +50,8 @@ test('paths are kept by entry, so renaming the project does not lose them, and o
 
 test('publishing a project queues its point tracking', function () {
     Queue::fake();
+    // Tanpa cache gerak
+    Storage::fake('local');
     Storage::fake('public');
     $this->seed(SiteContentSeeder::class);
     $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
@@ -61,6 +63,28 @@ test('publishing a project queues its point tracking', function () {
     app(PublishEntry::class)->handle($translation->fresh());
 
     Queue::assertPushed(TrackProjectPoints::class, fn (TrackProjectPoints $job): bool => $job->translationId === $translation->id);
+});
+
+test('once the frame motion is cached, publishing tracks the points right away without the queue', function () {
+    Queue::fake();
+    Storage::fake('local');
+    Storage::fake('public');
+    $this->seed(SiteContentSeeder::class);
+    $motion = 'orbit-motion/'.md5(ProjectTracks::sections()['masterplan']).'.json';
+    Storage::put($motion, '{}');
+    Process::fake(['*' => Process::result(output: json_encode(['masterplan-1' => [[640, 374]]]))]);
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+
+    $translation = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'masterplan' => ['title' => 'Masterplan', 'points' => [['number' => '01', 'name' => 'West Lakeside', 'x' => 50, 'y' => 52]]],
+    ]]);
+    app(PublishEntry::class)->handle($translation->fresh());
+
+    Queue::assertNotPushed(TrackProjectPoints::class);
+    Process::assertRan(fn ($process): bool => in_array(Storage::path($motion), (array) $process->command, true));
+    expect(json_decode(Storage::get("tracks/entry-{$translation->entry_id}.json"), true)['masterplan']['tracks'])
+        ->toBe(['masterplan-1' => [[640, 374]]]);
 });
 
 test('while a moved point waits for tracking, unchanged points keep their path and the moved one follows its old path shifted', function () {
@@ -99,7 +123,7 @@ test('retracking runs the tracker only for the points that moved or are new', fu
         ]],
     ]]);
     app(PublishEntry::class)->handle($translation->fresh());
-    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => $hash, 'tracker' => 3, 'points' => $old, 'tracks' => ['masterplan-1' => [[640, 360]], 'masterplan-2' => [[128, 72]]]]]));
+    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => $hash, 'tracker' => 4, 'points' => $old, 'tracks' => ['masterplan-1' => [[640, 360]], 'masterplan-2' => [[128, 72]]]]]));
 
     ProjectTracks::make($translation->fresh());
 
@@ -132,7 +156,7 @@ test('tracks from an older tracker version are tracked again for every point', f
     Process::assertRan(fn ($process): bool => json_decode($process->input, true) === ['points' => ['masterplan-1' => [640, 360]]]);
     $stored = json_decode(Storage::get("tracks/entry-{$translation->entry_id}.json"), true)['masterplan'];
     expect($stored['hash'])->toBe($hash)
-        ->and($stored['tracker'])->toBe(3)
+        ->and($stored['tracker'])->toBe(4)
         ->and($stored['tracks'])->toBe(['masterplan-1' => [[641.5, 360.2]]]);
 });
 
