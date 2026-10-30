@@ -537,6 +537,11 @@ button.pj-frame:focus-visible {
   font-weight: 600;
 }
 
+/* Tab proyek: beda dari latar putih */
+.tph--section :is(.tph__tab, .tph__desc) {
+  background: #fafafa;
+}
+
 /* Kartu tab aktif */
 .tph__part:has(.tph__tab[aria-pressed='true']) .tph__tab {
   position: absolute;
