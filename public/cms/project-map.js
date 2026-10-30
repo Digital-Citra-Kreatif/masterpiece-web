@@ -45,7 +45,7 @@ const css = `
 .pm-error { font-size: 12px; color: var(--destructive, #dc2626); }
 .pm-orbit { --pm-c: var(--primary); }
 .pm-plan.is-preview { touch-action: auto; }
-.pm-dot.is-static { cursor: default; pointer-events: none; }
+.pm-dot.is-pick { cursor: pointer; }
 .pm-upload progress { width: 100%; max-width: 280px; height: 6px; accent-color: var(--primary); }
 .pm-empty { display: grid; gap: 10px; justify-items: start; padding: 16px 12px; }
 .pm-empty p { margin: 0; font-size: 13px; color: var(--muted-foreground); max-width: 56ch; }
@@ -344,9 +344,13 @@ function setup(sunrice) {
         state?.active && !busy && !sent && !fromField && button({ variant: 'outline', size: 'sm', onClick: remove }, 'Hapus frame')));
   }
 
-  // Pratinjau titik orbit dari kolom X/Y
-  const rowsPattern = (section) => new RegExp(`^data-${section}-points-(\\d+)-`);
+  // Titik orbit: pilih titik, isi X/Y di bawah gambar
+  const rowsPattern = (section) => new RegExp(`^data-${section}-points-(\\d+)-fields$`);
   const inputOf = (section, index, key) => document.getElementById(`data-${section}-points-${index}-${key}`);
+  const setInput = (el, value) => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, value);
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  };
   const readRows = (group, section) => [...group.querySelectorAll(`[id^="data-${section}-points-"][id$="-fields"]`)]
     .map((el) => {
       const index = Number(el.id.match(rowsPattern(section))?.[1] ?? NaN);
@@ -358,45 +362,110 @@ function setup(sunrice) {
     })
     .filter(Boolean)
     .sort((a, b) => a.index - b.index);
+  const parsePercent = (text) => {
+    const value = text.trim().replace(',', '.');
+    if (value === '') return '';
+    const n = Number(value);
+    return Number.isFinite(n) && n >= 0 && n <= 100 ? value : null;
+  };
 
-  function OrbitPreview({ section, title, frame, group }) {
+  function OrbitPicker({ section, title, frame, group }) {
     const [, setTick] = useState(0);
-    const [active, setActive] = useState(null);
+    const [selected, setSelected] = useState(null);
+    const [draft, setDraft] = useState({}); // Teks X/Y saat diketik
     const rows = readRows(group, section);
+    const current = rows.find((r) => r.index === selected) ?? null;
     const missing = rows.filter((r) => !placed(r)).length;
 
     // Baca ulang saat form berubah
     useEffect(() => {
       const bump = () => setTick((t) => t + 1);
-      const focus = (event) => {
-        const index = event.target.id?.match(rowsPattern(section))?.[1];
-        if (index !== undefined) setActive(Number(index));
-      };
       const observer = new MutationObserver(bump);
       observer.observe(group, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
       group.addEventListener('input', bump);
-      group.addEventListener('focusin', focus);
       // Baris tertutup dibuka agar X/Y terbaca
       for (const button of group.querySelectorAll(`button[aria-controls^="data-${section}-points-"][aria-expanded="false"]`)) button.click();
-      return () => { observer.disconnect(); group.removeEventListener('input', bump); group.removeEventListener('focusin', focus); };
+      return () => { observer.disconnect(); group.removeEventListener('input', bump); };
     }, [group, section]);
+
+    // Sembunyikan X/Y repeater
+    useEffect(() => {
+      // Tanpa gambar tetap tampil
+      const hide = Boolean(frame);
+      for (const row of rows) {
+        for (const key of ['x', 'y']) {
+          const input = inputOf(section, row.index, key);
+          if (!input) continue;
+          const label = group.querySelector(`label[for="${input.id}"]`);
+          let wrapper = input.parentElement;
+          if (label) {
+            while (wrapper && !wrapper.contains(label)) wrapper = wrapper.parentElement;
+          }
+          // Jangan sampai baris
+          if (!wrapper || wrapper.id.endsWith('-fields') || wrapper === group) wrapper = input.parentElement;
+          if (wrapper && wrapper.hidden !== hide) wrapper.hidden = hide;
+        }
+      }
+    });
+
+    useEffect(() => {
+      if (selected === null && rows.length) setSelected((rows.find((r) => !placed(r)) ?? rows[0]).index);
+    }, [rows.length, selected]);
+
+    // Satu kolom per ketikan
+    const setAxis = (axis, text) => {
+      const input = current && inputOf(section, current.index, axis);
+      if (!input) return;
+      setDraft((d) => ({ ...d, [`${current.index}-${axis}`]: text }));
+      const value = parsePercent(text);
+      if (value !== null) setInput(input, value);
+    };
+    const keyOf = (axis) => `${current.index}-${axis}`;
+    const shown = (axis) => draft[keyOf(axis)] ?? (current[axis] === null ? '' : String(current[axis]));
+    const invalid = (axis) => draft[keyOf(axis)] !== undefined && parsePercent(draft[keyOf(axis)]) === null;
 
     const bar = h('div', { className: 'pm-bar' },
       h('div', { className: 'pm-title' },
-        h('strong', null, `Pratinjau ${title.toLowerCase()}`),
-        h('span', null, rows.length ? `${rows.length} titik · ${missing ? `${missing} belum diisi X/Y` : 'semua sudah diisi X/Y'} · posisi dari kiri dan atas gambar ini` : 'Tambah titik dulu, lalu isi Posisi X/Y.')));
+        h('strong', null, `Penempatan ${title.toLowerCase()}`),
+        h('span', null, rows.length ? `${rows.length} titik · ${missing ? `${missing} belum ditempatkan` : 'semua sudah ditempatkan'} · simpan lewat tombol Simpan proyek` : 'Tambah titik dulu, lalu isi posisinya di sini.')));
     if (!frame) return h('div', null, bar, h('div', { className: 'pm-empty' }, h('p', null, 'Gambar orbit belum tersedia.')));
     if (!rows.length) return h('div', null, bar);
 
-    return h('div', null, bar,
-      h('div', { className: 'pm-viewport' },
-        h('div', { className: 'pm-plan is-idle is-preview' },
-          h('img', { src: frame.src, alt: `Gambar pertama orbit ${section}`, width: frame.width, height: frame.height, draggable: false }),
-          rows.filter(placed).map((r) => h('span', {
-            key: r.index,
-            className: `pm-dot pm-orbit is-static${r.index === active ? ' is-on' : ''}`,
-            style: { left: `${Math.min(100, Math.max(0, r.x))}%`, top: `${Math.min(100, Math.max(0, r.y))}%` },
-          }, r.index === active && h('span', { className: 'pm-tag' }, r.name))))));
+    const plan = h('div', { className: 'pm-viewport' },
+      h('div', { className: 'pm-plan is-idle is-preview' },
+        h('img', { src: frame.src, alt: `Gambar pertama orbit ${section}`, width: frame.width, height: frame.height, draggable: false }),
+        rows.filter(placed).map((r) => h('button', {
+          key: r.index,
+          type: 'button',
+          className: `pm-dot pm-orbit is-pick${r.index === selected ? ' is-on' : ''}`,
+          style: { left: `${Math.min(100, Math.max(0, r.x))}%`, top: `${Math.min(100, Math.max(0, r.y))}%` },
+          'aria-label': r.name,
+          'aria-pressed': r.index === selected,
+          onClick: () => setSelected(r.index),
+        }, r.index === selected && h('span', { className: 'pm-tag' }, r.name)))));
+
+    const list = h('ul', { className: 'pm-units', 'aria-label': title },
+      rows.map((r) => h('li', { key: r.index }, h('button', {
+        type: 'button',
+        className: `pm-chip pm-orbit${placed(r) ? '' : ' is-missing'}`,
+        'aria-pressed': r.index === selected,
+        title: placed(r) ? `${r.x}, ${r.y}` : 'Belum ada posisi',
+        onClick: () => setSelected(r.index),
+      }, h('i', { className: 'pm-swatch', 'aria-hidden': true }), r.name))));
+
+    const wrong = current && (invalid('x') || invalid('y'));
+    const detail = current && h('div', { className: 'pm-detail' },
+      h('strong', null, current.name),
+      ['x', 'y'].map((axis) => h('label', { key: axis }, `Posisi ${axis.toUpperCase()} (%)`, h(ui.Input, {
+        type: 'text', inputMode: 'decimal', value: shown(axis), 'aria-invalid': invalid(axis) || undefined,
+        onChange: (e) => setAxis(axis, e.target.value),
+        onBlur: () => setDraft((d) => { const next = { ...d }; delete next[keyOf(axis)]; return next; }),
+        onKeyDown: noEnter,
+      }))),
+      h('span', { className: wrong ? 'pm-error' : 'pm-note', role: wrong ? 'alert' : undefined },
+        wrong ? 'Isi angka 0 sampai 100.' : 'X dari kiri, Y dari atas gambar. Kosongkan untuk menyembunyikan titik.'));
+
+    return h('div', null, bar, plan, list, detail);
   }
 
   const ORBITS = [{ section: 'masterplan', title: 'Titik kawasan' }, { section: 'cluster', title: 'Titik cluster' }];
@@ -443,7 +512,7 @@ function setup(sunrice) {
       const root = createRoot(el);
       const render = () => root.render(h('div', null,
         h(OrbitUpload, { section, project, onChange: () => loadFrames(project) }),
-        h(OrbitPreview, { section, title, frame: frames?.[section] ?? null, group })));
+        h(OrbitPicker, { section, title, frame: frames?.[section] ?? null, group })));
       orbitMounts.set(section, { el, root, group, render });
       if (frames) {
         render();
