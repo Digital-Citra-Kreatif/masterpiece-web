@@ -215,7 +215,14 @@ class SiteContentSeeder extends Seeder
             $this->field('fonts', 'group', [], [
                 'label' => 'Font',
                 ...$whenActive,
-                'fields' => [$font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol')],
+                'fields' => [
+                    $font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol'),
+                    // Google Font menimpa file di atas
+                    ...collect(['heading' => 'Heading', 'description' => 'Deskripsi', 'button' => 'Tombol'])->map(fn (string $label, string $handle): array => $this->field("{$handle}_embed", 'textarea', [], [
+                        'label' => "Google Font {$label}", 'translatable' => false, 'width' => 33,
+                        'instructions' => 'Tempel kode @import Google Font. Font pertama di kode yang dipakai.',
+                    ]))->values()->all(),
+                ],
             ]),
             // Bentuk atau gambar
             $this->field('marker', 'group', [], [

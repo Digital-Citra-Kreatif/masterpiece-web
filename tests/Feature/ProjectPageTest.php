@@ -382,6 +382,44 @@ test('an active Global Style sets the project\'s fonts and colours over the home
         ->assertDontSee('--marker:', false); // Pin selalu putih
 });
 
+test('a Google Font embed sets its role\'s font over an uploaded file and loads it first', function () {
+    $embed = "<style>\n@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000&family=Roboto:wght@100..900&display=swap');\n</style>";
+    publishProject($this->projects, [
+        'global_style' => [...inactiveStyle(), 'active' => true, 'fonts' => [
+            'heading' => projectFont('heading.woff2'),
+            'description' => projectFont('body.ttf'),
+            'heading_embed' => $embed,
+        ]],
+        'hero' => ['heading' => 'Westlake'],
+    ]);
+
+    $html = $this->get('/projects/westlake')->assertOk()->getContent();
+    $css = substr($html, strpos($html, '@import'));
+
+    expect($css)->toStartWith('@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000&family=Roboto:wght@100..900&display=swap");')
+        ->and($html)->toContain('--display:"Nunito Sans", \'DM Sans Variable\'')
+        ->and($html)->not->toContain("font-family:'project-heading'")
+        ->and($html)->toContain("--sans:'project-description', 'DM Sans Variable'");
+});
+
+test('a Google Font embed ignores code that is not a fonts.googleapis.com link', function () {
+    publishProject($this->projects, [
+        'global_style' => [...inactiveStyle(), 'active' => true, 'fonts' => [
+            'heading_embed' => "@import url('https://evil.example/x.css'); </style><script>alert(1)</script>",
+            'button_embed' => '<link href="https://fonts.googleapis.com/css2?family=Bad%22Name&display=swap" rel="stylesheet">',
+        ]],
+        'hero' => ['heading' => 'Westlake'],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertDontSee('evil.example', false)
+        ->assertDontSee('<script>alert(1)', false)
+        ->assertDontSee('@import', false)
+        ->assertDontSee('--display:', false)
+        ->assertDontSee('--button:', false);
+});
+
 test('a chamfer Global Style cuts cards, images and the logo at most 24px and leaves buttons square', function () {
     publishProject($this->projects, [
         'global_style' => [...inactiveStyle(), 'active' => true, 'corner' => ['style' => 'chamfer', 'size' => 40]],

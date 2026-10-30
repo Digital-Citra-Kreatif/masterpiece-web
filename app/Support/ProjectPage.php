@@ -162,10 +162,20 @@ final class ProjectPage
             return ['css' => '', 'logo' => null, 'favicon' => null, 'marker' => null];
         }
 
+        $imports = [];
         $faces = [];
         $tokens = [];
         $fonts = is_array($style['fonts'] ?? null) ? $style['fonts'] : [];
         foreach (self::FONTS as $field => $token) {
+            // Google Font menimpa file upload
+            $google = self::googleFont($fonts["{$field}_embed"] ?? null);
+            if ($google !== null) {
+                $imports[$google['url']] = '@import url('.self::cssString($google['url']).');';
+                $tokens[$token] = self::cssString($google['family']).', '.self::FALLBACK_FONT;
+
+                continue;
+            }
+
             $font = $fonts[$field] ?? null;
             $format = $font instanceof Media ? self::fontFormat($font) : null;
             if ($format === null) {
@@ -204,7 +214,8 @@ final class ProjectPage
             $tokens['--theme-bg'] = 'url('.self::cssString($background->url('large')).')';
         }
 
-        $css = implode('', $faces);
+        // @import harus paling awal
+        $css = implode('', $imports).implode('', $faces);
         if ($tokens !== []) {
             $css .= ':root{'.collect($tokens)->map(fn (string $value, string $token): string => "{$token}:{$value};")->implode('').'}';
         }
@@ -692,6 +703,27 @@ final class ProjectPage
     }
 
     /** String CSS aman */
+    /**
+     * Font pertama dari kode embed Google Font; selain fonts.googleapis.com diabaikan
+     *
+     * @return array{url: string, family: string}|null
+     */
+    private static function googleFont(mixed $embed): ?array
+    {
+        if (! is_string($embed) || ! preg_match('~https://fonts\.googleapis\.com/css2?\?[^\s\'"()<>]+~', $embed, $match)) {
+            return null;
+        }
+
+        $url = html_entity_decode($match[0], ENT_QUOTES | ENT_HTML5);
+        if (! preg_match('/(?:^|&)family=([^&:]+)/', (string) parse_url($url, PHP_URL_QUERY), $family)) {
+            return null;
+        }
+
+        $name = trim(str_replace('+', ' ', urldecode($family[1])));
+
+        return preg_match('/^[A-Za-z0-9 ]+$/', $name) === 1 ? ['url' => $url, 'family' => $name] : null;
+    }
+
     private static function cssString(string $value): string
     {
         return '"'.str_replace(['\\', '"', '<', "\n", "\r"], ['\\\\', '\\"', '\\3C ', '', ''], $value).'"';
