@@ -59,7 +59,7 @@ class SiteContentSeeder extends Seeder
         $text = fn (string $handle, array $extra = []): array => $this->field($handle, 'text', [], $extra);
         $textarea = fn (string $handle, array $extra = []): array => $this->field($handle, 'textarea', [], $extra);
         $image = fn (string $handle, array $extra = []): array => $this->field($handle, 'media', ['types' => ['image']], $extra);
-        $number = fn (string $handle, array $config = []): array => $this->field($handle, 'number', ['min' => 0, ...$config], ['width' => 25]);
+        $number = fn (string $handle, string $label): array => $this->field($handle, 'number', ['min' => 0, 'suffix' => 'm²'], ['label' => $label, 'width' => 25]);
 
         return [
             'blueprints' => [
@@ -86,8 +86,8 @@ class SiteContentSeeder extends Seeder
                     $text('label'),
                     $text('dimensions', ['translatable' => false, 'instructions' => 'Contoh: 4,5 x 10 m.']),
                     $image('image', ['required' => true, 'instructions' => 'Rasio 6:5.']),
-                    $number('lt'),
-                    $number('lb'),
+                    $number('lt', 'Luas tanah'),
+                    $number('lb', 'Luas bangunan'),
                     $this->field('bedrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('bathrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('summary_extra', 'repeater', ['max' => 2], [
