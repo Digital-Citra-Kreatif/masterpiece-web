@@ -288,7 +288,7 @@ test('the hero slides through every image and video of its media', function () {
         ->and(preg_match_all('/<img\s+class="hero__media"/', $html))->toBe(2);
 });
 
-test('the 360° section sits above Type as a full screen scroll scene, with spinning, still and shared tabs, without WebRotate', function () {
+test('the 360° section sits above Type as a contained section with pill tabs, spinning, still and shared tabs, without WebRotate', function () {
     $frames = collect(['frame_10.jpg', 'frame_2.jpg', 'frame_1.jpg'])->map(fn (string $name): int => projectImage($name))->all();
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
@@ -302,10 +302,13 @@ test('the 360° section sits above Type as a full screen scroll scene, with spin
     ]);
 
     $html = $this->get('/projects/westlake')->assertOk()
-        ->assertSeeInOrder(['class="scene scene--project scene--left is-scrub spin"', 'id="view-360"', '<h2 class="display scene__area-title" id="view-360-title">Explore the unit</h2>', 'id="type"'], false)
+        ->assertSeeInOrder(['id="view-360"', 'class="tph tph--section"', '<h2 class="pj-title display" id="view-360-title">Explore the unit</h2>', 'id="type"'], false)
+        ->assertSee('data-spin="drag"', false)
+        ->assertDontSee('scene--project', false)
         ->assertSee('href="#view-360"', false)
         ->assertSeeInOrder(['data-spin-tab="0"', 'Fasad', 'data-spin-tab="1"', 'Lantai 1', 'data-spin-tab="2"', 'Lantai 2'], false)
-        ->assertSee('data-spin-text >Tampak depan.</p>', false)
+        ->assertSee('<strong>Fasad.</strong> Tampak depan.</p>', false)
+        ->assertSee('data-spin-step="1" aria-label="Putar ke kanan"', false)
         ->assertDontSee('data-turntable', false)
         ->assertDontSee('wr360', false)
         ->getContent();
