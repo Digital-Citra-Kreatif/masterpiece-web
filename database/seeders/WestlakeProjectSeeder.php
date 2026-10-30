@@ -149,8 +149,9 @@ class WestlakeProjectSeeder extends Seeder
         return collect($views)
             ->flatMap(fn (string $prefix, string $view): array => collect($sizes)->map(fn (array $size, string $type): array => self::entry(
                 'types',
-                'westlake-'.str("{$prefix} type {$type}")->slug(),
-                $prefix.' '.($type === 'BCD' ? 'Tipe B/C/D' : "Tipe {$type}"),
+                // Slug dari judul, seperti CMS
+                str(self::typeTitle($prefix, $type))->slug()->toString(),
+                self::typeTitle($prefix, $type),
                 [
                     'label' => $size[0],
                     'dimensions' => $size[1],
@@ -220,6 +221,12 @@ class WestlakeProjectSeeder extends Seeder
 
             $publish->handle($saveDraft->handle($translation, ['data' => $missing, 'version' => $translation->version]));
         }
+    }
+
+    /** Judul tipe, misalnya "Streetview Tipe B/C/D" */
+    private static function typeTitle(string $prefix, string $type): string
+    {
+        return $prefix.' '.($type === 'BCD' ? 'Tipe B/C/D' : "Tipe {$type}");
     }
 
     /**
