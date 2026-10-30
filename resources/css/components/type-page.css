@@ -126,6 +126,13 @@ body.is-type .tps--scroll::before {
   background: #000;
 }
 
+/* Tablet: hitam langsung penuh */
+@media (min-width: 761px) and (max-width: 1024px) {
+  body.is-type .tps--scroll::before {
+    inset: 0;
+  }
+}
+
 .tps.tps--scroll :is(.tps__size, .tps__part) {
   color: #fff;
 }
