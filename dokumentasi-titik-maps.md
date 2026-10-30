@@ -17,7 +17,7 @@ Scene orbit memakai satu set frame (gambar berurutan) hasil render putaran kamer
 Ada dua cara mengunggah ZIP:
 
 - Pilih file ZIP dari Media di field **Gambar atau ZIP 360°**, lalu klik **Simpan**. ZIP diproses sekali. Kalau ZIP dilepas dari field, frame-nya ikut terhapus.
-- Klik **Unggah ZIP** di panel **Frame 360° (ZIP)** di bawah field titik. Cara ini untuk ZIP yang lebih besar dari batas Media, karena file dikirim per potongan 1 MB.
+- Klik **Unggah ZIP** di panel unggah di bawah field titik. Cara ini untuk ZIP yang lebih besar dari batas Media, karena file dikirim per potongan 1 MB.
 
 Syarat isi ZIP (dicek saat diproses):
 
@@ -30,16 +30,16 @@ Syarat isi ZIP (dicek saat diproses):
 | Total ZIP | Maks 2 GB |
 | Urutan | Menurut nama file, urutan alami (`f_2` sebelum `f_10`) |
 
-Panel Frame 360° menampilkan status ZIP: "Menunggu antrean", "Memproses frame", jumlah frame yang aktif, atau pesan gagal beserta alasannya.
+Panel unggah menampilkan status ZIP: "Menunggu antrean", "Memproses frame", jumlah frame yang aktif, atau pesan gagal beserta alasannya.
 
 ### 2. Isi titik
 
-Setiap titik adalah satu baris di repeater **Titik kawasan** (Masterplan) atau **Titik cluster** (Cluster). Kolom **Nama** wajib diisi. Baris tanpa nama tidak tampil di halaman.
+Setiap titik adalah satu baris di repeater **Titik kawasan** (Masterplan) atau **Titik cluster** (Cluster), berisi Nama, Gambar, dan (khusus Cluster) Deskripsi. Kolom **Nama** wajib diisi. Baris tanpa nama tidak tampil di halaman. Nomor titik di halaman diambil otomatis dari urutan baris (01, 02, ...).
 
 Posisi titik diatur di panel **Penempatan** di bawah repeater, bukan di dalam baris:
 
 1. Panel menampilkan **frame pertama** orbit beserta titik-titik yang sudah punya posisi.
-2. Pilih titik lewat daftar nama di bawah gambar, atau klik titiknya di gambar. Klik di gambar hanya memilih, tidak memindahkan titik.
+2. Pilih titik lewat daftar nama di bawah gambar (8 per baris), atau klik titiknya di gambar. Klik di gambar hanya memilih, tidak memindahkan titik.
 3. Isi **Posisi X (%)** dan **Posisi Y (%)** di bawah gambar:
    - X diukur dari tepi kiri frame pertama, Y dari tepi atas, dalam persen 0 sampai 100.
    - Desimal boleh pakai koma atau titik (`45,5` sama dengan `45.5`).
@@ -47,7 +47,7 @@ Posisi titik diatur di panel **Penempatan** di bawah repeater, bukan di dalam ba
    - Kolom yang dikosongkan menyembunyikan titik itu.
 4. Klik **Simpan** proyek.
 
-Titik di gambar panel ikut bergeser saat angka diketik, sebelum Simpan. Kolom X/Y di dalam baris repeater sengaja disembunyikan selama frame tersedia, supaya posisi hanya diatur di satu tempat.
+Titik di gambar panel ikut bergeser saat angka diketik, sebelum Simpan. Kolom X/Y di dalam baris repeater selalu disembunyikan, supaya posisi hanya diatur di satu tempat.
 
 Saat Simpan, titik yang posisinya berubah langsung dilacak ulang. Simpan bisa beberapa detik lebih lama dari biasanya (sekitar 3 detik per titik yang diubah, diukur di laptop development).
 
@@ -133,7 +133,7 @@ Pemrosesan ZIP (sekitar 50 detik untuk 120 frame) dan pembuatan cache gerak pert
 
 | File | Isi |
 |---|---|
-| `public/cms/project-map.js` | Panel Frame 360° (ZIP) dan panel Penempatan titik di form proyek |
+| `public/cms/project-map.js` | Panel unggah ZIP, panel Penempatan titik, dan peta titik unit di form proyek |
 | `app/Http/Middleware/AdminProjectMap.php` | Menyisipkan `project-map.js` ke halaman admin |
 | `app/Http/Controllers/Admin/OrbitUploadController.php` | Unggah ZIP per potongan, status, hapus frame |
 | `app/Http/Controllers/Admin/OrbitFramesController.php` | Frame pertama orbit untuk panel Penempatan |
