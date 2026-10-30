@@ -1368,7 +1368,7 @@ button.pj-frame:focus-visible {
   width: 10px;
   height: 10px;
   margin-right: 10px;
-  background: var(--marker, var(--accent-light));
+  background: var(--accent-light);
   vertical-align: 0.05em;
 }
 

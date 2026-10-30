@@ -184,9 +184,6 @@ final class ProjectPage
         }
 
         $marker = is_array($style['marker'] ?? null) ? $style['marker'] : [];
-        if (self::isHex($marker['color'] ?? null)) {
-            $tokens['--marker'] = strtolower($marker['color']);
-        }
 
         $corner = is_array($style['corner'] ?? null) ? $style['corner'] : [];
         $size = is_numeric($corner['size'] ?? null) ? max(0, (int) $corner['size']) : 0;

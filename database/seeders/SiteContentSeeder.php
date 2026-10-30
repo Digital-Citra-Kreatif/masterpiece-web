@@ -224,7 +224,6 @@ class SiteContentSeeder extends Seeder
                         ['value' => 'shape', 'label' => 'Warna & bentuk'],
                         ['value' => 'image', 'label' => 'Gambar / SVG'],
                     ], 'default' => 'shape'], ['label' => 'Jenis', 'required' => true, 'translatable' => false, 'width' => 33]),
-                    $hex('color', 'Warna', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'not_equals', 'value' => 'image']]),
                     $this->field('shape', 'select', ['options' => [
                         ['value' => 'circle', 'label' => 'Lingkaran'],
                         ['value' => 'square', 'label' => 'Kotak'],

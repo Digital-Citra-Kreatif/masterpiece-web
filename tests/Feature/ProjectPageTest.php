@@ -378,7 +378,8 @@ test('an active Global Style sets the project\'s fonts and colours over the home
         ->assertDontSee('--button:', false)
         ->assertSee('--accent:#1f4d3a;--paper:#f5efe3;', false)
         ->assertDontSee('--ink:', false)
-        ->assertSee('--marker:#c9a227;--radius:6px;', false);
+        ->assertSee('--radius:6px;', false)
+        ->assertDontSee('--marker:', false); // Pin selalu putih
 });
 
 test('a chamfer Global Style cuts cards, images and the logo at most 24px and leaves buttons square', function () {
