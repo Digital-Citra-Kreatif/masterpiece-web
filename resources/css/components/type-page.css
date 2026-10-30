@@ -139,6 +139,15 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   cursor: grabbing;
 }
 
+/* Bagian gambar diam */
+.tps__canvas.is-still {
+  cursor: default;
+}
+
+.tps__nav[hidden] {
+  display: none;
+}
+
 .tps__canvas:focus-visible {
   outline: 2px solid var(--room-ink);
   outline-offset: -4px;

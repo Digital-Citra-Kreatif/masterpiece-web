@@ -58,6 +58,7 @@ export function spin(root) {
   const text = root.querySelector('[data-spin-text]');
   const name = root.querySelector('[data-spin-name]');
   const buttons = [...root.querySelectorAll('[data-spin-tab]')];
+  const steps = [...root.querySelectorAll('[data-spin-step]')];
   const ctx = canvas.getContext('2d');
   let active = 0;
   let offset = 0; // Putaran drag, dalam frame
@@ -130,9 +131,18 @@ export function spin(root) {
     }
     if (name) name.textContent = tab().name;
     canvas.setAttribute('aria-label', canvas.getAttribute('aria-label').replace(/, [^:]+:/, `, ${tab().name}:`));
+    still();
     measure();
   };
   buttons.forEach((b, k) => b.addEventListener('click', () => show(k)));
+
+  // Gambar diam tanpa putar
+  const still = () => {
+    const fixed = tab().frames.length < 2;
+    steps.forEach((b) => { b.hidden = fixed; });
+    canvas.classList.toggle('is-still', fixed);
+  };
+  still();
 
   // Drag dan tombol putar
   if (mode === 'drag') {

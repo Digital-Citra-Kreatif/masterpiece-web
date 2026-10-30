@@ -596,6 +596,15 @@ button.pj-frame:focus-visible {
   cursor: grabbing;
 }
 
+/* Tab gambar diam */
+.tph__canvas.is-still {
+  cursor: default;
+}
+
+.tph__nav[hidden] {
+  display: none;
+}
+
 .tph__canvas:focus-visible {
   outline: 2px solid var(--room-ink);
   outline-offset: -4px;
