@@ -519,7 +519,7 @@ body.is-type .tps--scroll::before {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  column-gap: clamp(40px, 5vw, 88px);
+  gap: 56px clamp(40px, 5vw, 88px); /* Usaha 56px di bawah deskripsi */
 }
 
 .tps__lead,
@@ -527,9 +527,22 @@ body.is-type .tps--scroll::before {
   grid-column: 1;
 }
 
+/* Sejajar label usaha */
 .tps__side {
   grid-column: 2;
-  grid-row: 1 / span 2;
+}
+
+/* Tombol selebar isi */
+.tps__side .tps__actions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.tps__side .tps__actions .btn {
+  min-width: 160px;
 }
 
 /* Layar kecil: bertumpuk */
@@ -540,14 +553,7 @@ body.is-type .tps--scroll::before {
 
   .tps__side {
     grid-column: 1;
-    grid-row: auto;
-    margin-top: 40px;
   }
-}
-
-/* Usaha di bawah deskripsi, jarak 56px */
-.tps__lead + .tps__uses {
-  margin-top: 56px;
 }
 
 /* Tombol bawah */
