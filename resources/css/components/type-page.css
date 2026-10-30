@@ -109,6 +109,51 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   touch-action: auto;
 }
 
+/* 360° gelap, teks putih */
+body.is-type .tps--scroll {
+  --line: rgb(255 255 255 / 0.14);
+  --tps-edge: rgb(255 255 255 / 0.32);
+  background-color: #000;
+  color: #fff;
+}
+
+.tps.tps--scroll :is(.tps__size, .tps__part) {
+  color: #fff;
+}
+
+.tps--scroll .tps__label {
+  color: rgb(255 255 255 / 0.72);
+}
+
+.tps--scroll .tps__desc {
+  color: rgb(255 255 255 / 0.82);
+}
+
+.tps--scroll .tps__tab {
+  background: transparent;
+  color: #fff;
+}
+
+.tps--scroll .tps__tab:hover {
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+}
+
+.tps--scroll .tps__tab[aria-pressed='true'] {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.tps--scroll .tps__tab:focus-visible {
+  outline-color: #fff;
+}
+
+/* Lepas dari section gelap */
+.tps--scroll + .tps--about {
+  padding-top: clamp(40px, 5vw, 72px);
+}
+
 /* Kolom 360° lebih besar: 65%, tab 35% */
 @media (min-width: 961px) {
   .tps--scroll .tps__grid {
