@@ -60,30 +60,31 @@
             </div>
           </div>
 
-          {{-- Label ruko, ukuran, label tab, tab, deskripsi tab --}}
+          {{-- Label tab, tab seperti halaman proyek, lalu label ruko dan ukuran --}}
           <div class="tps__info">
-            @if ($t['label'])
-              <p class="eyebrow tps__label">{{ $t['label'] }}</p>
-            @endif
-            @if ($t['dimensions'])
-              <p class="display tps__size">{{ $t['dimensions'] }}</p>
-            @endif
             <h2 class="display tps__part" aria-live="polite" data-spin-name>{{ $first['name'] }}</h2>
 
-            @if (count($parts) > 1)
-              <ul class="tps__tabs" aria-label="Bagian 360°">
-                @foreach ($parts as $part)
-                  <li>
-                    <button class="tps__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" data-spin-tab="{{ $loop->index }}">
-                      {{ $part['name'] }}
-                    </button>
-                  </li>
-                @endforeach
-              </ul>
-            @endif
+            <ul class="tph__tabs" aria-label="Bagian 360°">
+              @foreach ($parts as $part)
+                <li class="tph__part">
+                  <button class="tph__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-controls="type-360-desc-{{ $loop->index }}" data-spin-tab="{{ $loop->index }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></svg>
+                    {{ $part['name'] }}
+                  </button>
+                  <p class="tph__desc" id="type-360-desc-{{ $loop->index }}"><strong>{{ $part['name'] }}.</strong> {{ $part['text'] }}</p>
+                </li>
+              @endforeach
+            </ul>
 
-            @if (collect($parts)->contains(fn (array $part): bool => filled($part['text'])))
-              <p class="tps__desc" data-spin-text @if (blank($first['text'])) hidden @endif>{{ $first['text'] }}</p>
+            @if ($t['label'] || $t['dimensions'])
+              <div class="tps__meta">
+                @if ($t['label'])
+                  <p class="eyebrow tps__label">{{ $t['label'] }}</p>
+                @endif
+                @if ($t['dimensions'])
+                  <p class="display tps__size">{{ $t['dimensions'] }}</p>
+                @endif
+              </div>
             @endif
           </div>
         @elseif ($t['image'])

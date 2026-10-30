@@ -474,7 +474,8 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name">'.$type->title.'</h1>', false)
         ->assertSee('<h2 class="display tps__part" aria-live="polite" data-spin-name>Fasad</h2>', false)
-        ->assertSee('<p class="tps__desc" data-spin-text >Tampak depan.</p>', false)
+        // Tab seperti halaman proyek: pill, aktif jadi kartu deskripsi
+        ->assertSee('<p class="tph__desc" id="type-360-desc-0"><strong>Fasad.</strong> Tampak depan.</p>', false)
         ->assertSeeInOrder(['data-spin-tab="0"', 'Fasad', 'data-spin-tab="1"', 'Lantai 1'], false)
         // Diputar lewat gulir: tertahan di layar, tanpa panah
         ->assertSee('class="tps tps--scroll"', false)
@@ -513,11 +514,11 @@ test('a type page\'s 360° section holds the viewer, unit label and size, tab la
 
     expect($viewer)->toContain('data-spin-name>Fasad</h2>')
         ->and($viewer)->toContain('data-spin-tab="1"')
-        ->and($viewer)->toContain('data-spin-text >Tampak depan.</p>')
+        ->and($viewer)->toContain('<strong>Fasad.</strong> Tampak depan.</p>')
         ->and($viewer)->not->toContain('tps__intro');
     $this->get('/westlake/tipe/tipe-1')
         // Label ruko dan ukuran di section 360, di atas label tab
-        ->assertSeeInOrder(['data-spin="scroll"', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'data-spin-name>Fasad</h2>', 'data-spin-text', 'class="tps tps--about"', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+        ->assertSeeInOrder(['data-spin="scroll"', 'data-spin-name>Fasad</h2>', 'class="tph__tabs"', '<strong>Fasad.</strong> Tampak depan.', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
     expect(substr_count($html, 'tps__label'))->toBe(1)
         ->and(substr_count($html, 'tps__size'))->toBe(1);
 });
