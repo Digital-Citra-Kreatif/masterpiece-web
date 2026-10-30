@@ -409,6 +409,15 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   color: var(--paper);
 }
 
+/* Keterangan tipe, di bawah 360° */
+.tps + .tps--about {
+  padding-top: 0;
+}
+
+.tps__about {
+  max-width: 720px;
+}
+
 /* Tombol bawah */
 .tps__actions {
   display: grid;
@@ -451,6 +460,12 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 
   .tps__info > :first-child {
     margin-top: 40px;
+  }
+
+  /* Label tab di atas viewer */
+  .tps__info > .tps__part {
+    order: -3;
+    margin-top: 0;
   }
 }
 

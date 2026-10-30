@@ -39,19 +39,18 @@
       </div>
     </section>
 
-    {{-- Lembar tipe --}}
+    @if ($parts !== [] || $t['image'])
+    {{-- 360° tipe --}}
     <section
       class="tps"
       aria-label="Detail {{ $t['name'] }}"
       @if ($parts !== []) data-spin="drag" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame']))) }}" @endif
     >
-      <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === [] && ! $t['image']])>
+      <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === []])>
         @if ($parts !== [])
           {{-- Viewer 360° --}}
           @php($first = $parts[0])
           <div class="tps__view" style="--native: {{ $first['width'] }}px">
-            <h2 class="display tps__part" aria-live="polite" data-spin-name>{{ $first['name'] }}</h2>
-
             <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}">
               {{-- Gambar awal sebelum kanvas siap --}}
               <img class="tps__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
@@ -65,6 +64,23 @@
                 </button>
               @endif
             </div>
+          </div>
+
+          {{-- Label, tab, deskripsi tab --}}
+          <div class="tps__info">
+            <h2 class="display tps__part" aria-live="polite" data-spin-name>{{ $first['name'] }}</h2>
+
+            @if (count($parts) > 1)
+              <ul class="tps__tabs" aria-label="Bagian 360°">
+                @foreach ($parts as $part)
+                  <li>
+                    <button class="tps__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" data-spin-tab="{{ $loop->index }}">
+                      {{ $part['name'] }}
+                    </button>
+                  </li>
+                @endforeach
+              </ul>
+            @endif
 
             @if (collect($parts)->contains(fn (array $part): bool => filled($part['text'])))
               <p class="tps__desc" data-spin-text @if (blank($first['text'])) hidden @endif>{{ $first['text'] }}</p>
@@ -78,46 +94,41 @@
             </div>
           </div>
         @endif
-
-        <div class="tps__info">
-          @if ($t['label'])
-            <p class="eyebrow tps__label">{{ $t['label'] }}</p>
-          @endif
-          @if ($t['dimensions'])
-            <p class="display tps__size">{{ $t['dimensions'] }}</p>
-          @endif
-
-          @if ($t['intro'])
-            <div class="tps__intro">{!! $t['intro'] !!}</div>
-          @endif
-
-          @if (count($parts) > 1)
-            {{-- Tab bagian --}}
-            <ul class="tps__tabs" aria-label="Bagian 360°">
-              @foreach ($parts as $part)
-                <li>
-                  <button class="tps__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" data-spin-tab="{{ $loop->index }}">
-                    {{ $part['name'] }}
-                  </button>
-                </li>
-              @endforeach
-            </ul>
-          @endif
-
-          @if ($t['gallery'] !== [] || $vrUrl)
-            {{-- Galeri dan VR --}}
-            <div class="tps__actions">
-              @if ($t['gallery'] !== [])
-                <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Galeri</button>
-              @endif
-              @if ($vrUrl)
-                <a class="btn btn--solid" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">VR</a>
-              @endif
-            </div>
-          @endif
-        </div>
       </div>
     </section>
+    @endif
+
+    @if ($t['label'] || $t['dimensions'] || $t['intro'] || $t['gallery'] !== [] || $vrUrl)
+      {{-- Keterangan tipe --}}
+      <section class="tps tps--about" aria-label="Keterangan {{ $t['name'] }}">
+        <div class="wrap">
+          <div class="tps__about">
+            @if ($t['label'])
+              <p class="eyebrow tps__label">{{ $t['label'] }}</p>
+            @endif
+            @if ($t['dimensions'])
+              <p class="display tps__size">{{ $t['dimensions'] }}</p>
+            @endif
+
+            @if ($t['intro'])
+              <div class="tps__intro">{!! $t['intro'] !!}</div>
+            @endif
+
+            @if ($t['gallery'] !== [] || $vrUrl)
+              {{-- Galeri dan VR --}}
+              <div class="tps__actions">
+                @if ($t['gallery'] !== [])
+                  <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Galeri</button>
+                @endif
+                @if ($vrUrl)
+                  <a class="btn btn--solid" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">VR</a>
+                @endif
+              </div>
+            @endif
+          </div>
+        </div>
+      </section>
+    @endif
 
     @if ($t['denah'] !== [])
       {{-- Denah, slide bila lebih dari satu --}}

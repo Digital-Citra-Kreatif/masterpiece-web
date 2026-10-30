@@ -487,6 +487,31 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->and($html)->not->toContain('wr360');
 });
 
+test('a type page\'s 360° section holds only the viewer, tab label, tabs and tab text; the rest sits below it', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'turntable' => ['title' => 'Explore the unit', 'tabs' => [
+            ['name' => 'Fasad', 'description' => 'Tampak depan.', 'images' => [projectImage('frame_1.jpg'), projectImage('frame_2.jpg')]],
+            ['name' => 'Lantai 1', 'description' => 'Area usaha.', 'images' => [projectImage('floor.jpg')]],
+        ]],
+    ]);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'intro' => '<p>Ruko di tepi danau.</p>']]);
+
+    $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
+    $viewer = substr($html, strpos($html, 'data-spin="drag"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="drag"'));
+
+    expect($viewer)->toContain('data-spin-name>Fasad</h2>')
+        ->and($viewer)->toContain('data-spin-tab="1"')
+        ->and($viewer)->toContain('data-spin-text >Tampak depan.</p>')
+        ->and($viewer)->not->toContain('Ruko Hook')
+        ->and($viewer)->not->toContain('4,5 x 10 m')
+        ->and($viewer)->not->toContain('tps__intro');
+    $this->get('/westlake/tipe/tipe-1')
+        ->assertSeeInOrder(['data-spin-text', 'class="tps tps--about"', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+});
+
 test('a type with its own 360° tabs shows them on its page instead of the project\'s', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, [
