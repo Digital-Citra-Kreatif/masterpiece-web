@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\ProjectPage;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
 use Sunrice\Admin\Actions\Media\UploadMedia;
@@ -335,6 +336,13 @@ class SiteContentSeeder extends Seeder
                     'translatable' => false,
                     'instructions' => 'Gambar/video 1920×1080.',
                 ]),
+                // Letak nama, judul, dan tombol
+                $this->field('align', 'select', ['options' => collect(ProjectPage::HERO_ALIGN)->map(fn (string $label, string $value): array => ['value' => $value, 'label' => $label])->values()->all(), 'default' => 'split'], [
+                    'label' => 'Posisi konten', 'translatable' => false,
+                ]),
+                // Tombol putar video
+                $this->field('video_file', 'media', ['types' => ['video']], ['label' => 'Video popup (upload)', 'translatable' => false, 'width' => 50]),
+                $text('video_url', 'Link YouTube', ['translatable' => false, 'width' => 50, 'instructions' => 'Dipakai bila video upload kosong.']),
             ]]),
             $section('masterplan', 'Masterplan', [
                 $scene(),

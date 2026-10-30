@@ -28,6 +28,24 @@ final class ProjectPage
     ];
 
     /**
+     * Posisi konten hero
+     *
+     * @var array<string, string>
+     */
+    public const HERO_ALIGN = [
+        'split' => 'Bawah, nama kiri judul kanan',
+        'top-left' => 'Atas kiri',
+        'top-center' => 'Atas tengah',
+        'top-right' => 'Atas kanan',
+        'middle-left' => 'Tengah kiri',
+        'middle-center' => 'Tengah',
+        'middle-right' => 'Tengah kanan',
+        'bottom-left' => 'Bawah kiri',
+        'bottom-center' => 'Bawah tengah',
+        'bottom-right' => 'Bawah kanan',
+    ];
+
+    /**
      * Peta font Global Style
      *
      * @var array<string, string>
@@ -241,7 +259,7 @@ final class ProjectPage
      * Hero proyek
      *
      * @param  array<string, mixed>  $hero
-     * @return array{title: string, background: string, slides: list<array{type: string, src: string, alt: string}>}
+     * @return array{title: string, background: string, slides: list<array{type: string, src: string, alt: string}>, align: string, video: ?array{kind: 'video'|'iframe', src: string}}
      */
     private static function hero(array $hero, string $fallbackTitle): array
     {
@@ -259,7 +277,31 @@ final class ProjectPage
             'title' => filled($hero['heading'] ?? null) ? (string) $hero['heading'] : $fallbackTitle,
             'background' => $slides === [] ? 'none' : 'slider',
             'slides' => $slides,
+            'align' => array_key_exists($hero['align'] ?? '', self::HERO_ALIGN) ? (string) $hero['align'] : 'split',
+            'video' => self::heroVideo($hero),
         ];
+    }
+
+    /**
+     * Video popup hero: upload diutamakan, lalu link YouTube
+     *
+     * @param  array<string, mixed>  $hero
+     * @return array{kind: 'video'|'iframe', src: string}|null
+     */
+    private static function heroVideo(array $hero): ?array
+    {
+        $file = $hero['video_file'] ?? null;
+        if ($file instanceof Media && str_starts_with((string) $file->mime_type, 'video/')) {
+            return ['kind' => 'video', 'src' => $file->url()];
+        }
+
+        // ID dari watch, youtu.be, shorts, embed, live
+        $url = trim((string) ($hero['video_url'] ?? ''));
+        if (preg_match('~^https?://(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:.*&)?v=|shorts/|embed/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~', $url, $match) === 1) {
+            return ['kind' => 'iframe', 'src' => "https://www.youtube-nocookie.com/embed/{$match[1]}?autoplay=1&rel=0"];
+        }
+
+        return null;
     }
 
     /**

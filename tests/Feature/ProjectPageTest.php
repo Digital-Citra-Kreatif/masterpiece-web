@@ -662,3 +662,34 @@ test('a project page takes its meta description from the home card description',
         ->assertOk()
         ->assertSee('<meta name="description" content="Ruko tepi danau di BSD City." />', false);
 });
+
+test('the project hero swaps the scroll cue for a play button that opens an uploaded video or a YouTube link', function () {
+    $video = app(UploadMedia::class)->handle(UploadedFile::fake()->createWithContent('film.mp4', "\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom"), []);
+    $video->update(['mime_type' => 'video/mp4']); // Seperti mp4 asli
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake', 'video_file' => $video->id, 'video_url' => 'https://youtu.be/dQw4w9WgXcQ']]);
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake', 'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ']], 'tube');
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake', 'video_url' => 'https://evil.example/watch?v=dQw4w9WgXcQ']], 'none');
+
+    // Upload diutamakan
+    $this->get('/projects/westlake')->assertOk()
+        ->assertSee('class="btn btn--light hero__play" type="button" data-open="video"', false)
+        ->assertSee(e(json_encode(['src' => $video->url(), 'title' => 'Westlake'])), false)
+        ->assertDontSee('hero__cue', false);
+
+    $this->get('/projects/tube')->assertOk()
+        ->assertSee('data-open="iframe"', false)
+        ->assertSee(e(json_encode(['src' => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0', 'title' => 'Westlake'])), false);
+
+    // Link selain YouTube: tetap petunjuk gulir
+    $this->get('/projects/none')->assertOk()
+        ->assertDontSee('hero__play', false)
+        ->assertSee('<p class="hero__cue" aria-hidden="true">Gulir ke bawah</p>', false);
+});
+
+test('the project hero places its content where the CMS says and falls back to the split layout', function () {
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake', 'align' => 'top-center']]);
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']], 'odd');
+
+    $this->get('/projects/westlake')->assertOk()->assertSee('<section class="hero hero--placed hero--y-top hero--x-center"', false);
+    $this->get('/projects/odd')->assertOk()->assertSee('<section class="hero"', false)->assertDontSee('hero--placed', false);
+});
