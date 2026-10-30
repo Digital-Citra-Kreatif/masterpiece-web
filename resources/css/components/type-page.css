@@ -577,6 +577,13 @@ body.is-type .tps--scroll::before {
   min-width: 160px;
 }
 
+/* Hover VR: warna proyek dari CMS */
+.tps__actions .btn--solid:hover {
+  background: var(--room);
+  border-color: var(--room);
+  color: var(--room-ink);
+}
+
 /* Layar kecil: bertumpuk */
 @media (max-width: 960px) {
   .tps__about {
