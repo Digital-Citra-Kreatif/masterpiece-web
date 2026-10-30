@@ -314,12 +314,13 @@ function setup(sunrice) {
       if (selected === null && rows.length) setSelected((rows.find((r) => !placed(r)) ?? rows[0]).index);
     }, [rows.length, selected]);
 
+    // X, Y terpisah
     const write = (index, x, y) => {
       const ix = inputOf(section, index, 'x');
       const iy = inputOf(section, index, 'y');
       if (!ix || !iy) return;
-      setInput(ix, x === null ? '' : String(round(x)));
-      setInput(iy, y === null ? '' : String(round(y)));
+      setTimeout(() => setInput(ix, x === null ? '' : String(round(x))));
+      setTimeout(() => setInput(iy, y === null ? '' : String(round(y))));
     };
     const pointAt = (event) => {
       const rect = planRef.current.getBoundingClientRect();
