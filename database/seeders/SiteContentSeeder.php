@@ -293,10 +293,10 @@ class SiteContentSeeder extends Seeder
             'label' => $label, 'translatable' => false, 'width' => 50, 'instructions' => $instructions,
         ]);
         // Gambar diam atau ZIP frame 360°
-        $scene = fn (string $section): array => $this->field('image', 'media', ['types' => ['image', 'document']], [
+        $scene = fn (): array => $this->field('image', 'media', ['types' => ['image', 'document']], [
             'label' => 'Gambar atau ZIP 360°',
             'translatable' => false,
-            'instructions' => "Gambar diam, atau ZIP berisi semua frame orbit {$section} (diurutkan menurut nama file) untuk tampilan 360°. Titik ditempatkan di atas gambar atau frame pertama.",
+            'instructions' => 'Gambar diam, atau ZIP frame 360° (urut nama file).',
         ]);
         $points = fn (string $label, array $fields): array => $this->field('points', 'repeater', [], ['label' => $label, 'fields' => [
             $text('number', 'Nomor', ['translatable' => false, 'width' => 25]),
@@ -314,7 +314,7 @@ class SiteContentSeeder extends Seeder
                 ]),
             ]]),
             $section('masterplan', 'Masterplan', [
-                $scene('masterplan'),
+                $scene(),
                 $points('Titik kawasan', [
                     $image('image', 'Gambar'),
                     $percent('x', 'Posisi X (%)', 'Dari kiri gambar pertama orbit Masterplan. Kosong: titik tidak tampil.'),
@@ -325,7 +325,7 @@ class SiteContentSeeder extends Seeder
                 $gallery('maps', 'Peta'),
             ]),
             $section('cluster', 'Cluster', [
-                $scene('cluster'),
+                $scene(),
                 $points('Titik cluster', [
                     $image('image', 'Gambar', ['width' => 50]),
                     $textarea('description', 'Deskripsi', ['width' => 50]),
