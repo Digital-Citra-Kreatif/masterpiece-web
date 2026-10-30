@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /*
@@ -16,6 +17,8 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
  // ->use(RefreshDatabase::class)
+    // Cache gerak dan jalur titik laptop tidak terbaca
+    ->beforeEach(fn () => Storage::fake('local'))
     ->in('Feature');
 
 /*

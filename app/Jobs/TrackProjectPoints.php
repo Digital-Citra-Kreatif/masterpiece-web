@@ -44,7 +44,11 @@ class TrackProjectPoints implements ShouldBeUniqueUntilProcessing, ShouldQueue
 
         DB::afterCommit(function () use ($id): void {
             try {
-                set_time_limit(120);
+                // Naikkan batas web saja
+                $limit = (int) ini_get('max_execution_time');
+                if ($limit > 0 && $limit < 120) {
+                    set_time_limit(120);
+                }
                 (new self($id))->handle();
             } catch (Throwable $e) {
                 report($e);
