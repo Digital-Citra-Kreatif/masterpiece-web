@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Http\Controllers\Admin\MediaPickerController;
 use App\Http\Controllers\Admin\OrbitFramesController;
 use App\Http\Controllers\Admin\OrbitUploadController;
 use App\Http\Controllers\Admin\UnitPointsController;
@@ -24,6 +25,8 @@ final class AdminPanelProvider extends PanelProvider
             ->middleware([AdminNavigationIcons::class, AdminProjectMap::class])
             ->plugin(CmsPlugin::make())
             ->routes(function (): void {
+                // Ganti picker bawaan
+                Route::get('media/picker', MediaPickerController::class)->name('media.picker');
                 Route::get('unit-points/{project}', [UnitPointsController::class, 'show'])->whereNumber('project')->name('unit-points.show');
                 Route::put('unit-points/{project}', [UnitPointsController::class, 'update'])->whereNumber('project')->name('unit-points.update');
                 Route::get('orbit-frames', OrbitFramesController::class)->name('orbit-frames');
