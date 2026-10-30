@@ -654,8 +654,8 @@ body.is-type .tps--scroll::before {
   }
 }
 
-/* Tablet: label 360° di atas tab, bukan di atas gambar */
-@media (min-width: 761px) and (max-width: 960px) {
+/* Tablet dan HP: label 360° di atas tab, bukan di atas gambar */
+@media (max-width: 960px) {
   .tps__info > .tps__part {
     order: -1;
     margin-top: 40px;
