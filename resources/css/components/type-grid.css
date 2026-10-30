@@ -176,6 +176,8 @@ article.card {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-box, 0); /* Sudut CMS */
 }
 
 .types--project .card__img {

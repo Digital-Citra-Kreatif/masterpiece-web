@@ -12,9 +12,14 @@ body.is-project {
   letter-spacing: normal;
 }
 
+/* Sudut CMS: tombol apa adanya (besar jadi pil), kartu dan gambar maks 24px */
+.is-project {
+  --radius-box: min(var(--radius, 0px), 24px);
+}
+
 /* Sudut bingkai */
 .pj-frame {
-  border-radius: var(--radius, 0);
+  border-radius: var(--radius-box, 0);
   overflow: hidden;
   clip-path: var(--frame-clip, none);
 }
@@ -70,7 +75,7 @@ button.pj-frame:focus-visible {
   align-self: flex-start;
   padding: 14px 16px 16px;
   margin-top: calc(-1 * env(safe-area-inset-top, 0px)); /* Rata atas layar */
-  border-radius: 0 0 var(--radius, 6px) var(--radius, 6px);
+  border-radius: 0 0 min(var(--radius, 6px), 24px) min(var(--radius, 6px), 24px);
   background: #fff;
   box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); /* Bayangan emblem */
 }
@@ -395,7 +400,7 @@ button.pj-frame:focus-visible {
   width: max-content; /* Selebar daftar titik */
   max-width: 100%;
   padding: clamp(20px, 2vw, 28px);
-  border-radius: var(--radius, 0);
+  border-radius: var(--radius-box, 0);
   background: var(--room);
   color: var(--room-ink);
   pointer-events: auto;
@@ -566,6 +571,7 @@ button.pj-frame:focus-visible {
   position: relative;
   min-width: 0;
   overflow: hidden; /* Gambar tampil apa adanya */
+  border-radius: var(--radius-box, 0);
 }
 
 .tph__poster,
@@ -691,7 +697,7 @@ button.pj-frame:focus-visible {
   max-width: none;
   margin: 0;
   padding: clamp(24px, 2.4vw, 32px);
-  border-radius: var(--radius, 0);
+  border-radius: var(--radius-box, 0);
   background: var(--room);
   color: var(--room-ink);
 }
@@ -726,7 +732,7 @@ button.pj-frame:focus-visible {
   aspect-ratio: 16 / 9;
   margin-bottom: 16px;
   object-fit: cover;
-  border-radius: var(--radius, 0);
+  border-radius: var(--radius-box, 0);
 }
 
 .scene--project .scene__loc-title {
@@ -752,7 +758,7 @@ button.pj-frame:focus-visible {
   bottom: clamp(24px, 5vh, 56px);
   width: min(320px, 100% - 2 * var(--gutter));
   margin: 0;
-  border-radius: var(--radius, 0);
+  border-radius: var(--radius-box, 0);
   overflow: hidden;
   background: #fff;
 }
@@ -884,7 +890,7 @@ button.pj-frame:focus-visible {
   margin: 0;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: var(--radius, 0);
+  border-radius: var(--radius-box, 0);
   background: var(--room-2);
   box-shadow: 0 12px 32px rgb(0 0 0 / 0.35); /* Bayangan gambar */
   animation: loc-in 0.7s var(--ease) 0.15s both;
