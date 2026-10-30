@@ -426,7 +426,7 @@ function setup(sunrice) {
     const bar = h('div', { className: 'pm-bar' },
       h('div', { className: 'pm-title' },
         h('strong', null, `Penempatan ${title.toLowerCase()}`),
-        h('span', null, rows.length ? `${rows.length} titik · ${missing ? `${missing} belum ditempatkan` : 'semua sudah ditempatkan'} · simpan lewat tombol Simpan proyek` : 'Tambah titik dulu, lalu isi posisinya di sini.')));
+        h('span', null, rows.length ? `${rows.length} titik · ${missing ? `${missing} belum ditempatkan` : 'semua sudah ditempatkan'}` : 'Tambah titik dulu, lalu isi posisinya di sini.')));
     if (!frame) return h('div', null, bar, h('div', { className: 'pm-empty' }, h('p', null, 'Gambar orbit belum tersedia.')));
     if (!rows.length) return h('div', null, bar);
 
