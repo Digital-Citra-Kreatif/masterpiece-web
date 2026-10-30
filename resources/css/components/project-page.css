@@ -1061,25 +1061,37 @@ button.pj-frame:focus-visible {
   width: 100%;
   height: 100%;
   margin: 0;
-  background: var(--marker, var(--room));
-  box-shadow: 0 0 0 2px #fff, 0 4px 12px rgb(0 0 0 / 0.35); /* Cincin putih */
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.35); /* Tepi gelap tipis */
 }
 
+/* Ikon kustom: separuh ukuran, diperbesar 2x dari tepi titik */
 .spot--marker .pj-marker--image {
-  width: 100%;
-  height: var(--head);
-  object-fit: contain; /* Ikon kustom muat di kepala pin */
+  width: auto;
+  max-width: calc(var(--head) / 2);
+  height: calc(var(--head) / 2);
+  object-fit: contain;
   background: none;
   box-shadow: none;
+  scale: 2;
+  transform-origin: 100% 50%;
+}
+
+.spot--marker.spot--flip .pj-marker--image {
+  transform-origin: 0 50%;
 }
 
 /* Ikon kustom: tanpa batang dan bayangan, tengahnya di titik */
 .spot--marker:has(.pj-marker--image) .spot__dot {
-  margin: calc(var(--head) / -2) 0 0 calc(var(--head) / -2);
+  width: auto;
+  height: auto;
+  margin: calc(var(--head) / -4) 0 0;
+  transform-origin: 0 50%; /* Hover dari titik */
 }
 
 .spot--marker.spot--flip:has(.pj-marker--image) .spot__dot {
-  margin: calc(var(--head) / -2) calc(var(--head) / -2) 0 0;
+  margin: calc(var(--head) / -4) 0 0;
+  transform-origin: 100% 50%;
 }
 
 .spot--marker:has(.pj-marker--image) .spot__dot::before,
@@ -1087,8 +1099,9 @@ button.pj-frame:focus-visible {
   content: none;
 }
 
-.spot--marker:has(.pj-marker--image) .spot__label {
-  margin-top: 0;
+/* Nomor di ikon kustom tetap putih */
+.spot--marker:has(.pj-marker--image) .spot__no {
+  color: #fff;
 }
 
 .spot--marker .spot__no {
@@ -1096,7 +1109,7 @@ button.pj-frame:focus-visible {
   inset: 0;
   display: grid;
   place-items: center;
-  color: #fff;
+  color: #000;
   font-size: 11px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -1107,28 +1120,27 @@ button.pj-frame:focus-visible {
 /* Label nama pin */
 .spot--marker .spot__label {
   margin: calc(-1 * (var(--head) / 2 + var(--stem))) 0 0 10px;
-  translate: 0 -50%;
   padding: 6px 12px;
   border-radius: var(--radius, 4px);
   background: #fff;
-  color: var(--room);
+  color: #000;
   font-size: 13px;
   font-weight: 500;
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
   opacity: 0;
   visibility: hidden;
-  transform: translateX(-6px);
+  transform: translate(-6px, -50%); /* Satu transform, tidak dibuang saat build */
   transition: opacity 0.2s, transform 0.2s var(--ease), visibility 0s 0.2s, background 0.2s, color 0.2s;
 }
 
 .spot--marker.spot--flip .spot__label {
-  transform: translateX(6px);
+  transform: translate(6px, -50%);
 }
 
 .spot--marker:is(:hover, :focus-visible, .is-active) .spot__label {
   opacity: 1;
   visibility: visible;
-  transform: none;
+  transform: translateY(-50%);
   transition: opacity 0.2s, transform 0.2s var(--ease), background 0.2s, color 0.2s;
 }
 
@@ -1136,16 +1148,19 @@ button.pj-frame:focus-visible {
   margin: calc(-1 * (var(--head) / 2 + var(--stem))) 10px 0 0;
 }
 
+/* Label ikon kustom: jarak rapat */
+.spot--marker:has(.pj-marker--image) .spot__label {
+  margin: 0 0 0 6px;
+}
+
+.spot--marker.spot--flip:has(.pj-marker--image) .spot__label {
+  margin: 0 6px 0 0;
+}
+
 .spot--marker:hover .spot__dot,
 .spot--marker:focus-visible .spot__dot {
   background: none;
   transform: perspective(200px) scale(1.12);
-}
-
-.spot--marker:hover .spot__label,
-.spot--marker:focus-visible .spot__label {
-  background: var(--marker, var(--room));
-  color: #fff;
 }
 
 @media (max-width: 760px) {
