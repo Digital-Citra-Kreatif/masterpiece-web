@@ -266,6 +266,82 @@ button.pj-frame:focus-visible {
   }
 }
 
+/* Tombol putar video, ganti petunjuk gulir */
+.hero__action {
+  position: relative;
+  margin: clamp(16px, 2vw, 28px) 0 0;
+  animation: rise 1s 0.6s var(--ease) both;
+}
+
+.hero__play {
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.hero__play svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (min-width: 761px) {
+  .is-project .hero__action {
+    grid-column: 2;
+    justify-self: end;
+    width: min(calc(clamp(40px, 5.2vw, 84px) * 10), 100%);
+  }
+}
+
+/* Posisi konten hero dari CMS */
+.hero--y-top {
+  --hero-y: flex-start;
+}
+
+.hero--y-middle {
+  --hero-y: center;
+}
+
+.hero--y-bottom {
+  --hero-y: flex-end;
+}
+
+.hero--x-left {
+  --hero-x: flex-start;
+  --hero-text: left;
+}
+
+.hero--x-center {
+  --hero-x: center;
+  --hero-text: center;
+}
+
+.hero--x-right {
+  --hero-x: flex-end;
+  --hero-text: right;
+}
+
+.is-project .hero--placed .hero__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: var(--hero-y);
+  align-items: var(--hero-x);
+  text-align: var(--hero-text);
+}
+
+.is-project .hero--placed .hero__eyebrow {
+  margin: 0 0 clamp(12px, 1.6vw, 20px);
+  padding-top: 0;
+}
+
+.is-project .hero--placed :is(.hero__cue, .hero__action) {
+  width: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__action {
+    animation: none;
+  }
+}
+
 /* Nama proyek kecil */
 .hero__eyebrow {
   position: relative;

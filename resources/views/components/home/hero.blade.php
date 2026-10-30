@@ -1,7 +1,10 @@
 {{-- Banner hero --}}
 @props(['hero'])
 
-<section class="hero" @if (filled($hero['id'] ?? null)) id="{{ $hero['id'] }}" @endif aria-labelledby="hero-title">
+{{-- Posisi konten dari CMS proyek --}}
+@php([$alignY, $alignX] = ($hero['align'] ?? 'split') === 'split' ? [null, null] : explode('-', $hero['align']))
+
+<section @class(['hero', 'hero--placed' => $alignY, "hero--y-{$alignY}" => $alignY, "hero--x-{$alignX}" => $alignX]) @if (filled($hero['id'] ?? null)) id="{{ $hero['id'] }}" @endif aria-labelledby="hero-title">
   @if ($hero['background'] === 'slider')
     <div class="hero__slides" data-hero-slides>
       @foreach ($hero['slides'] as $slide)
@@ -48,7 +51,15 @@
         @endforeach
       @endforeach
     </h1>
-    @if (filled($hero['cue'] ?? null))
+    @if ($hero['video'] ?? null)
+      {{-- Tombol video popup --}}
+      <div class="hero__action">
+        <button class="btn btn--light hero__play" type="button" data-open="{{ $hero['video']['kind'] }}" data-payload="{{ json_encode(['src' => $hero['video']['src'], 'title' => $hero['title']]) }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none" /></svg>
+          Putar video
+        </button>
+      </div>
+    @elseif (filled($hero['cue'] ?? null))
       <p class="hero__cue" aria-hidden="true">{{ $hero['cue'] }}</p>
     @endif
     @if (filled($hero['subtitle']) || filled($hero['scrollTo'] ?? null))
