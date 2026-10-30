@@ -1,7 +1,7 @@
 {{-- Grid proyek --}}
 @props(['projects', 'heading', 'id' => 'projects'])
 
-<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-view-cursor>
   <div class="prj__head">
     <div class="wrap">
       <x-sheet-header id="{{ $id }}-title" :title="$heading['title']" :intro="$heading['intro']" />
@@ -12,7 +12,7 @@
     <ul class="prj__grid">
       @foreach ($projects as $p)
         <li data-reveal style="transition-delay: {{ ($loop->index % 2) * 90 }}ms">
-          <a class="prj__card" href="{{ $p['url'] }}">
+          <a class="prj__card" href="{{ $p['url'] }}" data-view-target>
             <div class="prj__media">
               <div class="prj__frame">
                 @if ($p['image'])
@@ -32,4 +32,5 @@
       @endforeach
     </ul>
   </div>
+  <x-view-cursor />
 </section>
