@@ -61,6 +61,21 @@ export function spin(root) {
   const buttons = [...root.querySelectorAll('[data-spin-tab]')];
   const steps = [...root.querySelectorAll('[data-spin-step]')];
   const ctx = canvas.getContext('2d');
+  const same = (a, b) => a.frames.join('|') === b.frames.join('|');
+  // Potongan bersambung jadi satu putaran
+  const joined = mode === 'drag' && tabs.length > 1
+    && tabs.every((t, k) => t.frames.length > 1 && (k === tabs.length - 1 || t.frames[t.frames.length - 1] === tabs[k + 1].frames[0]));
+  if (joined) {
+    const ring = [...tabs[0].frames];
+    const starts = [0];
+    for (const t of tabs.slice(1)) {
+      starts.push(ring.length - 1);
+      ring.push(...t.frames.slice(1));
+    }
+    tabs.forEach((t, k) => Object.assign(t, { frames: ring, frame: starts[k] }));
+  }
+  // Satu putaran bersama: tab ikut sudut
+  const together = mode === 'drag' && tabs.length > 1 && tabs[0].frames.length > 1 && tabs.every((t) => same(t, tabs[0]));
   let active = 0;
   let offset = 0; // Putaran drag, dalam frame
   let glideId = 0; // Animasi antar tab
@@ -146,20 +161,9 @@ export function spin(root) {
     requestAnimationFrame(step);
   };
 
-  const show = (index) => {
-    if (index === active) return;
-    const before = tab();
-    const shown = frameIndex();
-    active = index;
-    offset = 0;
-    // Gambar sama: lanjut dari sudut sekarang
-    if (mode === 'drag' && before.frames.join('|') === tab().frames.join('|')) {
-      offset = shown - tab().frame;
-      glide();
-    } else {
-      glideId++;
-    }
-    buttons.forEach((b, k) => b.setAttribute('aria-pressed', String(k === index)));
+  // Teks dan tombol tab aktif
+  const label = () => {
+    buttons.forEach((b, k) => b.setAttribute('aria-pressed', String(k === active)));
     if (text) {
       text.textContent = tab().text;
       text.hidden = !tab().text;
@@ -167,9 +171,41 @@ export function spin(root) {
     if (name) name.textContent = tab().name;
     canvas.setAttribute('aria-label', canvas.getAttribute('aria-label').replace(/, [^:]+:/, `, ${tab().name}:`));
     still();
+  };
+
+  const show = (index) => {
+    if (index === active) return;
+    const before = tab();
+    const shown = frameIndex();
+    active = index;
+    offset = 0;
+    // Gambar sama: lanjut dari sudut sekarang
+    if (mode === 'drag' && same(before, tab())) {
+      offset = shown - tab().frame;
+      glide();
+    } else {
+      glideId++;
+    }
+    label();
     measure();
   };
   buttons.forEach((b, k) => b.addEventListener('click', () => show(k)));
+
+  // Geser melewati potongan: tab berikutnya aktif
+  const follow = () => {
+    if (!together) return 0;
+    const n = tab().frames.length;
+    const at = (((tab().frame + offset) % n) + n) % n;
+    let owner = tabs.length - 1;
+    tabs.forEach((t, k) => { if (t.frame <= at) owner = k; });
+    if (owner === active) return 0;
+    // Sudut tetap, acuan pindah
+    const shift = tab().frame - tabs[owner].frame;
+    offset += shift;
+    active = owner;
+    label();
+    return shift;
+  };
 
   // Gambar diam tanpa putar
   const still = () => {
@@ -193,6 +229,7 @@ export function spin(root) {
     canvas.addEventListener('pointermove', (e) => {
       if (startX === null) return;
       offset = startOffset - (e.clientX - startX) * perPixel();
+      startOffset += follow();
       request();
     });
     const stop = () => { startX = null; };
@@ -204,11 +241,12 @@ export function spin(root) {
       e.preventDefault();
       glideId++;
       offset += step;
+      follow();
       request();
     });
     for (const button of root.querySelectorAll('[data-spin-step]')) {
       let timer = null;
-      const turn = () => { glideId++; offset += Number(button.dataset.spinStep); request(); };
+      const turn = () => { glideId++; offset += Number(button.dataset.spinStep); follow(); request(); };
       const release = () => { clearInterval(timer); timer = null; };
       button.addEventListener('pointerdown', () => { turn(); timer = setInterval(turn, 60); });
       for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) button.addEventListener(ev, release);
