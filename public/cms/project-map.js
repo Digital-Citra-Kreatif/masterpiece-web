@@ -33,6 +33,7 @@ const css = `
 .pm-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .pm-swatch { width: 10px; height: 10px; flex: none; border-radius: 50%; background: var(--pm-c); }
 .pm-units { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 4px; max-height: 220px; overflow: auto; margin: 0; padding: 8px 12px; list-style: none; border-top: 1px solid var(--border); }
+.pm-units.is-orbit { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 .pm-chip { display: flex; width: 100%; align-items: center; gap: 6px; min-height: 32px; padding: 4px 8px; border: 1px solid transparent; border-radius: calc(var(--radius) - 2px); background: none; color: inherit; font: inherit; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; text-align: left; cursor: pointer; }
 .pm-chip:hover { background: color-mix(in oklab, var(--muted) 60%, transparent); }
 .pm-chip[aria-pressed='true'] { background: var(--accent-tint, var(--accent)); border-color: var(--border); }
@@ -50,6 +51,7 @@ const css = `
 .pm-empty { display: grid; gap: 10px; justify-items: start; padding: 16px 12px; }
 .pm-empty p { margin: 0; font-size: 13px; color: var(--muted-foreground); max-width: 56ch; }
 @media (prefers-reduced-motion: reduce) { .pm-dot::before { transition: none; } }
+@media (max-width: 900px) { .pm-units.is-orbit { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 `;
 
 const round = (n) => Math.round(Math.min(100, Math.max(0, n)) * 100) / 100;
@@ -443,7 +445,7 @@ function setup(sunrice) {
           onClick: () => setSelected(r.index),
         }, r.index === selected && h('span', { className: 'pm-tag' }, r.name)))));
 
-    const list = h('ul', { className: 'pm-units', 'aria-label': title },
+    const list = h('ul', { className: 'pm-units is-orbit', 'aria-label': title },
       rows.map((r) => h('li', { key: r.index }, h('button', {
         type: 'button',
         className: `pm-chip pm-orbit${placed(r) ? '' : ' is-missing'}`,
