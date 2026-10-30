@@ -164,7 +164,8 @@ test('a type page without a project shows its title, specs, floor plans, gallery
         ->assertDontSee('data-turntable', false)
         ->assertDontSee('data-parts', false)
         ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>LT</dt>', '140 m²', '<dt>LB</dt>', '240 m²'], false)
-        ->assertSee('<dl class="tps__specs" aria-label="Spesifikasi">', false)
+        // Tanpa info tambahan, tidak ada tabel info
+        ->assertDontSee('tps__specs', false)
         ->assertSee('<section class="tpd" aria-label="Denah" data-view-cursor>', false)
         ->assertSee('data-view-target', false)
         ->assertSee('Denah Lantai 1')
@@ -197,6 +198,19 @@ test('a type page without land and building area leaves them out instead of show
         ->assertDontSee('0 m²');
 });
 
+test('a type page shows land, building, floors and rooms once, and the info table holds only the extra rows', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'floors' => 2, 'info_rows' => [['label' => 'Listrik', 'value' => '2.200 VA']]]]);
+
+    $html = $this->get('/-/tipe/tipe-6')->assertOk()
+        ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>LT</dt>', '<dt>LB</dt>', '<dt>Lantai</dt>'], false)
+        ->assertSeeInOrder(['<dl class="tps__specs" aria-label="Spesifikasi">', '<dt>Listrik</dt>', '<dd>2.200 VA</dd>'], false)
+        ->getContent();
+
+    expect(substr_count($html, '<dt>LT</dt>') + substr_count($html, '<dt>Luas tanah</dt>'))->toBe(1)
+        ->and(substr_count($html, '<dt>Lantai</dt>') + substr_count($html, '<dt>Jumlah lantai</dt>'))->toBe(1);
+});
+
 test('a type page without floors leaves the floor count out', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
     $type->update(['data' => [...$type->data, 'floors' => null]]);
@@ -214,7 +228,7 @@ test('a type page lists the businesses its view suits, under the intro', functio
 
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
-        ->assertSeeInOrder(['class="tps__intro"', '<p class="tps__uses-title" id="uses-title">Cocok untuk usaha yang butuh eksposur maksimal</p>', '<li>Klinik</li>', '<li>Apotek</li>', 'class="tps__specs"'], false);
+        ->assertSeeInOrder(['class="tps__intro"', '<p class="tps__uses-title" id="uses-title">Cocok untuk usaha yang butuh eksposur maksimal</p>', '<li>Klinik</li>', '<li>Apotek</li>'], false);
 });
 
 test('a type page without businesses has no suitable list', function () {

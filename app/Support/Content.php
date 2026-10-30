@@ -248,15 +248,8 @@ final class Content
                 ...filled($values['bathrooms'] ?? null) ? [['KM', (string) $card['bathrooms']]] : [],
                 ...collect($values['summary_extra'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
             ],
-            'info' => [
-                ...$card['lt'] !== null ? [['Luas tanah', "{$card['lt']} m²"]] : [],
-                ...$card['lb'] !== null ? [['Luas bangunan', "{$card['lb']} m²"]] : [],
-                ...$floors !== null ? [['Jumlah lantai', $floors]] : [],
-                // Ruko tanpa kamar
-                ...filled($values['bedrooms'] ?? null) ? [['Kamar tidur', (string) $card['bedrooms']]] : [],
-                ...filled($values['bathrooms'] ?? null) ? [['Kamar mandi', (string) $card['bathrooms']]] : [],
-                ...collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
-            ],
+            // Hanya info tambahan; luas, lantai, kamar sudah di ringkasan
+            'info' => collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
             // Usaha sesuai view
             'suitable' => [
                 'title' => filled($values['suitable_title'] ?? null) ? (string) $values['suitable_title'] : 'Cocok untuk',
