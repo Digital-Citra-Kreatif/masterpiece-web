@@ -406,6 +406,16 @@ body.is-type .tps--scroll::before {
   line-height: 1.75;
 }
 
+/* Penanda di atas deskripsi */
+.tps__mark {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.tps__mark + .tps__intro {
+  margin-top: 0;
+}
+
 /* Desktop: deskripsi lebih besar */
 @media (min-width: 1025px) {
   .tps__intro {

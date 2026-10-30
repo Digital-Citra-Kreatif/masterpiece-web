@@ -519,9 +519,27 @@ test('a type page\'s 360° section holds the viewer, unit label and size, tab la
         ->and($viewer)->not->toContain('tps__intro');
     $this->get('/westlake/tipe/tipe-1')
         // Label ruko dan ukuran di section 360, di atas label tab
-        ->assertSeeInOrder(['data-spin="scroll"', 'data-spin-name>Fasad</h2>', 'class="tph__tabs"', '<strong>Fasad.</strong> Tampak depan.', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+        ->assertSeeInOrder(['data-spin="scroll"', 'data-spin-name>Fasad</h2>', 'class="tph__tabs"', '<strong>Fasad.</strong> Tampak depan.', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<p class="eyebrow tps__mark">', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
     expect(substr_count($html, 'tps__label'))->toBe(1)
         ->and(substr_count($html, 'tps__size'))->toBe(1);
+});
+
+test('a type page marks the description with the project name and hides the mark without a description', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+    $title = EntryTranslation::query()->where('entry_id', $project->entry_id)->value('title');
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'intro' => '<p>Ruko di tepi danau.</p>']]);
+
+    $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        ->assertSeeInOrder(['<p class="eyebrow tps__mark">'.e($title).'</p>', '<div class="tps__intro">'], false);
+
+    $type->update(['data' => [...$type->fresh()->data, 'intro' => '']]);
+
+    $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        ->assertDontSee('tps__mark', false)
+        ->assertDontSee('tps__intro', false);
 });
 
 test('a type with its own 360° tabs shows them on its page instead of the project\'s', function () {
