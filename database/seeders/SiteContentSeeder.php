@@ -109,11 +109,11 @@ class SiteContentSeeder extends Seeder
                         'instructions' => 'Info selain luas, lantai, dan kamar.',
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $text('value', ['required' => true, 'width' => 50])],
                     ]),
+                    $text('building_specs_title', ['label' => 'Judul spesifikasi bangunan']),
                     $this->field('building_specs', 'repeater', [], [
                         'label' => 'Spesifikasi bangunan',
                         'fields' => [$text('label', ['label' => 'Bagian', 'required' => true, 'width' => 50]), $text('value', ['label' => 'Material', 'required' => true, 'width' => 50])],
                     ]),
-                    $text('building_specs_title', ['label' => 'Judul spesifikasi bangunan']),
                     $text('building_specs_note', ['label' => 'Catatan spesifikasi']),
                     $this->field('floor_plans', 'repeater', ['max' => 6], [
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $image('image', ['required' => true, 'width' => 50])],
