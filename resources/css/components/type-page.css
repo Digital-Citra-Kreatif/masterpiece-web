@@ -647,6 +647,18 @@ body.is-type .tps--scroll::before {
   }
 }
 
+/* Tablet: label 360° di atas tab, bukan di atas gambar */
+@media (min-width: 761px) and (max-width: 960px) {
+  .tps__info > .tps__part {
+    order: -1;
+    margin-top: 40px;
+  }
+
+  .tps__info > .tph__tabs {
+    margin-top: 8px;
+  }
+}
+
 @media (max-width: 760px) {
   .tps .tps__part {
     font-size: 32px;
