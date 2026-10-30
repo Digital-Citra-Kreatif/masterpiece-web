@@ -125,7 +125,7 @@
 
                 @if ($t['intro'])
                   {{-- Penanda kecil, ikut hilang bila deskripsi kosong --}}
-                  <p class="eyebrow tps__mark">{{ $pj['title'] ?? $t['name'] }}</p>
+                  <p class="eyebrow tps__mark">{{ $t['name'] }}</p>
                   <div class="tps__intro">{!! $t['intro'] !!}</div>
                 @endif
               </div>

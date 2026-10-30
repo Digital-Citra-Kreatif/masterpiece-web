@@ -524,15 +524,14 @@ test('a type page\'s 360° section holds the viewer, unit label and size, tab la
         ->and(substr_count($html, 'tps__size'))->toBe(1);
 });
 
-test('a type page marks the description with the project name and hides the mark without a description', function () {
+test('a type page marks the description with the type name and hides the mark without a description', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
-    $title = EntryTranslation::query()->where('entry_id', $project->entry_id)->value('title');
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'intro' => '<p>Ruko di tepi danau.</p>']]);
 
     $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        ->assertSeeInOrder(['<p class="eyebrow tps__mark">'.e($title).'</p>', '<div class="tps__intro">'], false);
+        ->assertSeeInOrder(['<p class="eyebrow tps__mark">'.e($type->title).'</p>', '<div class="tps__intro">'], false);
 
     $type->update(['data' => [...$type->fresh()->data, 'intro' => '']]);
 
