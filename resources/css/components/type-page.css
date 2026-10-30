@@ -171,6 +171,21 @@ body.is-type .tps--scroll::before {
 @media (min-width: 961px) {
   .tps--scroll .tps__grid {
     grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+    align-items: stretch;
+  }
+
+  /* Label dan tab di atas, label ruko dan ukuran di bawah */
+  .tps--scroll .tps__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tps--scroll .tps__info .tph__tabs {
+    margin-bottom: 32px;
+  }
+
+  .tps--scroll .tps__info .tps__meta {
+    margin-top: auto;
   }
 }
 
