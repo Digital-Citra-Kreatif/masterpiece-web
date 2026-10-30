@@ -145,7 +145,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-  clip-path: inset(calc(50% - var(--mp-h) / 2) calc(50% - var(--mp-w) / 2));
+  clip-path: inset(calc(50% - var(--mp-h) / 2) calc(50% - var(--mp-w) / 2) round var(--radius-box, 0px));
 }
 
 /* Cover di tengah */

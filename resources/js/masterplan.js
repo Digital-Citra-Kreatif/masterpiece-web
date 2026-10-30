@@ -14,6 +14,8 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
   const title = root.querySelector('[data-mp-title]');
   const text = root.querySelector('[data-mp-text]');
   const end = root.querySelector('[data-zoom-end]');
+  // Sudut kotak dari CMS, maks 24px
+  const round = () => Math.min(parseFloat(getComputedStyle(root).getPropertyValue('--radius')) || 0, 24);
 
   // Kotak dan skala
   const start = () => {
@@ -40,8 +42,8 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
   timeline
     .fromTo(
       frame,
-      { clipPath: () => `inset(${start().y}px ${start().x}px ${start().y}px ${start().x}px)` },
-      { clipPath: 'inset(0px 0px 0px 0px)', ease: 'power2.inOut', duration: 1 },
+      { clipPath: () => `inset(${start().y}px ${start().x}px ${start().y}px ${start().x}px round ${round()}px)` },
+      { clipPath: 'inset(0px 0px 0px 0px round 0px)', ease: 'power2.inOut', duration: 1 },
       0,
     )
     .fromTo(img, { scale: () => start().scale }, { scale: 1, force3D: false, ease: 'power2.inOut', duration: 1 }, 0)
