@@ -59,7 +59,7 @@ class SiteContentSeeder extends Seeder
         $text = fn (string $handle, array $extra = []): array => $this->field($handle, 'text', [], $extra);
         $textarea = fn (string $handle, array $extra = []): array => $this->field($handle, 'textarea', [], $extra);
         $image = fn (string $handle, array $extra = []): array => $this->field($handle, 'media', ['types' => ['image']], $extra);
-        $number = fn (string $handle, array $config = []): array => $this->field($handle, 'number', ['min' => 0, ...$config], ['required' => true, 'width' => 25]);
+        $number = fn (string $handle, array $config = []): array => $this->field($handle, 'number', ['min' => 0, ...$config], ['width' => 25]);
 
         return [
             'blueprints' => [

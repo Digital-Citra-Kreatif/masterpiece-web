@@ -21,7 +21,7 @@
 
     <ul class="types__grid">
       @foreach ($types as $t)
-        @php($specs = $t['specs'] ?? [['LT', "{$t['lt']} m²"], ['LB', "{$t['lb']} m²"], ['K. tidur', $t['bedrooms']], ['K. mandi', $t['bathrooms']]])
+        @php($specs = $t['specs'] ?? array_values(array_filter([$t['lt'] !== null ? ['LT', "{$t['lt']} m²"] : null, $t['lb'] !== null ? ['LB', "{$t['lb']} m²"] : null, ['K. tidur', $t['bedrooms']], ['K. mandi', $t['bathrooms']]])))
         <li>
           <{{ isset($t['sheet']) ? 'article' : 'a' }} class="card" @if ($project) data-view-target @endif @unless (isset($t['sheet'])) href="{{ $t['url'] }}" @endunless>
             <div class="card__img">

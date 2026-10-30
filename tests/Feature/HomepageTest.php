@@ -184,6 +184,19 @@ test('a type page shows its size under the label and its floors in the summary',
         ->assertSeeInOrder(['<dt>LB</dt>', '<dt>Lantai</dt>', '<dd>3</dd>', '<dt>KT</dt>'], false);
 });
 
+test('a type page without land and building area leaves them out instead of showing 0 m²', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'lt' => null, 'lb' => null]]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>Lantai</dt>'], false)
+        ->assertDontSee('<dt>LT</dt>', false)
+        ->assertDontSee('<dt>LB</dt>', false)
+        ->assertDontSee('Luas tanah')
+        ->assertDontSee('0 m²');
+});
+
 test('a type page lists the businesses its view suits, under the intro', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
     $type->update(['data' => [...$type->data, 'suitable_title' => 'Cocok untuk usaha yang butuh eksposur maksimal', 'suitable_for' => [['name' => 'Klinik'], ['name' => 'Apotek']]]]);

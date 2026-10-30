@@ -239,16 +239,17 @@ final class Content
             'intro' => self::richText($values['intro'] ?? null),
             // Ringkasan atas
             'facts' => [
-                ['LT', "{$card['lt']} m²"],
-                ['LB', "{$card['lb']} m²"],
+                // LT dan LB boleh kosong
+                ...$card['lt'] !== null ? [['LT', "{$card['lt']} m²"]] : [],
+                ...$card['lb'] !== null ? [['LB', "{$card['lb']} m²"]] : [],
                 ['Lantai', (string) $floors],
                 ...filled($values['bedrooms'] ?? null) ? [['KT', (string) $card['bedrooms']]] : [],
                 ...filled($values['bathrooms'] ?? null) ? [['KM', (string) $card['bathrooms']]] : [],
                 ...collect($values['summary_extra'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
             ],
             'info' => [
-                ['Luas tanah', "{$card['lt']} m²"],
-                ['Luas bangunan', "{$card['lb']} m²"],
+                ...$card['lt'] !== null ? [['Luas tanah', "{$card['lt']} m²"]] : [],
+                ...$card['lb'] !== null ? [['Luas bangunan', "{$card['lb']} m²"]] : [],
                 ['Jumlah lantai', (string) $floors],
                 // Ruko tanpa kamar
                 ...filled($values['bedrooms'] ?? null) ? [['Kamar tidur', (string) $card['bedrooms']]] : [],
@@ -295,7 +296,7 @@ final class Content
      * Kartu tipe beranda
      *
      * @param  array<string, mixed>  $values
-     * @return array{slug: string, name: string, label: ?string, url: ?string, image: ?string, lt: string, lb: string, bedrooms: int, bathrooms: int}
+     * @return array{slug: string, name: string, label: ?string, url: ?string, image: ?string, lt: ?string, lb: ?string, bedrooms: int, bathrooms: int}
      */
     private static function card(EntryTranslation $type, array $values): array
     {
@@ -305,8 +306,8 @@ final class Content
             'label' => $values['label'] ?? null,
             'url' => $type->url(),
             'image' => self::url($values['image'] ?? null),
-            'lt' => self::number($values['lt'] ?? 0),
-            'lb' => self::number($values['lb'] ?? 0),
+            'lt' => is_numeric($values['lt'] ?? null) && $values['lt'] > 0 ? self::number($values['lt']) : null,
+            'lb' => is_numeric($values['lb'] ?? null) && $values['lb'] > 0 ? self::number($values['lb']) : null,
             'bedrooms' => (int) ($values['bedrooms'] ?? 0),
             'bathrooms' => (int) ($values['bathrooms'] ?? 0),
         ];
