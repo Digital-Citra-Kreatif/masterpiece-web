@@ -100,7 +100,7 @@ class SiteContentSeeder extends Seeder
                     ]),
                     $this->field('floors', 'number', ['min' => 1, 'step' => 1], ['required' => true]),
                     $this->field('intro', 'rich_text', [], ['label' => 'Short Description']),
-                    $text('suitable_title', ['label' => 'Judul rekomendasi usaha', 'instructions' => 'Contoh: "Cocok untuk usaha yang butuh eksposur maksimal".']),
+                    $text('suitable_title', ['label' => 'Label rekomendasi', 'instructions' => 'Contoh: "Cocok untuk usaha yang butuh eksposur maksimal".']),
                     $this->field('suitable_for', 'repeater', [], [
                         'label' => 'Rekomendasi jenis usaha',
                         'fields' => [$text('name', ['label' => 'Jenis usaha', 'required' => true])],
