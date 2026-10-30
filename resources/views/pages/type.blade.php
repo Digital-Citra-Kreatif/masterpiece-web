@@ -57,6 +57,12 @@
               {{-- Gambar awal sebelum kanvas siap --}}
               <img class="tps__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
               <canvas class="tps__canvas" tabindex="0" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: gulir atau geser untuk memutar" data-spin-canvas></canvas>
+              <button class="icon-btn tps__nav tps__nav--prev" type="button" data-spin-step="-1" aria-label="Putar ke kiri">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+              </button>
+              <button class="icon-btn tps__nav tps__nav--next" type="button" data-spin-step="1" aria-label="Putar ke kanan">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+              </button>
             </div>
           </div>
 

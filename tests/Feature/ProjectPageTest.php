@@ -477,13 +477,14 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         // Tab seperti halaman proyek: pill, aktif jadi kartu deskripsi
         ->assertSee('<p class="tph__desc" id="type-360-desc-0"><strong>Fasad.</strong> Tampak depan.</p>', false)
         ->assertSeeInOrder(['data-spin-tab="0"', 'Fasad', 'data-spin-tab="1"', 'Lantai 1'], false)
-        // Diputar lewat gulir: tertahan di layar, tanpa panah
+        // Diputar lewat gulir, geser, dan panah
         ->assertSee('class="tps tps--scroll"', false)
         ->assertSee('data-spin="scroll"', false)
         ->assertSee('style="--spin-tabs: 2"', false)
         ->assertSee('<div class="tps__pin"', false)
         ->assertSee('data-spin-pin', false)
-        ->assertDontSee('data-spin-step', false)
+        ->assertSee('data-spin-step="-1" aria-label="Putar ke kiri"', false)
+        ->assertSee('data-spin-step="1" aria-label="Putar ke kanan"', false)
         ->assertDontSee('tps__no', false)
         ->assertSee('aria-pressed="true"', false)
         ->getContent();
