@@ -56,7 +56,7 @@
             <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}">
               {{-- Gambar awal sebelum kanvas siap --}}
               <img class="tps__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
-              <canvas class="tps__canvas" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: gulir untuk memutar" data-spin-canvas></canvas>
+              <canvas class="tps__canvas" tabindex="0" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: gulir atau geser untuk memutar" data-spin-canvas></canvas>
             </div>
           </div>
 

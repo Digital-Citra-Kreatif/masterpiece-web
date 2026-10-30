@@ -109,11 +109,6 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   padding-block: clamp(32px, 4vw, 56px);
 }
 
-.tps--scroll .tps__canvas {
-  cursor: default;
-  touch-action: auto;
-}
-
 /* 360° gelap, teks putih */
 body.is-type .tps--scroll {
   --tps-edge: rgb(255 255 255 / 0.32);

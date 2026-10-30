@@ -115,6 +115,7 @@ export function spin(root) {
     if (k !== active) {
       active = k;
       label();
+      if (offset) glide(); // Geseran kembali ke sudut tab
     }
     const n = tab().frames.length;
     // Putaran bersama: sampai sudut tab berikutnya; selain itu satu putaran
@@ -123,7 +124,11 @@ export function spin(root) {
   };
 
   const frameIndex = () => {
-    if (mode === 'scroll') return scrolled();
+    if (mode === 'scroll') {
+      const at = scrolled() + Math.floor(offset); // Gulir ditambah geseran
+      const n = tab().frames.length;
+      return ((at % n) + n) % n;
+    }
     const n = tab().frames.length;
     return ((Math.floor(tab().frame + offset) % n) + n) % n;
   };
@@ -213,7 +218,7 @@ export function spin(root) {
 
   // Geser melewati potongan: tab berikutnya aktif
   const follow = () => {
-    if (!together) return 0;
+    if (!together || mode === 'scroll') return 0; // Tab mengikuti gulir
     const n = tab().frames.length;
     const at = (((tab().frame + offset) % n) + n) % n;
     let owner = tabs.length - 1;
@@ -235,44 +240,44 @@ export function spin(root) {
   };
   still();
 
-  // Drag dan tombol putar
-  if (mode === 'drag') {
-    let startX = null;
-    let startOffset = 0;
-    const perPixel = () => tab().frames.length / Math.max(W, 1);
-    canvas.addEventListener('pointerdown', (e) => {
-      glideId++; // Geser menghentikan animasi
-      startX = e.clientX;
-      startOffset = offset;
-      canvas.setPointerCapture(e.pointerId);
-    });
-    canvas.addEventListener('pointermove', (e) => {
-      if (startX === null) return;
-      offset = startOffset - (e.clientX - startX) * perPixel();
-      startOffset += follow();
-      request();
-    });
-    const stop = () => { startX = null; };
-    canvas.addEventListener('pointerup', stop);
-    canvas.addEventListener('pointercancel', stop);
-    canvas.addEventListener('keydown', (e) => {
-      const step = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
-      if (!step) return;
-      e.preventDefault();
-      glideId++;
-      offset += step;
-      follow();
-      request();
-    });
-    for (const button of root.querySelectorAll('[data-spin-step]')) {
-      let timer = null;
-      const turn = () => { glideId++; offset += Number(button.dataset.spinStep); follow(); request(); };
-      const release = () => { clearInterval(timer); timer = null; };
-      button.addEventListener('pointerdown', () => { turn(); timer = setInterval(turn, 60); });
-      for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) button.addEventListener(ev, release);
-      button.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); turn(); } });
-    }
-  } else {
+  // Drag dan tombol putar, di kedua mode
+  let startX = null;
+  let startOffset = 0;
+  const perPixel = () => tab().frames.length / Math.max(W, 1);
+  canvas.addEventListener('pointerdown', (e) => {
+    glideId++; // Geser menghentikan animasi
+    startX = e.clientX;
+    startOffset = offset;
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (startX === null) return;
+    offset = startOffset - (e.clientX - startX) * perPixel();
+    startOffset += follow();
+    request();
+  });
+  const stop = () => { startX = null; };
+  canvas.addEventListener('pointerup', stop);
+  canvas.addEventListener('pointercancel', stop);
+  canvas.addEventListener('keydown', (e) => {
+    const step = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    glideId++;
+    offset += step;
+    follow();
+    request();
+  });
+  for (const button of root.querySelectorAll('[data-spin-step]')) {
+    let timer = null;
+    const turn = () => { glideId++; offset += Number(button.dataset.spinStep); follow(); request(); };
+    const release = () => { clearInterval(timer); timer = null; };
+    button.addEventListener('pointerdown', () => { turn(); timer = setInterval(turn, 60); });
+    for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) button.addEventListener(ev, release);
+    button.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); turn(); } });
+  }
+
+  if (mode === 'scroll') {
     // Latar melebar saat naik
     const open = () => {
       const y = root.getBoundingClientRect().top;
