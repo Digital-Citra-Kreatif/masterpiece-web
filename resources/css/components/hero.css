@@ -133,6 +133,27 @@ img.hero__media {
   width: 16px;
   height: 64px;
   transition: transform 0.3s var(--ease);
+  /* Garis tergambar ke bawah, berulang */
+  animation: scroll-draw 2.4s 1.5s var(--ease) infinite both;
+}
+
+@keyframes scroll-draw {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+  45%,
+  60% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__scroll svg {
+    animation: none;
+  }
 }
 
 .hero__scroll:hover svg {
