@@ -49,6 +49,8 @@ class SiteContentSeeder extends Seeder
         $home = Collection::query()->where('handle', 'pages')->firstOrFail()
             ->entries()->whereHas('translations', fn ($query) => $query->where('slug', 'home'))->firstOrFail();
         app(SetHomepage::class)->handle($home);
+
+        $this->call(MaintenanceModeSeeder::class);
     }
 
     /**
