@@ -331,7 +331,6 @@ function setup(sunrice) {
 
     return h('div', { className: 'pm-bar pm-upload' },
       h('div', { className: 'pm-title' },
-        h('strong', null, 'Frame 360° (ZIP)'),
         h('span', { role: 'status' }, note),
         failed && h('span', { className: 'pm-error', role: 'alert' }, failed),
         sent && h('progress', { max: sent[1], value: sent[0], 'aria-label': 'Progres unggah ZIP' })),
