@@ -163,7 +163,7 @@ body.is-type .tps--scroll::before {
 }
 
 /* Lepas dari section gelap */
-.tps--scroll + .tps--about {
+.tps.tps--scroll + .tps--about {
   padding-top: clamp(40px, 5vw, 72px);
 }
 
@@ -499,6 +499,15 @@ body.is-type .tps--scroll::before {
 /* Keterangan tipe, di bawah 360° */
 .tps + .tps--about {
   padding-top: 0;
+}
+
+/* Margin isi tidak bocor jadi celah */
+.tps--about {
+  display: flow-root;
+}
+
+.tps__about > :first-child {
+  margin-top: 0;
 }
 
 .tps__about {
