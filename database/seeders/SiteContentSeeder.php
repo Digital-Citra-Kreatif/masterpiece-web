@@ -254,13 +254,14 @@ class SiteContentSeeder extends Seeder
                 $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat']),
                 $this->field('show_button', 'toggle', [], ['label' => 'Tampilkan tombol', 'translatable' => false]),
                 $this->field('contacts', 'repeater', [], ['label' => 'Kontak WhatsApp', 'fields' => [
-                    $image('avatar', 'Avatar', ['width' => 50]),
-                    $text('title', 'Judul', ['width' => 50]),
+                    $image('avatar', 'Avatar', ['width' => 33]),
+                    $text('title', 'Judul', ['width' => 33]),
                     $text('number', 'Nomor WhatsApp', [
                         'required' => true,
                         'translatable' => false,
                         'validation' => ['regex:/^[0-9]{8,15}$/'],
                         'instructions' => 'Contoh: 6281234567890',
+                        'width' => 33,
                     ]),
                     $this->field('message', 'textarea', [], ['label' => 'Pesan']),
                 ]]),
