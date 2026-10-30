@@ -443,7 +443,7 @@ button.pj-frame:focus-visible {
 
 /* Section 360° */
 .tph.tph--section {
-  padding-block: 100px;
+  padding-block: 72px;
   border: 0;
   border-top: 1px solid var(--sheet-line);
   background-color: var(--paper);
