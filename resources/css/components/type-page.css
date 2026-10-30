@@ -111,10 +111,19 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 
 /* 360° gelap, teks putih */
 body.is-type .tps--scroll {
-  --line: rgb(255 255 255 / 0.14);
   --tps-edge: rgb(255 255 255 / 0.32);
-  background-color: #000;
+  position: relative;
+  isolation: isolate;
   color: #fff;
+}
+
+/* Hitam sejajar garis samping, penuh saat digulir */
+body.is-type .tps--scroll::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--line-x) * (1 - var(--spin-open, 0)));
+  z-index: -1;
+  background: #000;
 }
 
 .tps.tps--scroll :is(.tps__size, .tps__part) {

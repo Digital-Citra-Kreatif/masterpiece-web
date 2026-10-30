@@ -273,7 +273,15 @@ export function spin(root) {
       button.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); turn(); } });
     }
   } else {
-    window.addEventListener('scroll', request, { passive: true });
+    // Latar melebar saat naik
+    const open = () => {
+      const y = root.getBoundingClientRect().top;
+      const span = Math.max(1, Math.min(y + window.scrollY, window.innerHeight * 0.5)); // Dari posisi awal
+      root.style.setProperty('--spin-open', clamp(1 - y / span, 0, 1).toFixed(3));
+    };
+    open();
+    window.addEventListener('scroll', () => { open(); request(); }, { passive: true });
+    window.addEventListener('resize', open);
   }
 
   new IntersectionObserver(([entry]) => {
