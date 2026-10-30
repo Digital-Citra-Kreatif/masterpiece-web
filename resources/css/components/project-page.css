@@ -320,11 +320,11 @@ button.pj-frame:focus-visible {
 }
 
 /* Parallax hero */
-[data-hero-parallax] .hero {
+[data-hero-parallax] :is(.hero, [data-hero]) {
   will-change: transform;
 }
 
-[data-hero-parallax] .hero::after {
+[data-hero-parallax] :is(.hero, [data-hero])::after {
   content: '';
   position: absolute;
   inset: 0;

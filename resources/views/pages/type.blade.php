@@ -32,12 +32,14 @@
   @endif
 
   <main>
-    {{-- Judul tipe --}}
-    <section class="tph tph--title" aria-labelledby="type-name">
-      <div class="wrap">
-        <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
-      </div>
-    </section>
+    {{-- Judul tipe, parallax ke section bawahnya --}}
+    <div data-hero-parallax>
+      <section class="tph tph--title" aria-labelledby="type-name" data-hero>
+        <div class="wrap">
+          <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
+        </div>
+      </section>
+    </div>
 
     @if ($parts !== [] || $t['image'])
     {{-- 360° tipe --}}

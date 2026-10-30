@@ -1,7 +1,7 @@
 // Parallax hero, ditutup section berikutnya
 const parallax = document.querySelector('[data-hero-parallax]');
 if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  const hero = parallax.querySelector('.hero');
+  const hero = parallax.querySelector('.hero, [data-hero]');
   let h = hero.offsetHeight;
   let last = NaN;
   let queued = false;

@@ -161,6 +161,8 @@ test('a type page without a project shows its title, specs, floor plans, gallery
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name">Tipe 6</h1>', false)
+        // Judul parallax ke section bawahnya
+        ->assertSeeInOrder(['<div data-hero-parallax>', '<section class="tph tph--title" aria-labelledby="type-name" data-hero>'], false)
         ->assertDontSee('data-turntable', false)
         ->assertDontSee('data-parts', false)
         ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>LT</dt>', '140 m²', '<dt>LB</dt>', '240 m²'], false)

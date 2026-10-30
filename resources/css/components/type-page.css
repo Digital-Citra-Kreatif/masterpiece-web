@@ -62,6 +62,16 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 }
 
 /* Judul halaman tipe */
+.tph--title {
+  position: relative; /* Tempat veil parallax */
+}
+
+/* Menutup judul saat digulir */
+.is-type main > :not([data-hero-parallax]) {
+  position: relative;
+  z-index: 1;
+}
+
 .tph--title .wrap {
   padding-block: clamp(32px, 4vw, 56px);
 }

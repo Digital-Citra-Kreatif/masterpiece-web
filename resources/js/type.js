@@ -2,6 +2,7 @@
 import './lightbox.js';
 import './view-cursor.js';
 import './whatsapp.js';
+import './hero-parallax.js';
 
 // Parallax Spesifikasi, ditutup Tipe lain
 const covered = document.querySelector('#tipe-lain')?.previousElementSibling;
