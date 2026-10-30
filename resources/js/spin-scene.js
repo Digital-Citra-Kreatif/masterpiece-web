@@ -63,7 +63,7 @@ export function spin(root) {
   const ctx = canvas.getContext('2d');
   const same = (a, b) => a.frames.join('|') === b.frames.join('|');
   // Potongan bersambung jadi satu putaran
-  const joined = mode === 'drag' && tabs.length > 1
+  const joined = tabs.length > 1
     && tabs.every((t, k) => t.frames.length > 1 && (k === tabs.length - 1 || t.frames[t.frames.length - 1] === tabs[k + 1].frames[0]));
   if (joined) {
     const ring = [...tabs[0].frames];
@@ -75,7 +75,7 @@ export function spin(root) {
     tabs.forEach((t, k) => Object.assign(t, { frames: ring, frame: starts[k] }));
   }
   // Satu putaran bersama: tab ikut sudut
-  const together = mode === 'drag' && tabs.length > 1 && tabs[0].frames.length > 1 && tabs.every((t) => same(t, tabs[0]));
+  const together = tabs.length > 1 && tabs[0].frames.length > 1 && tabs.every((t) => same(t, tabs[0]));
   let active = 0;
   let offset = 0; // Putaran drag, dalam frame
   let glideId = 0; // Animasi antar tab
@@ -106,10 +106,25 @@ export function spin(root) {
     request();
   };
 
-  const frameIndex = () => {
+  // Gulir: tab aktif dan frame dari posisi gulir
+  const scrolled = () => {
+    const count = tabs.length;
+    const p = clamp((window.scrollY - top) / range, 0, 0.9999);
+    const k = Math.min(count - 1, Math.floor(p * count));
+    if (k !== active) {
+      active = k;
+      label();
+    }
     const n = tab().frames.length;
-    const turn = mode === 'scroll' ? clamp((window.scrollY - top) / range, 0, 1) * n : offset;
-    return ((Math.floor(tab().frame + turn) % n) + n) % n;
+    // Putaran bersama: sampai sudut tab berikutnya; selain itu satu putaran
+    const span = together ? (((((k + 1 < count ? tabs[k + 1].frame : n) - tab().frame) % n) + n) % n || n) : n;
+    return Math.floor(tab().frame + (p * count - k) * span) % n;
+  };
+
+  const frameIndex = () => {
+    if (mode === 'scroll') return scrolled();
+    const n = tab().frames.length;
+    return ((Math.floor(tab().frame + offset) % n) + n) % n;
   };
 
   function draw() {
@@ -189,7 +204,11 @@ export function spin(root) {
     label();
     measure();
   };
-  buttons.forEach((b, k) => b.addEventListener('click', () => show(k)));
+  buttons.forEach((b, k) => b.addEventListener('click', () => {
+    if (mode !== 'scroll') return show(k);
+    // Gulir ke awal bagian tab
+    window.scrollTo({ top: top + (k / tabs.length) * range + 2, behavior: reduced ? 'auto' : 'smooth' });
+  }));
 
   // Geser melewati potongan: tab berikutnya aktif
   const follow = () => {

@@ -476,8 +476,12 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->assertSee('<h2 class="display tps__part" aria-live="polite" data-spin-name>Fasad</h2>', false)
         ->assertSee('<p class="tps__desc" data-spin-text >Tampak depan.</p>', false)
         ->assertSeeInOrder(['data-spin-tab="0"', 'Fasad', 'data-spin-tab="1"', 'Lantai 1'], false)
-        ->assertSee('data-spin="drag"', false)
-        ->assertSee('data-spin-step="1" aria-label="Putar ke kanan"', false)
+        // Diputar lewat gulir: tertahan di layar, tanpa panah
+        ->assertSee('class="tps tps--scroll"', false)
+        ->assertSee('data-spin="scroll"', false)
+        ->assertSee('style="--spin-tabs: 2"', false)
+        ->assertSee('<div class="tps__pin">', false)
+        ->assertDontSee('data-spin-step', false)
         ->assertDontSee('tps__no', false)
         ->assertSee('aria-pressed="true"', false)
         ->getContent();
@@ -504,7 +508,7 @@ test('a type page\'s 360° section holds only the viewer, tab label, tabs and ta
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'intro' => '<p>Ruko di tepi danau.</p>']]);
 
     $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
-    $viewer = substr($html, strpos($html, 'data-spin="drag"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="drag"'));
+    $viewer = substr($html, strpos($html, 'data-spin="scroll"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="scroll"'));
 
     expect($viewer)->toContain('data-spin-name>Fasad</h2>')
         ->and($viewer)->toContain('data-spin-tab="1"')

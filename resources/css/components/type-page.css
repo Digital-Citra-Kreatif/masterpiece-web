@@ -88,6 +88,27 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   padding-block: clamp(32px, 4vw, 56px) clamp(56px, 7vw, 112px);
 }
 
+/* 360° ikut gulir: tinggi section = jarak putaran */
+.tps--scroll {
+  height: calc(100svh + var(--spin-tabs, 1) * 70svh);
+  padding-block: 0;
+}
+
+/* Isi tertahan di layar */
+.tps__pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  align-content: center;
+  min-height: 100svh;
+  padding-block: clamp(32px, 4vw, 56px);
+}
+
+.tps--scroll .tps__canvas {
+  cursor: default;
+  touch-action: auto;
+}
+
 .tps__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr)); /* Setengah-setengah */

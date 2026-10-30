@@ -2,8 +2,6 @@
 @php
   $pj = $t['project'];
   $parts = $t['turntable'];
-  // Ada tab berputar
-  $spins = collect($parts)->contains(fn (array $part): bool => count($part['frames']) > 1);
 
   $galleryItems = collect($t['gallery'])->map(fn ($img, $i) => ['src' => asset($img['src']), 'alt' => "{$t['name']}, gambar ".($i + 1), 'w' => $img['w'] ?? null, 'h' => $img['h'] ?? null]);
   $galleryPayload = json_encode(['title' => "{$t['name']}: Galeri", 'items' => $galleryItems, 'index' => 0]);
@@ -43,11 +41,13 @@
 
     @if ($parts !== [] || $t['image'])
     {{-- 360° tipe --}}
+    {{-- 360° ikut gulir: tertahan di layar, tab berganti sesuai putaran --}}
     <section
-      class="tps"
+      @class(['tps', 'tps--scroll' => $parts !== []])
       aria-label="Detail {{ $t['name'] }}"
-      @if ($parts !== []) data-spin="drag" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame']))) }}" @endif
+      @if ($parts !== []) data-spin="scroll" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame']))) }}" style="--spin-tabs: {{ count($parts) }}" @endif
     >
+      <div @class(['tps__pin' => $parts !== []])>
       <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === []])>
         @if ($parts !== [])
           {{-- Viewer 360° --}}
@@ -56,15 +56,7 @@
             <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}">
               {{-- Gambar awal sebelum kanvas siap --}}
               <img class="tps__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
-              <canvas class="tps__canvas" tabindex="0" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: geser untuk memutar" data-spin-canvas></canvas>
-              @if ($spins)
-                <button class="icon-btn tps__nav tps__nav--prev" type="button" data-spin-step="-1" aria-label="Putar ke kiri">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-                </button>
-                <button class="icon-btn tps__nav tps__nav--next" type="button" data-spin-step="1" aria-label="Putar ke kanan">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
-                </button>
-              @endif
+              <canvas class="tps__canvas" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: gulir untuk memutar" data-spin-canvas></canvas>
             </div>
           </div>
 
@@ -96,6 +88,7 @@
             </div>
           </div>
         @endif
+      </div>
       </div>
     </section>
     @endif
