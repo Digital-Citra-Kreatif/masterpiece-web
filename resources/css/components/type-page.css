@@ -169,6 +169,13 @@ body.is-type .tps--scroll::before {
   max-width: none;
 }
 
+/* HP: kartu tab aktif lebih rapat */
+@media (max-width: 760px) {
+  .tps__info .tph__desc {
+    padding: 14px 16px;
+  }
+}
+
 /* Deskripsi: atas bawah 160px desktop, 80px layar kecil */
 .tps.tps--scroll + .tps--about {
   padding-top: 80px;
