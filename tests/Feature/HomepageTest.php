@@ -197,6 +197,17 @@ test('a type page without land and building area leaves them out instead of show
         ->assertDontSee('0 m²');
 });
 
+test('a type page without floors leaves the floor count out', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
+    $type->update(['data' => [...$type->data, 'floors' => null]]);
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>LT</dt>'], false)
+        ->assertDontSee('<dt>Lantai</dt>', false)
+        ->assertDontSee('Jumlah lantai');
+});
+
 test('a type page lists the businesses its view suits, under the intro', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
     $type->update(['data' => [...$type->data, 'suitable_title' => 'Cocok untuk usaha yang butuh eksposur maksimal', 'suitable_for' => [['name' => 'Klinik'], ['name' => 'Apotek']]]]);

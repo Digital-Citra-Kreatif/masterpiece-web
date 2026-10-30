@@ -221,7 +221,8 @@ final class Content
      */
     public static function type(EntryTranslation $entry, array $values): array
     {
-        $floors = max(1, (int) ($values['floors'] ?? 1));
+        // Lantai boleh kosong
+        $floors = is_numeric($values['floors'] ?? null) && $values['floors'] > 0 ? (string) (int) $values['floors'] : null;
         $card = self::card($entry, $values);
         $project = ProjectPage::forType($entry, $values['project'] ?? null);
         // 360° tipe, kosong: 360° proyek
@@ -242,7 +243,7 @@ final class Content
                 // LT dan LB boleh kosong
                 ...$card['lt'] !== null ? [['LT', "{$card['lt']} m²"]] : [],
                 ...$card['lb'] !== null ? [['LB', "{$card['lb']} m²"]] : [],
-                ['Lantai', (string) $floors],
+                ...$floors !== null ? [['Lantai', $floors]] : [],
                 ...filled($values['bedrooms'] ?? null) ? [['KT', (string) $card['bedrooms']]] : [],
                 ...filled($values['bathrooms'] ?? null) ? [['KM', (string) $card['bathrooms']]] : [],
                 ...collect($values['summary_extra'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
@@ -250,7 +251,7 @@ final class Content
             'info' => [
                 ...$card['lt'] !== null ? [['Luas tanah', "{$card['lt']} m²"]] : [],
                 ...$card['lb'] !== null ? [['Luas bangunan', "{$card['lb']} m²"]] : [],
-                ['Jumlah lantai', (string) $floors],
+                ...$floors !== null ? [['Jumlah lantai', $floors]] : [],
                 // Ruko tanpa kamar
                 ...filled($values['bedrooms'] ?? null) ? [['Kamar tidur', (string) $card['bedrooms']]] : [],
                 ...filled($values['bathrooms'] ?? null) ? [['Kamar mandi', (string) $card['bathrooms']]] : [],
