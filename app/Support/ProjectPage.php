@@ -190,13 +190,16 @@ final class ProjectPage
 
         $corner = is_array($style['corner'] ?? null) ? $style['corner'] : [];
         $size = is_numeric($corner['size'] ?? null) ? max(0, (int) $corner['size']) : 0;
-        if ($size > 0) {
-            if (($corner['style'] ?? 'rounded') === 'chamfer') {
-                $cut = "{$size}px";
-                $tokens['--frame-clip'] = "polygon({$cut} 0, calc(100% - {$cut}) 0, 100% {$cut}, 100% calc(100% - {$cut}), calc(100% - {$cut}) 100%, {$cut} 100%, 0 calc(100% - {$cut}), 0 {$cut})";
-            } else {
-                $tokens['--radius'] = "{$size}px";
-            }
+        $chamfer = ($corner['style'] ?? 'rounded') === 'chamfer';
+        // Selalu tertulis: 0 atau chamfer berarti tanpa lengkung
+        $tokens['--radius'] = $chamfer ? '0px' : "{$size}px";
+        if ($chamfer && $size > 0) {
+            // Kartu dan gambar: potongan maks 24px
+            $cut = min($size, 24).'px';
+            $tokens['--frame-clip'] = "polygon({$cut} 0, calc(100% - {$cut}) 0, 100% {$cut}, 100% calc(100% - {$cut}), calc(100% - {$cut}) 100%, {$cut} 100%, 0 calc(100% - {$cut}), 0 {$cut})";
+            // Logo: sudut bawah saja
+            $tokens['--logo-clip'] = "polygon(0 0, 100% 0, 100% calc(100% - {$cut}), calc(100% - {$cut}) 100%, {$cut} 100%, 0 calc(100% - {$cut}))";
+            $tokens['--chamfer'] = $cut;
         }
 
         $background = $style['background'] ?? null;

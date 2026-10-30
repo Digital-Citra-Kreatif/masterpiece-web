@@ -381,6 +381,32 @@ test('an active Global Style sets the project\'s fonts and colours over the home
         ->assertSee('--marker:#c9a227;--radius:6px;', false);
 });
 
+test('a chamfer Global Style cuts cards, images and the logo at most 24px and leaves buttons square', function () {
+    publishProject($this->projects, [
+        'global_style' => [...inactiveStyle(), 'active' => true, 'corner' => ['style' => 'chamfer', 'size' => 40]],
+        'hero' => ['heading' => 'Westlake'],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('--frame-clip:polygon(24px 0, calc(100% - 24px) 0,', false)
+        ->assertSee('--logo-clip:polygon(0 0, 100% 0, 100% calc(100% - 24px),', false)
+        ->assertSee('--chamfer:24px;', false)
+        ->assertSee('--radius:0px;', false);
+});
+
+test('a rounded Global Style of 0px writes a zero radius so the logo and pin labels lose their default rounding', function () {
+    publishProject($this->projects, [
+        'global_style' => [...inactiveStyle(), 'active' => true, 'corner' => ['style' => 'rounded', 'size' => 0]],
+        'hero' => ['heading' => 'Westlake'],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('--radius:0px;', false)
+        ->assertDontSee('--frame-clip:', false);
+});
+
 test('a project page uses the project logo as its browser icon while the Global Style is active', function () {
     $logo = projectImage('logo.png');
     publishProject($this->projects, ['global_style' => [...inactiveStyle(), 'active' => true, 'logo' => $logo], 'hero' => ['heading' => 'Westlake']]);

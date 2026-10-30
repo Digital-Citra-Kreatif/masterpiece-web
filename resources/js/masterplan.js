@@ -16,6 +16,15 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
   const end = root.querySelector('[data-zoom-end]');
   // Sudut kotak dari CMS, maks 24px
   const round = () => Math.min(parseFloat(getComputedStyle(root).getPropertyValue('--radius')) || 0, 24);
+  const cut = () => Math.min(parseFloat(getComputedStyle(root).getPropertyValue('--chamfer')) || 0, 24);
+  // Bingkai kotak: membulat atau chamfer, penuh tanpa sudut
+  const clip = (x, y, full) => {
+    const c = full ? 0 : cut();
+    if (!cut()) return `inset(${y}px ${x}px ${y}px ${x}px round ${full ? 0 : round()}px)`;
+    const W = frame.clientWidth;
+    const H = frame.clientHeight;
+    return `polygon(${x + c}px ${y}px, ${W - x - c}px ${y}px, ${W - x}px ${y + c}px, ${W - x}px ${H - y - c}px, ${W - x - c}px ${H - y}px, ${x + c}px ${H - y}px, ${x}px ${H - y - c}px, ${x}px ${y + c}px)`;
+  };
 
   // Kotak dan skala
   const start = () => {
@@ -42,8 +51,8 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
   timeline
     .fromTo(
       frame,
-      { clipPath: () => `inset(${start().y}px ${start().x}px ${start().y}px ${start().x}px round ${round()}px)` },
-      { clipPath: 'inset(0px 0px 0px 0px round 0px)', ease: 'power2.inOut', duration: 1 },
+      { clipPath: () => clip(start().x, start().y, false) },
+      { clipPath: () => clip(0, 0, true), ease: 'power2.inOut', duration: 1 },
       0,
     )
     .fromTo(img, { scale: () => start().scale }, { scale: 1, force3D: false, ease: 'power2.inOut', duration: 1 }, 0)

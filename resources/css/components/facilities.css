@@ -37,6 +37,7 @@
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: var(--radius-box, 0); /* Sudut CMS proyek */
+  clip-path: var(--frame-clip, none);
   background: var(--paper-2);
 }
 

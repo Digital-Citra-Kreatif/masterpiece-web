@@ -76,6 +76,7 @@ button.pj-frame:focus-visible {
   padding: 14px 16px 16px;
   margin-top: calc(-1 * env(safe-area-inset-top, 0px)); /* Rata atas layar */
   border-radius: 0 0 min(var(--radius, 6px), 24px) min(var(--radius, 6px), 24px);
+  clip-path: var(--logo-clip, none); /* Chamfer bawah */
   background: #fff;
   box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); /* Bayangan emblem */
 }
@@ -576,6 +577,7 @@ button.pj-frame:focus-visible {
   min-width: 0;
   overflow: hidden; /* Gambar tampil apa adanya */
   border-radius: var(--radius-box, 0);
+  clip-path: var(--frame-clip, none);
 }
 
 .tph__poster,

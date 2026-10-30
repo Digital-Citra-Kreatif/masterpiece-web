@@ -178,6 +178,7 @@ article.card {
   height: 100%;
   overflow: hidden;
   border-radius: var(--radius-box, 0); /* Sudut CMS */
+  clip-path: var(--frame-clip, none);
 }
 
 .types--project .card__img {
