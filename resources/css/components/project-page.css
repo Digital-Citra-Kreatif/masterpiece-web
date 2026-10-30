@@ -1019,12 +1019,22 @@ button.pj-frame:focus-visible {
   top: 100%;
   width: 2px;
   height: var(--stem);
-  translate: -50% 0;
   border: 0;
   background: #fff;
   opacity: 1;
   animation: none;
-  transform: none;
+  transform: translateX(-50%); /* Satu transform, tidak dibuang saat build */
+}
+
+/* Ujung bentuk diputar keluar kotak: batang mulai dari ujungnya */
+.spot--marker:has(.pj-marker--diamond) .spot__dot::after {
+  top: calc(100% + var(--head) * 0.1);
+  height: calc(var(--stem) - var(--head) * 0.1);
+}
+
+.spot--marker:has(.pj-marker--pin) .spot__dot::after {
+  top: calc(100% + var(--head) * 0.2);
+  height: calc(var(--stem) - var(--head) * 0.2);
 }
 
 /* Bayangan pin */
