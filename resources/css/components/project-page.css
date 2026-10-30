@@ -452,7 +452,7 @@ button.pj-frame:focus-visible {
 /* Grid sampai garis */
 .tph__grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); /* Tab 40%, gambar 60% */
+  grid-template-columns: minmax(0, 3fr) minmax(0, 7fr); /* Tab 30%, gambar 70% */
   padding-right: calc(max(8px, var(--gutter) - 40px) + 1px);
 }
 
