@@ -114,7 +114,7 @@ test('the masterplan orbit carries the CMS points with a position as its hotspot
     expect(json_decode(html_entity_decode($match[1]), true)['masterplan-1']['point'])->toBe([50, 52]);
 });
 
-test('masterplan points are numbered by their order in the CMS, not by an old number field', function () {
+test('masterplan and cluster points are numbered by their order in the CMS, not by an old number field', function () {
     publishProject($this->projects, [
         'global_style' => [...inactiveStyle(), 'active' => true],
         'hero' => ['heading' => 'Westlake'],
@@ -122,12 +122,16 @@ test('masterplan points are numbered by their order in the CMS, not by an old nu
             ['number' => '06', 'name' => 'JX Hometown', 'image' => null, 'x' => 31, 'y' => 40],
             ['name' => 'West Lakeside', 'image' => null, 'x' => 50, 'y' => 52],
         ]],
+        'cluster' => ['title' => 'Cluster', 'points' => [
+            ['number' => '09', 'name' => 'Lakeview Units', 'description' => null, 'image' => null, 'x' => 45, 'y' => 56],
+        ]],
     ]);
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSeeInOrder(['<span class="spot__no">01</span>', '<span class="spot__no">02</span>'], false)
-        ->assertDontSee('<span class="spot__no">06</span>', false);
+        ->assertSeeInOrder(['<span class="spot__no">01</span>', '<span class="spot__no">02</span>', 'id="cluster"', '<span class="spot__no">01</span>'], false)
+        ->assertDontSee('<span class="spot__no">06</span>', false)
+        ->assertDontSee('<span class="spot__no">09</span>', false);
 });
 
 test('a masterplan or cluster image from the CMS replaces the sample orbit frames, without tracks or the teaser video', function () {
