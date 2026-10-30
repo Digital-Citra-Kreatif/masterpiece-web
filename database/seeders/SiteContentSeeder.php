@@ -120,6 +120,14 @@ class SiteContentSeeder extends Seeder
                     ]),
                     $this->field('gallery', 'media', ['types' => ['image'], 'multiple' => true], ['translatable' => false]),
                     $text('vr_url', ['translatable' => false]),
+                    // Seperti 360° proyek
+                    $this->field('turntable', 'group', [], ['label' => '360°', 'fields' => [
+                        $this->field('tabs', 'repeater', [], ['label' => 'Tab', 'fields' => [
+                            $text('name', ['label' => 'Nama', 'required' => true]),
+                            $textarea('description', ['label' => 'Deskripsi']),
+                            $this->field('images', 'media', ['types' => ['image'], 'multiple' => true], ['label' => 'Gambar', 'translatable' => false]),
+                        ]]),
+                    ]]),
                 ]],
                 ['handle' => 'unit', 'title' => 'Unit', 'fields' => [
                     $this->field('project', 'entries', ['collections' => ['projects'], 'multiple' => false], [

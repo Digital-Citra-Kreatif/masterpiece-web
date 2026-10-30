@@ -1,7 +1,7 @@
 {{-- Halaman tipe --}}
 @php
   $pj = $t['project'];
-  $parts = $pj['turntable']['tabs'] ?? [];
+  $parts = $t['turntable'];
   // Ada tab berputar
   $spins = collect($parts)->contains(fn (array $part): bool => count($part['frames']) > 1);
 

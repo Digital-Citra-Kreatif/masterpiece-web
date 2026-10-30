@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Admin\Settings\BrandingSettings;
@@ -222,6 +223,11 @@ final class Content
     {
         $floors = max(1, (int) ($values['floors'] ?? 1));
         $card = self::card($entry, $values);
+        $project = ProjectPage::forType($entry, $values['project'] ?? null);
+        // 360° tipe, kosong: 360° proyek
+        $turntable = collect(ProjectPage::turntableTabs(is_array($values['turntable'] ?? null) ? $values['turntable'] : []))
+            ->map(fn (array $tab): array => Arr::except($tab, 'source'))
+            ->all();
         $denah = collect($values['floor_plans'] ?? [])
             ->filter(fn (array $plan): bool => $plan['image'] instanceof Media)
             ->map(fn (array $plan): array => ['label' => $plan['label'], 'image' => self::url($plan['image'])])
@@ -260,7 +266,8 @@ final class Content
             'specsNote' => filled($values['building_specs_note'] ?? null) ? (string) $values['building_specs_note'] : null,
             'gallery' => collect($values['gallery'] ?? [])->map(fn (Media $image): array => ['src' => $image->url('large'), 'thumb' => $image->url('medium'), ...self::largeSize($image)])->values()->all(),
             'vr' => ['url' => $values['vr_url'] ?? ''],
-            'project' => ProjectPage::forType($entry, $values['project'] ?? null),
+            'turntable' => $turntable !== [] ? $turntable : ($project['turntable']['tabs'] ?? []),
+            'project' => $project,
         ];
     }
 

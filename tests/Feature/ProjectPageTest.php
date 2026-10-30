@@ -487,6 +487,33 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->and($html)->not->toContain('wr360');
 });
 
+test('a type with its own 360° tabs shows them on its page instead of the project\'s', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'turntable' => ['title' => 'Explore the unit', 'tabs' => [
+            ['name' => 'Fasad proyek', 'description' => 'Milik proyek.', 'images' => [projectImage('project.jpg')]],
+        ]],
+    ]);
+    $own = collect(['type_1.jpg', 'type_2.jpg', 'type_3.jpg'])->map(fn (string $name): int => projectImage($name))->all();
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'turntable' => ['tabs' => [
+        ['name' => 'Depan', 'description' => 'Fasad tipe ini.', 'images' => $own],
+        ['name' => 'Denah', 'description' => '', 'images' => [projectImage('denah.jpg')]],
+    ]]]]);
+
+    $html = $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        ->assertSee('<h2 class="display tps__part" aria-live="polite" data-spin-name>Depan</h2>', false)
+        ->assertSeeInOrder(['data-spin-tab="0"', 'Depan', 'data-spin-tab="1"', 'Denah'], false)
+        ->assertDontSee('Fasad proyek')
+        ->getContent();
+
+    preg_match('/data-tabs="([^"]+)"/', $html, $match);
+    $parts = json_decode(html_entity_decode($match[1]), true);
+    expect(array_map('count', array_column($parts, 'frames')))->toBe([3, 1]);
+});
+
 test('the logo on a project page reloads that project page', function () {
     publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
 
