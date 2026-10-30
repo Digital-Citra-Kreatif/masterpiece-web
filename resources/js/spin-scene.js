@@ -78,6 +78,7 @@ export function spin(root) {
   // Satu putaran bersama: tab ikut sudut
   const together = tabs.length > 1 && tabs[0].frames.length > 1 && tabs.every((t) => same(t, tabs[0]));
   let active = 0;
+  let seg = 0; // Bagian gulir
   let offset = 0; // Putaran drag, dalam frame
   let glideId = 0; // Animasi antar tab
   let drawn = '';
@@ -112,22 +113,37 @@ export function spin(root) {
     const count = tabs.length;
     const p = clamp((window.scrollY - top) / range, 0, 0.9999);
     const k = Math.min(count - 1, Math.floor(p * count));
-    if (k !== active) {
-      active = k;
-      label();
+    if (k !== seg) {
+      seg = k;
       if (offset) glide(); // Geseran kembali ke sudut tab
+      if (!together) {
+        active = k;
+        label();
+      }
     }
-    const n = tab().frames.length;
+    const n = tabs[k].frames.length;
     // Putaran bersama: sampai sudut tab berikutnya; selain itu satu putaran
-    const span = together ? (((((k + 1 < count ? tabs[k + 1].frame : n) - tab().frame) % n) + n) % n || n) : n;
-    return Math.floor(tab().frame + (p * count - k) * span) % n;
+    const span = together ? (((((k + 1 < count ? tabs[k + 1].frame : n) - tabs[k].frame) % n) + n) % n || n) : n;
+    return Math.floor(tabs[k].frame + (p * count - k) * span) % n;
+  };
+
+  // Tab pemilik sudut yang tampil
+  const owner = (at) => {
+    let k = tabs.length - 1;
+    tabs.forEach((t, i) => { if (t.frame <= at) k = i; });
+    return k;
   };
 
   const frameIndex = () => {
     if (mode === 'scroll') {
-      const at = scrolled() + Math.floor(offset); // Gulir ditambah geseran
-      const n = tab().frames.length;
-      return ((at % n) + n) % n;
+      const base = scrolled() + Math.floor(offset); // Gulir ditambah geseran
+      const n = tabs[seg].frames.length;
+      const at = ((base % n) + n) % n;
+      if (together && owner(at) !== active) {
+        active = owner(at);
+        label();
+      }
+      return at;
     }
     const n = tab().frames.length;
     return ((Math.floor(tab().frame + offset) % n) + n) % n;
@@ -213,21 +229,20 @@ export function spin(root) {
   buttons.forEach((b, k) => b.addEventListener('click', () => {
     if (mode !== 'scroll') return show(k);
     // Gulir ke awal bagian tab
+    if (offset) glide();
     window.scrollTo({ top: top + (k / tabs.length) * range + 2, behavior: reduced ? 'auto' : 'smooth' });
   }));
 
   // Geser melewati potongan: tab berikutnya aktif
   const follow = () => {
-    if (!together || mode === 'scroll') return 0; // Tab mengikuti gulir
+    if (!together || mode === 'scroll') return 0; // Mode gulir: diatur frameIndex
     const n = tab().frames.length;
-    const at = (((tab().frame + offset) % n) + n) % n;
-    let owner = tabs.length - 1;
-    tabs.forEach((t, k) => { if (t.frame <= at) owner = k; });
-    if (owner === active) return 0;
+    const k = owner((((tab().frame + offset) % n) + n) % n);
+    if (k === active) return 0;
     // Sudut tetap, acuan pindah
-    const shift = tab().frame - tabs[owner].frame;
+    const shift = tab().frame - tabs[k].frame;
     offset += shift;
-    active = owner;
+    active = k;
     label();
     return shift;
   };
