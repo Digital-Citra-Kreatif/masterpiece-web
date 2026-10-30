@@ -549,9 +549,10 @@ body.is-type .tps--scroll::before {
   gap: 56px clamp(40px, 5vw, 88px); /* Usaha 56px di bawah deskripsi */
 }
 
-/* Deskripsi selebar dua kolom */
+/* Deskripsi sedikit masuk kolom kanan */
 .tps__lead {
   grid-column: 1 / -1;
+  max-width: 860px;
 }
 
 .tps__uses {
