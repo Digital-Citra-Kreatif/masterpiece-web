@@ -45,6 +45,24 @@
   opacity: 0;
 }
 
+/* Latar zoom titik, fade di atas canvas */
+.scene__zoom {
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+
+.scene__zoom.is-on {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene__zoom {
+    transition: none;
+  }
+}
+
 .scene.is-scrub .scene__canvas,
 .scene--masterplan .scene__canvas {
   opacity: 1;

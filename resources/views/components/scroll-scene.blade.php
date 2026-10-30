@@ -14,6 +14,7 @@
           'title' => $h['title'],
           'text' => $h['text'],
           'image' => $h['image'] ?? null,
+          'zoom' => $h['zoom'] ?? null,
       ],
   ])->values();
   $project = $variant === 'project';
@@ -47,6 +48,10 @@
 
   <div class="scene__stage">
     <canvas class="scene__media scene__canvas" aria-hidden="true"></canvas>
+    @if ($spots->contains(fn (array $s): bool => $s['content']['zoom'] !== null))
+      {{-- Latar tajam saat titik di-zoom --}}
+      <img class="scene__media scene__zoom" alt="" aria-hidden="true" decoding="async" data-scene-zoom />
+    @endif
     <div class="scene__shade" aria-hidden="true"></div>
 
     <div class="scene__markers">

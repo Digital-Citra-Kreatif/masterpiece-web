@@ -440,6 +440,37 @@ async function init(root) {
     }, { rootMargin: '50% 0px' });
     near.observe(root);
   }
+  // Latar zoom titik: gambar beda, fade supaya tidak terlihat patah
+  const zoomLayer = root.querySelector('[data-scene-zoom]');
+  const zoomCache = new Map();
+  const preloadZoom = (key) => {
+    const src = spots[key]?.zoom;
+    if (!zoomLayer || !src) return Promise.resolve(false);
+    if (!zoomCache.has(src)) {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
+      zoomCache.set(src, img.decode().then(() => true, () => false));
+    }
+    return zoomCache.get(src);
+  };
+  const hideZoom = () => {
+    if (!zoomLayer?.classList.contains('is-on')) return Promise.resolve();
+    zoomLayer.classList.remove('is-on');
+    return new Promise((resolve) => setTimeout(resolve, reduced ? 0 : 400));
+  };
+  const showZoom = (key) => {
+    zoomLayer.src = spots[key].zoom;
+    zoomLayer.classList.add('is-on');
+  };
+  // Pramuat saat titik disentuh
+  if (zoomLayer) {
+    root.addEventListener('pointerover', (e) => {
+      const spot = e.target.closest('[data-spot], [data-spot-open]');
+      if (spot) preloadZoom(spot.dataset.spot || spot.dataset.spotOpen);
+    });
+  }
+
   const fillPanel = (key) => {
     const c = spots[key];
     place.title.textContent = c.title;
@@ -486,6 +517,12 @@ async function init(root) {
     const id = ++run;
     const from = placeKey;
     placeKey = key;
+    const zoomReady = preloadZoom(key);
+    // Pindah titik: latar zoom pudar dulu
+    if (from) {
+      await hideZoom();
+      if (id !== run) return;
+    }
     placeY = window.scrollY;
     place.panel.hidden = true;
     if (figure) figure.hidden = true;
@@ -494,7 +531,8 @@ async function init(root) {
     const toFrame = spots[key].frame ?? shownIndex;
     const { done, ms } = travel(id, { fromKey: from, toKey: key, toFrame });
     const panelAt = setTimeout(() => id === run && showPanel(key), ms * 0.75);
-    if (!(await done)) clearTimeout(panelAt);
+    if (!(await done)) return clearTimeout(panelAt);
+    if ((await zoomReady) && id === run) showZoom(key);
   }
 
   async function closePlace() {
@@ -504,6 +542,9 @@ async function init(root) {
     placeKey = null;
     place.panel.hidden = true;
     if (figure) figure.hidden = true;
+    // Latar zoom pudar sebelum kembali
+    await hideZoom();
+    if (id !== run) return;
     flying();
     if (root.contains(document.activeElement) || document.activeElement === document.body) {
       root.querySelector(`[data-spot-open="${key}"]`)?.focus({ preventScroll: true });
