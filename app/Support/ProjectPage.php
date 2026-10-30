@@ -73,7 +73,7 @@ final class ProjectPage
         return [
             'title' => (string) $entry->title,
             // Meta dari deskripsi kartu
-            'description' => filled($values['card_description'] ?? null) ? (string) $values['card_description'] : null,
+            'description' => filled($values['card']['description'] ?? null) ? (string) $values['card']['description'] : null,
             'style' => self::style(self::group($values, 'global_style')),
             'hero' => self::hero(self::group($values, 'hero'), (string) $entry->title),
             'sections' => $sections,

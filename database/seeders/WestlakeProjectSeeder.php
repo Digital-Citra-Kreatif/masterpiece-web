@@ -48,14 +48,14 @@ class WestlakeProjectSeeder extends Seeder
         );
         // Gambar kartu Beranda
         $card = [
-            ...blank($stored['card_image'] ?? null) ? ['card_image' => $this->image('Image Westlake/Ruko Hadap Danau.jpg')] : [],
-            ...blank($stored['card_description'] ?? null) ? ['card_description' => 'Taman komunitas tepi danau terbaru di jantung West Village Business District, BSD City.'] : [],
+            ...blank($stored['card']['image'] ?? null) ? ['image' => $this->image('Image Westlake/Ruko Hadap Danau.jpg')] : [],
+            ...blank($stored['card']['description'] ?? null) ? ['description' => 'Taman komunitas tepi danau terbaru di jantung West Village Business District, BSD City.'] : [],
         ];
         if ($missing === [] && $card === []) {
             return;
         }
 
-        $data = [...$card, ...collect($missing)->map(fn (callable $section): array => $section())->all()];
+        $data = [...($card === [] ? [] : ['card' => [...($stored['card'] ?? []), ...$card]]), ...collect($missing)->map(fn (callable $section): array => $section())->all()];
         $publish->handle($saveDraft->handle($translation, ['data' => $data, 'version' => $translation->version]));
     }
 

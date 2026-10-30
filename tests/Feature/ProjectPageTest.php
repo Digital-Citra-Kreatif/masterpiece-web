@@ -487,7 +487,7 @@ test('the project header menu uses each section title from the CMS, or the defau
 });
 
 test('a project page takes its meta description from the home card description', function () {
-    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake'], 'card_description' => 'Ruko tepi danau di BSD City.']);
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake'], 'card' => ['description' => 'Ruko tepi danau di BSD City.']]);
 
     $this->get('/projects/westlake')
         ->assertOk()

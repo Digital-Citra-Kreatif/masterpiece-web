@@ -97,9 +97,8 @@ test('the homepage lists every published project with its card image and hero de
     $card = app(UploadMedia::class)->handle(UploadedFile::fake()->image('kartu.jpg', 40, 30), []);
     $logo = app(UploadMedia::class)->handle(UploadedFile::fake()->image('logo.png', 40, 40), []);
     $project = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
-        'card_image' => $card->id,
+        'card' => ['image' => $card->id, 'description' => 'Ruko di tepi danau.'],
         'global_style' => ['active' => false, 'logo' => $logo->id, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
-        'card_description' => 'Ruko di tepi danau.',
         'hero' => ['heading' => "A New Landmark\nby the Lake"],
     ]]);
     app(PublishEntry::class)->handle($project->fresh());
