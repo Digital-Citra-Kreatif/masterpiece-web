@@ -527,6 +527,7 @@ async function init(root) {
     place.panel.hidden = true;
     if (figure) figure.hidden = true;
     flying();
+    root.classList.remove('is-returning');
     root.classList.add('is-place');
     const toFrame = spots[key].frame ?? shownIndex;
     const { done, ms } = travel(id, { fromKey: from, toKey: key, toFrame });
@@ -549,12 +550,13 @@ async function init(root) {
     if (root.contains(document.activeElement) || document.activeElement === document.body) {
       root.querySelector(`[data-spot-open="${key}"]`)?.focus({ preventScroll: true });
     }
-    // Kembali ke sudut
+    // Kembali ke sudut; titik baru tampil setelah zoom normal
+    root.classList.add('is-returning');
     const { done } = travel(id, { fromKey: key, toFrame: Math.round(current) });
     setTimeout(() => id === run && root.classList.remove('is-place'), 500);
     if (!(await done)) return;
     override = null;
-    root.classList.remove('is-place');
+    root.classList.remove('is-place', 'is-returning');
     applyCam(null);
   }
 

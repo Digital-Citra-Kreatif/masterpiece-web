@@ -75,7 +75,8 @@
 }
 
 .scene.is-place [data-phase],
-.scene.is-place .scene__markers {
+.scene.is-place .scene__markers,
+.scene.is-returning .scene__markers {
   opacity: 0 !important;
   visibility: hidden !important;
 }
