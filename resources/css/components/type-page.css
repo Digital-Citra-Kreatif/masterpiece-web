@@ -545,9 +545,9 @@ body.is-type .tps--scroll::before {
   }
 }
 
-/* Usaha di bawah deskripsi */
+/* Usaha di bawah deskripsi, jarak 56px */
 .tps__lead + .tps__uses {
-  margin-top: 24px;
+  margin-top: 56px;
 }
 
 /* Tombol bawah */
