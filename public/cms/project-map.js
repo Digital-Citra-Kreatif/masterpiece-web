@@ -210,7 +210,6 @@ function setup(sunrice) {
         type: 'number', min: 0, max: 100, step: 0.01, value: current[axis] ?? '', disabled: !canUpdate,
         onChange: (e) => setAxis(axis, e.target.value), onKeyDown: noEnter,
       }))),
-      canUpdate && placed(current) && button({ variant: 'outline', size: 'sm', onClick: () => move(current.id, null, null) }, 'Hapus titik'),
       !placed(current) && h('span', { className: 'pm-note' }, canUpdate ? 'Isi Posisi X dan Y untuk menempatkan unit ini.' : 'Belum ada titik.'),
     );
 
