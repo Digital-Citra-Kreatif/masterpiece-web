@@ -109,6 +109,17 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   touch-action: auto;
 }
 
+/* Kolom 360° lebih besar: 65%, tab 35% */
+@media (min-width: 961px) {
+  .tps--scroll .tps__grid {
+    grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+  }
+}
+
+.tps--scroll .tps__view {
+  max-width: none;
+}
+
 /* Desktop: jarak 72px, bukan setinggi layar */
 @media (min-width: 1025px) {
   .tps--scroll {
