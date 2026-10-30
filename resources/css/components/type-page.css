@@ -158,9 +158,14 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   top: 50%;
   z-index: 2;
   translate: 0 -50%;
-  border-color: rgb(14 17 19 / 0.12);
-  background: rgb(255 255 255 / 0.9); /* Terlihat di gambar terang dan gelap */
-  color: var(--ink);
+  border: 0;
+  color: #fff;
+  mix-blend-mode: difference; /* Kontras di gambar terang dan gelap */
+}
+
+.tps__nav svg {
+  width: 24px;
+  height: 24px;
 }
 
 .tps__nav--prev {
@@ -172,12 +177,11 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 }
 
 .tps__nav:hover {
-  background: var(--ink);
-  color: #fff;
+  background: none;
 }
 
 .tps__nav:focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid #fff;
   outline-offset: 2px;
 }
 

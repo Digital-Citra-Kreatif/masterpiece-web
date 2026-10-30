@@ -615,9 +615,14 @@ button.pj-frame:focus-visible {
   top: 50%;
   z-index: 2;
   translate: 0 -50%;
-  border-color: rgb(14 17 19 / 0.12);
-  background: rgb(255 255 255 / 0.9); /* Terlihat di gambar terang dan gelap */
-  color: var(--ink);
+  border: 0;
+  color: #fff;
+  mix-blend-mode: difference; /* Kontras di gambar terang dan gelap */
+}
+
+.tph__nav svg {
+  width: 24px;
+  height: 24px;
 }
 
 .tph__nav--prev {
@@ -629,12 +634,11 @@ button.pj-frame:focus-visible {
 }
 
 .tph__nav:hover {
-  background: var(--ink);
-  color: #fff;
+  background: none;
 }
 
 .tph__nav:focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid #fff;
   outline-offset: 2px;
 }
 
