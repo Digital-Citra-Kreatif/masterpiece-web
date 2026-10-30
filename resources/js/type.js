@@ -7,7 +7,7 @@ import './hero-parallax.js';
 // Parallax Spesifikasi, ditutup Tipe lain
 const covered = document.querySelector('#tipe-lain')?.previousElementSibling;
 if (covered && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  import('./cover-parallax.js').then(({ coverParallax }) => coverParallax(covered, covered));
+  import('./cover-parallax.js').then(({ coverParallax }) => coverParallax(covered, covered, { hold: true }));
 }
 
 // Slider denah
