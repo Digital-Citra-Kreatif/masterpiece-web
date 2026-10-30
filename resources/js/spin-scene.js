@@ -103,10 +103,12 @@ export function spin(root) {
     const key = `${active}:${img ? frames.indexOf(img) : -1}:${canvas.width}`;
     if (!img || key === drawn) return;
     drawn = key;
-    // Isi penuh (cover)
-    const s = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+    // Diputar penuh, gambar diam utuh
+    const fit = tab().frames.length > 1 ? Math.max : Math.min;
+    const s = fit(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
     const dw = img.naturalWidth * s;
     const dh = img.naturalHeight * s;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
     if (poster) poster.hidden = true;
   }
