@@ -162,9 +162,23 @@ body.is-type .tps--scroll::before {
   max-width: none;
 }
 
-/* Lepas dari section gelap */
+/* Deskripsi: atas bawah 160px desktop, 80px layar kecil */
 .tps.tps--scroll + .tps--about {
-  padding-top: clamp(40px, 5vw, 72px);
+  padding-top: 80px;
+}
+
+.tps.tps--about {
+  padding-bottom: 80px;
+}
+
+@media (min-width: 1025px) {
+  .tps.tps--scroll + .tps--about {
+    padding-top: 160px;
+  }
+
+  .tps.tps--about {
+    padding-bottom: 160px;
+  }
 }
 
 /* Kolom 360° lebih besar: 65%, tab 35% */
