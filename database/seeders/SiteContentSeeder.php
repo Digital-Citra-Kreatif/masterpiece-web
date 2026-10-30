@@ -318,6 +318,13 @@ class SiteContentSeeder extends Seeder
             'translatable' => false,
             'instructions' => 'Gambar diam, atau ZIP frame 360° (urut nama file).',
         ]);
+        // Latar tajam saat titik di-zoom
+        $zoom = fn (): array => $this->field('zoom_image', 'media', ['types' => ['image']], [
+            'label' => 'Gambar zoom',
+            'translatable' => false,
+            'width' => 33,
+            'instructions' => 'Latar resolusi tinggi saat titik ini di-zoom.',
+        ]);
         $points = fn (string $label, array $fields): array => $this->field('points', 'repeater', [], ['label' => $label, 'fields' => $fields]);
 
         return [
@@ -332,8 +339,9 @@ class SiteContentSeeder extends Seeder
             $section('masterplan', 'Masterplan', [
                 $scene(),
                 $points('Titik kawasan', [
-                    $text('name', 'Nama', ['required' => true, 'width' => 50]),
-                    $image('image', 'Gambar', ['width' => 50]),
+                    $text('name', 'Nama', ['required' => true, 'width' => 33]),
+                    $image('image', 'Gambar', ['width' => 33]),
+                    $zoom(),
                     $percent('x', 'Posisi X (%)'),
                     $percent('y', 'Posisi Y (%)'),
                 ]),
@@ -344,8 +352,9 @@ class SiteContentSeeder extends Seeder
             $section('cluster', 'Cluster', [
                 $scene(),
                 $points('Titik cluster', [
-                    $text('name', 'Nama', ['required' => true, 'width' => 50]),
-                    $image('image', 'Gambar', ['width' => 50]),
+                    $text('name', 'Nama', ['required' => true, 'width' => 33]),
+                    $image('image', 'Gambar', ['width' => 33]),
+                    $zoom(),
                     $textarea('description', 'Deskripsi'),
                     $percent('x', 'Posisi X (%)'),
                     $percent('y', 'Posisi Y (%)'),

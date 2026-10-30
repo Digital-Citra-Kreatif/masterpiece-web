@@ -265,3 +265,20 @@ test('frames uploaded through the panel are kept when the image field has no ZIP
 
     expect(OrbitFrames::base($this->project->entry_id, 'masterplan'))->not->toBeNull();
 });
+
+test('a point\'s zoom image goes to its hotspot and adds the zoom layer, points without one add nothing', function () {
+    $data = fn (): array => $this->project->fresh()->data;
+    $this->get('/projects/westlake')->assertOk()->assertDontSee('data-scene-zoom', false);
+
+    $zoom = app(UploadMedia::class)->handle(UploadedFile::fake()->image('zoom-west-lakeside.jpg', 3840, 2160), []);
+    $points = $data()['masterplan']['points'];
+    $points[0]['zoom_image'] = $zoom->id;
+    $this->project->update(['data' => [...$data(), 'masterplan' => [...$data()['masterplan'], 'points' => $points]]]);
+
+    $html = $this->get('/projects/westlake')->assertOk()->assertSee('data-scene-zoom', false)->getContent();
+    preg_match('/data-spots="([^"]+)"/', $html, $match);
+    $spots = json_decode(html_entity_decode($match[1]), true);
+
+    // File asli, bukan konversi kecil
+    expect(array_values($spots)[0]['zoom'])->toBe($zoom->url());
+});
