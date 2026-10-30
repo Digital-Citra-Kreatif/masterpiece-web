@@ -616,8 +616,7 @@ button.pj-frame:focus-visible {
   z-index: 2;
   translate: 0 -50%;
   border: 0;
-  color: #fff;
-  mix-blend-mode: difference; /* Kontras di gambar terang dan gelap */
+  color: #ddd;
 }
 
 .tph__nav svg {
@@ -638,7 +637,7 @@ button.pj-frame:focus-visible {
 }
 
 .tph__nav:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid #ddd;
   outline-offset: 2px;
 }
 
