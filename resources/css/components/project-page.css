@@ -1099,9 +1099,9 @@ button.pj-frame:focus-visible {
   content: none;
 }
 
-/* Nomor di ikon kustom tetap putih */
+/* Ikon kustom tanpa nomor */
 .spot--marker:has(.pj-marker--image) .spot__no {
-  color: #fff;
+  display: none;
 }
 
 .spot--marker .spot__no {
