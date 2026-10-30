@@ -131,7 +131,7 @@
 }
 
 .prj__desc {
-  max-width: 56ch;
+  max-width: 72ch; /* Deskripsi kartu sedikit lebih panjang */
   margin: 8px 0 0;
   color: var(--ink-2);
   font-size: 15px;
