@@ -29,7 +29,6 @@ const css = `
 .pm-available { --pm-c: #16a34a; }
 .pm-reserved { --pm-c: #d97706; }
 .pm-sold { --pm-c: #dc2626; }
-.pm-orbit { --pm-c: var(--primary); }
 .pm-legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 8px 12px; font-size: 12px; color: var(--muted-foreground); border-top: 1px solid var(--border); }
 .pm-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .pm-swatch { width: 10px; height: 10px; flex: none; border-radius: 50%; background: var(--pm-c); }
@@ -44,6 +43,7 @@ const css = `
 .pm-detail strong { align-self: center; min-width: 48px; font-size: 14px; }
 .pm-detail label { display: grid; gap: 4px; width: 110px; font-size: 12px; color: var(--muted-foreground); }
 .pm-error { font-size: 12px; color: var(--destructive, #dc2626); }
+.pm-upload { border-bottom: 0; }
 .pm-upload progress { width: 100%; max-width: 280px; height: 6px; accent-color: var(--primary); }
 .pm-empty { display: grid; gap: 10px; justify-items: start; padding: 16px 12px; }
 .pm-empty p { margin: 0; font-size: 13px; color: var(--muted-foreground); max-width: 56ch; }
@@ -251,158 +251,12 @@ function setup(sunrice) {
     return h('div', null, bar, plan, legend, list, detail);
   }
 
-  // Titik orbit Masterplan dan Cluster: isi X/Y repeater lewat klik gambar
-  const rowsPattern = (section) => new RegExp(`^data-${section}-points-(\\d+)-fields$`);
-  const inputOf = (section, index, key) => document.getElementById(`data-${section}-points-${index}-${key}`);
-  const setInput = (el, value) => {
-    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, value);
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-  };
-  const readRows = (group, section) => [...group.querySelectorAll(`[id^="data-${section}-points-"][id$="-fields"]`)]
-    .map((el) => {
-      const index = Number(el.id.match(rowsPattern(section))?.[1] ?? NaN);
-      if (Number.isNaN(index)) return null;
-      const num = (key) => { const v = inputOf(section, index, key)?.value; return v === undefined || v === '' ? null : Number(v); };
-      const toggle = group.querySelector(`button[aria-controls="${el.id}"]`);
-      const name = inputOf(section, index, 'name')?.value || toggle?.textContent.trim() || `Titik ${index + 1}`;
-      return { index, name, x: num('x'), y: num('y'), open: !el.hidden };
-    })
-    .filter(Boolean)
-    .sort((a, b) => a.index - b.index);
-
-  function OrbitPicker({ section, title, frame, group }) {
-    const [, setTick] = useState(0);
-    const [selected, setSelected] = useState(null);
-    const [drag, setDrag] = useState(null);
-    const planRef = useRef(null);
-    const rows = readRows(group, section);
-    const current = rows.find((r) => r.index === selected) ?? null;
-    const missing = rows.filter((r) => !placed(r)).length;
-
-    // Baca ulang saat form berubah
-    useEffect(() => {
-      const bump = () => setTick((t) => t + 1);
-      const observer = new MutationObserver(bump);
-      observer.observe(group, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
-      group.addEventListener('input', bump);
-      // Baris tertutup dibuka agar X/Y terbaca
-      for (const button of group.querySelectorAll(`button[aria-controls^="data-${section}-points-"][aria-expanded="false"]`)) button.click();
-      return () => { observer.disconnect(); group.removeEventListener('input', bump); };
-    }, [group, section]);
-
-    // Sembunyikan X/Y repeater
-    useEffect(() => {
-      // Tanpa gambar tetap tampil
-      const hide = Boolean(frame);
-      for (const row of rows) {
-        for (const key of ['x', 'y']) {
-          const input = inputOf(section, row.index, key);
-          if (!input) continue;
-          const label = group.querySelector(`label[for="${input.id}"]`);
-          let wrapper = input.parentElement;
-          if (label) {
-            while (wrapper && !wrapper.contains(label)) wrapper = wrapper.parentElement;
-          }
-          // Jangan sampai baris
-          if (!wrapper || wrapper.id.endsWith('-fields') || wrapper === group) wrapper = input.parentElement;
-          if (wrapper && wrapper.hidden !== hide) wrapper.hidden = hide;
-        }
-      }
-    });
-
-    useEffect(() => {
-      if (selected === null && rows.length) setSelected((rows.find((r) => !placed(r)) ?? rows[0]).index);
-    }, [rows.length, selected]);
-
-    // X, Y terpisah
-    const write = (index, x, y) => {
-      const ix = inputOf(section, index, 'x');
-      const iy = inputOf(section, index, 'y');
-      if (!ix || !iy) return;
-      setTimeout(() => setInput(ix, x === null ? '' : String(round(x))));
-      setTimeout(() => setInput(iy, y === null ? '' : String(round(y))));
-    };
-    const pointAt = (event) => {
-      const rect = planRef.current.getBoundingClientRect();
-      return [((event.clientX - rect.left) / rect.width) * 100, ((event.clientY - rect.top) / rect.height) * 100];
-    };
-    const onPlanClick = (event) => {
-      if (!current || event.target !== event.currentTarget) return;
-      const [x, y] = pointAt(event);
-      write(current.index, x, y);
-      // Lanjut titik kosong
-      const next = rows.find((r) => r.index !== current.index && !placed(r));
-      if (!placed(current) && next) setSelected(next.index);
-    };
-    const onDotKey = (event, row) => {
-      const step = event.shiftKey ? 1 : 0.1;
-      const delta = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[event.key];
-      if (event.key === 'Enter') event.preventDefault();
-      if (!delta) return;
-      event.preventDefault();
-      write(row.index, row.x + delta[0], row.y + delta[1]);
-    };
-    const setAxis = (axis, value) => {
-      const input = current && inputOf(section, current.index, axis);
-      if (!input) return;
-      if (value === '') return setInput(input, '');
-      const n = Number(value);
-      if (Number.isNaN(n)) return;
-      setInput(input, String(round(n)));
-    };
-
-    const bar = h('div', { className: 'pm-bar' },
-      h('div', { className: 'pm-title' },
-        h('strong', null, `Penempatan ${title.toLowerCase()}`),
-        h('span', null, rows.length ? `${rows.length} titik · ${missing ? `${missing} belum ditempatkan` : 'semua sudah ditempatkan'} · simpan lewat tombol Simpan proyek` : 'Tambah titik dulu, lalu tempatkan di gambar.')));
-    if (!frame) return h('div', null, bar, h('div', { className: 'pm-empty' }, h('p', null, 'Gambar orbit belum tersedia.')));
-    if (!rows.length) return h('div', null, bar);
-
-    const plan = h('div', { className: 'pm-viewport' },
-      h('div', { ref: planRef, className: `pm-plan${current ? '' : ' is-idle'}`, onClick: onPlanClick },
-        h('img', { src: frame.src, alt: `Gambar pertama orbit ${section}`, width: frame.width, height: frame.height, draggable: false }),
-        rows.filter(placed).map((r) => h('button', {
-          key: r.index,
-          type: 'button',
-          className: `pm-dot pm-orbit${r.index === selected ? ' is-on' : ''}${drag === r.index ? ' is-drag' : ''}`,
-          style: { left: `${r.x}%`, top: `${r.y}%` },
-          'aria-label': r.name,
-          'aria-pressed': r.index === selected,
-          onPointerDown: (e) => { setSelected(r.index); if (e.button !== 0) return; e.currentTarget.setPointerCapture(e.pointerId); setDrag(r.index); },
-          onPointerMove: (e) => { if (drag !== r.index) return; const [x, y] = pointAt(e); write(r.index, x, y); },
-          onPointerUp: () => setDrag(null),
-          onPointerCancel: () => setDrag(null),
-          onKeyDown: (e) => onDotKey(e, r),
-          onFocus: () => setSelected(r.index),
-        }, (r.index === selected || drag === r.index) && h('span', { className: 'pm-tag' }, r.name)))));
-
-    const list = h('ul', { className: 'pm-units', 'aria-label': title },
-      rows.map((r) => h('li', { key: r.index }, h('button', {
-        type: 'button',
-        className: `pm-chip pm-orbit${placed(r) ? '' : ' is-missing'}`,
-        'aria-pressed': r.index === selected,
-        title: placed(r) ? `${r.x}, ${r.y}` : 'Belum ada titik',
-        onClick: () => setSelected(r.index),
-      }, h('i', { className: 'pm-swatch', 'aria-hidden': true }), r.name))));
-
-    const detail = current && h('div', { className: 'pm-detail' },
-      h('strong', null, current.name),
-      ['x', 'y'].map((axis) => h('label', { key: axis }, `Posisi ${axis.toUpperCase()} (%)`, h(ui.Input, {
-        type: 'number', min: 0, max: 100, step: 0.01, value: current[axis] ?? '',
-        onChange: (e) => setAxis(axis, e.target.value), onKeyDown: noEnter,
-      }))),
-      placed(current)
-        ? button({ variant: 'outline', size: 'sm', onClick: () => write(current.index, null, null) }, 'Hapus posisi')
-        : h('span', { className: 'pm-note' }, 'Klik gambar untuk menempatkan titik ini.'));
-
-    return h('div', null, bar, plan, list, detail);
-  }
   const button = (props, label) => h(ui.Button, { type: 'button', ...props }, label);
 
   // Unggah ZIP frame 360°, per potongan
   const CHUNK = 1024 * 1024;
   const mb = (n) => `${(n / 1048576).toFixed(1)} MB`;
-  function OrbitUpload({ section, project, onChange }) {
+  function OrbitUpload({ section, project }) {
     const [state, setState] = useState(null);
     const [sent, setSent] = useState(null); // [terkirim, total] byte
     const [error, setError] = useState(null);
@@ -427,10 +281,7 @@ function setup(sunrice) {
     const busy = state?.state === 'queued' || state?.state === 'processing';
     useEffect(() => {
       if (!busy) return undefined;
-      const timer = setInterval(() => request('GET').then((json) => {
-        setState(json);
-        if (json.state === 'ready' || json.state === 'failed') onChange();
-      }).catch(() => {}), 3000);
+      const timer = setInterval(() => request('GET').then(setState).catch(() => {}), 3000);
       return () => clearInterval(timer);
     }, [busy, request]);
 
@@ -459,7 +310,6 @@ function setup(sunrice) {
       setError(null);
       try {
         setState(await request('DELETE'));
-        onChange();
       } catch (e) {
         setError(e.message);
       }
@@ -488,35 +338,12 @@ function setup(sunrice) {
         state?.active && !busy && !sent && !fromField && button({ variant: 'outline', size: 'sm', onClick: remove }, 'Hapus frame')));
   }
 
-  const ORBITS = [{ section: 'masterplan', title: 'Titik kawasan' }, { section: 'cluster', title: 'Titik cluster' }];
-  let frames = null;
-  let framesFor = null; // Proyek pemilik frame
+  const ORBITS = ['masterplan', 'cluster'];
   const orbitMounts = new Map();
-  // Frame per proyek: gambar CMS atau frame orbit
-  const loadFrames = (project) => {
-    framesFor = project;
-    fetch(sunrice.adminUrl(`orbit-frames?project=${project}`), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
-      .then((r) => (r.ok ? r.json() : {}))
-      .catch(() => ({}))
-      .then((json) => {
-        if (framesFor !== project) return;
-        frames = json;
-        orbitMounts.forEach((m) => m.render());
-      });
-  };
-  // Muat ulang setelah simpan
-  router.on('success', () => {
-    const project = location.pathname.match(EDITOR)?.[1];
-    if (project && orbitMounts.size) loadFrames(project);
-  });
   const syncOrbits = () => {
     const editing = EDITOR.test(location.pathname);
     const project = location.pathname.match(EDITOR)?.[1] ?? null;
-    if (project !== framesFor) {
-      frames = null;
-      framesFor = null;
-    }
-    for (const { section, title } of ORBITS) {
+    for (const section of ORBITS) {
       const label = editing && document.getElementById(`data-${section}-points-label`);
       const group = label && (label.closest('[role="group"]') ?? label.parentElement?.parentElement);
       const mount = orbitMounts.get(section);
@@ -524,21 +351,14 @@ function setup(sunrice) {
         if (mount && !mount.el.isConnected) { mount.root.unmount(); orbitMounts.delete(section); }
         continue;
       }
-      if (mount?.el.isConnected && mount.group === group) continue;
+      if (mount?.el.isConnected && mount.group === group && mount.project === project) continue;
       if (mount) { mount.root.unmount(); mount.el.remove(); }
       const el = document.createElement('div');
       el.className = 'pm';
       group.append(el);
       const root = createRoot(el);
-      const render = () => root.render(h('div', null,
-        h(OrbitUpload, { section, project, onChange: () => loadFrames(project) }),
-        h(OrbitPicker, { section, title, frame: frames?.[section] ?? null, group })));
-      orbitMounts.set(section, { el, root, group, render });
-      if (frames) {
-        render();
-      } else if (framesFor !== project) {
-        loadFrames(project);
-      }
+      root.render(h(OrbitUpload, { section, project }));
+      orbitMounts.set(section, { el, root, group, project });
     }
   };
 
