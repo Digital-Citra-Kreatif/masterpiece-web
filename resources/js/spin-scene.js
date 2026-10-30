@@ -1,5 +1,6 @@
 // Mesin 360°: frame kanvas, diputar lewat scroll atau drag
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sets = new Map();
 
 // Urutan muat: kasar dulu, lalu rapat
@@ -62,6 +63,7 @@ export function spin(root) {
   const ctx = canvas.getContext('2d');
   let active = 0;
   let offset = 0; // Putaran drag, dalam frame
+  let glideId = 0; // Animasi antar tab
   let drawn = '';
   let queued = false;
   let inView = false;
@@ -120,10 +122,43 @@ export function spin(root) {
     requestAnimationFrame(draw);
   }
 
+  // Putar halus ke sudut tab, jalur terpendek
+  const glide = () => {
+    const n = tab().frames.length;
+    offset = ((offset % n) + n) % n;
+    if (offset > n / 2) offset -= n;
+    const from = offset;
+    const id = ++glideId;
+    if (reduced || Math.abs(from) < 0.5) {
+      offset = 0;
+      return;
+    }
+    const t0 = performance.now();
+    const ms = clamp(Math.abs(from) * 20, 500, 1400);
+    const step = (now) => {
+      if (id !== glideId) return;
+      const k = Math.min(1, (now - t0) / ms);
+      const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      offset = from * (1 - e);
+      request();
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
   const show = (index) => {
     if (index === active) return;
+    const before = tab();
+    const shown = frameIndex();
     active = index;
     offset = 0;
+    // Gambar sama: lanjut dari sudut sekarang
+    if (mode === 'drag' && before.frames.join('|') === tab().frames.join('|')) {
+      offset = shown - tab().frame;
+      glide();
+    } else {
+      glideId++;
+    }
     buttons.forEach((b, k) => b.setAttribute('aria-pressed', String(k === index)));
     if (text) {
       text.textContent = tab().text;
@@ -150,6 +185,7 @@ export function spin(root) {
     let startOffset = 0;
     const perPixel = () => tab().frames.length / Math.max(W, 1);
     canvas.addEventListener('pointerdown', (e) => {
+      glideId++; // Geser menghentikan animasi
       startX = e.clientX;
       startOffset = offset;
       canvas.setPointerCapture(e.pointerId);
@@ -166,12 +202,13 @@ export function spin(root) {
       const step = { ArrowLeft: -1, ArrowRight: 1 }[e.key];
       if (!step) return;
       e.preventDefault();
+      glideId++;
       offset += step;
       request();
     });
     for (const button of root.querySelectorAll('[data-spin-step]')) {
       let timer = null;
-      const turn = () => { offset += Number(button.dataset.spinStep); request(); };
+      const turn = () => { glideId++; offset += Number(button.dataset.spinStep); request(); };
       const release = () => { clearInterval(timer); timer = null; };
       button.addEventListener('pointerdown', () => { turn(); timer = setInterval(turn, 60); });
       for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) button.addEventListener(ev, release);

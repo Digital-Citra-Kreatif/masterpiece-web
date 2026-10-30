@@ -321,9 +321,29 @@ test('the 360° section sits above Type as a contained section with pill tabs, s
         ->and($tabs[1]['frames'])->toHaveCount(1)
         // Tab tanpa gambar memutar gambar Fasad
         ->and($tabs[2]['frames'])->toBe($tabs[0]['frames'])
-        // Frame awal lama diabaikan
-        ->and($tabs[2]['frame'])->toBe(0)
+        // Sudut dibagi rata antar tab segambar, Frame awal lama diabaikan
+        ->and([$tabs[0]['frame'], $tabs[1]['frame'], $tabs[2]['frame']])->toBe([0, 0, 1])
         ->and($tabs[0])->not->toHaveKey('config');
+});
+
+test('360° tabs that hold the same images open at evenly spread angles of one turn', function () {
+    $frames = collect(['frame_1.jpg', 'frame_2.jpg', 'frame_3.jpg', 'frame_4.jpg', 'frame_5.jpg', 'frame_6.jpg'])->map(fn (string $name): int => projectImage($name))->all();
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'turntable' => ['title' => 'Explore the unit', 'tabs' => [
+            ['name' => 'Depan', 'description' => '', 'images' => $frames],
+            ['name' => 'Samping', 'description' => '', 'images' => $frames],
+            ['name' => 'Belakang', 'description' => '', 'images' => $frames],
+        ]],
+    ]);
+
+    $html = $this->get('/projects/westlake')->assertOk()->getContent();
+
+    preg_match('/data-tabs="([^"]+)"/', $html, $match);
+    $tabs = json_decode(html_entity_decode($match[1]), true);
+    expect(array_column($tabs, 'frame'))->toBe([0, 2, 4])
+        ->and($tabs[1]['frames'])->toBe($tabs[0]['frames']);
 });
 
 test('the Type cutaway image sits inside the section, above the title', function () {

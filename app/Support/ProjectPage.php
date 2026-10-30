@@ -421,10 +421,17 @@ final class ProjectPage
             return [];
         }
 
+        // Tab dengan gambar sama dianggap satu sumber
+        $keys = $rows->map(fn (array $item): string => $item['frames']->map(fn (Media $media): int => $media->id)->implode(','));
+        $sources = $keys->map(fn (string $key): int => $key === '' ? $first : (int) $keys->search($key));
+
         return $rows
-            ->map(function (array $item, int $index) use ($rows, $first): array {
-                $source = $item['frames']->isNotEmpty() ? $index : $first;
+            ->map(function (array $item, int $index) use ($rows, $sources): array {
+                $source = $sources[$index];
                 $frames = $rows[$source]['frames'];
+                // Sudut dibagi rata antar tab segambar
+                $sharing = $sources->filter(fn (int $other): bool => $other === $source)->keys()->values();
+                $frame = intdiv($sharing->search($index) * $frames->count(), $sharing->count());
 
                 return [
                     'name' => (string) $item['row']['name'],
@@ -432,8 +439,7 @@ final class ProjectPage
                     'frames' => $frames->map(fn (Media $media): string => $media->url())->all(),
                     'width' => (int) ($frames->first()->width ?: 1600),
                     'height' => (int) ($frames->first()->height ?: 1200),
-                    // Selalu gambar pertama
-                    'frame' => 0,
+                    'frame' => $frame,
                     'source' => $source,
                 ];
             })
