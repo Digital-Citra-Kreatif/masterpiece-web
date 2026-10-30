@@ -84,11 +84,7 @@ class SiteContentSeeder extends Seeder
                         'translatable' => false,
                     ]),
                     $text('label'),
-                    $this->field('view', 'select', ['options' => [
-                        ['value' => 'lakeview', 'label' => 'Lake View'],
-                        ['value' => 'streetview', 'label' => 'Street View'],
-                    ]], ['translatable' => false, 'width' => 50, 'instructions' => 'Untuk project dengan pilihan view.']),
-                    $text('dimensions', ['translatable' => false, 'width' => 50, 'instructions' => 'Contoh: 4,5 x 10 m.']),
+                    $text('dimensions', ['translatable' => false, 'instructions' => 'Contoh: 4,5 x 10 m.']),
                     $image('image', ['required' => true, 'instructions' => 'Rasio 6:5.']),
                     $number('lt'),
                     $number('lb'),

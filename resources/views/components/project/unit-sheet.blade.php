@@ -5,7 +5,6 @@
 
 <dialog class="ov is-info pj-sheet" id="{{ $unit['id'] }}" aria-labelledby="{{ $unit['id'] }}-title">
   <div class="ov__bar">
-    <p class="ov__title eyebrow">{{ $unit['viewName'] }}</p>
     <div class="ov__tools">
       <button class="icon-btn ov__close" type="button" data-sheet-close aria-label="Tutup">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 5l14 14M19 5L5 19"></path></svg>

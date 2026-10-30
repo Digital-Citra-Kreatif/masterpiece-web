@@ -153,7 +153,6 @@ class WestlakeProjectSeeder extends Seeder
                 $prefix.' '.($type === 'BCD' ? 'Tipe B/C/D' : "Tipe {$type}"),
                 [
                     'label' => $size[0],
-                    'view' => $view,
                     'dimensions' => $size[1],
                     'image' => $this->image("Data Type Unit/{$prefix} Type {$type}.png"),
                     'lt' => $size[2],

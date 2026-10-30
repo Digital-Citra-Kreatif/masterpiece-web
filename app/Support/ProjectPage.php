@@ -49,9 +49,6 @@ final class ProjectPage
         'availability' => ['id' => 'unit', 'label' => 'Unit'],
     ];
 
-    /** @var array<string, string> */
-    public const VIEWS = ['streetview' => 'Street View', 'lakeview' => 'Lake View'];
-
     private const FALLBACK_FONT = "'DM Sans Variable', 'Helvetica Neue', Arial, sans-serif";
 
     /**
@@ -480,10 +477,6 @@ final class ProjectPage
             ->values()
             ->map(fn (array $row, int $index): array => self::unit($row, $index));
 
-        // Urutan view
-        $order = $units->pluck('view')->filter()->unique()->values()->flip();
-        $units = $units->sortBy(fn (array $unit): int => $order[$unit['view']] ?? PHP_INT_MAX)->values();
-
         $heroImage = self::image($section['hero_image'] ?? null);
 
         return self::section($section, [
@@ -509,11 +502,10 @@ final class ProjectPage
      * Satu tipe unit
      *
      * @param  array<string, mixed>  $row
-     * @return array{id: string, view: ?string, viewName: ?string, name: string, category: ?string, facts: list<array{0: string, 1: string}>, image: ?array<string, mixed>, plans: list<array<string, mixed>>, gallery: list<array<string, mixed>>, vr: ?string, url: ?string}
+     * @return array{id: string, name: string, category: ?string, facts: list<array{0: string, 1: string}>, image: ?array<string, mixed>, plans: list<array<string, mixed>>, gallery: list<array<string, mixed>>, vr: ?string, url: ?string}
      */
     private static function unit(array $row, int $index): array
     {
-        $view = isset(self::VIEWS[$row['view'] ?? '']) ? $row['view'] : null;
         $facts = array_values(array_filter([
             filled($row['dimensions'] ?? null) ? ['Ukuran', (string) $row['dimensions']] : null,
             is_numeric($row['lt'] ?? null) && $row['lt'] > 0 ? ['LT', self::number($row['lt']).' m²'] : null,
@@ -523,8 +515,6 @@ final class ProjectPage
 
         return [
             'id' => 'unit-'.($index + 1),
-            'view' => $view,
-            'viewName' => $view === null ? null : self::VIEWS[$view],
             'name' => (string) $row['name'],
             'category' => filled($row['category'] ?? null) ? (string) $row['category'] : null,
             'facts' => $facts,

@@ -207,7 +207,7 @@ test('the location shows only the map, without spots or area figures', function 
 
 test('a project page shows each section with content and skips the empty ones', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
-    $type->update(['data' => [...$type->data, 'view' => 'lakeview', 'dimensions' => '4,5 x 10 m', 'lt' => 45, 'lb' => 93, 'floors' => 2]]);
+    $type->update(['data' => [...$type->data, 'dimensions' => '4,5 x 10 m', 'lt' => 45, 'lb' => 93, 'floors' => 2]]);
 
     $project = publishProject($this->projects, [
         'global_style' => inactiveStyle(),

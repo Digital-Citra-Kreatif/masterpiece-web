@@ -1337,6 +1337,11 @@ button.pj-frame:focus-visible {
 
 /* Sheet unit */
 
+/* Tombol tutup di kanan */
+.pj-sheet .ov__bar {
+  justify-content: flex-end;
+}
+
 .pj-sheet__body {
   width: 100%;
   padding-bottom: 8px;
