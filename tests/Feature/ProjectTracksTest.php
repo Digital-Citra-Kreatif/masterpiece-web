@@ -99,7 +99,7 @@ test('retracking runs the tracker only for the points that moved or are new', fu
         ]],
     ]]);
     app(PublishEntry::class)->handle($translation->fresh());
-    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => $hash, 'tracker' => 2, 'points' => $old, 'tracks' => ['masterplan-1' => [[640, 360]], 'masterplan-2' => [[128, 72]]]]]));
+    Storage::put("tracks/entry-{$translation->entry_id}.json", json_encode(['masterplan' => ['hash' => $hash, 'tracker' => 3, 'points' => $old, 'tracks' => ['masterplan-1' => [[640, 360]], 'masterplan-2' => [[128, 72]]]]]));
 
     ProjectTracks::make($translation->fresh());
 
@@ -132,7 +132,7 @@ test('tracks from an older tracker version are tracked again for every point', f
     Process::assertRan(fn ($process): bool => json_decode($process->input, true) === ['points' => ['masterplan-1' => [640, 360]]]);
     $stored = json_decode(Storage::get("tracks/entry-{$translation->entry_id}.json"), true)['masterplan'];
     expect($stored['hash'])->toBe($hash)
-        ->and($stored['tracker'])->toBe(2)
+        ->and($stored['tracker'])->toBe(3)
         ->and($stored['tracks'])->toBe(['masterplan-1' => [[641.5, 360.2]]]);
 });
 

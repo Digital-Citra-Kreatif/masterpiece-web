@@ -11,7 +11,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 final class ProjectTracks
 {
     /** Versi pelacak; naikkan agar semua titik dilacak ulang */
-    private const TRACKER = 2;
+    private const TRACKER = 3;
 
     /** @var array<string, array<string, mixed>> manifest per folder frame */
     private static array $manifests = [];
