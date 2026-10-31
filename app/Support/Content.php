@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Sunrice\Admin\Media\Media;
@@ -80,6 +81,28 @@ final class Content
                 'label' => filled($link['label'] ?? null) ? (string) $link['label'] : 'Kembali ke beranda',
                 'newTab' => ($link['new_tab'] ?? false) === true,
             ],
+        ];
+    }
+
+    /**
+     * Isi halaman maintenance, null bila tidak aktif
+     *
+     * @return array{title: string, description: ?string, date: ?array{iso: string, label: string}}|null
+     */
+    public static function maintenance(): ?array
+    {
+        $values = Cms::global('maintenance_mode');
+        if (($values['active'] ?? false) !== true) {
+            return null;
+        }
+
+        // Tanggal kembali, bila diisi
+        $date = filled($values['date'] ?? null) ? rescue(fn (): Carbon => Carbon::parse($values['date']), null, false) : null;
+
+        return [
+            'title' => filled($values['heading'] ?? null) ? (string) $values['heading'] : 'Situs sedang dalam perbaikan',
+            'description' => filled($values['description'] ?? null) ? (string) $values['description'] : null,
+            'date' => $date ? ['iso' => $date->toDateString(), 'label' => $date->locale('id')->translatedFormat('j F Y')] : null,
         ];
     }
 
