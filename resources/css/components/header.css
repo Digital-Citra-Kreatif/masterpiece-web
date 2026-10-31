@@ -265,12 +265,6 @@
   animation-delay: calc(80ms + var(--i, 0) * 40ms);
 }
 
-.hd__menu-nav a[aria-current='page'] {
-  text-decoration: underline;
-  text-underline-offset: 5px;
-  text-decoration-thickness: 1px;
-}
-
 @media (hover: hover) {
   .hd__menu-nav a {
     transition: opacity 0.2s var(--ease);
