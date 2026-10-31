@@ -76,11 +76,18 @@ body:has(.nf) :is(.nf, .ft) {
   border-radius: 999px;
 }
 
-/* Maintenance: judul jadi fokus, tanpa angka */
+/* Maintenance: judul jadi fokus, diapit garis */
 .nf--mt .nf__title {
   max-width: 16ch;
+  padding-block: clamp(16px, 2vw, 24px);
+  border-block: 1px solid rgb(14 17 19 / 0.12);
   font-size: clamp(36px, 6vw, 72px);
   text-wrap: balance;
+}
+
+/* Deskripsi lebih lebar */
+.nf--mt .nf__text {
+  max-width: 64ch;
 }
 
 /* Hitung mundur: angka sama lebar agar tidak bergeser */
@@ -100,7 +107,7 @@ body:has(.nf) :is(.nf, .ft) {
 .nf__num,
 .nf__sep {
   font-family: var(--display);
-  font-size: clamp(36px, 7vw, 80px);
+  font-size: clamp(28px, 4.5vw, 48px);
   font-weight: 300;
   line-height: 1;
 }
