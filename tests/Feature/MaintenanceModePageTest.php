@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Carbon\Carbon;
 use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -24,8 +25,9 @@ function saveMaintenance(array $values): void
     app(SaveGlobals::class)->handle(GlobalSet::query()->where('handle', 'maintenance_mode')->firstOrFail(), $values, 'id');
 }
 
-test('an active maintenance mode shows its title, description and return date on every site page with a 503', function () {
-    saveMaintenance(['heading' => 'Kami sedang berbenah', 'description' => 'Situs dibuka lagi segera.', 'date' => '2026-11-02', 'active' => true]);
+test('an active maintenance mode shows its title, description and a countdown on every site page with a 503', function () {
+    $this->travelTo(Carbon::parse('2026-11-01 10:00:00', 'Asia/Jakarta'));
+    saveMaintenance(['heading' => 'Kami sedang berbenah', 'description' => 'Situs dibuka lagi segera.', 'date' => '2026-11-02T14:30', 'active' => true]);
 
     foreach (['/', '/projects/westlake', '/tidak-ada'] as $path) {
         $this->get($path)
@@ -33,17 +35,30 @@ test('an active maintenance mode shows its title, description and return date on
             ->assertSee('<main class="nf nf--mt">', false)
             ->assertSee('<h1 class="nf__title">Kami sedang berbenah</h1>', false)
             ->assertSee('Situs dibuka lagi segera.')
-            ->assertSee('<time datetime="2026-11-02">2 November 2026</time>', false)
+            // 1 hari 4 jam 30 menit, jam CMS dalam WIB
+            ->assertSee('aria-label="Dibuka kembali 2 November 2026 pukul 14.30 WIB" data-countdown="102600"', false)
+            ->assertSeeInOrder(['>01<', 'Hari', '>04<', 'Jam', '>30<', 'Menit', '>00<', 'Detik'], false)
+            ->assertDontSee('Perkiraan kembali')
             ->assertDontSee('<footer class="ft">', false);
     }
 });
 
-test('a return date with a time of day shows the time under the date', function () {
+test('a return date without a time counts down to the start of that day', function () {
+    $this->travelTo(Carbon::parse('2026-11-01 23:59:00', 'Asia/Jakarta'));
+    saveMaintenance(['date' => '2026-11-02', 'active' => true]);
+
+    $this->get('/')
+        ->assertStatus(503)
+        ->assertSee('aria-label="Dibuka kembali 2 November 2026" data-countdown="60"', false);
+});
+
+test('a return time that has passed leaves the countdown out', function () {
+    $this->travelTo(Carbon::parse('2026-11-03 08:00:00', 'Asia/Jakarta'));
     saveMaintenance(['date' => '2026-11-02T14:30', 'active' => true]);
 
     $this->get('/')
         ->assertStatus(503)
-        ->assertSee('<time datetime="2026-11-02T14:30">2 November 2026 <span class="nf__time">pukul 14.30</span></time>', false);
+        ->assertDontSee('data-countdown', false);
 });
 
 test('maintenance mode without a title or date falls back to a default title and leaves the date out', function () {
@@ -52,7 +67,7 @@ test('maintenance mode without a title or date falls back to a default title and
     $this->get('/')
         ->assertStatus(503)
         ->assertSee('<h1 class="nf__title">Situs sedang dalam perbaikan</h1>', false)
-        ->assertDontSee('nf__date', false);
+        ->assertDontSee('data-countdown', false);
 });
 
 test('the site opens normally while maintenance mode is off', function () {

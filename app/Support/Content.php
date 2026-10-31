@@ -17,6 +17,9 @@ final class Content
     /** Urutan status unit */
     public const STATUSES = ['available', 'reserved', 'sold'];
 
+    /** Jam Maintenance Mode di CMS dibaca sebagai WIB */
+    public const MAINTENANCE_TIMEZONE = 'Asia/Jakarta';
+
     /**
      * Data situs bersama
      *
@@ -87,7 +90,7 @@ final class Content
     /**
      * Isi halaman maintenance, null bila tidak aktif
      *
-     * @return array{title: string, description: ?string, date: ?array{iso: string, label: string, time: ?string}}|null
+     * @return array{title: string, description: ?string, countdown: ?array{left: int, label: string, parts: array{days: int, hours: int, minutes: int, seconds: int}}}|null
      */
     public static function maintenance(): ?array
     {
@@ -96,17 +99,23 @@ final class Content
             return null;
         }
 
-        // Tanggal kembali, bila diisi
-        $date = filled($values['date'] ?? null) ? rescue(fn (): Carbon => Carbon::parse($values['date']), null, false) : null;
+        // Waktu kembali; sudah lewat: tanpa hitung mundur
+        $date = filled($values['date'] ?? null) ? rescue(fn (): Carbon => Carbon::parse((string) $values['date'], self::MAINTENANCE_TIMEZONE), null, false) : null;
+        $left = $date ? max(0, (int) now()->diffInSeconds($date, false)) : 0;
 
         return [
             'title' => filled($values['heading'] ?? null) ? (string) $values['heading'] : 'Situs sedang dalam perbaikan',
             'description' => filled($values['description'] ?? null) ? (string) $values['description'] : null,
-            'date' => $date ? [
-                // Jam 00.00: hanya tanggal
-                'iso' => $date->isStartOfDay() ? $date->toDateString() : $date->format('Y-m-d\TH:i'),
-                'label' => $date->locale('id')->translatedFormat('j F Y'),
-                'time' => $date->isStartOfDay() ? null : $date->format('H.i'),
+            'countdown' => $left > 0 ? [
+                'left' => $left, // Detik, lepas dari jam perangkat
+                // Untuk pembaca layar
+                'label' => $date->locale('id')->translatedFormat('j F Y').($date->isStartOfDay() ? '' : ' pukul '.$date->format('H.i').' WIB'),
+                'parts' => [
+                    'days' => intdiv($left, 86400),
+                    'hours' => intdiv($left % 86400, 3600),
+                    'minutes' => intdiv($left % 3600, 60),
+                    'seconds' => $left % 60,
+                ],
             ] : null,
         ];
     }
