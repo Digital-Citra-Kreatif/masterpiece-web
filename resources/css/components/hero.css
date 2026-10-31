@@ -185,6 +185,13 @@ img.hero__media {
   line-height: 1.5;
 }
 
+/* Tablet dan HP */
+@media (max-width: 1024px) {
+  .hero__lead {
+    font-size: 14px;
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;
