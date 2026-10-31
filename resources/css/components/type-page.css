@@ -558,6 +558,12 @@ body.is-type .tps--scroll::before {
   margin: 0;
 }
 
+/* Maks 4 sebaris */
+.tps__facts:has(> :nth-child(5)) {
+  grid-auto-flow: row;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .tps__facts div {
   min-width: 0;
   padding: 14px 16px 16px;
@@ -1020,12 +1026,6 @@ body.is-type .tps--scroll::before {
 }
 
 @media (max-width: 480px) {
-  /* 5+ turun baris */
-  .tps__facts:has(> :nth-child(5)) {
-    grid-auto-flow: row;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
   .tpb__list {
     grid-template-columns: minmax(0, 1fr);
   }
