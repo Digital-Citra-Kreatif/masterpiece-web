@@ -165,13 +165,21 @@ img.hero__media {
   outline-offset: 3px;
 }
 
+/* Teks bisa disalin */
+.hero__eyebrow,
+.hero__title,
+.hero__lead {
+  pointer-events: auto;
+  user-select: text;
+}
+
 /* Animasi bertahap */
 .hero__lead {
   animation: rise 1s 0.45s var(--ease) both;
 }
 
 .hero__lead {
-  max-width: 340px;
+  max-width: 250px;
   margin: 0 0 0 auto; /* Tetap kanan */
   font-size: clamp(17px, 1.67vw, 20px);
   line-height: 1.5;
