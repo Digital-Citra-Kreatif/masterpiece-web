@@ -378,6 +378,11 @@ body.is-type .tps--scroll::before {
   opacity: 0;
 }
 
+/* Keluar zoom: skala langsung pulih, hanya pudar */
+.tps.is-unzoom :is(.tps__poster, .tps__canvas) {
+  transition: opacity 0.6s var(--ease);
+}
+
 /* Gambar tab utuh di atas 360°, latar hitam */
 .tps__zoom {
   position: absolute;

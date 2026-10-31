@@ -332,7 +332,7 @@ export function spin(root) {
     zoomY = window.scrollY;
     glideId++;
     const ready = preloadZoom(part.zoom);
-    root.classList.remove('is-returning');
+    root.classList.remove('is-returning', 'is-unzoom');
     root.classList.add('is-zoom');
     // Silang pudar di paruh akhir zoom
     Promise.all([ready, wait(ZOOM_MS * 0.5)]).then(([ok]) => {
@@ -359,6 +359,10 @@ export function spin(root) {
     const id = ++zoomRun;
     zoomed = null;
     const focused = root.contains(document.activeElement);
+    // Gambar tab sudah tampil: 360° utuh di baliknya, lalu silang pudar
+    const fade = root.classList.contains('is-zoom-on');
+    root.classList.add('is-returning');
+    if (fade) root.classList.replace('is-zoom', 'is-unzoom');
     // Detail dan gambar pudar, 360° kembali tampil
     detail.classList.add('is-leaving');
     zoomLayer.classList.remove('is-on');
@@ -369,10 +373,9 @@ export function spin(root) {
     detail.classList.remove('is-leaving');
     tabList.hidden = false;
     if (focused) buttons[active]?.focus({ preventScroll: true });
-    root.classList.add('is-returning');
     root.classList.remove('is-zoom');
-    await wait(ZOOM_MS);
-    if (id === zoomRun) root.classList.remove('is-returning'); // Indikator tampil setelah kembali
+    await wait(fade ? 300 : ZOOM_MS);
+    if (id === zoomRun) root.classList.remove('is-returning', 'is-unzoom'); // Indikator tampil setelah kembali
   }
 
   if (spot) {
