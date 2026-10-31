@@ -336,19 +336,20 @@ class SiteContentSeeder extends Seeder
 
         return [
             $this->field('hero', 'group', [], ['label' => 'Hero', 'fields' => [
-                $text('heading', 'Heading'),
+                $text('heading', 'Heading', ['width' => 50]),
+                // Letak nama, judul, dan tombol
+                $this->field('align', 'select', ['options' => collect(ProjectPage::HERO_ALIGN)->map(fn (string $label, string $value): array => ['value' => $value, 'label' => $label])->values()->all(), 'default' => 'split'], [
+                    'label' => 'Posisi konten', 'translatable' => false, 'width' => 50,
+                ]),
                 $this->field('media', 'media', ['types' => ['image', 'video'], 'multiple' => true, 'max' => 6], [
                     'label' => 'Media',
                     'translatable' => false,
+                    'width' => 33,
                     'instructions' => 'Gambar/video 1920×1080.',
                 ]),
-                // Letak nama, judul, dan tombol
-                $this->field('align', 'select', ['options' => collect(ProjectPage::HERO_ALIGN)->map(fn (string $label, string $value): array => ['value' => $value, 'label' => $label])->values()->all(), 'default' => 'split'], [
-                    'label' => 'Posisi konten', 'translatable' => false,
-                ]),
                 // Tombol putar video
-                $this->field('video_file', 'media', ['types' => ['video']], ['label' => 'Video popup (upload)', 'translatable' => false, 'width' => 50]),
-                $text('video_url', 'Link YouTube', ['translatable' => false, 'width' => 50, 'instructions' => 'Dipakai bila video upload kosong.']),
+                $this->field('video_file', 'media', ['types' => ['video']], ['label' => 'Video popup (upload)', 'translatable' => false, 'width' => 33]),
+                $text('video_url', 'Link YouTube', ['translatable' => false, 'width' => 33, 'instructions' => 'Dipakai bila video upload kosong.']),
             ]]),
             $section('masterplan', 'Masterplan', [
                 $scene(),
