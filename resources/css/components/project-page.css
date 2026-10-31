@@ -312,6 +312,45 @@ button.pj-frame:focus-visible {
   transform: scale(1.08);
 }
 
+/* Popup video hero: bingkai di tengah, latar tetap terlihat */
+.is-project .ov.is-framed {
+  width: min(1120px, calc(100% - 2 * var(--gutter)), calc((100dvh - 160px) * 16 / 9)); /* Muat tinggi layar */
+  height: auto;
+  margin: auto;
+  overflow: visible;
+  background: none;
+}
+
+.is-project .ov.is-framed::backdrop {
+  background: rgba(8, 10, 12, 0.85);
+}
+
+/* Judul hanya untuk pembaca layar */
+.is-project .ov.is-framed .ov__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Tutup di atas sudut kanan video */
+.is-project .ov.is-framed .ov__bar {
+  justify-content: flex-end;
+  padding: 0 0 12px;
+}
+
+.is-project .ov.is-framed .ov__body {
+  padding: 0;
+}
+
+.is-project .ov.is-framed :is(.ov__video, .ov__frame) {
+  height: auto;
+  max-height: calc(100dvh - 160px);
+  aspect-ratio: 16 / 9;
+}
+
 @media (min-width: 761px) {
   .is-project .hero__action {
     grid-column: 2;

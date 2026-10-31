@@ -727,7 +727,7 @@ test('the project hero swaps the scroll cue for a play button that opens an uplo
     // Upload diutamakan
     $this->get('/projects/westlake')->assertOk()
         ->assertSee('class="btn btn--light hero__play" type="button" data-open="video"', false)
-        ->assertSee(e(json_encode(['src' => $video->url(), 'title' => 'Westlake'])), false)
+        ->assertSee(e(json_encode(['src' => $video->url(), 'title' => 'Westlake'])).'" data-framed>', false)
         ->assertDontSee('hero__cue', false);
 
     $this->get('/projects/tube')->assertOk()

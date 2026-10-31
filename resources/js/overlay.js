@@ -28,7 +28,7 @@ function reset() {
   els.video.removeAttribute('src');
   els.video.load();
   els.frame.removeAttribute('src');
-  dlg.classList.remove('is-info');
+  dlg.classList.remove('is-info', 'is-framed');
 }
 
 function showGalleryItem(i) {
@@ -78,9 +78,11 @@ const openers = {
   },
 };
 
-function open(kind, payload = {}) {
+// framed: video di bingkai tengah, bukan selayar
+function open(kind, payload = {}, { framed = false } = {}) {
   reset();
   openers[kind](payload);
+  dlg.classList.toggle('is-framed', framed);
   if (!dlg.open) dlg.showModal();
   $('.ov__close').focus();
 }
@@ -119,7 +121,7 @@ document.addEventListener('click', (e) => {
   const trigger = e.target.closest('[data-open]');
   if (!trigger) return;
   e.preventDefault();
-  open(trigger.dataset.open, JSON.parse(trigger.dataset.payload || '{}'));
+  open(trigger.dataset.open, JSON.parse(trigger.dataset.payload || '{}'), { framed: trigger.hasAttribute('data-framed') });
 });
 
 window.drOverlay = { open, close };

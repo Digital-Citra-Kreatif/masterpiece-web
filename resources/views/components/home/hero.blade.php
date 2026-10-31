@@ -54,7 +54,7 @@
     @if ($hero['video'] ?? null)
       {{-- Tombol video popup --}}
       <div class="hero__action">
-        <button class="btn btn--light hero__play" type="button" data-open="{{ $hero['video']['kind'] }}" data-payload="{{ json_encode(['src' => $hero['video']['src'], 'title' => $hero['title']]) }}">
+        <button class="btn btn--light hero__play" type="button" data-open="{{ $hero['video']['kind'] }}" data-payload="{{ json_encode(['src' => $hero['video']['src'], 'title' => $hero['title']]) }}" data-framed>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none" /></svg>
           Putar video
         </button>
