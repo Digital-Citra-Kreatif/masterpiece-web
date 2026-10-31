@@ -584,6 +584,13 @@ final class ProjectPage
             is_numeric($row['lb'] ?? null) && $row['lb'] > 0 ? ['LB', self::number($row['lb']).' m²'] : null,
             is_numeric($row['floors'] ?? null) && $row['floors'] > 0 ? ['Lantai', (string) (int) $row['floors']] : null,
         ]));
+        // Data ringkasan lain dari CMS
+        $extra = collect($row['summary_extra'] ?? [])
+            ->filter(fn (mixed $item): bool => is_array($item) && filled($item['label'] ?? null) && filled($item['value'] ?? null) && ($item['_hidden'] ?? false) !== true)
+            ->map(fn (array $item): array => [(string) $item['label'], (string) $item['value']])
+            ->values()
+            ->all();
+        $facts = [...$facts, ...$extra];
 
         return [
             'id' => 'unit-'.($index + 1),

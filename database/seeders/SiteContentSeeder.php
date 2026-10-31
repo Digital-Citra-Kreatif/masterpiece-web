@@ -94,7 +94,7 @@ class SiteContentSeeder extends Seeder
                     $this->field('bedrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('bathrooms', 'number', ['min' => 0, 'step' => 1], ['width' => 25]),
                     $this->field('floors', 'number', ['min' => 1, 'step' => 1]),
-                    $this->field('summary_extra', 'repeater', ['max' => 2], [
+                    $this->field('summary_extra', 'repeater', [], [
                         'label' => 'Data ringkasan lain',
                         'fields' => [$text('label', ['label' => 'Label singkat', 'required' => true, 'width' => 50]), $text('value', ['label' => 'Nilai', 'required' => true, 'width' => 50])],
                     ]),

@@ -547,6 +547,26 @@ test('a project lists its chosen types in the Types collection order, not the or
         ->assertSeeInOrder(['id="tipe-lain"', url('/westlake/tipe/tipe-3'), url('/westlake/tipe/tipe-1')], false);
 });
 
+test('a type card on the project page shows every Data ringkasan lain row, with no limit, and skips hidden rows', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'types' => ['title' => 'Type', 'units' => [$type->entry_id]],
+    ]);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'summary_extra' => [
+        ['label' => 'Carport', 'value' => '2 mobil'],
+        ['label' => 'Daya', 'value' => '3500 VA'],
+        ['label' => 'Air', 'value' => 'PDAM'],
+        ['label' => 'Rahasia', 'value' => 'x', '_hidden' => true],
+    ]]]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSeeInOrder(['<dl class="card__specs">', '<dt>Carport</dt><dd>2 mobil</dd>', '<dt>Daya</dt><dd>3500 VA</dd>', '<dt>Air</dt><dd>PDAM</dd>', '</dl>'], false)
+        ->assertDontSee('<dt>Rahasia</dt>', false);
+});
+
 test('a project\'s type page shows the project\'s 360° tabs beside the type sheet', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $frames = collect(['frame_1.jpg', 'frame_2.jpg'])->map(fn (string $name): int => projectImage($name))->all();
