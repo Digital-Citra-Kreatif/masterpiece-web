@@ -108,6 +108,14 @@ img.hero__media {
   }
 }
 
+/* Tablet beranda */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .is-home .hero__title {
+    max-width: 11em;
+    text-wrap: balance;
+  }
+}
+
 .hero__foot {
   position: relative;
   display: flex;
