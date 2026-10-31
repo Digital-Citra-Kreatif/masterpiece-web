@@ -303,6 +303,11 @@ button.pj-frame:focus-visible {
   transition: transform 0.3s var(--ease);
 }
 
+/* Lingkar ikon tipis, sekitar 1px */
+.is-project .hero__play svg circle {
+  stroke-width: 0.6;
+}
+
 .is-project .hero__play:hover svg {
   transform: scale(1.08);
 }
