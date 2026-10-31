@@ -70,7 +70,7 @@
                 {{-- Gambar tab, tampil setelah zoom --}}
                 <img class="tps__zoom" alt="" decoding="async" data-spin-zoom />
                 {{-- Indikator tab seperti titik Masterplan --}}
-                <button class="spot spot--marker is-active tps__spot" type="button" aria-label="Lihat {{ $first['name'] }}" data-spin-spot @if (($first['zoom'] ?? null) === null) hidden @endif>
+                <button class="spot spot--marker tps__spot" type="button" aria-label="Lihat {{ $first['name'] }}" data-spin-spot @if (($first['zoom'] ?? null) === null) hidden @endif>
                   <span class="spot__dot"><x-project.marker :marker="$marker" /></span>
                   <span class="spot__label" aria-hidden="true">{{ $first['name'] }}</span>
                 </button>

@@ -334,6 +334,13 @@ export function spin(root) {
     const ready = preloadZoom(part.zoom);
     root.classList.remove('is-returning');
     root.classList.add('is-zoom');
+    // Silang pudar di paruh akhir zoom
+    Promise.all([ready, wait(ZOOM_MS * 0.5)]).then(([ok]) => {
+      if (!ok || id !== zoomRun) return;
+      Object.assign(zoomLayer, { src: part.zoom, alt: part.name });
+      zoomLayer.classList.add('is-on');
+      root.classList.add('is-zoom-on');
+    });
     // Detail muncul saat kamera hampir sampai
     await wait(ZOOM_MS * 0.75);
     if (id !== zoomRun) return;
@@ -342,12 +349,9 @@ export function spin(root) {
     text.textContent = part.text;
     text.hidden = !part.text;
     tabList.hidden = true;
+    detail.classList.remove('is-leaving');
     detail.hidden = false;
     detail.querySelector('[data-spin-detail-title]').focus({ preventScroll: true });
-    await wait(ZOOM_MS * 0.25);
-    if (!(await ready) || id !== zoomRun) return;
-    Object.assign(zoomLayer, { src: part.zoom, alt: part.name });
-    zoomLayer.classList.add('is-on');
   }
 
   async function closeZoom() {
@@ -355,15 +359,16 @@ export function spin(root) {
     const id = ++zoomRun;
     zoomed = null;
     const focused = root.contains(document.activeElement);
+    // Detail dan gambar pudar, 360° kembali tampil
+    detail.classList.add('is-leaving');
+    zoomLayer.classList.remove('is-on');
+    root.classList.remove('is-zoom-on');
+    await wait(300);
+    if (id !== zoomRun) return;
     detail.hidden = true;
+    detail.classList.remove('is-leaving');
     tabList.hidden = false;
     if (focused) buttons[active]?.focus({ preventScroll: true });
-    // Gambar pudar dulu, lalu kamera kembali
-    if (zoomLayer.classList.contains('is-on')) {
-      zoomLayer.classList.remove('is-on');
-      await wait(400);
-      if (id !== zoomRun) return;
-    }
     root.classList.add('is-returning');
     root.classList.remove('is-zoom');
     await wait(ZOOM_MS);

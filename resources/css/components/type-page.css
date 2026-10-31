@@ -350,12 +350,19 @@ body.is-type .tps--scroll::before {
 /* Zoom tab: kamera mendekat ke indikator */
 .tps__poster,
 .tps__canvas {
-  transition: transform 1.3s cubic-bezier(0.65, 0, 0.35, 1); /* Sama dengan ZOOM_MS */
+  transition:
+    transform 1.3s cubic-bezier(0.65, 0, 0.35, 1), /* Sama dengan ZOOM_MS */
+    opacity 0.6s var(--ease);
 }
 
 .tps.is-zoom :is(.tps__poster, .tps__canvas) {
   transform: scale(2.2);
   pointer-events: none;
+}
+
+/* 360° pudar saat gambar tab masuk */
+.tps.is-zoom-on :is(.tps__poster, .tps__canvas) {
+  opacity: 0;
 }
 
 /* Gambar tab utuh di atas 360°, latar hitam */
@@ -369,19 +376,26 @@ body.is-type .tps--scroll::before {
   background: #000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s var(--ease);
+  transition: opacity 0.6s var(--ease);
 }
 
 .tps__zoom.is-on {
   opacity: 1;
 }
 
-/* Indikator di tengah gambar */
-.tps__spot {
+/* Indikator di tengah gambar, tanpa batang */
+.tps .tps__spot {
+  --stem: 0px;
   left: 50%;
   top: 50%;
   z-index: 2;
+  transform: translateY(calc(var(--head) / 2)); /* Tengah kepala di titik */
   transition: opacity 0.3s, visibility 0s;
+}
+
+.tps .tps__spot.spot--marker .spot__dot::before,
+.tps .tps__spot.spot--marker .spot__dot::after {
+  content: none;
 }
 
 .tps__spot[hidden] {
@@ -401,7 +415,23 @@ body.is-type .tps--scroll::before {
 
 .tps__detail {
   margin-bottom: 32px;
-  animation: loc-in 0.7s var(--ease) both; /* Gerak panel Masterplan */
+  animation: loc-in 0.7s var(--ease); /* Gerak panel Masterplan */
+  transition: opacity 0.3s var(--ease);
+}
+
+.tps__detail.is-leaving {
+  opacity: 0;
+}
+
+/* Tab muncul lagi setelah detail ditutup */
+.tps.is-returning .tph__tabs {
+  animation: tps-fade 0.4s var(--ease);
+}
+
+@keyframes tps-fade {
+  from {
+    opacity: 0;
+  }
 }
 
 .tps__detail .scene__back {
@@ -436,7 +466,8 @@ body.is-type .tps--scroll::before {
     transition: none;
   }
 
-  .tps__detail {
+  .tps__detail,
+  .tps.is-returning .tph__tabs {
     animation: none;
   }
 }
