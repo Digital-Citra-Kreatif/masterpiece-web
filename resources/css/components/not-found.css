@@ -78,7 +78,8 @@ body:has(.nf) :is(.nf, .ft) {
 
 /* Maintenance: bingkai layar, garis atas bawah seperti garis samping */
 body:has(.nf--mt) .nf--mt {
-  --line-y: max(8px, var(--gutter) - 40px);
+  /* Sama jarak garis samping, paling jauh 10% tinggi layar */
+  --line-y: max(8px, var(--gutter) - 40px, min(max(0px, (100vw - var(--max)) / 2) + max(8px, var(--gutter) - 40px), 10svh));
   background-image:
     linear-gradient(var(--line), var(--line)),
     linear-gradient(var(--line), var(--line)),
