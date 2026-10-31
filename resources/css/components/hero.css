@@ -171,7 +171,7 @@ img.hero__media {
 }
 
 .hero__lead {
-  max-width: 420px;
+  max-width: 340px;
   margin: 0 0 0 auto; /* Tetap kanan */
   font-size: clamp(17px, 1.67vw, 20px);
   line-height: 1.5;
