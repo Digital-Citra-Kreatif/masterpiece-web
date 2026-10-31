@@ -11,7 +11,7 @@
   <div class="wrap">
     <ul class="prj__grid">
       @foreach ($projects as $p)
-        <li data-reveal style="transition-delay: {{ ($loop->index % 2) * 90 }}ms">
+        <li>
           <a class="prj__card" href="{{ $p['url'] }}" data-view-target>
             <div class="prj__media">
               <div class="prj__frame">
