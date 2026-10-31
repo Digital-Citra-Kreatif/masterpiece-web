@@ -9,5 +9,4 @@
       <p class="nf__date">Perkiraan kembali <time datetime="{{ $mt['date']['iso'] }}">{{ $mt['date']['label'] }}</time></p>
     @endif
   </main>
-  <x-footer />
 </x-layouts.base>

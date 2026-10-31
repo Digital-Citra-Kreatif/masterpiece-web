@@ -33,7 +33,8 @@ test('an active maintenance mode shows its title, description and return date on
             ->assertSee('<main class="nf nf--mt">', false)
             ->assertSee('<h1 class="nf__title">Kami sedang berbenah</h1>', false)
             ->assertSee('Situs dibuka lagi segera.')
-            ->assertSee('<time datetime="2026-11-02">2 November 2026</time>', false);
+            ->assertSee('<time datetime="2026-11-02">2 November 2026</time>', false)
+            ->assertDontSee('<footer class="ft">', false);
     }
 });
 
