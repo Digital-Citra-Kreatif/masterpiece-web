@@ -121,6 +121,7 @@ body:has(.nf--mt) .nf--mt {
 
 /* Hitung mundur: angka sama lebar agar tidak bergeser */
 .nf__count {
+  margin-top: clamp(12px, 3vw, 40px); /* Tambahan dari jarak 28px */
   display: flex;
   align-items: flex-start;
   justify-content: center;
