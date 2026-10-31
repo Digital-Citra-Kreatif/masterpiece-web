@@ -1,0 +1,30 @@
+/* Teks bacaan tablet HP */
+
+/* Dimuat terakhir; :root agar menang */
+@media (max-width: 1024px) {
+  body,
+  :root body :is(
+    .hero__lead,
+    .prj__desc,
+    .fac__intro,
+    .ft__text,
+    .ft__list,
+    .ft__meta,
+    .nf__text,
+    .scene__intro,
+    .scene__loc-text,
+    .pj-loc__intro,
+    .pswp__caption,
+    .tph__desc,
+    .tps__detail-text,
+    .tps__intro,
+    .tps__uses li,
+    .tps__facts dd,
+    .tps__specs dd,
+    .tpb__list dd,
+    .card__specs dd
+  ),
+  :root body .scene[data-panel='zoom'] .scene__loc-text {
+    font-size: 14px;
+  }
+}
