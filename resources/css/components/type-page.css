@@ -447,8 +447,14 @@ body.is-type .tps--scroll::before {
   }
 }
 
-.tps__detail .scene__back {
-  margin-bottom: 24px;
+/* Kembali ke 360° di bawah deskripsi, tanpa kotak */
+.tps__back {
+  margin-top: 20px;
+  margin-left: -2px; /* Sejajar teks */
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
 }
 
 .tps .tps__detail-title {

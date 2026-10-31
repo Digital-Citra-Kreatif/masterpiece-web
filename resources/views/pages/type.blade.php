@@ -104,12 +104,13 @@
             @if ($zooms)
               {{-- Detail tab terbuka --}}
               <div class="tps__detail" role="group" aria-labelledby="type-360-detail-title" data-spin-detail hidden>
-                <button class="scene__back" type="button" data-spin-back>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
-                  Kembali ke 360°
-                </button>
                 <h3 class="display tps__detail-title" id="type-360-detail-title" tabindex="-1" data-spin-detail-title></h3>
                 <p class="tps__detail-text" data-spin-detail-text></p>
+                {{-- Teks dan panah, seperti kembali ke proyek --}}
+                <button class="hd__back roll-host tps__back" type="button" data-spin-back>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+                  <x-roll-text text="Kembali ke 360°" />
+                </button>
               </div>
             @endif
 
