@@ -138,15 +138,18 @@
   line-height: 1.6;
 }
 
-@media (max-width: 760px) {
-  .prj__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
+/* Logo kecil tablet HP */
+@media (max-width: 1024px) {
   .prj__logo {
     width: 72px;
     height: 72px;
     padding: 8px;
+  }
+}
+
+@media (max-width: 760px) {
+  .prj__grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
