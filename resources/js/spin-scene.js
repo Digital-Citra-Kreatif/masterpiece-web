@@ -158,6 +158,7 @@ export function spin(root) {
     queued = false;
     if (!inView) return;
     const i = frameIndex();
+    updateSpot(i);
     const frames = set().frames;
     const img = frames[i] || nearest(frames, i);
     const key = `${active}:${img ? frames.indexOf(img) : -1}:${canvas.width}`;
@@ -213,19 +214,43 @@ export function spin(root) {
     if (name) name.textContent = tab().name;
     canvas.setAttribute('aria-label', canvas.getAttribute('aria-label').replace(/, [^:]+:/, `, ${tab().name}:`));
     still();
-    placeSpot();
   };
 
-  // Indikator hanya untuk tab bergambar zoom
-  const placeSpot = () => {
-    if (!spot) return;
-    spot.hidden = !tab().zoom;
+  // Indikator: tab bergambar zoom, hanya di gambar pertamanya
+  const SPOT_FADE = 300; // Sama dengan transisi CSS
+  let spotAt = null; // Tab tempat indikator berada
+  let spotFading = 0;
+  const atStart = (i) => {
+    const n = tab().frames.length;
+    const d = Math.abs(i - tab().frame) % n;
+    return Math.min(d, n - d) <= 1;
+  };
+  const moveSpot = () => {
+    spotAt = active;
     // Posisi dari CMS, juga titik tuju zoom
     spot.parentElement.style.setProperty('--spot-x', `${tab().x ?? 50}%`);
     spot.parentElement.style.setProperty('--spot-y', `${tab().y ?? 50}%`);
     spot.querySelector('.spot__label').textContent = tab().name;
     spot.setAttribute('aria-label', `Lihat ${tab().name}`);
   };
+  const updateSpot = (i) => {
+    if (!spot) return;
+    if (spotAt !== active) {
+      if (spotFading) return;
+      // Pudar dulu di tab lama, baru pindah
+      if (!spot.classList.contains('is-off')) {
+        spot.classList.add('is-off');
+        spotFading = setTimeout(() => { spotFading = 0; request(); }, reduced ? 0 : SPOT_FADE);
+        return;
+      }
+      moveSpot();
+    }
+    spot.classList.toggle('is-off', !tab().zoom || !atStart(i));
+  };
+  if (spot) {
+    spot.classList.add('is-off');
+    spot.hidden = false;
+  }
 
   const show = (index) => {
     if (index === active) return;

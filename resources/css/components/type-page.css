@@ -402,8 +402,9 @@ body.is-type .tps--scroll::before {
   opacity: 1;
 }
 
-/* Indikator di posisi X/Y tab, tanpa batang */
+/* Indikator kecil di posisi X/Y tab, tanpa batang */
 .tps .tps__spot {
+  --head: 20px;
   --stem: 0px;
   left: var(--spot-x, 50%);
   top: var(--spot-y, 50%);
@@ -412,9 +413,27 @@ body.is-type .tps--scroll::before {
   transition: opacity 0.3s, visibility 0s;
 }
 
-.tps .tps__spot.spot--marker .spot__dot::before,
+/* Lepas dari gambar pertama tab: pudar */
+.tps .tps__spot.is-off {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0s 0.3s; /* Sama dengan SPOT_FADE */
+}
+
 .tps .tps__spot.spot--marker .spot__dot::after {
   content: none;
+}
+
+/* Area sentuh 44px, bukan bayangan pin */
+.tps .tps__spot.spot--marker .spot__dot::before {
+  inset: -12px;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  filter: none;
+  translate: none;
+  pointer-events: auto;
 }
 
 .tps__spot[hidden] {
