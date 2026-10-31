@@ -76,13 +76,38 @@ body:has(.nf) :is(.nf, .ft) {
   border-radius: 999px;
 }
 
-/* Maintenance: judul jadi fokus, diapit garis */
+/* Garis selebar layar tidak bikin geser samping */
+.nf--mt {
+  overflow-x: clip;
+}
+
+/* Maintenance: judul jadi fokus, diapit garis selebar layar */
 .nf--mt .nf__title {
+  position: relative;
   max-width: 16ch;
   padding-block: clamp(16px, 2vw, 24px);
-  border-block: 1px solid rgb(14 17 19 / 0.12);
   font-size: clamp(36px, 6vw, 72px);
   text-wrap: balance;
+}
+
+/* Garis atas dan bawah, warna sama garis samping */
+.nf--mt .nf__title::before,
+.nf--mt .nf__title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 100vw;
+  height: 1px;
+  background: rgb(14 17 19 / 0.12);
+  translate: -50% 0;
+}
+
+.nf--mt .nf__title::before {
+  top: 0;
+}
+
+.nf--mt .nf__title::after {
+  bottom: 0;
 }
 
 /* Deskripsi lebih lebar */
