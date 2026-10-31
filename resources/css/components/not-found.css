@@ -76,38 +76,23 @@ body:has(.nf) :is(.nf, .ft) {
   border-radius: 999px;
 }
 
-/* Garis selebar layar tidak bikin geser samping */
-.nf--mt {
-  overflow-x: clip;
+/* Maintenance: bingkai layar, garis atas bawah seperti garis samping */
+body:has(.nf--mt) .nf--mt {
+  --line-y: max(8px, var(--gutter) - 40px);
+  background-image:
+    linear-gradient(var(--line), var(--line)),
+    linear-gradient(var(--line), var(--line)),
+    linear-gradient(var(--line), var(--line)),
+    linear-gradient(var(--line), var(--line));
+  background-size: 1px 100%, 1px 100%, 100% 1px, 100% 1px;
+  background-position: left var(--line-x) top 0, right var(--line-x) top 0, left 0 top var(--line-y), left 0 bottom var(--line-y);
 }
 
-/* Maintenance: judul jadi fokus, diapit garis selebar layar */
+/* Judul jadi fokus */
 .nf--mt .nf__title {
-  position: relative;
   max-width: 16ch;
-  padding-block: clamp(16px, 2vw, 24px);
   font-size: clamp(36px, 6vw, 72px);
   text-wrap: balance;
-}
-
-/* Garis atas dan bawah, warna sama garis samping */
-.nf--mt .nf__title::before,
-.nf--mt .nf__title::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  width: 100vw;
-  height: 1px;
-  background: rgb(14 17 19 / 0.12);
-  translate: -50% 0;
-}
-
-.nf--mt .nf__title::before {
-  top: 0;
-}
-
-.nf--mt .nf__title::after {
-  bottom: 0;
 }
 
 /* Deskripsi lebih lebar */
