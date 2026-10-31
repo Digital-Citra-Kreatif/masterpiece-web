@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Sunrice\Cms\Support\SiteCache;
 
 /** Posisi X/Y indikator per tab 360° Tipe */
 return new class extends Migration
@@ -64,5 +65,7 @@ return new class extends Migration
         unset($group, $repeater);
 
         DB::table('sunrice_blueprints')->where('id', $blueprint->id)->update(['fields' => json_encode($fields)]);
+        // Form CMS membaca blueprint dari cache situs
+        app(SiteCache::class)->changed('blueprint tipe turntable');
     }
 };

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Sunrice\Cms\Support\SiteCache;
 
 /** Hero proyek: heading sebaris posisi, media sebaris video */
 return new class extends Migration
@@ -58,5 +59,7 @@ return new class extends Migration
         unset($group);
 
         DB::table('sunrice_blueprints')->where('id', $blueprint->id)->update(['fields' => json_encode($fields)]);
+        // Form CMS membaca blueprint dari cache situs
+        app(SiteCache::class)->changed('blueprint project hero');
     }
 };
