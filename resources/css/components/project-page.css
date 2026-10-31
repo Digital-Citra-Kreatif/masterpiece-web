@@ -335,10 +335,29 @@ button.pj-frame:focus-visible {
   white-space: nowrap;
 }
 
-/* Tutup di atas sudut kanan video */
+/* Tutup di kanan atas layar, tanpa garis */
 .is-project .ov.is-framed .ov__bar {
-  justify-content: flex-end;
-  padding: 0 0 12px;
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  right: var(--gutter);
+  z-index: 1;
+  padding: 0;
+}
+
+.is-project .ov.is-framed .ov__close {
+  margin-right: -12px; /* Ikon sejajar gutter */
+  border: 0;
+  color: #fff;
+}
+
+.is-project .ov.is-framed .ov__close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.is-project .ov.is-framed .ov__close:hover {
+  background: none;
+  color: rgb(255 255 255 / 0.7);
 }
 
 .is-project .ov.is-framed .ov__body {
