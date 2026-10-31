@@ -98,7 +98,7 @@ body:has(.nf--mt) .nf--mt {
 
 /* Deskripsi lebih lebar */
 .nf--mt .nf__text {
-  max-width: 64ch;
+  max-width: 76ch;
 }
 
 /* Hitung mundur: angka sama lebar agar tidak bergeser */
