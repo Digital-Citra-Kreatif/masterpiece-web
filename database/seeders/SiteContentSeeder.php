@@ -156,6 +156,9 @@ class SiteContentSeeder extends Seeder
                         $text('available', ['required' => true, 'width' => 33]),
                     ]]),
                     $this->field('protect_media', 'toggle', [], ['instructions' => 'Nonaktifkan fitur simpan gambar/video di browser']),
+                    // Animasi pembuka, sekali per interval
+                    $this->field('preload_active', 'toggle', ['default' => true], ['label' => 'Preload aktif', 'translatable' => false, 'width' => 50, 'instructions' => 'Animasi pembuka saat pengunjung pertama masuk.']),
+                    $this->field('preload_hours', 'number', ['min' => 1, 'max' => 720], ['label' => 'Tampil lagi setelah (jam)', 'translatable' => false, 'width' => 50, 'instructions' => 'Kosong: 6 jam.']),
                 ]],
                 $this->projectBlueprint(),
                 $this->footerBlueprint(),

@@ -23,7 +23,7 @@ final class Content
     /**
      * Data situs bersama
      *
-     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
+     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, preload: array{active: bool, hours: int}, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
      */
     public static function site(): array
     {
@@ -37,6 +37,11 @@ final class Content
                 'description' => Cms::site()->descriptionIn(),
                 'favicon' => self::favicon(),
                 'protectMedia' => (bool) ($settings['protect_media'] ?? false),
+                // Belum pernah disimpan: aktif, 6 jam
+                'preload' => [
+                    'active' => ($settings['preload_active'] ?? true) !== false,
+                    'hours' => is_numeric($settings['preload_hours'] ?? null) && $settings['preload_hours'] >= 1 ? (int) $settings['preload_hours'] : 6,
+                ],
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...self::headerLogo($settings), 'alt' => Cms::site()->name()],
                 'nav' => self::nav(),
