@@ -1,4 +1,4 @@
-{{-- Halaman maintenance, isi dari global CMS --}}
+{{-- Halaman maintenance --}}
 <x-layouts.base :title="$mt['title']" :description="$mt['description']" :preload="false">
   <main class="nf nf--mt">
     <h1 class="nf__title">{{ $mt['title'] }}</h1>
@@ -6,7 +6,7 @@
       <p class="nf__text">{!! nl2br(e($mt['description']), false) !!}</p>
     @endif
     @if ($mt['countdown'])
-      {{-- Hitung mundur ke waktu di CMS; angka awal dari server --}}
+      {{-- Hitung mundur server --}}
       <div class="nf__count" role="timer" aria-label="Dibuka kembali {{ $mt['countdown']['label'] }}" data-countdown="{{ $mt['countdown']['left'] }}">
         @foreach (['days' => 'Hari', 'hours' => 'Jam', 'minutes' => 'Menit', 'seconds' => 'Detik'] as $part => $unit)
           @if (! $loop->first)

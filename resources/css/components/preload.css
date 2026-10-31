@@ -4,26 +4,26 @@
   display: none;
 }
 
-/* Kelas dari script head, sebelum gambar pertama */
+/* Kelas script head */
 html.is-preload {
   overflow: hidden;
 }
 
 .is-preload .pl {
-  --w: 120px; /* Lebar rumah = viewBox: garis tepat 1px; dipakai juga potongan */
-  --stroke: #737373; /* Abu gelap, tetap jelas di hitam */
+  --w: 120px; /* Sama viewBox rumah */
+  --stroke: #737373; /* Abu gelap */
   display: block;
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: #000; /* Tutup celah antar belahan sebelum terbuka */
+  background: #000; /* Tutup celah belahan */
 }
 
 .pl.is-open {
   background: none;
 }
 
-/* Titik rumah (viewBox 120x100) ke layar: x = 50% + w*(x-60)/120, y = 50% - w*(100-y)/120 */
+/* Koordinat titik rumah */
 .pl__half {
   position: absolute;
   inset: 0;
@@ -31,7 +31,7 @@ html.is-preload {
   transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-/* Atas: di atas garis dan atap */
+/* Belahan atas */
 .pl__half--top {
   clip-path: polygon(
     0 0, 100% 0, 100% 50%,
@@ -48,7 +48,7 @@ html.is-preload {
   );
 }
 
-/* Bawah: di bawah garis, membawa bentuk rumah */
+/* Belahan bawah */
 .pl__half--bottom {
   clip-path: polygon(
     0 50%,
@@ -73,7 +73,7 @@ html.is-preload {
   transform: translateY(100%);
 }
 
-/* Garis tepat di tengah layar, pudar saat terbelah */
+/* Garis tengah layar */
 .pl__draw {
   position: absolute;
   left: 0;
@@ -91,7 +91,7 @@ html.is-preload {
 .pl__line {
   flex: 1;
   height: 1px;
-  margin-bottom: -0.5px; /* Tengah garis di dasar rumah */
+  margin-bottom: -0.5px; /* Tengah dasar rumah */
   background: var(--stroke);
   transform: scaleX(0);
   transform-origin: left;

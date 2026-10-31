@@ -36,7 +36,7 @@
     </div>
 
     <div class="tph__stage" role="region" aria-label="{{ $label }}" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}">
-      {{-- Gambar awal sebelum kanvas siap --}}
+      {{-- Poster sebelum kanvas --}}
       <img class="tph__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
       <canvas class="tph__canvas" tabindex="0" role="img" aria-label="{{ $label }}, {{ $first['name'] }}: geser untuk memutar" data-spin-canvas></canvas>
       @if ($spins)

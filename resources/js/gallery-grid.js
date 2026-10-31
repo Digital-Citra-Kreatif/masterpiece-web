@@ -6,7 +6,7 @@ if (dlg) {
   dlg.querySelector('[data-grid-close]').addEventListener('click', () => dlg.close());
   dlg.addEventListener('click', (e) => e.target === dlg && dlg.close()); // Klik latar
 
-  // PhotoSwipe di bawah dialog modal
+  // PhotoSwipe bawah dialog
   let pswp = 'idle';
   window.addEventListener(
     'click',

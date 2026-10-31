@@ -1,4 +1,4 @@
-// Peta titik unit di form proyek
+// Peta titik unit
 const EDITOR = /\/admin\/cms\/collections\/projects\/entries\/(\d+)\/edit/;
 // Field Siteplan proyek
 const FIELD = '[role="group"][aria-labelledby="data-availability-siteplan-label"]';
@@ -93,7 +93,7 @@ function setup(sunrice) {
 
     useEffect(() => { load(); }, [load]);
 
-    // Tampil hanya jika ada unit
+    // Tampil bila unit
     useEffect(() => { host.hidden = !failed && !data?.units.length; }, [host, data, failed]);
 
     const original = useMemo(() => new Map((data?.units ?? []).map((u) => [u.id, u])), [data]);
@@ -104,14 +104,14 @@ function setup(sunrice) {
     const missing = units.filter((u) => !placed(u)).length;
     const canUpdate = data?.canUpdate ?? false;
 
-    // Jaga perubahan belum simpan
+    // Jaga belum simpan
     useEffect(() => {
       const beforeUnload = (event) => { if (dirtyRef.current) event.preventDefault(); };
       const offBefore = router.on('before', (event) => {
         if (!dirtyRef.current || event.detail.visit.method !== 'get') return true;
         return window.confirm('Titik unit belum disimpan. Tinggalkan halaman ini?');
       });
-      // Siteplan baru setelah proyek disimpan
+      // Siteplan setelah simpan
       const offSuccess = router.on('success', () => { if (!dirtyRef.current) load(); });
       addEventListener('beforeunload', beforeUnload);
       return () => { offBefore(); offSuccess(); removeEventListener('beforeunload', beforeUnload); };
@@ -174,7 +174,7 @@ function setup(sunrice) {
         'div',
         { className: 'pm-plan is-idle is-preview', style: { width: `${zoom * 100}%` } },
         h('img', { src: data.siteplan.src, alt: 'Siteplan', width: data.siteplan.width, height: data.siteplan.height, draggable: false }),
-        // Klik titik hanya memilih
+        // Klik hanya memilih
         units.filter(placed).map((u) => h(
           'button',
           {
@@ -218,7 +218,7 @@ function setup(sunrice) {
 
   const button = (props, label) => h(ui.Button, { type: 'button', ...props }, label);
 
-  // Unggah ZIP frame 360°, per potongan
+  // Unggah ZIP bertahap
   const CHUNK = 1024 * 1024;
   const mb = (n) => `${(n / 1048576).toFixed(1)} MB`;
   function OrbitUpload({ section, project, onChange }) {
@@ -235,7 +235,7 @@ function setup(sunrice) {
       return json;
     }, [project, section]);
 
-    // Status awal dan setelah Simpan
+    // Status setelah simpan
     useEffect(() => {
       const load = () => request('GET').then(setState).catch(() => setState(null));
       load();
@@ -306,7 +306,7 @@ function setup(sunrice) {
         state?.active && !busy && !sent && !fromField && button({ variant: 'outline', size: 'sm', onClick: remove }, 'Hapus frame')));
   }
 
-  // Titik orbit: pilih titik, isi X/Y di bawah gambar
+  // Pemilih titik orbit
   const rowsPattern = (section) => new RegExp(`^data-${section}-points-(\\d+)-fields$`);
   const inputOf = (section, index, key) => document.getElementById(`data-${section}-points-${index}-${key}`);
   const setInput = (el, value) => {
@@ -334,18 +334,18 @@ function setup(sunrice) {
   function OrbitPicker({ section, title, frame, group }) {
     const [, setTick] = useState(0);
     const [selected, setSelected] = useState(null);
-    const [draft, setDraft] = useState({}); // Teks X/Y saat diketik
+    const [draft, setDraft] = useState({}); // Draf teks X/Y
     const rows = readRows(group, section);
     const current = rows.find((r) => r.index === selected) ?? null;
     const missing = rows.filter((r) => !placed(r)).length;
 
-    // Baca ulang saat form berubah
+    // Pantau perubahan form
     useEffect(() => {
       const bump = () => setTick((t) => t + 1);
       const observer = new MutationObserver(bump);
       observer.observe(group, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
       group.addEventListener('input', bump);
-      // Baris tertutup dibuka agar X/Y terbaca
+      // Buka agar terbaca
       for (const button of group.querySelectorAll(`button[aria-controls^="data-${section}-points-"][aria-expanded="false"]`)) button.click();
       return () => { observer.disconnect(); group.removeEventListener('input', bump); };
     }, [group, section]);
@@ -372,7 +372,7 @@ function setup(sunrice) {
       if (selected === null && rows.length) setSelected((rows.find((r) => !placed(r)) ?? rows[0]).index);
     }, [rows.length, selected]);
 
-    // Satu kolom per ketikan
+    // Kolom per ketikan
     const setAxis = (axis, text) => {
       const input = current && inputOf(section, current.index, axis);
       if (!input) return;
@@ -431,7 +431,7 @@ function setup(sunrice) {
   let frames = null;
   let framesFor = null; // Proyek pemilik frame
   const orbitMounts = new Map();
-  // Frame per proyek: gambar CMS atau frame orbit
+  // Frame per proyek
   const loadFrames = (project) => {
     framesFor = project;
     fetch(sunrice.adminUrl(`orbit-frames?project=${project}`), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
@@ -443,7 +443,7 @@ function setup(sunrice) {
         orbitMounts.forEach((m) => m.render());
       });
   };
-  // Muat ulang setelah simpan
+  // Muat setelah simpan
   router.on('success', () => {
     const project = location.pathname.match(EDITOR)?.[1];
     if (project && orbitMounts.size) loadFrames(project);
@@ -481,21 +481,21 @@ function setup(sunrice) {
     }
   };
 
-  // Titik tab 360° Tipe: tiap tab punya panel sendiri, di atas gambar pertamanya
+  // Panel titik tab
   const TYPE_EDITOR = /\/admin\/cms\/collections\/types\/entries\/(\d+)\/edit/;
   const TAB_ROW = /^data-turntable-tabs-(\d+)-fields$/;
   const tabInput = (index, key) => document.getElementById(`data-turntable-tabs-${index}-${key}`);
 
   function TabPoint({ row, frames }) {
     const [, setTick] = useState(0);
-    const [draft, setDraft] = useState({}); // Teks X/Y saat diketik
+    const [draft, setDraft] = useState({}); // Draf teks X/Y
     const index = Number(row.id.match(TAB_ROW)?.[1] ?? NaN);
     const num = (key) => { const v = tabInput(index, key)?.value; return v === undefined || v === '' ? null : Number(v); };
     const point = { x: num('x'), y: num('y') };
     const name = tabInput(index, 'name')?.value || `Tab ${index + 1}`;
     const frame = frames?.[index] ?? null;
 
-    // Baca ulang saat baris berubah
+    // Pantau perubahan baris
     useEffect(() => {
       const bump = () => setTick((t) => t + 1);
       const observer = new MutationObserver(bump);
@@ -504,7 +504,7 @@ function setup(sunrice) {
       return () => { observer.disconnect(); row.removeEventListener('input', bump); };
     }, [row]);
 
-    // Sembunyikan X/Y bawaan, diganti panel
+    // Sembunyikan X/Y bawaan
     useEffect(() => {
       for (const key of ['x', 'y']) {
         const input = tabInput(index, key);
@@ -520,7 +520,7 @@ function setup(sunrice) {
       }
     });
 
-    // Satu kolom per ketikan
+    // Kolom per ketikan
     const setAxis = (axis, text) => {
       const input = tabInput(index, axis);
       if (!input) return;
@@ -559,7 +559,7 @@ function setup(sunrice) {
     return h('div', null, bar, plan, detail);
   }
 
-  const tabMounts = new Map(); // Baris tab => panel
+  const tabMounts = new Map(); // Panel per baris
   let tabFrames = null;
   let tabFramesFor = null; // Tipe pemilik gambar
   const renderTabs = () => tabMounts.forEach((m) => m.render());
@@ -574,7 +574,7 @@ function setup(sunrice) {
         renderTabs();
       });
   };
-  // Muat ulang setelah simpan
+  // Muat setelah simpan
   router.on('success', () => {
     const type = location.pathname.match(TYPE_EDITOR)?.[1];
     if (type && tabMounts.size) loadTabFrames(type);
@@ -603,7 +603,7 @@ function setup(sunrice) {
 
   let mounted = null;
 
-  // Pasang di bawah Siteplan
+  // Pasang bawah Siteplan
   const sync = () => {
     const match = location.pathname.match(EDITOR);
     const field = match && document.querySelector(FIELD);

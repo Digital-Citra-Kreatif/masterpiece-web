@@ -112,7 +112,7 @@ img.hero__media {
   position: relative;
   display: flex;
   align-items: flex-end;
-  justify-content: space-between; /* Panah kiri, deskripsi kanan */
+  justify-content: space-between; /* Panah dan deskripsi */
   gap: 24px;
 }
 
@@ -133,7 +133,7 @@ img.hero__media {
   width: 16px;
   height: 64px;
   transition: transform 0.3s var(--ease);
-  /* Garis tergambar ke bawah, berulang */
+  /* Garis berulang */
   animation: scroll-draw 2.4s 1.5s var(--ease) infinite both;
 }
 
@@ -172,7 +172,7 @@ img.hero__media {
 
 .hero__lead {
   max-width: 420px;
-  margin: 0 0 0 auto; /* Tetap kanan tanpa panah */
+  margin: 0 0 0 auto; /* Tetap kanan */
   font-size: clamp(17px, 1.67vw, 20px);
   line-height: 1.5;
 }

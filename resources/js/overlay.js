@@ -78,7 +78,7 @@ const openers = {
   },
 };
 
-// framed: video di bingkai tengah, bukan selayar
+// framed: bingkai tengah
 function open(kind, payload = {}, { framed = false } = {}) {
   reset();
   openers[kind](payload);

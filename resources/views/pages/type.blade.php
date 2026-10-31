@@ -8,7 +8,7 @@
   $denahItems = collect($t['denah'])->map(fn ($d) => ['src' => asset($d['image']), 'caption' => $d['label'], 'alt' => "Denah {$d['label']}"]);
   $denahPayload = fn ($index) => json_encode(['title' => "{$t['name']}: Denah", 'items' => $denahItems, 'index' => $index]);
   $vrUrl = filled($t['vr']['url']) ? asset($t['vr']['url']) : null;
-  // Indikator tab bila ada gambar zoom
+  // Ada gambar zoom
   $zooms = collect($parts)->contains(fn (array $part): bool => ($part['zoom'] ?? null) !== null);
   $marker = ($pj['style']['marker'] ?? null) ?: ['shape' => 'circle', 'image' => null];
 @endphp
@@ -33,10 +33,10 @@
   @endif
 
   <main>
-    {{-- Judul tipe, parallax ke section bawahnya --}}
+    {{-- Judul parallax --}}
     <div data-hero-parallax>
       <section class="tph tph--title" aria-labelledby="type-name" data-hero>
-        {{-- Judul kiri, kembali ke proyek kanan --}}
+        {{-- Judul dan kembali --}}
         <div class="wrap tph__head">
           <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
           @if ($pj)
@@ -53,7 +53,7 @@
 
     @if ($parts !== [] || $t['image'])
     {{-- 360° tipe --}}
-    {{-- 360° ikut gulir: tertahan di layar, tab berganti sesuai putaran --}}
+    {{-- 360° ikut gulir --}}
     <section
       @class(['tps', 'tps--scroll' => $parts !== []])
       aria-label="Detail {{ $t['name'] }}"
@@ -66,7 +66,7 @@
           @php($first = $parts[0])
           <div class="tps__view" style="--native: {{ $first['width'] }}px">
             <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}; --spot-x: {{ $first['x'] }}%; --spot-y: {{ $first['y'] }}%">
-              {{-- Gambar awal sebelum kanvas siap --}}
+              {{-- Poster sebelum kanvas --}}
               <img class="tps__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
               <canvas class="tps__canvas" tabindex="0" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: gulir atau geser untuk memutar" data-spin-canvas></canvas>
               <button class="icon-btn tps__nav tps__nav--prev" type="button" data-spin-step="-1" aria-label="Putar ke kiri">
@@ -76,9 +76,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
               </button>
               @if ($zooms)
-                {{-- Gambar tab, tampil setelah zoom --}}
+                {{-- Gambar zoom tab --}}
                 <img class="tps__zoom" alt="" decoding="async" data-spin-zoom />
-                {{-- Indikator tab seperti titik Masterplan --}}
+                {{-- Indikator tab --}}
                 <button class="spot spot--marker tps__spot" type="button" aria-label="Lihat {{ $first['name'] }}" data-spin-spot @if (($first['zoom'] ?? null) === null) hidden @endif>
                   <span class="spot__dot"><x-project.marker :marker="$marker" /></span>
                   <span class="spot__label" aria-hidden="true">{{ $first['name'] }}</span>
@@ -87,7 +87,7 @@
             </div>
           </div>
 
-          {{-- Tab seperti halaman proyek, lalu label ruko dan ukuran --}}
+          {{-- Tab dan label --}}
           <div class="tps__info">
             <ul class="tph__tabs" aria-label="Bagian 360°" data-spin-tabs>
               @foreach ($parts as $part)
@@ -106,7 +106,7 @@
               <div class="tps__detail" role="group" aria-labelledby="type-360-detail-title" data-spin-detail hidden>
                 <h3 class="display tps__detail-title" id="type-360-detail-title" tabindex="-1" data-spin-detail-title></h3>
                 <p class="tps__detail-text" data-spin-detail-text></p>
-                {{-- Teks dan panah, seperti kembali ke proyek --}}
+                {{-- Tombol kembali 360° --}}
                 <button class="hd__back roll-host tps__back" type="button" data-spin-back>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
                   <x-roll-text text="Kembali ke 360°" />
@@ -138,7 +138,7 @@
     </section>
     @endif
 
-    {{-- Label dan ukuran di section 360° bila ada --}}
+    {{-- Label tanpa 360° --}}
     @php($aboutHead = $parts === [])
     @if (($aboutHead && ($t['label'] || $t['dimensions'])) || $t['intro'] || $t['facts'] !== [] || $t['suitable']['items'] !== [] || $t['gallery'] !== [] || $vrUrl)
       {{-- Keterangan tipe --}}
@@ -156,7 +156,7 @@
                 @endif
 
                 @if ($t['intro'])
-                  {{-- Penanda kecil, ikut hilang bila deskripsi kosong --}}
+                  {{-- Penanda ikut deskripsi --}}
                   <p class="eyebrow tps__mark">{{ $t['name'] }}</p>
                   <div class="tps__intro">{!! $t['intro'] !!}</div>
                 @endif
@@ -176,7 +176,7 @@
             @endif
 
             @if ($t['facts'] !== [] || $t['gallery'] !== [] || $vrUrl)
-              {{-- Kolom kanan: LT LB lantai dan tombol --}}
+              {{-- Kolom kanan: spesifikasi --}}
               <div class="tps__side">
                 @if ($t['facts'] !== [])
                   <dl class="tps__facts">
@@ -208,7 +208,7 @@
     @endif
 
     @if ($t['denah'] !== [])
-      {{-- Denah, slide bila lebih dari satu --}}
+      {{-- Denah slide opsional --}}
       @php($slidePlans = count($t['denah']) > 1)
       <section class="tpd" aria-label="Denah" data-view-cursor>
         <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>

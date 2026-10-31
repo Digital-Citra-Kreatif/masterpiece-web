@@ -19,12 +19,12 @@ if (wa) {
       return;
     }
     if (panel.hidden) return;
-    // Tanpa gerak langsung tutup
+    // Reduced motion: tutup
     if (reduced.matches) return finishClose();
     panel.classList.add('is-closing');
   };
 
-  // Hanya animasi tutup panel
+  // Hanya animasi tutup
   panel.addEventListener('animationend', (e) => {
     if (e.target === panel && e.animationName === 'wa-out' && panel.classList.contains('is-closing')) finishClose();
   });

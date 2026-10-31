@@ -36,7 +36,7 @@ function frameSet(base) {
           const i = order[next++];
           const img = new Image();
           img.decoding = 'async';
-          // Decode di luar thread utama dulu
+          // Decode luar thread
           img.onload = () => img.decode().catch(() => {}).then(() => {
             set.frames[i] = img;
             listeners.forEach((fn) => fn());
@@ -63,7 +63,7 @@ function frameSet(base) {
         };
         return set;
       }),
-    // Indeks frame termuat terdekat
+    // Frame termuat terdekat
     nearestIndex(i) {
       const { frames } = set;
       const N = frames.length;
@@ -246,7 +246,7 @@ async function init(root) {
     const range = root.offsetHeight - stage.clientHeight - intro;
     return range > 0 ? clamp((scrolled() - intro) / range, 0, 1) : 0;
   };
-  // Terlihat, tanpa ukur tiap scroll
+  // Terlihat tanpa ukur
   let inView = false;
   new IntersectionObserver(([entry]) => {
     inView = entry.isIntersecting;
@@ -321,7 +321,7 @@ async function init(root) {
 
   function placeMarkers(fw, visible) {
     for (const el of markers) {
-      // Ikut frame yang tergambar
+      // Ikut frame tergambar
       const p = visible && trackAt(spots[el.dataset.spot].track, set.still ? fw : painted);
       const x = p && ox + p[0] * scale;
       const y = p && oy + p[1] * scale;
@@ -426,7 +426,7 @@ async function init(root) {
   const picture = root.querySelector('[data-scene-card]');
   const panelImg = root.querySelector('.scene__loc-img');
   const figure = root.querySelector('[data-place-figure]');
-  // Pramuat gambar titik saat scene dekat, waktu senggang
+  // Pramuat gambar titik
   if (figure) {
     const preload = () => {
       for (const { image } of Object.values(spots)) {
@@ -440,7 +440,7 @@ async function init(root) {
     }, { rootMargin: '50% 0px' });
     near.observe(root);
   }
-  // Latar zoom titik: gambar beda, fade supaya tidak terlihat patah
+  // Fade latar zoom
   const zoomLayer = root.querySelector('[data-scene-zoom]');
   const zoomCache = new Map();
   const preloadZoom = (key) => {
@@ -463,7 +463,7 @@ async function init(root) {
     zoomLayer.src = spots[key].zoom;
     zoomLayer.classList.add('is-on');
   };
-  // Pramuat saat titik disentuh
+  // Pramuat saat hover
   if (zoomLayer) {
     root.addEventListener('pointerover', (e) => {
       const spot = e.target.closest('[data-spot], [data-spot-open]');
@@ -518,7 +518,7 @@ async function init(root) {
     const from = placeKey;
     placeKey = key;
     const zoomReady = preloadZoom(key);
-    // Pindah titik: latar zoom pudar dulu
+    // Pudar sebelum pindah
     if (from) {
       await hideZoom();
       if (id !== run) return;
@@ -543,14 +543,14 @@ async function init(root) {
     placeKey = null;
     place.panel.hidden = true;
     if (figure) figure.hidden = true;
-    // Latar zoom pudar sebelum kembali
+    // Pudar sebelum kembali
     await hideZoom();
     if (id !== run) return;
     flying();
     if (root.contains(document.activeElement) || document.activeElement === document.body) {
       root.querySelector(`[data-spot-open="${key}"]`)?.focus({ preventScroll: true });
     }
-    // Kembali ke sudut; titik baru tampil setelah zoom normal
+    // Kembali ke sudut
     root.classList.add('is-returning');
     const { done } = travel(id, { fromKey: key, toFrame: Math.round(current) });
     setTimeout(() => id === run && root.classList.remove('is-place'), 500);
@@ -580,7 +580,7 @@ async function init(root) {
     const intro = introLength();
     const from = panelFrom();
     const areaIn = hasIntro ? smooth(scrolled(), from, from + H * 0.3) : 1;
-    // Tulis hanya bila berubah
+    // Tulis bila berubah
     const area = areaIn.toFixed(3);
     if (area !== lastArea) {
       lastArea = area;

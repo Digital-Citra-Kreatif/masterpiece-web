@@ -21,7 +21,7 @@
     @endif
     <script>document.documentElement.classList.remove('no-js');</script>
     @if ($preload)
-      {{-- Preload sekali per interval; dicatat di browser karena halaman di-cache sama untuk semua --}}
+      {{-- Preload dicatat browser --}}
       <script>
         (() => {
           try {
@@ -29,7 +29,7 @@
             if (matchMedia('(prefers-reduced-motion: reduce)').matches || Date.now() - (Number(localStorage.getItem(key)) || 0) < {{ $site['preload']['hours'] }} * 3600000) return;
             localStorage.setItem(key, String(Date.now()));
             document.documentElement.classList.add('is-preload');
-            setTimeout(() => document.documentElement.classList.remove('is-preload'), 12000); // Cadangan bila JS gagal
+            setTimeout(() => document.documentElement.classList.remove('is-preload'), 12000); // Cadangan JS gagal
           } catch (e) {}
         })();
       </script>

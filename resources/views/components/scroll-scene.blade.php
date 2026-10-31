@@ -49,7 +49,7 @@
   <div class="scene__stage">
     <canvas class="scene__media scene__canvas" aria-hidden="true"></canvas>
     @if ($spots->contains(fn (array $s): bool => $s['content']['zoom'] !== null))
-      {{-- Latar tajam saat titik di-zoom --}}
+      {{-- Latar zoom tajam --}}
       <img class="scene__media scene__zoom" alt="" aria-hidden="true" decoding="async" data-scene-zoom />
     @endif
     <div class="scene__shade" aria-hidden="true"></div>

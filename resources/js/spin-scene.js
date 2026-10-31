@@ -1,9 +1,9 @@
-// Mesin 360°: frame kanvas, diputar lewat scroll atau drag
+// Mesin 360°
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sets = new Map();
 
-// Urutan muat: kasar dulu, lalu rapat
+// Muat kasar dulu
 const loadOrder = (n) => {
   const order = [];
   for (let stride = 16; stride >= 1; stride /= 2) {
@@ -26,7 +26,7 @@ function frameSet(urls, onFrame) {
     if (next >= order.length) return;
     const i = order[next++];
     const img = new Image();
-    // Decode di luar thread utama
+    // Decode luar thread
     img.onload = () => img.decode().catch(() => {}).then(() => {
       set.frames[i] = img;
       set.listeners.forEach((fn) => fn());
@@ -60,15 +60,15 @@ export function spin(root) {
   const name = root.querySelector('[data-spin-name]');
   const buttons = [...root.querySelectorAll('[data-spin-tab]')];
   const steps = [...root.querySelectorAll('[data-spin-step]')];
-  const pin = root.querySelector('[data-spin-pin]'); // Isi yang tertahan saat gulir
-  // Indikator tab dan detailnya
+  const pin = root.querySelector('[data-spin-pin]'); // Isi tertahan gulir
+  // Indikator dan detail
   const spot = root.querySelector('[data-spin-spot]');
   const zoomLayer = root.querySelector('[data-spin-zoom]');
   const detail = root.querySelector('[data-spin-detail]');
   const tabList = root.querySelector('[data-spin-tabs]');
   const ctx = canvas.getContext('2d');
   const same = (a, b) => a.frames.join('|') === b.frames.join('|');
-  // Potongan bersambung jadi satu putaran
+  // Potongan jadi putaran
   const joined = tabs.length > 1
     && tabs.every((t, k) => t.frames.length > 1 && (k === tabs.length - 1 || t.frames[t.frames.length - 1] === tabs[k + 1].frames[0]));
   if (joined) {
@@ -80,11 +80,11 @@ export function spin(root) {
     }
     tabs.forEach((t, k) => Object.assign(t, { frames: ring, frame: starts[k] }));
   }
-  // Satu putaran bersama: tab ikut sudut
+  // Putaran bersama
   const together = tabs.length > 1 && tabs[0].frames.length > 1 && tabs.every((t) => same(t, tabs[0]));
   let active = 0;
   let seg = 0; // Bagian gulir
-  let offset = 0; // Putaran drag, dalam frame
+  let offset = 0; // Drag dalam frame
   let glideId = 0; // Animasi antar tab
   let drawn = '';
   let queued = false;
@@ -97,11 +97,11 @@ export function spin(root) {
   const tab = () => tabs[active];
   const set = () => frameSet(tab().frames, request);
 
-  // Ukur sekali, bukan tiap frame
+  // Ukur sekali saja
   const measure = () => {
     W = canvas.clientWidth;
     H = canvas.clientHeight;
-    // Tidak lebih tajam dari gambar sumber
+    // Maks resolusi sumber
     const ratio = Math.min(devicePixelRatio || 1, 2, Math.max(1, (tab().width || W) / Math.max(W, 1)));
     canvas.width = Math.max(1, Math.round(W * ratio));
     canvas.height = Math.max(1, Math.round(H * ratio));
@@ -113,26 +113,26 @@ export function spin(root) {
     request();
   };
 
-  // Gulir: tab aktif dan frame dari posisi gulir
+  // Frame dari gulir
   const scrolled = () => {
     const count = tabs.length;
     const p = clamp((window.scrollY - top) / range, 0, 0.9999);
     const k = Math.min(count - 1, Math.floor(p * count));
     if (k !== seg) {
       seg = k;
-      if (offset) glide(); // Geseran kembali ke sudut tab
+      if (offset) glide(); // Kembali ke sudut
       if (!together) {
         active = k;
         label();
       }
     }
     const n = tabs[k].frames.length;
-    // Putaran bersama: sampai sudut tab berikutnya; selain itu satu putaran
+    // Rentang putaran tab
     const span = together ? (((((k + 1 < count ? tabs[k + 1].frame : n) - tabs[k].frame) % n) + n) % n || n) : n;
     return Math.floor(tabs[k].frame + (p * count - k) * span) % n;
   };
 
-  // Tab pemilik sudut yang tampil
+  // Tab pemilik sudut
   const owner = (at) => {
     let k = tabs.length - 1;
     tabs.forEach((t, i) => { if (t.frame <= at) k = i; });
@@ -164,7 +164,7 @@ export function spin(root) {
     const key = `${active}:${img ? frames.indexOf(img) : -1}:${canvas.width}`;
     if (!img || key === drawn) return;
     drawn = key;
-    // Diputar penuh, gambar diam utuh
+    // Penuh atau utuh
     const fit = tab().frames.length > 1 ? Math.max : Math.min;
     const s = fit(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
     const dw = img.naturalWidth * s;
@@ -180,7 +180,7 @@ export function spin(root) {
     requestAnimationFrame(draw);
   }
 
-  // Putar halus ke sudut tab, jalur terpendek
+  // Putar jalur terpendek
   const glide = () => {
     const n = tab().frames.length;
     offset = ((offset % n) + n) % n;
@@ -204,7 +204,7 @@ export function spin(root) {
     requestAnimationFrame(step);
   };
 
-  // Teks dan tombol tab aktif
+  // Teks tab aktif
   const label = () => {
     buttons.forEach((b, k) => b.setAttribute('aria-pressed', String(k === active)));
     if (text) {
@@ -216,9 +216,9 @@ export function spin(root) {
     still();
   };
 
-  // Indikator: tab bergambar zoom, hanya di gambar pertamanya
-  const SPOT_FADE = 300; // Sama dengan transisi CSS
-  let spotAt = null; // Tab tempat indikator berada
+  // Indikator tab zoom
+  const SPOT_FADE = 300; // Sama transisi CSS
+  let spotAt = null; // Tab indikator
   let spotFading = 0;
   const atStart = (i) => {
     const n = tab().frames.length;
@@ -227,7 +227,7 @@ export function spin(root) {
   };
   const moveSpot = () => {
     spotAt = active;
-    // Posisi dari CMS, juga titik tuju zoom
+    // Posisi dari CMS
     spot.parentElement.style.setProperty('--spot-x', `${tab().x ?? 50}%`);
     spot.parentElement.style.setProperty('--spot-y', `${tab().y ?? 50}%`);
     spot.querySelector('.spot__label').textContent = tab().name;
@@ -237,7 +237,7 @@ export function spin(root) {
     if (!spot) return;
     if (spotAt !== active) {
       if (spotFading) return;
-      // Pudar dulu di tab lama, baru pindah
+      // Pudar dulu, pindah
       if (!spot.classList.contains('is-off')) {
         spot.classList.add('is-off');
         spotFading = setTimeout(() => { spotFading = 0; request(); }, reduced ? 0 : SPOT_FADE);
@@ -258,7 +258,7 @@ export function spin(root) {
     const shown = frameIndex();
     active = index;
     offset = 0;
-    // Gambar sama: lanjut dari sudut sekarang
+    // Lanjut sudut sekarang
     if (mode === 'drag' && same(before, tab())) {
       offset = shown - tab().frame;
       glide();
@@ -270,18 +270,18 @@ export function spin(root) {
   };
   buttons.forEach((b, k) => b.addEventListener('click', () => {
     if (mode !== 'scroll') return show(k);
-    // Gulir ke awal bagian tab
+    // Gulir ke tab
     if (offset) glide();
     window.scrollTo({ top: top + (k / tabs.length) * range + 2, behavior: reduced ? 'auto' : 'smooth' });
   }));
 
-  // Geser melewati potongan: tab berikutnya aktif
+  // Geser ganti tab
   const follow = () => {
-    if (!together || mode === 'scroll') return 0; // Mode gulir: diatur frameIndex
+    if (!together || mode === 'scroll') return 0; // Gulir diatur frameIndex
     const n = tab().frames.length;
     const k = owner((((tab().frame + offset) % n) + n) % n);
     if (k === active) return 0;
-    // Sudut tetap, acuan pindah
+    // Acuan ikut pindah
     const shift = tab().frame - tabs[k].frame;
     offset += shift;
     active = k;
@@ -289,7 +289,7 @@ export function spin(root) {
     return shift;
   };
 
-  // Gambar diam tanpa putar
+  // Gambar diam
   const still = () => {
     const fixed = tab().frames.length < 2;
     steps.forEach((b) => { b.hidden = fixed; });
@@ -297,7 +297,7 @@ export function spin(root) {
   };
   still();
 
-  // Drag dan tombol putar, di kedua mode
+  // Drag dan tombol
   let startX = null;
   let startOffset = 0;
   const perPixel = () => tab().frames.length / Math.max(W, 1);
@@ -334,8 +334,8 @@ export function spin(root) {
     button.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); turn(); } });
   }
 
-  // Zoom seperti titik Masterplan
-  const ZOOM_MS = 1300; // Sama dengan transisi CSS
+  // Zoom ala Masterplan
+  const ZOOM_MS = 1300; // Sama transisi CSS
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, reduced ? 0 : ms));
   const zoomCache = new Map();
   const preloadZoom = (src) => {
@@ -362,14 +362,14 @@ export function spin(root) {
     const ready = preloadZoom(part.zoom);
     root.classList.remove('is-returning', 'is-unzoom');
     root.classList.add('is-zoom');
-    // Silang pudar di paruh akhir zoom
+    // Silang pudar akhir
     Promise.all([ready, wait(ZOOM_MS * 0.5)]).then(([ok]) => {
       if (!ok || id !== zoomRun) return;
       Object.assign(zoomLayer, { src: part.zoom, alt: part.name });
       zoomLayer.classList.add('is-on');
       root.classList.add('is-zoom-on');
     });
-    // Detail muncul saat kamera hampir sampai
+    // Detail jelang sampai
     await wait(ZOOM_MS * 0.75);
     if (id !== zoomRun) return;
     detail.querySelector('[data-spin-detail-title]').textContent = part.name;
@@ -387,11 +387,11 @@ export function spin(root) {
     const id = ++zoomRun;
     zoomed = null;
     const focused = root.contains(document.activeElement);
-    // Gambar tab sudah tampil: 360° utuh di baliknya, lalu silang pudar
+    // Silang pudar balik
     const fade = root.classList.contains('is-zoom-on');
     root.classList.add('is-returning');
     if (fade) root.classList.replace('is-zoom', 'is-unzoom');
-    // Detail dan gambar pudar, 360° kembali tampil
+    // 360° tampil kembali
     detail.classList.add('is-leaving');
     zoomLayer.classList.remove('is-on');
     root.classList.remove('is-zoom-on');
@@ -403,7 +403,7 @@ export function spin(root) {
     if (focused) buttons[active]?.focus({ preventScroll: true });
     root.classList.remove('is-zoom');
     await wait(fade ? 300 : ZOOM_MS);
-    if (id === zoomRun) root.classList.remove('is-returning', 'is-unzoom'); // Indikator tampil setelah kembali
+    if (id === zoomRun) root.classList.remove('is-returning', 'is-unzoom'); // Indikator setelah kembali
   }
 
   if (spot) {
@@ -420,7 +420,7 @@ export function spin(root) {
   }
 
   if (mode === 'scroll') {
-    // Latar melebar saat naik
+    // Latar melebar naik
     const open = () => {
       const y = root.getBoundingClientRect().top;
       const span = Math.max(1, Math.min(y + window.scrollY, window.innerHeight * 0.5)); // Dari posisi awal

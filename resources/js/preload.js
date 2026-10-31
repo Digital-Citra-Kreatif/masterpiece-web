@@ -1,12 +1,12 @@
-// Preload: belah layar setelah garis selesai dan halaman termuat
+// Preload belah layar
 const root = document.querySelector('[data-preload]');
 const html = document.documentElement;
 
-// Sudah selesai sebelum JS termuat pun tetap terbaca
+// Selesai duluan terbaca
 const line = root.querySelector('.pl__line--right').getAnimations()[0];
 const drawn = line ? line.finished.catch(() => {}) : Promise.resolve();
 const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((resolve) => addEventListener('load', resolve, { once: true }));
-const late = new Promise((resolve) => setTimeout(resolve, 6000)); // Jangan tahan terlalu lama
+const late = new Promise((resolve) => setTimeout(resolve, 6000)); // Jangan tahan lama
 
 Promise.all([drawn, Promise.race([loaded, late])]).then(() => {
   root.classList.add('is-open');

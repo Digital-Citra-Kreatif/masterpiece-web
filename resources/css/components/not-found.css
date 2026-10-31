@@ -1,6 +1,6 @@
 /* Halaman 404 */
 
-/* Isi mengisi layar, footer di bawah */
+/* Isi penuh layar */
 body:has(.nf) {
   display: flex;
   flex-direction: column;
@@ -9,7 +9,7 @@ body:has(.nf) {
   background: #fff;
 }
 
-/* Garis samping seperti proyek */
+/* Garis samping proyek */
 body:has(.nf) :is(.nf, .ft) {
   --line: rgb(14 17 19 / 0.12);
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
@@ -30,7 +30,7 @@ body:has(.nf) :is(.nf, .ft) {
   text-align: center;
 }
 
-/* Angka di belakang judul */
+/* Angka belakang judul */
 .nf__head {
   display: grid;
   place-items: center;
@@ -76,9 +76,9 @@ body:has(.nf) :is(.nf, .ft) {
   border-radius: 999px;
 }
 
-/* Maintenance: bingkai layar, garis atas bawah seperti garis samping */
+/* Bingkai maintenance */
 body:has(.nf--mt) .nf--mt {
-  /* Sama jarak garis samping, paling jauh 10% tinggi layar */
+  /* Maks 10% layar */
   --line-y: max(8px, var(--gutter) - 40px, min(max(0px, (100vw - var(--max)) / 2) + max(8px, var(--gutter) - 40px), 10svh));
   background-image:
     linear-gradient(var(--line), var(--line)),
@@ -89,7 +89,7 @@ body:has(.nf--mt) .nf--mt {
   background-position: left var(--line-x) top 0, right var(--line-x) top 0, left 0 top var(--line-y), left 0 bottom var(--line-y);
 }
 
-/* Grain diam di bawah isi, hanya CSS */
+/* Grain CSS diam */
 .nf--mt {
   position: relative;
   isolation: isolate;
@@ -119,9 +119,9 @@ body:has(.nf--mt) .nf--mt {
   max-width: 76ch;
 }
 
-/* Hitung mundur: angka sama lebar agar tidak bergeser */
+/* Hitung mundur */
 .nf__count {
-  margin-top: clamp(12px, 3vw, 40px); /* Tambahan dari jarak 28px */
+  margin-top: clamp(12px, 3vw, 40px); /* Tambahan dari 28px */
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -152,6 +152,6 @@ body:has(.nf--mt) .nf--mt {
 }
 
 .nf__unit-label {
-  color: var(--ink-2); /* Tetap AA di atas grain */
+  color: var(--ink-2); /* AA di grain */
   font-size: 13px;
 }

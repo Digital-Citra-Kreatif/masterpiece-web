@@ -6,7 +6,7 @@
 }
 
 .is-home :is(.prj, .ft) {
-  /* Sama dengan halaman unit */
+  /* Sama halaman unit */
   --line: rgb(14 17 19 / 0.07);
   --rule: rgb(14 17 19 / 0.07);
   background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
@@ -15,7 +15,7 @@
   background-repeat: no-repeat;
 }
 
-/* Garis di atas hero, ::after untuk parallax */
+/* Garis atas hero */
 .is-home .hero::before {
   content: '';
   position: absolute;
@@ -28,7 +28,7 @@
   pointer-events: none;
 }
 
-/* Menutup hero saat digulir */
+/* Menutup hero */
 .is-home main > :not([data-hero-parallax]) {
   position: relative;
   z-index: 1;
@@ -48,7 +48,7 @@
   text-transform: uppercase;
 }
 
-/* Deskripsi tanpa garis atas */
+/* Deskripsi tanpa garis */
 .prj .sheet__intro {
   padding-top: 0;
   border-top: 0;
@@ -131,7 +131,7 @@
 }
 
 .prj__desc {
-  max-width: 72ch; /* Deskripsi kartu sedikit lebih panjang */
+  max-width: 72ch; /* Deskripsi kartu */
   margin: 8px 0 0;
   color: var(--ink-2);
   font-size: 15px;

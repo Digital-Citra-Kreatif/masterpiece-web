@@ -1,6 +1,6 @@
-// Hitung mundur maintenance: Hari : Jam : Menit : Detik
+// Hitung mundur maintenance
 const root = document.querySelector('[data-countdown]');
-// Sisa detik dari server: jam perangkat yang salah tidak berpengaruh
+// Sisa detik server
 const target = Date.now() + Number(root.dataset.countdown) * 1000;
 const parts = Object.fromEntries([...root.querySelectorAll('[data-countdown-part]')].map((el) => [el.dataset.countdownPart, el]));
 const pad = (n) => String(n).padStart(2, '0');
@@ -11,12 +11,12 @@ function tick() {
   parts.hours.textContent = pad(Math.floor((left % 86400) / 3600));
   parts.minutes.textContent = pad(Math.floor((left % 3600) / 60));
   parts.seconds.textContent = pad(left % 60);
-  // Waktunya tiba: muat ulang, situs mungkin sudah dibuka
+  // Selesai, muat ulang
   if (left === 0) {
     setTimeout(() => location.reload(), 1000);
     return;
   }
-  setTimeout(tick, ((target - Date.now()) % 1000) || 1000); // Pas di pergantian detik
+  setTimeout(tick, ((target - Date.now()) % 1000) || 1000); // Pas pergantian detik
 }
 
 if (!Number.isNaN(target)) tick();

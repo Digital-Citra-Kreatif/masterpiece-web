@@ -87,7 +87,7 @@
   height: 18px;
 }
 
-/* Nama proyek tersembunyi di layar sempit */
+/* Nama proyek tersembunyi */
 @media (max-width: 480px) {
   .hd__btn-more {
     position: absolute;

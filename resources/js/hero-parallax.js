@@ -1,4 +1,4 @@
-// Parallax hero, ditutup section berikutnya
+// Parallax hero tertutup
 const parallax = document.querySelector('[data-hero-parallax]');
 if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const hero = parallax.querySelector('.hero, [data-hero]');
@@ -8,7 +8,7 @@ if (parallax && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const draw = () => {
     queued = false;
     const y = Math.min(Math.max(window.scrollY, 0), h);
-    // Lewat hero: tidak ada yang berubah
+    // Tak berubah, lewati
     if (y === last) return;
     last = y;
     hero.style.transform = y > 0 ? `translate3d(0, ${(y * 0.5).toFixed(1)}px, 0)` : '';

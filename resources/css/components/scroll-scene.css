@@ -45,7 +45,7 @@
   opacity: 0;
 }
 
-/* Latar zoom titik, fade di atas canvas */
+/* Latar zoom titik */
 .scene__zoom {
   object-fit: cover;
   opacity: 0;

@@ -1,7 +1,7 @@
 {{-- Banner hero --}}
 @props(['hero'])
 
-{{-- Posisi konten dari CMS proyek --}}
+{{-- Posisi konten CMS --}}
 @php([$alignY, $alignX] = ($hero['align'] ?? 'split') === 'split' ? [null, null] : explode('-', $hero['align']))
 
 <section @class(['hero', 'hero--placed' => $alignY, "hero--y-{$alignY}" => $alignY, "hero--x-{$alignX}" => $alignX]) @if (filled($hero['id'] ?? null)) id="{{ $hero['id'] }}" @endif aria-labelledby="hero-title">
@@ -41,7 +41,7 @@
     @if (filled($hero['eyebrow'] ?? null))
       <p class="hero__eyebrow">{{ $hero['eyebrow'] }}</p>
     @endif
-    {{-- Per kata untuk animasi --}}
+    {{-- Animasi per kata --}}
     @php($word = 0)
     <h1 class="hero__title" id="hero-title">
       @foreach (preg_split('/\R/', (string) $hero['title']) as $line)

@@ -12,7 +12,7 @@ body.is-project {
   letter-spacing: normal;
 }
 
-/* Sudut CMS: tombol apa adanya (besar jadi pil), kartu dan gambar maks 24px */
+/* Sudut maks 24px */
 .is-project {
   --radius-box: min(var(--radius, 0px), 24px);
 }
@@ -161,7 +161,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Judul masuk dari kanan, per kata */
+/* Judul per kata */
 .is-project .hero__title {
   animation: none;
 }
@@ -266,7 +266,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Tombol putar video, ganti petunjuk gulir */
+/* Tombol putar video */
 .hero__action {
   position: relative;
   margin: clamp(16px, 2vw, 28px) 0 0;
@@ -283,7 +283,7 @@ button.pj-frame:focus-visible {
   height: 20px;
 }
 
-/* Proyek: ikon dan teks tanpa kotak, ikon lebih besar */
+/* Ikon tanpa kotak */
 .is-project .hero__play {
   gap: 14px;
   padding: 0;
@@ -303,7 +303,7 @@ button.pj-frame:focus-visible {
   transition: transform 0.3s var(--ease);
 }
 
-/* Lingkar ikon tipis, sekitar 1px */
+/* Lingkar ikon tipis */
 .is-project .hero__play svg circle {
   stroke-width: 0.6;
 }
@@ -312,7 +312,7 @@ button.pj-frame:focus-visible {
   transform: scale(1.08);
 }
 
-/* Popup video hero: bingkai di tengah, latar tetap terlihat */
+/* Popup video hero */
 .is-project .ov.is-framed {
   width: min(1120px, calc(100% - 2 * var(--gutter)), calc((100dvh - 160px) * 16 / 9)); /* Muat tinggi layar */
   height: auto;
@@ -325,7 +325,7 @@ button.pj-frame:focus-visible {
   background: rgba(8, 10, 12, 0.85);
 }
 
-/* Judul hanya untuk pembaca layar */
+/* Judul pembaca layar */
 .is-project .ov.is-framed .ov__title {
   position: absolute;
   width: 1px;
@@ -335,7 +335,7 @@ button.pj-frame:focus-visible {
   white-space: nowrap;
 }
 
-/* Tutup di kanan atas layar, tanpa garis */
+/* Tutup kanan atas */
 .is-project .ov.is-framed .ov__bar {
   position: fixed;
   top: calc(12px + env(safe-area-inset-top, 0px));
@@ -378,7 +378,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Posisi konten hero dari CMS */
+/* Posisi hero CMS */
 .hero--y-top {
   --hero-y: flex-start;
 }
@@ -618,13 +618,13 @@ button.pj-frame:focus-visible {
   background-color: var(--paper);
 }
 
-/* Gambar berjarak dari garis kanan */
+/* Jarak garis kanan */
 .tph__grid {
   display: grid;
-  grid-template-columns: minmax(0, 35fr) minmax(0, 65fr); /* Tab 35%, gambar 65% */
+  grid-template-columns: minmax(0, 35fr) minmax(0, 65fr); /* Rasio 35:65 */
 }
 
-/* Tab sejajar tengah gambar */
+/* Tab sejajar tengah */
 .tph__copy {
   display: flex;
   flex-direction: column;
@@ -701,7 +701,7 @@ button.pj-frame:focus-visible {
   font-weight: 600;
 }
 
-/* Tab proyek: beda dari latar putih */
+/* Beda latar putih */
 .tph--section :is(.tph__tab, .tph__desc) {
   background: #fafafa;
 }
@@ -738,7 +738,7 @@ button.pj-frame:focus-visible {
 .tph__stage {
   position: relative;
   min-width: 0;
-  overflow: hidden; /* Gambar tampil apa adanya */
+  overflow: hidden; /* Gambar apa adanya */
   border-radius: var(--radius-box, 0);
   clip-path: var(--frame-clip, none);
 }
@@ -784,7 +784,7 @@ button.pj-frame:focus-visible {
   outline-offset: -4px;
 }
 
-/* Panah di dalam gambar */
+/* Panah dalam gambar */
 .tph__nav {
   position: absolute;
   top: 50%;
@@ -826,7 +826,7 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Mobile: viewer di atas */
+/* Viewer di atas */
 @media (max-width: 760px) {
   .tph__grid {
     grid-template-columns: minmax(0, 1fr);
@@ -1169,7 +1169,7 @@ button.pj-frame:focus-visible {
 .spot--marker {
   --head: 30px;
   --stem: 12px;
-  align-items: flex-start; /* Ujung pin tepat di titik */
+  align-items: flex-start; /* Ujung di titik */
 }
 
 .spot--marker .spot__dot {
@@ -1198,10 +1198,10 @@ button.pj-frame:focus-visible {
   background: #fff;
   opacity: 1;
   animation: none;
-  transform: translateX(-50%); /* Satu transform, tidak dibuang saat build */
+  transform: translateX(-50%); /* Satu transform */
 }
 
-/* Ujung bentuk diputar keluar kotak: batang mulai dari ujungnya */
+/* Batang dari ujung */
 .spot--marker:has(.pj-marker--diamond) .spot__dot::after {
   top: calc(100% + var(--head) * 0.1);
   height: calc(var(--stem) - var(--head) * 0.1);
@@ -1235,7 +1235,7 @@ button.pj-frame:focus-visible {
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.35); /* Tepi gelap tipis */
 }
 
-/* Ikon kustom: separuh ukuran, diperbesar 2x dari tepi titik */
+/* Ikon kustom 2x */
 .spot--marker .pj-marker--image {
   width: auto;
   max-width: calc(var(--head) / 2);
@@ -1251,7 +1251,7 @@ button.pj-frame:focus-visible {
   transform-origin: 0 50%;
 }
 
-/* Ikon kustom: tanpa batang dan bayangan, tengahnya di titik */
+/* Ikon tengah titik */
 .spot--marker:has(.pj-marker--image) .spot__dot {
   width: auto;
   height: auto;
@@ -1269,7 +1269,7 @@ button.pj-frame:focus-visible {
   content: none;
 }
 
-/* Ikon kustom tanpa nomor */
+/* Ikon tanpa nomor */
 .spot--marker:has(.pj-marker--image) .spot__no {
   display: none;
 }
@@ -1299,7 +1299,7 @@ button.pj-frame:focus-visible {
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
   opacity: 0;
   visibility: hidden;
-  transform: translate(-6px, -50%); /* Satu transform, tidak dibuang saat build */
+  transform: translate(-6px, -50%); /* Satu transform */
   transition: opacity 0.2s, transform 0.2s var(--ease), visibility 0s 0.2s, background 0.2s, color 0.2s;
 }
 
@@ -1318,7 +1318,7 @@ button.pj-frame:focus-visible {
   margin: calc(-1 * (var(--head) / 2 + var(--stem))) 10px 0 0;
 }
 
-/* Label ikon kustom: jarak rapat */
+/* Label ikon rapat */
 .spot--marker:has(.pj-marker--image) .spot__label {
   margin: 0 0 0 6px;
 }
@@ -1558,7 +1558,7 @@ button.pj-frame:focus-visible {
 
 /* Sheet unit */
 
-/* Tombol tutup di kanan */
+/* Tutup di kanan */
 .pj-sheet .ov__bar {
   justify-content: flex-end;
 }

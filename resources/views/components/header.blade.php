@@ -5,7 +5,7 @@
 
 <header @class(['hd', "hd--{$variant}"])>
   <div class="hd__inner wrap">
-    {{-- Logo proyek ke halaman proyek --}}
+    {{-- Logo ke proyek --}}
     <a class="hd__mark" href="{{ $mark['href'] ?? url('/') }}" aria-label="{{ $mark['label'] ?? $site['logo']['alt'].', beranda' }}">
       @if ($logo)
         <img class="hd__logo hd__logo--own" src="{{ $logo['src'] }}" alt="" @if ($logo['width']) width="{{ $logo['width'] }}" height="{{ $logo['height'] }}" @endif />
@@ -23,7 +23,7 @@
     </a>
 
     @if ($variant === 'home' || $variant === 'project')
-      {{-- Menu dari CMS → Menus --}}
+      {{-- Menu dari CMS --}}
       @if ($items !== [])
         <nav class="hd__nav" aria-label="Menu utama">
           @foreach ($items as $item)
@@ -48,7 +48,7 @@
         </button>
       @endif
     @elseif ($back)
-      {{-- Teks dan panah, animasi seperti menu --}}
+      {{-- Tombol kembali --}}
       <a class="hd__back roll-host" href="{{ $back['href'] }}">
         <span><x-roll-text text="Kembali" /><span class="hd__btn-more"><x-roll-text :text="'ke '.$back['label']" /></span></span>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">

@@ -14,10 +14,10 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
   const title = root.querySelector('[data-mp-title]');
   const text = root.querySelector('[data-mp-text]');
   const end = root.querySelector('[data-zoom-end]');
-  // Sudut kotak dari CMS, maks 24px
+  // Sudut maks 24px
   const round = () => Math.min(parseFloat(getComputedStyle(root).getPropertyValue('--radius')) || 0, 24);
   const cut = () => Math.min(parseFloat(getComputedStyle(root).getPropertyValue('--chamfer')) || 0, 24);
-  // Bingkai kotak: membulat atau chamfer, penuh tanpa sudut
+  // Klip bingkai kotak
   const clip = (x, y, full) => {
     const c = full ? 0 : cut();
     if (!cut()) return `inset(${y}px ${x}px ${y}px ${x}px round ${full ? 0 : round()}px)`;

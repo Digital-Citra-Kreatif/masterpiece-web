@@ -1,16 +1,16 @@
 // Parallax tertutup
-// hold: mulai turun setelah atas section lewat layar, tanpa celah di atasnya
+// hold: tanpa celah
 export function coverParallax(box, target, { hold = false } = {}) {
   const veil = document.createElement('span');
   veil.className = 'cover-veil';
   veil.setAttribute('aria-hidden', 'true');
   target.append(veil);
-  let bottom = 0; // Bawah box di dokumen
+  let bottom = 0; // Bawah di dokumen
   let height = 0;
   let shift = 0;
   let last = NaN;
   let queued = false;
-  // Ukur sekali, bukan tiap frame
+  // Ukur sekali saja
   const measure = () => {
     bottom = box.getBoundingClientRect().bottom + window.scrollY - (box === target ? shift : 0);
     height = target.offsetHeight;
@@ -38,7 +38,7 @@ export function coverParallax(box, target, { hold = false } = {}) {
       requestAnimationFrame(draw);
     }
   }, { passive: true });
-  // Posisi berubah bila konten di atasnya berubah
+  // Ukur saat berubah
   const observer = new ResizeObserver(refresh);
   observer.observe(box);
   observer.observe(document.body);
