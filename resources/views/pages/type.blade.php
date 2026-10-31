@@ -66,10 +66,8 @@
             </div>
           </div>
 
-          {{-- Label tab, tab seperti halaman proyek, lalu label ruko dan ukuran --}}
+          {{-- Tab seperti halaman proyek, lalu label ruko dan ukuran --}}
           <div class="tps__info">
-            <h2 class="display tps__part" aria-live="polite" data-spin-name>{{ $first['name'] }}</h2>
-
             <ul class="tph__tabs" aria-label="Bagian 360°">
               @foreach ($parts as $part)
                 <li class="tph__part">

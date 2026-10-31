@@ -538,7 +538,8 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
     $html = $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name">'.$type->title.'</h1>', false)
-        ->assertSee('<h2 class="display tps__part" aria-live="polite" data-spin-name>Fasad</h2>', false)
+        // Tanpa label di atas tab
+        ->assertDontSee('tps__part', false)
         // Tab seperti halaman proyek: pill, aktif jadi kartu deskripsi
         ->assertSee('<p class="tph__desc" id="type-360-desc-0"><strong>Fasad.</strong> Tampak depan.</p>', false)
         ->assertSeeInOrder(['data-spin-tab="0"', 'Fasad', 'data-spin-tab="1"', 'Lantai 1'], false)
@@ -563,7 +564,7 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->and($html)->not->toContain('wr360');
 });
 
-test('a type page\'s 360° section holds the viewer, unit label and size, tab label, tabs and tab text; the rest sits below it', function () {
+test('a type page\'s 360° section holds the viewer, tabs and tab text, unit label and size; the rest sits below it', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, [
         'global_style' => inactiveStyle(),
@@ -578,13 +579,12 @@ test('a type page\'s 360° section holds the viewer, unit label and size, tab la
     $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
     $viewer = substr($html, strpos($html, 'data-spin="scroll"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="scroll"'));
 
-    expect($viewer)->toContain('data-spin-name>Fasad</h2>')
-        ->and($viewer)->toContain('data-spin-tab="1"')
+    expect($viewer)->toContain('data-spin-tab="1"')
         ->and($viewer)->toContain('<strong>Fasad.</strong> Tampak depan.</p>')
         ->and($viewer)->not->toContain('tps__intro');
     $this->get('/westlake/tipe/tipe-1')
-        // Label ruko dan ukuran di section 360, di atas label tab
-        ->assertSeeInOrder(['data-spin="scroll"', 'data-spin-name>Fasad</h2>', 'class="tph__tabs"', '<strong>Fasad.</strong> Tampak depan.', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<p class="eyebrow tps__mark">', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+        // Label ruko dan ukuran di section 360, di bawah tab
+        ->assertSeeInOrder(['data-spin="scroll"', 'class="tph__tabs"', '<strong>Fasad.</strong> Tampak depan.', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<p class="eyebrow tps__mark">', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
     expect(substr_count($html, 'tps__label'))->toBe(1)
         ->and(substr_count($html, 'tps__size'))->toBe(1);
 });
@@ -623,7 +623,6 @@ test('a type with its own 360° tabs shows them on its page instead of the proje
 
     $html = $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        ->assertSee('<h2 class="display tps__part" aria-live="polite" data-spin-name>Depan</h2>', false)
         ->assertSeeInOrder(['data-spin-tab="0"', 'Depan', 'data-spin-tab="1"', 'Denah'], false)
         ->assertDontSee('Fasad proyek')
         ->getContent();

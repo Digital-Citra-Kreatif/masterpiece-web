@@ -133,7 +133,7 @@ body.is-type .tps--scroll::before {
   }
 }
 
-.tps.tps--scroll :is(.tps__size, .tps__part) {
+.tps.tps--scroll .tps__size {
   color: #fff;
 }
 
@@ -255,16 +255,6 @@ body.is-type .tps--scroll::before {
 .tps__view {
   min-width: 0;
   max-width: var(--native, none); /* Selebar viewer */
-}
-
-/* Menang atas h2.display */
-.tps .tps__part {
-  margin: 0 0 16px;
-  color: var(--room);
-  font-size: 40px;
-  font-weight: 300;
-  line-height: 1.1;
-  overflow-wrap: anywhere;
 }
 
 .tps__stage {
@@ -667,12 +657,6 @@ body.is-type .tps--scroll::before {
     margin-top: 40px;
   }
 
-  /* Label tab di atas viewer */
-  .tps__info > .tps__part {
-    order: -3;
-    margin-top: 0;
-  }
-
   /* Tab tepat di bawah viewer */
   .tps__info > .tph__tabs {
     order: -1;
@@ -680,23 +664,7 @@ body.is-type .tps--scroll::before {
   }
 }
 
-/* Tablet dan HP: label 360° di atas tab, bukan di atas gambar */
-@media (max-width: 960px) {
-  .tps__info > .tps__part {
-    order: -1;
-    margin-top: 40px;
-  }
-
-  .tps__info > .tph__tabs {
-    margin-top: 8px;
-  }
-}
-
 @media (max-width: 760px) {
-  .tps .tps__part {
-    font-size: 32px;
-  }
-
   /* Spesifikasi tanpa garis */
   .tpb .tpb__list div {
     padding-block: 10px;
