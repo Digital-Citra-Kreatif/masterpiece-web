@@ -209,14 +209,14 @@ button.pj-frame:focus-visible {
 @media (min-width: 761px) {
   .is-project .hero__body {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto; /* Kanan selebar judul */
     align-content: end;
     column-gap: clamp(24px, 4vw, 64px);
   }
 
   /* Judul rata kiri */
   .is-project .hero__title {
-    justify-self: end;
+    justify-self: start;
     max-width: 10em;
   }
 
@@ -260,8 +260,7 @@ button.pj-frame:focus-visible {
   /* Posisi petunjuk gulir */
   .is-project .hero__cue {
     grid-column: 2;
-    justify-self: end;
-    width: min(calc(clamp(40px, 5.2vw, 84px) * 10), 100%);
+    justify-self: start; /* Sejajar judul */
     text-align: left;
   }
 }
@@ -373,8 +372,7 @@ button.pj-frame:focus-visible {
 @media (min-width: 761px) {
   .is-project .hero__action {
     grid-column: 2;
-    justify-self: end;
-    width: min(calc(clamp(40px, 5.2vw, 84px) * 10), 100%);
+    justify-self: start; /* Sejajar judul */
   }
 }
 
