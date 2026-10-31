@@ -541,6 +541,9 @@ final class ProjectPage
     private static function types(array $section): ?array
     {
         $units = collect($section['units'] ?? [])
+            // Urutan panah koleksi Types
+            ->sortBy(fn (mixed $item): array => $item instanceof EntryTranslation ? [(int) $item->entry->sort_order, $item->entry_id] : [PHP_INT_MAX, PHP_INT_MAX])
+            ->values()
             ->map(fn (mixed $item): ?array => self::row($item, ['label' => 'category']))
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
             ->values()

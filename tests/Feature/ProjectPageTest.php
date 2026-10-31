@@ -522,6 +522,31 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('data-wa', false);
 });
 
+test('a project lists its chosen types in the Types collection order, not the order they were picked', function () {
+    $types = EntryTranslation::query()->whereIn('slug', ['tipe-1', 'tipe-2', 'tipe-3'])->get()->keyBy('slug');
+    // Panah CMS: tipe-3, tipe-1, tipe-2
+    foreach (['tipe-3' => 1, 'tipe-1' => 2, 'tipe-2' => 3] as $slug => $order) {
+        $types[$slug]->entry->update(['sort_order' => $order]);
+    }
+    $project = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'types' => ['title' => 'Type', 'units' => [$types['tipe-1']->entry_id, $types['tipe-2']->entry_id, $types['tipe-3']->entry_id]],
+    ]);
+    foreach ($types as $type) {
+        $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id]]);
+    }
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSeeInOrder([url('/westlake/tipe/tipe-3'), url('/westlake/tipe/tipe-1'), url('/westlake/tipe/tipe-2')], false);
+
+    // Tipe lain ikut urutan yang sama
+    $this->get('/westlake/tipe/tipe-2')
+        ->assertOk()
+        ->assertSeeInOrder(['id="tipe-lain"', url('/westlake/tipe/tipe-3'), url('/westlake/tipe/tipe-1')], false);
+});
+
 test('a project\'s type page shows the project\'s 360° tabs beside the type sheet', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $frames = collect(['frame_1.jpg', 'frame_2.jpg'])->map(fn (string $name): int => projectImage($name))->all();
