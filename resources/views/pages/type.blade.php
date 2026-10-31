@@ -45,7 +45,7 @@
     <section
       @class(['tps', 'tps--scroll' => $parts !== []])
       aria-label="Detail {{ $t['name'] }}"
-      @if ($parts !== []) data-spin="scroll" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame']))) }}" style="--spin-tabs: {{ count($parts) }}" @endif
+      @if ($parts !== []) data-spin="scroll" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'zoom']))) }}" style="--spin-tabs: {{ count($parts) }}" @endif
     >
       <div @class(['tps__pin' => $parts !== []]) @if ($parts !== []) data-spin-pin @endif>
       <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === []])>

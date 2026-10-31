@@ -633,6 +633,23 @@ test('a type with its own 360° tabs shows them on its page instead of the proje
     expect(array_map('count', array_column($parts, 'frames')))->toBe([3, 1]);
 });
 
+test('a type tab\'s zoom image goes to the 360° tabs as the original file, tabs without one get null', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+    $zoom = app(UploadMedia::class)->handle(UploadedFile::fake()->image('lantai-1.jpg', 3000, 2000), []);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'turntable' => ['tabs' => [
+        ['name' => 'Fasad', 'description' => 'Tampak depan.', 'images' => [projectImage('type_1.jpg'), projectImage('type_2.jpg')]],
+        ['name' => 'Lantai 1', 'description' => 'Area usaha.', 'images' => [], 'zoom_image' => $zoom->id],
+    ]]]]);
+
+    $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
+    preg_match('/data-tabs="([^"]+)"/', $html, $match);
+    $parts = json_decode(html_entity_decode($match[1]), true);
+
+    // File asli, bukan konversi kecil
+    expect(array_column($parts, 'zoom'))->toBe([null, $zoom->url()]);
+});
+
 test('the logo on a project page reloads that project page', function () {
     publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
 

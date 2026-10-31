@@ -125,6 +125,8 @@ class SiteContentSeeder extends Seeder
                             $text('name', ['label' => 'Nama', 'required' => true]),
                             $textarea('description', ['label' => 'Deskripsi']),
                             $this->field('images', 'media', ['types' => ['image'], 'multiple' => true], ['label' => 'Gambar', 'translatable' => false]),
+                            // Tampil saat indikator diklik
+                            $image('zoom_image', ['label' => 'Gambar zoom', 'translatable' => false, 'instructions' => 'Gambar dan deskripsi tab ini tampil saat indikatornya diklik.']),
                         ]]),
                     ]]),
                 ]],
