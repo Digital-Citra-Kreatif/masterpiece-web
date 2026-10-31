@@ -1,5 +1,5 @@
 {{-- Halaman maintenance, isi dari global CMS --}}
-<x-layouts.base :title="$mt['title']" :description="$mt['description']">
+<x-layouts.base :title="$mt['title']" :description="$mt['description']" :preload="false">
   <main class="nf nf--mt">
     <h1 class="nf__title">{{ $mt['title'] }}</h1>
     @if ($mt['description'])

@@ -11,3 +11,8 @@ import './scroll-top.js';
 if (document.querySelector('[data-countdown]')) {
   import('./countdown.js');
 }
+
+// Preload bila script head menyalakannya
+if (document.documentElement.classList.contains('is-preload')) {
+  import('./preload.js');
+}

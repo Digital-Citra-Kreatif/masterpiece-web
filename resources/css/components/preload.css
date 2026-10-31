@@ -1,0 +1,132 @@
+/* Preload pembuka */
+
+.pl {
+  display: none;
+}
+
+/* Kelas dari script head, sebelum gambar pertama */
+html.is-preload {
+  overflow: hidden;
+}
+
+.is-preload .pl {
+  --w: 120px; /* Lebar rumah = viewBox: garis tepat 1px; dipakai juga potongan */
+  --stroke: #737373; /* Abu gelap, tetap jelas di hitam */
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000; /* Tutup celah antar belahan sebelum terbuka */
+}
+
+.pl.is-open {
+  background: none;
+}
+
+/* Titik rumah (viewBox 120x100) ke layar: x = 50% + w*(x-60)/120, y = 50% - w*(100-y)/120 */
+.pl__half {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Atas: di atas garis dan atap */
+.pl__half--top {
+  clip-path: polygon(
+    0 0, 100% 0, 100% 50%,
+    calc(50% + var(--w) / 3) 50%,
+    calc(50% + var(--w) / 3) calc(50% - var(--w) * 0.375),
+    calc(50% + var(--w) * 0.26667) calc(50% - var(--w) * 0.43333),
+    calc(50% + var(--w) * 0.26667) calc(50% - var(--w) * 0.6),
+    calc(50% + var(--w) * 0.18333) calc(50% - var(--w) * 0.6),
+    calc(50% + var(--w) * 0.18333) calc(50% - var(--w) * 0.50625),
+    50% calc(50% - var(--w) * 0.66667),
+    calc(50% - var(--w) / 3) calc(50% - var(--w) * 0.375),
+    calc(50% - var(--w) / 3) 50%,
+    0 50%
+  );
+}
+
+/* Bawah: di bawah garis, membawa bentuk rumah */
+.pl__half--bottom {
+  clip-path: polygon(
+    0 50%,
+    calc(50% - var(--w) / 3) 50%,
+    calc(50% - var(--w) / 3) calc(50% - var(--w) * 0.375),
+    50% calc(50% - var(--w) * 0.66667),
+    calc(50% + var(--w) * 0.18333) calc(50% - var(--w) * 0.50625),
+    calc(50% + var(--w) * 0.18333) calc(50% - var(--w) * 0.6),
+    calc(50% + var(--w) * 0.26667) calc(50% - var(--w) * 0.6),
+    calc(50% + var(--w) * 0.26667) calc(50% - var(--w) * 0.43333),
+    calc(50% + var(--w) / 3) calc(50% - var(--w) * 0.375),
+    calc(50% + var(--w) / 3) 50%,
+    100% 50%, 100% 100%, 0 100%
+  );
+}
+
+.pl.is-open .pl__half--top {
+  transform: translateY(-100%);
+}
+
+.pl.is-open .pl__half--bottom {
+  transform: translateY(100%);
+}
+
+/* Garis tepat di tengah layar, pudar saat terbelah */
+.pl__draw {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 50%;
+  display: flex;
+  align-items: flex-end;
+  transition: opacity 0.25s;
+}
+
+.pl.is-open .pl__draw {
+  opacity: 0;
+}
+
+.pl__line {
+  flex: 1;
+  height: 1px;
+  margin-bottom: -0.5px; /* Tengah garis di dasar rumah */
+  background: var(--stroke);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: pl-grow 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.pl__line--right {
+  animation-delay: 2.1s; /* Setelah rumah selesai */
+}
+
+.pl__house {
+  display: block;
+  flex: none;
+  width: var(--w);
+  height: auto;
+  overflow: visible;
+}
+
+.pl__house path {
+  stroke: var(--stroke);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: pl-draw 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.7s forwards;
+}
+
+@keyframes pl-grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pl-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
