@@ -81,6 +81,19 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   padding-block: clamp(32px, 4vw, 56px);
 }
 
+/* Judul dan tombol kembali, turun ke bawah bila judul panjang */
+.tph__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.tph__head .tph__name {
+  min-width: 0;
+}
+
 @media (max-width: 760px) {
   .tph--title .wrap {
     padding-block: 24px;

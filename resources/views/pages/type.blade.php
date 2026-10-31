@@ -27,7 +27,7 @@
   @endif
 
   @if ($pj)
-    <x-header variant="type" :logo="$pj['style']['logo']" :back="['href' => $pj['url'], 'label' => $pj['title']]" :mark="['href' => $pj['url'], 'label' => $pj['title'].', halaman proyek']" />
+    <x-header variant="type" :logo="$pj['style']['logo']" :back="false" :mark="['href' => $pj['url'], 'label' => $pj['title'].', halaman proyek']" />
   @else
     <x-header variant="type" />
   @endif
@@ -36,8 +36,17 @@
     {{-- Judul tipe, parallax ke section bawahnya --}}
     <div data-hero-parallax>
       <section class="tph tph--title" aria-labelledby="type-name" data-hero>
-        <div class="wrap">
+        {{-- Judul kiri, kembali ke proyek kanan --}}
+        <div class="wrap tph__head">
           <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
+          @if ($pj)
+            <a class="hd__back roll-host" href="{{ $pj['url'] }}">
+              <span><x-roll-text text="Kembali" /><span class="hd__btn-more"><x-roll-text :text="'ke '.$pj['title']" /></span></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+          @endif
         </div>
       </section>
     </div>

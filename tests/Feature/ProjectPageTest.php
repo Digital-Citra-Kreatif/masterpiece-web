@@ -506,8 +506,8 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('<header class="hd hd--type">', false)
         ->assertDontSee('hd__nav', false)
         ->assertSee('<a class="hd__mark" href="'.url('/projects/westlake').'" aria-label="Westlake, halaman proyek">', false)
-        // Teks dan panah tanpa border, animasi seperti menu
-        ->assertSee('<a class="hd__back roll-host" href="'.url('/projects/westlake').'">', false)
+        // Kembali ke proyek di kanan judul, bukan di header
+        ->assertSeeInOrder(['</header>', '<div class="wrap tph__head">', 'id="type-name"', '<a class="hd__back roll-host" href="'.url('/projects/westlake').'">'], false)
         ->assertSee('<span class="visually-hidden">Kembali</span>', false)
         ->assertSee('<span class="hd__btn-more"><span class="roll"', false)
         ->assertSee('<span class="visually-hidden">ke Westlake</span>', false)
