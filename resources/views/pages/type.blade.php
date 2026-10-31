@@ -8,6 +8,9 @@
   $denahItems = collect($t['denah'])->map(fn ($d) => ['src' => asset($d['image']), 'caption' => $d['label'], 'alt' => "Denah {$d['label']}"]);
   $denahPayload = fn ($index) => json_encode(['title' => "{$t['name']}: Denah", 'items' => $denahItems, 'index' => $index]);
   $vrUrl = filled($t['vr']['url']) ? asset($t['vr']['url']) : null;
+  // Indikator tab bila ada gambar zoom
+  $zooms = collect($parts)->contains(fn (array $part): bool => ($part['zoom'] ?? null) !== null);
+  $marker = ($pj['style']['marker'] ?? null) ?: ['shape' => 'circle', 'image' => null];
 @endphp
 
 <x-layouts.base
@@ -63,12 +66,21 @@
               <button class="icon-btn tps__nav tps__nav--next" type="button" data-spin-step="1" aria-label="Putar ke kanan">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
               </button>
+              @if ($zooms)
+                {{-- Gambar tab, tampil setelah zoom --}}
+                <img class="tps__zoom" alt="" decoding="async" data-spin-zoom />
+                {{-- Indikator tab seperti titik Masterplan --}}
+                <button class="spot spot--marker is-active tps__spot" type="button" aria-label="Lihat {{ $first['name'] }}" data-spin-spot @if (($first['zoom'] ?? null) === null) hidden @endif>
+                  <span class="spot__dot"><x-project.marker :marker="$marker" /></span>
+                  <span class="spot__label" aria-hidden="true">{{ $first['name'] }}</span>
+                </button>
+              @endif
             </div>
           </div>
 
           {{-- Tab seperti halaman proyek, lalu label ruko dan ukuran --}}
           <div class="tps__info">
-            <ul class="tph__tabs" aria-label="Bagian 360°">
+            <ul class="tph__tabs" aria-label="Bagian 360°" data-spin-tabs>
               @foreach ($parts as $part)
                 <li class="tph__part">
                   <button class="tph__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-controls="type-360-desc-{{ $loop->index }}" data-spin-tab="{{ $loop->index }}">
@@ -79,6 +91,18 @@
                 </li>
               @endforeach
             </ul>
+
+            @if ($zooms)
+              {{-- Detail tab terbuka --}}
+              <div class="tps__detail" role="group" aria-labelledby="type-360-detail-title" data-spin-detail hidden>
+                <button class="scene__back" type="button" data-spin-back>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+                  Kembali ke 360°
+                </button>
+                <h3 class="display tps__detail-title" id="type-360-detail-title" tabindex="-1" data-spin-detail-title></h3>
+                <p class="tps__detail-text" data-spin-detail-text></p>
+              </div>
+            @endif
 
             @if ($t['label'] || $t['dimensions'])
               <div class="tps__meta">

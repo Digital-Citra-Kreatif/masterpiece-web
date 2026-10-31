@@ -347,6 +347,100 @@ body.is-type .tps--scroll::before {
   outline-offset: 2px;
 }
 
+/* Zoom tab: kamera mendekat ke indikator */
+.tps__poster,
+.tps__canvas {
+  transition: transform 1.3s cubic-bezier(0.65, 0, 0.35, 1); /* Sama dengan ZOOM_MS */
+}
+
+.tps.is-zoom :is(.tps__poster, .tps__canvas) {
+  transform: scale(2.2);
+  pointer-events: none;
+}
+
+/* Gambar tab utuh di atas 360°, latar hitam */
+.tps__zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+
+.tps__zoom.is-on {
+  opacity: 1;
+}
+
+/* Indikator di tengah gambar */
+.tps__spot {
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  transition: opacity 0.3s, visibility 0s;
+}
+
+.tps__spot[hidden] {
+  display: none;
+}
+
+/* Indikator dan panah menyingkir selama zoom */
+.tps:is(.is-zoom, .is-returning) :is(.tps__spot, .tps__nav) {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0s 0.3s;
+}
+
+.tps__detail[hidden] {
+  display: none;
+}
+
+.tps__detail {
+  margin-bottom: 32px;
+  animation: loc-in 0.7s var(--ease) both; /* Gerak panel Masterplan */
+}
+
+.tps__detail .scene__back {
+  margin-bottom: 24px;
+}
+
+.tps .tps__detail-title {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+  outline: none;
+}
+
+.tps__detail-text {
+  max-width: 46ch;
+  margin: 0;
+  color: rgb(255 255 255 / 0.85);
+  font-size: 17px;
+}
+
+.tps__detail-text[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tps__poster,
+  .tps__canvas,
+  .tps__zoom {
+    transition: none;
+  }
+
+  .tps__detail {
+    animation: none;
+  }
+}
+
 .tps__stage--image {
   aspect-ratio: auto;
   background: none;
@@ -661,6 +755,16 @@ body.is-type .tps--scroll::before {
   .tps__info > .tph__tabs {
     order: -1;
     margin-top: 24px;
+  }
+
+  /* Detail tab menggantikan tab */
+  .tps__info > .tps__detail {
+    order: -1;
+    margin-top: 24px;
+  }
+
+  .tps .tps__detail-title {
+    font-size: 32px;
   }
 }
 

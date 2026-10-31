@@ -632,7 +632,7 @@ test('a type with its own 360° tabs shows them on its page instead of the proje
     expect(array_map('count', array_column($parts, 'frames')))->toBe([3, 1]);
 });
 
-test('a type tab\'s zoom image goes to the 360° tabs as the original file, tabs without one get null', function () {
+test('a type tab\'s zoom image goes to the 360° tabs as the original file and adds the indicator, zoom layer and detail panel', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
     $zoom = app(UploadMedia::class)->handle(UploadedFile::fake()->image('lantai-1.jpg', 3000, 2000), []);
@@ -641,12 +641,32 @@ test('a type tab\'s zoom image goes to the 360° tabs as the original file, tabs
         ['name' => 'Lantai 1', 'description' => 'Area usaha.', 'images' => [], 'zoom_image' => $zoom->id],
     ]]]]);
 
-    $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
+    $html = $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        ->assertSeeInOrder(['data-spin-canvas', 'data-spin-zoom', 'data-spin-spot', 'data-spin-tabs', 'data-spin-detail hidden', 'data-spin-back', 'Kembali ke 360°'], false)
+        ->getContent();
+    // Tab pertama tanpa zoom: indikator tersembunyi
+    expect($html)->toMatch('/aria-label="Lihat Fasad" data-spin-spot\s+hidden/');
     preg_match('/data-tabs="([^"]+)"/', $html, $match);
     $parts = json_decode(html_entity_decode($match[1]), true);
 
     // File asli, bukan konversi kecil
     expect(array_column($parts, 'zoom'))->toBe([null, $zoom->url()]);
+});
+
+test('a type page without zoom images has no tab indicator or detail panel', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'turntable' => ['tabs' => [
+        ['name' => 'Fasad', 'description' => 'Tampak depan.', 'images' => [projectImage('type_1.jpg'), projectImage('type_2.jpg')]],
+    ]]]]);
+
+    $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        ->assertSee('data-spin="scroll"', false)
+        ->assertDontSee('data-spin-spot', false)
+        ->assertDontSee('data-spin-zoom', false)
+        ->assertDontSee('data-spin-detail', false);
 });
 
 test('the logo on a project page reloads that project page', function () {

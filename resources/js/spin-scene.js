@@ -61,6 +61,11 @@ export function spin(root) {
   const buttons = [...root.querySelectorAll('[data-spin-tab]')];
   const steps = [...root.querySelectorAll('[data-spin-step]')];
   const pin = root.querySelector('[data-spin-pin]'); // Isi yang tertahan saat gulir
+  // Indikator tab dan detailnya
+  const spot = root.querySelector('[data-spin-spot]');
+  const zoomLayer = root.querySelector('[data-spin-zoom]');
+  const detail = root.querySelector('[data-spin-detail]');
+  const tabList = root.querySelector('[data-spin-tabs]');
   const ctx = canvas.getContext('2d');
   const same = (a, b) => a.frames.join('|') === b.frames.join('|');
   // Potongan bersambung jadi satu putaran
@@ -208,6 +213,15 @@ export function spin(root) {
     if (name) name.textContent = tab().name;
     canvas.setAttribute('aria-label', canvas.getAttribute('aria-label').replace(/, [^:]+:/, `, ${tab().name}:`));
     still();
+    placeSpot();
+  };
+
+  // Indikator hanya untuk tab bergambar zoom
+  const placeSpot = () => {
+    if (!spot) return;
+    spot.hidden = !tab().zoom;
+    spot.querySelector('.spot__label').textContent = tab().name;
+    spot.setAttribute('aria-label', `Lihat ${tab().name}`);
   };
 
   const show = (index) => {
@@ -290,6 +304,83 @@ export function spin(root) {
     button.addEventListener('pointerdown', () => { turn(); timer = setInterval(turn, 60); });
     for (const ev of ['pointerup', 'pointerleave', 'pointercancel']) button.addEventListener(ev, release);
     button.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); turn(); } });
+  }
+
+  // Zoom seperti titik Masterplan
+  const ZOOM_MS = 1300; // Sama dengan transisi CSS
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, reduced ? 0 : ms));
+  const zoomCache = new Map();
+  const preloadZoom = (src) => {
+    if (!src) return Promise.resolve(false);
+    if (!zoomCache.has(src)) {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
+      zoomCache.set(src, img.decode().then(() => true, () => false));
+    }
+    return zoomCache.get(src);
+  };
+  let zoomed = null; // Tab terbuka
+  let zoomRun = 0;
+  let zoomY = 0;
+
+  async function openZoom() {
+    if (zoomed !== null || !tab().zoom) return;
+    const id = ++zoomRun;
+    const part = tab();
+    zoomed = active;
+    zoomY = window.scrollY;
+    glideId++;
+    const ready = preloadZoom(part.zoom);
+    root.classList.remove('is-returning');
+    root.classList.add('is-zoom');
+    // Detail muncul saat kamera hampir sampai
+    await wait(ZOOM_MS * 0.75);
+    if (id !== zoomRun) return;
+    detail.querySelector('[data-spin-detail-title]').textContent = part.name;
+    const text = detail.querySelector('[data-spin-detail-text]');
+    text.textContent = part.text;
+    text.hidden = !part.text;
+    tabList.hidden = true;
+    detail.hidden = false;
+    detail.querySelector('[data-spin-detail-title]').focus({ preventScroll: true });
+    await wait(ZOOM_MS * 0.25);
+    if (!(await ready) || id !== zoomRun) return;
+    Object.assign(zoomLayer, { src: part.zoom, alt: part.name });
+    zoomLayer.classList.add('is-on');
+  }
+
+  async function closeZoom() {
+    if (zoomed === null) return;
+    const id = ++zoomRun;
+    zoomed = null;
+    const focused = root.contains(document.activeElement);
+    detail.hidden = true;
+    tabList.hidden = false;
+    if (focused) buttons[active]?.focus({ preventScroll: true });
+    // Gambar pudar dulu, lalu kamera kembali
+    if (zoomLayer.classList.contains('is-on')) {
+      zoomLayer.classList.remove('is-on');
+      await wait(400);
+      if (id !== zoomRun) return;
+    }
+    root.classList.add('is-returning');
+    root.classList.remove('is-zoom');
+    await wait(ZOOM_MS);
+    if (id === zoomRun) root.classList.remove('is-returning'); // Indikator tampil setelah kembali
+  }
+
+  if (spot) {
+    spot.addEventListener('click', openZoom);
+    for (const ev of ['pointerover', 'focus']) spot.addEventListener(ev, () => preloadZoom(tab().zoom));
+    detail.querySelector('[data-spin-back]').addEventListener('click', closeZoom);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && zoomed !== null && !document.querySelector('dialog[open]')) closeZoom();
+    });
+    // Gulir menutup detail
+    window.addEventListener('scroll', () => {
+      if (zoomed !== null && Math.abs(window.scrollY - zoomY) > 120) closeZoom();
+    }, { passive: true });
   }
 
   if (mode === 'scroll') {
