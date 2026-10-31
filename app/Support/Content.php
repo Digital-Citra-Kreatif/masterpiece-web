@@ -87,7 +87,7 @@ final class Content
     /**
      * Isi halaman maintenance, null bila tidak aktif
      *
-     * @return array{title: string, description: ?string, date: ?array{iso: string, label: string}}|null
+     * @return array{title: string, description: ?string, date: ?array{iso: string, label: string, time: ?string}}|null
      */
     public static function maintenance(): ?array
     {
@@ -102,7 +102,12 @@ final class Content
         return [
             'title' => filled($values['heading'] ?? null) ? (string) $values['heading'] : 'Situs sedang dalam perbaikan',
             'description' => filled($values['description'] ?? null) ? (string) $values['description'] : null,
-            'date' => $date ? ['iso' => $date->toDateString(), 'label' => $date->locale('id')->translatedFormat('j F Y')] : null,
+            'date' => $date ? [
+                // Jam 00.00: hanya tanggal
+                'iso' => $date->isStartOfDay() ? $date->toDateString() : $date->format('Y-m-d\TH:i'),
+                'label' => $date->locale('id')->translatedFormat('j F Y'),
+                'time' => $date->isStartOfDay() ? null : $date->format('H.i'),
+            ] : null,
         ];
     }
 

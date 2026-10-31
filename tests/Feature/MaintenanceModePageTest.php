@@ -38,6 +38,14 @@ test('an active maintenance mode shows its title, description and return date on
     }
 });
 
+test('a return date with a time of day shows the time under the date', function () {
+    saveMaintenance(['date' => '2026-11-02T14:30', 'active' => true]);
+
+    $this->get('/')
+        ->assertStatus(503)
+        ->assertSee('<time datetime="2026-11-02T14:30">2 November 2026 <span class="nf__time">pukul 14.30</span></time>', false);
+});
+
 test('maintenance mode without a title or date falls back to a default title and leaves the date out', function () {
     saveMaintenance(['active' => true]);
 

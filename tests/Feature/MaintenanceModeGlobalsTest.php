@@ -18,14 +18,14 @@ test('maintenance globals save the content and can be switched off again', funct
     app(SaveGlobals::class)->handle($set, [
         'heading' => 'Pemeliharaan website',
         'description' => 'Website sedang diperbarui.',
-        'date' => '2026-11-01',
+        'date' => '2026-11-01T09:00:00',
         'active' => true,
     ], $locale);
 
     expect($set->fresh()->data($locale))->toMatchArray([
         'heading' => 'Pemeliharaan website',
         'description' => 'Website sedang diperbarui.',
-        'date' => '2026-11-01',
+        'date' => '2026-11-01T09:00:00',
         'active' => true,
     ]);
 
@@ -33,7 +33,7 @@ test('maintenance globals save the content and can be switched off again', funct
 
     expect($set->fresh()->data($locale))->toMatchArray([
         'heading' => 'Pemeliharaan website',
-        'date' => '2026-11-01',
+        'date' => '2026-11-01T09:00:00',
         'active' => false,
     ]);
 });
@@ -44,7 +44,7 @@ test('seeding maintenance globals again preserves saved content and activation',
     $values = [
         'heading' => 'Pembaruan terjadwal',
         'description' => 'Silakan kembali setelah pembaruan selesai.',
-        'date' => '2026-11-02',
+        'date' => '2026-11-02T08:30:00',
         'active' => true,
     ];
     app(SaveGlobals::class)->handle($set, $values, Locales::default());

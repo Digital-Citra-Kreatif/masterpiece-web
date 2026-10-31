@@ -6,7 +6,7 @@
       <p class="nf__text">{!! nl2br(e($mt['description']), false) !!}</p>
     @endif
     @if ($mt['date'])
-      <p class="nf__date">Perkiraan kembali <time datetime="{{ $mt['date']['iso'] }}">{{ $mt['date']['label'] }}</time></p>
+      <p class="nf__date">Perkiraan kembali <time datetime="{{ $mt['date']['iso'] }}">{{ $mt['date']['label'] }}@if ($mt['date']['time']) <span class="nf__time">pukul {{ $mt['date']['time'] }}</span>@endif</time></p>
     @endif
   </main>
 </x-layouts.base>
