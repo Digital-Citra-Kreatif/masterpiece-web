@@ -112,6 +112,7 @@ body:has(.wa) .ft__meta {
 @media (max-width: 1024px) {
   .ft__inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 64px; /* Antar bagian jelas */
   }
 
   .ft__brand {
@@ -123,6 +124,6 @@ body:has(.wa) .ft__meta {
 @media (max-width: 760px) {
   .ft__inner {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 56px;
   }
 }
