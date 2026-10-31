@@ -481,6 +481,157 @@ function setup(sunrice) {
     }
   };
 
+  // Indikator tab 360° Tipe: pilih tab, isi X/Y di bawah gambarnya
+  const TYPE_EDITOR = /\/admin\/cms\/collections\/types\/entries\/(\d+)\/edit/;
+  const tabInput = (index, key) => document.getElementById(`data-turntable-tabs-${index}-${key}`);
+  const readTabs = (group) => [...group.querySelectorAll('[id^="data-turntable-tabs-"][id$="-fields"]')]
+    .map((el) => {
+      const index = Number(el.id.match(/^data-turntable-tabs-(\d+)-fields$/)?.[1] ?? NaN);
+      if (Number.isNaN(index)) return null;
+      const num = (key) => { const v = tabInput(index, key)?.value; return v === undefined || v === '' ? null : Number(v); };
+      const toggle = group.querySelector(`button[aria-controls="${el.id}"]`);
+      const name = tabInput(index, 'name')?.value || toggle?.textContent.trim() || `Tab ${index + 1}`;
+      return { index, name, x: num('x'), y: num('y') };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.index - b.index);
+
+  function TabPicker({ frames, group }) {
+    const [, setTick] = useState(0);
+    const [selected, setSelected] = useState(null);
+    const [draft, setDraft] = useState({}); // Teks X/Y saat diketik
+    const rows = readTabs(group);
+    const current = rows.find((r) => r.index === selected) ?? null;
+    const missing = rows.filter((r) => !placed(r)).length;
+    const frame = current ? frames?.[current.index] ?? null : null;
+
+    // Baca ulang saat form berubah
+    useEffect(() => {
+      const bump = () => setTick((t) => t + 1);
+      const observer = new MutationObserver(bump);
+      observer.observe(group, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] });
+      group.addEventListener('input', bump);
+      // Baris tertutup dibuka agar X/Y terbaca
+      for (const button of group.querySelectorAll('button[aria-controls^="data-turntable-tabs-"][aria-expanded="false"]')) button.click();
+      return () => { observer.disconnect(); group.removeEventListener('input', bump); };
+    }, [group]);
+
+    // Sembunyikan X/Y repeater
+    useEffect(() => {
+      for (const row of rows) {
+        for (const key of ['x', 'y']) {
+          const input = tabInput(row.index, key);
+          if (!input) continue;
+          const label = group.querySelector(`label[for="${input.id}"]`);
+          let wrapper = input.parentElement;
+          if (label) {
+            while (wrapper && !wrapper.contains(label)) wrapper = wrapper.parentElement;
+          }
+          // Jangan sampai baris
+          if (!wrapper || wrapper.id.endsWith('-fields') || wrapper === group) wrapper = input.parentElement;
+          if (wrapper && !wrapper.hidden) wrapper.hidden = true;
+        }
+      }
+    });
+
+    useEffect(() => {
+      if (selected === null && rows.length) setSelected(rows[0].index);
+    }, [rows.length, selected]);
+
+    // Satu kolom per ketikan
+    const keyOf = (axis) => `${current.index}-${axis}`;
+    const setAxis = (axis, text) => {
+      const input = current && tabInput(current.index, axis);
+      if (!input) return;
+      setDraft((d) => ({ ...d, [keyOf(axis)]: text }));
+      const value = parsePercent(text);
+      if (value !== null) setInput(input, value);
+    };
+    const shown = (axis) => draft[keyOf(axis)] ?? (current[axis] === null ? '' : String(current[axis]));
+    const invalid = (axis) => draft[keyOf(axis)] !== undefined && parsePercent(draft[keyOf(axis)]) === null;
+
+    const bar = h('div', { className: 'pm-bar' },
+      h('div', { className: 'pm-title' },
+        h('strong', null, 'Penempatan indikator tab'),
+        h('span', null, rows.length ? `${rows.length} tab · ${missing ? `${missing} di tengah gambar (X/Y kosong)` : 'semua sudah ditempatkan'}` : 'Tambah tab dulu, lalu isi posisinya di sini.')));
+    if (!rows.length) return h('div', null, bar);
+
+    const plan = frame
+      ? h('div', { className: 'pm-viewport' },
+        h('div', { className: 'pm-plan is-idle is-preview' },
+          h('img', { src: frame.src, alt: `Gambar awal tab ${current.name}`, width: frame.width, height: frame.height, draggable: false }),
+          placed(current) && h('span', {
+            className: 'pm-dot pm-orbit is-on',
+            style: { left: `${Math.min(100, Math.max(0, current.x))}%`, top: `${Math.min(100, Math.max(0, current.y))}%` },
+            'aria-hidden': true,
+          }, h('span', { className: 'pm-tag' }, current.name))))
+      : h('div', { className: 'pm-empty' }, h('p', null, 'Gambar tab ini belum tersimpan. Simpan dulu, lalu gambarnya muncul di sini.'));
+
+    const list = h('ul', { className: 'pm-units is-orbit', 'aria-label': 'Tab 360°' },
+      rows.map((r) => h('li', { key: r.index }, h('button', {
+        type: 'button',
+        className: `pm-chip pm-orbit${placed(r) ? '' : ' is-missing'}`,
+        'aria-pressed': r.index === selected,
+        title: placed(r) ? `${r.x}, ${r.y}` : 'Belum ada posisi, indikator di tengah',
+        onClick: () => setSelected(r.index),
+      }, h('i', { className: 'pm-swatch', 'aria-hidden': true }), r.name))));
+
+    const wrong = current && (invalid('x') || invalid('y'));
+    const detail = current && h('div', { className: 'pm-detail' },
+      h('strong', null, current.name),
+      ['x', 'y'].map((axis) => h('label', { key: axis }, `Posisi ${axis.toUpperCase()} (%)`, h(ui.Input, {
+        type: 'text', inputMode: 'decimal', value: shown(axis), 'aria-invalid': invalid(axis) || undefined,
+        onChange: (e) => setAxis(axis, e.target.value),
+        onBlur: () => setDraft((d) => { const next = { ...d }; delete next[keyOf(axis)]; return next; }),
+        onKeyDown: noEnter,
+      }))),
+      wrong && h('span', { className: 'pm-error', role: 'alert' }, 'Isi angka 0 sampai 100.'));
+
+    return h('div', null, bar, plan, list, detail);
+  }
+
+  let tabMount = null;
+  let tabFrames = null;
+  let tabFramesFor = null; // Tipe pemilik gambar
+  const loadTabFrames = (type) => {
+    tabFramesFor = type;
+    fetch(sunrice.adminUrl(`type-frames?type=${type}`), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : []))
+      .catch(() => [])
+      .then((json) => {
+        if (tabFramesFor !== type) return;
+        tabFrames = json;
+        tabMount?.render();
+      });
+  };
+  // Muat ulang setelah simpan
+  router.on('success', () => {
+    const type = location.pathname.match(TYPE_EDITOR)?.[1];
+    if (type && tabMount) loadTabFrames(type);
+  });
+  const syncTabs = () => {
+    const type = location.pathname.match(TYPE_EDITOR)?.[1] ?? null;
+    const label = type && document.getElementById('data-turntable-tabs-label');
+    const group = label && (label.closest('[role="group"]') ?? label.parentElement?.parentElement);
+    if (!group) {
+      if (tabMount && !tabMount.el.isConnected) { tabMount.root.unmount(); tabMount = null; }
+      return;
+    }
+    if (tabMount?.el.isConnected && tabMount.group === group) return;
+    if (tabMount) { tabMount.root.unmount(); tabMount.el.remove(); }
+    const el = document.createElement('div');
+    el.className = 'pm';
+    group.append(el);
+    const root = createRoot(el);
+    const render = () => root.render(h(TabPicker, { frames: tabFrames, group }));
+    tabMount = { el, root, group, render };
+    if (type !== tabFramesFor) {
+      tabFrames = null;
+      loadTabFrames(type);
+    }
+    render();
+  };
+
   let mounted = null;
 
   // Pasang di bawah Siteplan
@@ -509,7 +660,7 @@ function setup(sunrice) {
   document.head.append(style);
 
   let frame = 0;
-  const syncAll = () => { sync(); syncOrbits(); };
+  const syncAll = () => { sync(); syncOrbits(); syncTabs(); };
   new MutationObserver(() => { cancelAnimationFrame(frame); frame = requestAnimationFrame(syncAll); }).observe(document.body, { childList: true, subtree: true });
   syncAll();
 }

@@ -57,7 +57,7 @@
     <section
       @class(['tps', 'tps--scroll' => $parts !== []])
       aria-label="Detail {{ $t['name'] }}"
-      @if ($parts !== []) data-spin="scroll" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'zoom']))) }}" style="--spin-tabs: {{ count($parts) }}" @endif
+      @if ($parts !== []) data-spin="scroll" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'zoom', 'x', 'y']))) }}" style="--spin-tabs: {{ count($parts) }}" @endif
     >
       <div @class(['tps__pin' => $parts !== []]) @if ($parts !== []) data-spin-pin @endif>
       <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === []])>
@@ -65,7 +65,7 @@
           {{-- Viewer 360° --}}
           @php($first = $parts[0])
           <div class="tps__view" style="--native: {{ $first['width'] }}px">
-            <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}">
+            <div class="tps__stage" role="region" aria-label="{{ $t['name'] }}, tampilan 360°" style="aspect-ratio: {{ $first['width'] }} / {{ $first['height'] }}; --spot-x: {{ $first['x'] }}%; --spot-y: {{ $first['y'] }}%">
               {{-- Gambar awal sebelum kanvas siap --}}
               <img class="tps__poster" src="{{ $first['frames'][$first['frame']] ?? $first['frames'][0] }}" alt="" width="{{ $first['width'] }}" height="{{ $first['height'] }}" data-spin-poster />
               <canvas class="tps__canvas" tabindex="0" role="img" aria-label="{{ $t['name'] }}, {{ $first['name'] }}: gulir atau geser untuk memutar" data-spin-canvas></canvas>

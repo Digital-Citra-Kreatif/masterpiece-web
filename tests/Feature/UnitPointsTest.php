@@ -132,6 +132,33 @@ test('the picker places points on the project\'s saved masterplan image, and on 
         ->assertJsonPath('cluster.src', asset('media/scroll/kawasan/lg/f_000.jpg'));
 });
 
+test('the type form gets each 360° tab\'s first frame in repeater order for placing its indicator', function () {
+    $image = fn (string $name, int $width = 400, int $height = 300): int => app(UploadMedia::class)->handle(UploadedFile::fake()->image($name, $width, $height), [])->id;
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $data = [...$type->data, 'turntable' => ['tabs' => [
+        ['name' => 'Fasad', 'images' => [$image('b.jpg'), $image('a.jpg')]],
+        ['name' => '', 'images' => [$image('lantai.jpg', 800, 600)]],
+        ['name' => 'Atap', 'images' => []],
+    ]]];
+    $type->update(['data' => $data, 'draft_data' => $data]);
+
+    $frames = $this->actingAs($this->admin)
+        ->getJson('/admin/type-frames?type='.$type->entry_id)
+        ->assertOk()
+        ->assertJsonCount(3)
+        ->assertJsonPath('1.width', 800)
+        ->assertJsonPath('1.height', 600)
+        ->json();
+
+    // Urut nama file; tab kosong pakai gambar tab pertama di sudutnya sendiri
+    expect($frames[0]['src'])->toContain('-a.jpg')
+        ->and($frames[2]['src'])->toContain('-b.jpg');
+});
+
+test('guests cannot read the type frames', function () {
+    $this->getJson('/admin/type-frames')->assertUnauthorized();
+});
+
 test('guests cannot read the orbit frames', function () {
     $this->getJson('/admin/orbit-frames')->assertUnauthorized();
 });

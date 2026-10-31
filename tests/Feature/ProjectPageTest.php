@@ -654,6 +654,24 @@ test('a type tab\'s zoom image goes to the 360° tabs as the original file and a
     expect(array_column($parts, 'zoom'))->toBe([null, $zoom->url()]);
 });
 
+test('a type tab\'s X/Y places its indicator and zoom target, and a tab without both stays centred', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+    $zoom = app(UploadMedia::class)->handle(UploadedFile::fake()->image('lantai-1.jpg', 300, 200), []);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'turntable' => ['tabs' => [
+        ['name' => 'Fasad', 'images' => [projectImage('type_1.jpg'), projectImage('type_2.jpg')], 'zoom_image' => $zoom->id, 'x' => 30, 'y' => 72.5],
+        ['name' => 'Lantai 1', 'images' => [], 'zoom_image' => $zoom->id, 'x' => 40],
+    ]]]]);
+
+    $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
+    // Tab pertama: posisi awal di gambar
+    expect($html)->toContain('--spot-x: 30%; --spot-y: 72.5%');
+    preg_match('/data-tabs="([^"]+)"/', $html, $match);
+    $parts = json_decode(html_entity_decode($match[1]), true);
+
+    expect(array_map(fn (array $part): array => [$part['x'], $part['y']], $parts))->toEqual([[30, 72.5], [50, 50]]);
+});
+
 test('a type page without zoom images has no tab indicator or detail panel', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);

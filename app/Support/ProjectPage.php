@@ -458,10 +458,11 @@ final class ProjectPage
      * Tab 360° dengan gambarnya
      *
      * @param  array<string, mixed>  $section
-     * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int, frame: int, zoom: ?string, source: int}>
+     * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int, frame: int, zoom: ?string, x: float, y: float, source: int}>
      */
     public static function turntableTabs(array $section): array
     {
+        $percent = fn (mixed $value): ?float => is_numeric($value) ? max(0.0, min(100.0, (float) $value)) : null;
         $rows = collect($section['tabs'] ?? [])
             ->filter(fn (mixed $row): bool => is_array($row) && filled($row['name'] ?? null))
             ->values()
@@ -485,8 +486,11 @@ final class ProjectPage
         $sources = $keys->map(fn (string $key): int => $key === '' ? $first : (int) $keys->search($key));
 
         return $rows
-            ->map(function (array $item, int $index) use ($rows, $sources): array {
+            ->map(function (array $item, int $index) use ($rows, $sources, $percent): array {
                 $source = $sources[$index];
+                // Indikator di tengah bila X/Y belum lengkap
+                [$x, $y] = [$percent($item['row']['x'] ?? null), $percent($item['row']['y'] ?? null)];
+                $placed = $x !== null && $y !== null;
                 $frames = $rows[$source]['frames'];
                 // Sudut dibagi rata antar tab segambar
                 $sharing = $sources->filter(fn (int $other): bool => $other === $source)->keys()->values();
@@ -500,6 +504,8 @@ final class ProjectPage
                     'height' => (int) ($frames->first()->height ?: 1200),
                     'frame' => $frame,
                     'zoom' => self::zoomImage($item['row']['zoom_image'] ?? null),
+                    'x' => $placed ? $x : 50.0,
+                    'y' => $placed ? $y : 50.0,
                     'source' => $source,
                 ];
             })

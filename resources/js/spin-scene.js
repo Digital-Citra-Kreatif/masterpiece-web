@@ -220,6 +220,9 @@ export function spin(root) {
   const placeSpot = () => {
     if (!spot) return;
     spot.hidden = !tab().zoom;
+    // Posisi dari CMS, juga titik tuju zoom
+    spot.parentElement.style.setProperty('--spot-x', `${tab().x ?? 50}%`);
+    spot.parentElement.style.setProperty('--spot-y', `${tab().y ?? 50}%`);
     spot.querySelector('.spot__label').textContent = tab().name;
     spot.setAttribute('aria-label', `Lihat ${tab().name}`);
   };
