@@ -283,6 +283,30 @@ button.pj-frame:focus-visible {
   height: 20px;
 }
 
+/* Proyek: ikon dan teks tanpa kotak, ikon lebih besar */
+.is-project .hero__play {
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.is-project .hero__play:hover {
+  background: none;
+  color: #fff;
+}
+
+.is-project .hero__play svg {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  transition: transform 0.3s var(--ease);
+}
+
+.is-project .hero__play:hover svg {
+  transform: scale(1.08);
+}
+
 @media (min-width: 761px) {
   .is-project .hero__action {
     grid-column: 2;
