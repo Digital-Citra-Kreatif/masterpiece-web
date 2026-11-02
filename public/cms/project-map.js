@@ -637,5 +637,6 @@ function setup(sunrice) {
 // Tunggu runtime panel
 (function wait(tries = 0) {
   if (globalThis.Sunrice) return setup(globalThis.Sunrice);
-  if (tries < 200) setTimeout(() => wait(tries + 1), 50);
+  // Runtime ikut halaman CMS
+  setTimeout(() => wait(tries + 1), tries < 200 ? 50 : 500);
 })();
