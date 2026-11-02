@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\MaintenanceMode;
+use App\Http\Middleware\RevalidatePages;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Juga dipakai rute situs CMS
-        $middleware->web(append: [MaintenanceMode::class]);
+        $middleware->web(append: [RevalidatePages::class, MaintenanceMode::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
