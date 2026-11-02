@@ -152,30 +152,26 @@ body.is-type .tps--scroll::before {
 }
 
 .tps--scroll .tps__facts div {
-  background: rgb(255 255 255 / 0.08);
+  background: #fff;
 }
 
 .tps--scroll .tps__facts dt {
-  color: rgb(255 255 255 / 0.64);
+  color: var(--muted);
 }
 
 .tps--scroll .tps__facts dd {
-  color: #fff;
+  color: var(--ink);
 }
 
-/* Tombol latar hitam */
-.tps--scroll .tps__actions .btn:hover {
-  background: #fff;
-  border-color: #fff;
-  color: #000;
-}
-
+/* Tombol putih */
+.tps--scroll .tps__actions .btn,
 .tps--scroll .tps__actions .btn--solid {
   background: #fff;
   border-color: #fff;
   color: #000;
 }
 
+.tps--scroll .tps__actions .btn:hover,
 .tps--scroll .tps__actions .btn--solid:hover {
   background: var(--room);
   border-color: var(--room);
