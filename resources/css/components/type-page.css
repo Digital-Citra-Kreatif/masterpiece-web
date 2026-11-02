@@ -146,6 +146,42 @@ body.is-type .tps--scroll::before {
   color: rgb(255 255 255 / 0.72);
 }
 
+/* Spesifikasi di 360° */
+.tps--scroll .tps__side {
+  margin-top: 24px;
+}
+
+.tps--scroll .tps__facts div {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.tps--scroll .tps__facts dt {
+  color: rgb(255 255 255 / 0.64);
+}
+
+.tps--scroll .tps__facts dd {
+  color: #fff;
+}
+
+/* Tombol latar hitam */
+.tps--scroll .tps__actions .btn:hover {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.tps--scroll .tps__actions .btn--solid {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.tps--scroll .tps__actions .btn--solid:hover {
+  background: var(--room);
+  border-color: var(--room);
+  color: var(--room-ink);
+}
+
 /* Fokus latar hitam */
 .tps--scroll .tph__tab:focus-visible,
 .tps--scroll .tph__part:has(.tph__tab:focus-visible) .tph__desc {

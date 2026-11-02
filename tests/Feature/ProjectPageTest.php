@@ -609,7 +609,7 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->and($html)->not->toContain('wr360');
 });
 
-test('a type page\'s 360° section holds the viewer, tabs and tab text, unit label and size; the rest sits below it', function () {
+test('a type page\'s 360° section holds the viewer, tabs and tab text, unit label, size and facts; the rest sits below it', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, [
         'global_style' => inactiveStyle(),
@@ -619,14 +619,17 @@ test('a type page\'s 360° section holds the viewer, tabs and tab text, unit lab
             ['name' => 'Lantai 1', 'description' => 'Area usaha.', 'images' => [projectImage('floor.jpg')]],
         ]],
     ]);
-    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'intro' => '<p>Ruko di tepi danau.</p>']]);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'intro' => '<p>Ruko di tepi danau.</p>', 'summary_extra' => [['label' => 'Carport', 'value' => '1']]]]);
 
     $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
     $viewer = substr($html, strpos($html, 'data-spin="scroll"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="scroll"'));
 
     expect($viewer)->toContain('data-spin-tab="1"')
         ->and($viewer)->toContain('<strong>Fasad.</strong> Tampak depan.</p>')
-        ->and($viewer)->not->toContain('tps__intro');
+        ->and($viewer)->not->toContain('tps__intro')
+        // Ringkasan di 360°
+        ->and($viewer)->toContain('<dt>Carport</dt>')
+        ->and(substr_count($html, 'class="tps__facts"'))->toBe(1);
     $this->get('/westlake/tipe/tipe-1')
         // Label ruko dan ukuran di section 360, di bawah tab
         ->assertSeeInOrder(['data-spin="scroll"', 'class="tph__tabs"', '<strong>Fasad.</strong> Tampak depan.', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<p class="eyebrow tps__mark">', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);

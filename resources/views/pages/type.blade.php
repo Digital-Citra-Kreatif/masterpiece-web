@@ -8,6 +8,9 @@
   $denahItems = collect($t['denah'])->map(fn ($d) => ['src' => asset($d['image']), 'caption' => $d['label'], 'alt' => "Denah {$d['label']}"]);
   $denahPayload = fn ($index) => json_encode(['title' => "{$t['name']}: Denah", 'items' => $denahItems, 'index' => $index]);
   $vrUrl = filled($t['vr']['url']) ? asset($t['vr']['url']) : null;
+  // Spesifikasi dan tombol
+  $hasSide = $t['facts'] !== [] || $t['gallery'] !== [] || $vrUrl;
+  $sideGallery = $t['gallery'] !== [] ? $galleryPayload : null;
   // Ada gambar zoom
   $zooms = collect($parts)->contains(fn (array $part): bool => ($part['zoom'] ?? null) !== null);
   $marker = ($pj['style']['marker'] ?? null) ?: ['shape' => 'circle', 'image' => null];
@@ -124,6 +127,10 @@
                 @endif
               </div>
             @endif
+
+            @if ($hasSide)
+              <x-type-side :facts="$t['facts']" :gallery="$sideGallery" :vr="$vrUrl" />
+            @endif
           </div>
         @elseif ($t['image'])
           {{-- Gambar tipe --}}
@@ -140,7 +147,7 @@
 
     {{-- Label tanpa 360° --}}
     @php($aboutHead = $parts === [])
-    @if (($aboutHead && ($t['label'] || $t['dimensions'])) || $t['intro'] || $t['facts'] !== [] || $t['suitable']['items'] !== [] || $t['gallery'] !== [] || $vrUrl)
+    @if (($aboutHead && ($t['label'] || $t['dimensions'] || $hasSide)) || $t['intro'] || $t['suitable']['items'] !== [])
       {{-- Keterangan tipe --}}
       <section class="tps tps--about" aria-label="Keterangan {{ $t['name'] }}">
         <div class="wrap">
@@ -175,32 +182,9 @@
               </div>
             @endif
 
-            @if ($t['facts'] !== [] || $t['gallery'] !== [] || $vrUrl)
-              {{-- Kolom kanan: spesifikasi --}}
-              <div class="tps__side">
-                @if ($t['facts'] !== [])
-                  <dl class="tps__facts">
-                    @foreach ($t['facts'] as [$k, $v])
-                      <div>
-                        <dt>{{ $k }}</dt>
-                        <dd>{{ $v }}</dd>
-                      </div>
-                    @endforeach
-                  </dl>
-                @endif
-
-                @if ($t['gallery'] !== [] || $vrUrl)
-                  {{-- Galeri dan VR --}}
-                  <div class="tps__actions">
-                    @if ($t['gallery'] !== [])
-                      <button class="btn" type="button" data-open="gallery" data-payload="{{ $galleryPayload }}">Galeri</button>
-                    @endif
-                    @if ($vrUrl)
-                      <a class="btn btn--solid" href="{{ $vrUrl }}" target="_blank" rel="noopener" aria-label="Tur VR 360° (tab baru)">VR</a>
-                    @endif
-                  </div>
-                @endif
-              </div>
+            @if ($aboutHead && $hasSide)
+              {{-- Tanpa 360°: kolom kanan --}}
+              <x-type-side :facts="$t['facts']" :gallery="$sideGallery" :vr="$vrUrl" />
             @endif
           </div>
         </div>
