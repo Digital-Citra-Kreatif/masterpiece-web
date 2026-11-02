@@ -1,31 +1,9 @@
 /* Grid proyek beranda */
 
-/* Garis samping beranda */
-.is-home {
-  --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
-}
-
 .is-home :is(.prj, .ft) {
   /* Sama halaman unit */
   --line: rgb(14 17 19 / 0.07);
   --rule: rgb(14 17 19 / 0.07);
-  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
-  background-size: 1px 100%;
-  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
-  background-repeat: no-repeat;
-}
-
-/* Garis atas hero */
-.is-home .hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  background-image: linear-gradient(rgb(255 255 255 / 0.35), rgb(255 255 255 / 0.35)), linear-gradient(rgb(255 255 255 / 0.35), rgb(255 255 255 / 0.35));
-  background-size: 1px 100%;
-  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
-  background-repeat: no-repeat;
-  pointer-events: none;
 }
 
 /* Menutup hero */

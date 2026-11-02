@@ -185,26 +185,6 @@ button.pj-frame:focus-visible {
   }
 }
 
-/* Garis tipis hero */
-.is-project .hero__body::before,
-.is-project .hero__body::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: rgb(255 255 255 / 0.2);
-  pointer-events: none;
-}
-
-.is-project .hero__body::before {
-  left: max(8px, calc(var(--gutter) - 40px));
-}
-
-.is-project .hero__body::after {
-  right: max(8px, calc(var(--gutter) - 40px));
-}
-
 /* Nama dan judul */
 @media (min-width: 761px) {
   .is-project .hero__body {
@@ -447,43 +427,13 @@ button.pj-frame:focus-visible {
   font-weight: 400;
 }
 
-/* Garis antar section */
-.is-project {
-  --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
-}
-
 /* Juga halaman tipe */
 .is-project :is(.pj-loc, .fac, .types, .units, .pj-points, .ft, .tph) {
   --line: rgb(14 17 19 / 0.12);
-  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
-  background-size: 1px 100%;
-  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
-  background-repeat: no-repeat;
 }
 
 .is-project .pj-points {
   --line: rgb(255 255 255 / 0.2);
-}
-
-/* Garis di scene */
-.is-project .scene .scene__stage::before,
-.is-project .scene .scene__stage::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 5;
-  width: 1px;
-  background: rgb(255 255 255 / 0.2);
-  pointer-events: none;
-}
-
-.is-project .scene .scene__stage::before {
-  left: var(--line-x);
-}
-
-.is-project .scene .scene__stage::after {
-  right: var(--line-x);
 }
 
 /* Parallax hero */

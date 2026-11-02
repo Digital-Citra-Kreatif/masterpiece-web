@@ -1,5 +1,4 @@
 // Scrollbar kustom
-import { lenis } from './smooth-scroll.js';
 
 const MIN_THUMB = 24;
 
@@ -38,7 +37,7 @@ thumb.addEventListener('pointerdown', (down) => {
   const startScroll = window.scrollY;
   const perPixel = scrollable() / (window.innerHeight - thumbHeight);
 
-  const move = (event) => lenis.scrollTo(startScroll + (event.clientY - startY) * perPixel, { immediate: true });
+  const move = (event) => window.scrollTo(0, startScroll + (event.clientY - startY) * perPixel);
   const end = () => {
     thumb.classList.remove('is-dragging');
     thumb.removeEventListener('pointermove', move);

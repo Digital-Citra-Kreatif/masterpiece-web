@@ -1,5 +1,5 @@
 // Entri semua halaman
-import './smooth-scroll.js';
+import './scroll-lock.js';
 import './scrollbar.js';
 import './reveal.js';
 import './overlay.js';

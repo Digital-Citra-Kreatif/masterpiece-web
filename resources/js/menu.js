@@ -1,5 +1,5 @@
 // Menu hamburger
-import { lenis } from './smooth-scroll.js';
+import { lockScroll } from './scroll-lock.js';
 
 const menu = document.getElementById('hd-menu');
 const toggle = document.querySelector('[data-menu-toggle]');
@@ -11,7 +11,7 @@ if (menu && toggle) {
     toggle.setAttribute('aria-expanded', String(open));
     // Header putih
     header.classList.toggle('is-menu-open', open);
-    open ? lenis.stop() : lenis.start();
+    lockScroll(menu, open);
   };
   const nav = menu.querySelector('nav');
 

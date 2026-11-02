@@ -23,16 +23,9 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   --rule: rgb(14 17 19 / 0.07);
 }
 
-/* Garis samping */
+/* Posisi tepi konten */
 .is-type {
   --line-x: calc(max(0px, (100% - var(--max)) / 2) + max(8px, var(--gutter) - 40px));
-}
-
-.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
-  background-image: linear-gradient(var(--line), var(--line)), linear-gradient(var(--line), var(--line));
-  background-size: 1px 100%;
-  background-position: left var(--line-x) top 0, right var(--line-x) top 0;
-  background-repeat: no-repeat;
 }
 
 /* Tipe lain */

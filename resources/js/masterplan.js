@@ -1,10 +1,8 @@
 // Pembuka Masterplan
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { lenis } from './smooth-scroll.js';
 
 gsap.registerPlugin(ScrollTrigger);
-lenis.on('scroll', ScrollTrigger.update);
 
 for (const root of document.querySelectorAll('.scene--masterplan')) {
   const stage = root.querySelector('.scene__stage');
