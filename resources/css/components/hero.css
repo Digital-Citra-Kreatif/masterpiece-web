@@ -12,8 +12,8 @@
 /* Tablet dan mobile */
 @media (max-width: 1024px) {
   .hero {
-    height: max(60vh, 400px);
-    height: max(60svh, 400px);
+    height: max(70vh, 400px);
+    height: max(70svh, 400px);
   }
 }
 
