@@ -660,7 +660,8 @@ async function init(root) {
   window.addEventListener('scroll', requestTick, { passive: true });
   window.addEventListener('resize', () => {
     resize();
-    if (mode === 'video') draw(offset);
+    // Kanvas tidak kosong
+    draw(mode === 'video' ? offset : shownF);
   });
   resize();
   warmUp();

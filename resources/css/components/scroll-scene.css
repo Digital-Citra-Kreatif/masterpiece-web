@@ -30,7 +30,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  height: 100svh;
+  height: 100dvh; /* Ikut toolbar browser */
   overflow: hidden;
 }
 
