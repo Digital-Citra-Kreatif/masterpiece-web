@@ -151,16 +151,18 @@ body.is-type .tps--scroll::before {
   margin-top: 24px;
 }
 
+/* Kotak garis tipis */
 .tps--scroll .tps__facts div {
-  background: #fff;
+  border: 1px solid rgb(255 255 255 / 0.32);
+  background: none;
 }
 
 .tps--scroll .tps__facts dt {
-  color: var(--muted);
+  color: rgb(255 255 255 / 0.72);
 }
 
 .tps--scroll .tps__facts dd {
-  color: var(--ink);
+  color: #fff;
 }
 
 /* Tombol putih */
