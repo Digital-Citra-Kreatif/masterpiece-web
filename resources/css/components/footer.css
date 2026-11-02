@@ -127,3 +127,10 @@ body:has(.wa) .ft__meta {
     gap: 56px;
   }
 }
+
+/* Copyright rata kiri */
+@media (max-width: 640px) {
+  .ft__meta {
+    text-align: left;
+  }
+}
