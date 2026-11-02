@@ -2,7 +2,6 @@
 
 .types {
   padding-bottom: var(--section, clamp(64px, 9vw, 120px));
-  border-top: 1px solid var(--rule);
 }
 
 .types__grid {
@@ -29,7 +28,6 @@
 /* Isi atas judul */
 .types__top {
   padding-top: var(--section, clamp(56px, 9vw, 120px));
-  border-bottom: 1px solid var(--line, var(--rule));
 }
 
 .card {
@@ -87,7 +85,6 @@
   justify-content: space-between;
   gap: 12px;
   padding: 18px 0 12px;
-  border-bottom: 1px solid var(--ink);
 }
 
 .card__name {
@@ -144,11 +141,6 @@ article.card {
 }
 
 /* Varian proyek */
-
-/* Garis pemisah penuh */
-.types--project {
-  border-top: 1px solid var(--line, var(--rule));
-}
 
 /* Gambar menempel garis */
 .types--project .types__top {

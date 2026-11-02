@@ -17,11 +17,6 @@
   padding-bottom: var(--section, clamp(64px, 9vw, 120px));
 }
 
-/* Garis bawah judul */
-.prj__head {
-  border-bottom: 1px solid var(--line);
-}
-
 .prj .sheet__title {
   text-transform: uppercase;
 }

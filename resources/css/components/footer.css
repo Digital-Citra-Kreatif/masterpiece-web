@@ -3,7 +3,6 @@
 .ft {
   background: #fff;
   color: var(--ink);
-  border-top: 1px solid var(--rule);
 }
 
 .ft__inner {

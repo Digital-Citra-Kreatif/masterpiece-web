@@ -258,7 +258,6 @@ h2.display {
   margin: 0;
   max-width: 40ch;
   padding-top: 14px;
-  border-top: 2px solid var(--accent);
   color: var(--ink-2);
   justify-self: end;
 }

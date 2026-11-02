@@ -30,7 +30,6 @@
 .units__intro {
   margin: 20px 0 0;
   padding-top: 14px;
-  border-top: 2px solid var(--accent);
   color: var(--ink-2);
 }
 
@@ -126,7 +125,6 @@
 }
 
 .units__legend li {
-  border-bottom: 1px solid var(--rule);
 }
 
 /* Filter status */

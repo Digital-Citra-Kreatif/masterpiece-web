@@ -265,7 +265,6 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
   pointer-events: auto;
 }
 
@@ -276,7 +275,6 @@
   gap: 14px;
   padding: 10px 0;
   border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   background: none;
   color: #fff;
   text-align: left;

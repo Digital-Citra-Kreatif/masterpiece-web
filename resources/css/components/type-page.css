@@ -42,7 +42,6 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
 /* Bagian tipe */
 .tph {
   padding-top: calc(var(--header-h) + 24px);
-  border-bottom: 1px solid var(--sheet-line);
 }
 
 .tph__name {
@@ -162,7 +161,6 @@ body.is-type .tps--scroll::before {
   gap: 8px 16px;
   margin-top: 32px;
   padding-top: 20px;
-  border-top: 1px solid var(--tps-edge);
 }
 
 .tps__meta .tps__label,
@@ -689,7 +687,6 @@ body.is-type .tps--scroll::before {
   justify-content: space-between;
   gap: 16px;
   padding-block: 12px;
-  border-bottom: 1px solid var(--tps-edge);
 }
 
 .tps__specs dt {
@@ -794,7 +791,6 @@ body.is-type .tps--scroll::before {
   gap: 8px;
   margin-top: 28px;
   padding-top: 28px;
-  border-top: 1px solid var(--tps-edge);
 }
 
 .tps__actions .btn {
@@ -862,11 +858,6 @@ body.is-type .tps--scroll::before {
     padding-top: 0;
     border-top: 0;
   }
-}
-
-/* Section denah */
-.tpd {
-  border-block: 1px solid var(--sheet-line);
 }
 
 /* Nempel garis samping */
@@ -942,22 +933,18 @@ body.is-type .tps--scroll::before {
 .tpi {
   --tps-edge: rgb(14 17 19 / 0.16);
   padding-block: clamp(56px, 7vw, 112px);
-  border-bottom: 1px solid var(--sheet-line);
 }
 
 .tps + .tpi {
-  border-top: 1px solid var(--sheet-line);
 }
 
 /* Spesifikasi bangunan */
 .tpb {
   --tps-edge: rgb(14 17 19 / 0.16);
   padding-block: clamp(56px, 7vw, 112px);
-  border-bottom: 1px solid var(--sheet-line);
 }
 
 .tps + .tpb {
-  border-top: 1px solid var(--sheet-line);
 }
 
 .tpb__grid {
@@ -987,7 +974,6 @@ body.is-type .tps--scroll::before {
 
 .tpb__list div {
   padding-block: 14px;
-  border-bottom: 1px solid var(--tps-edge);
 }
 
 .tpb__list dt {
