@@ -111,13 +111,20 @@ body.is-type .tps--spin {
   color: #fff;
 }
 
-/* Latar hitam penuh */
+/* Hitam melebar saat gulir */
 body.is-type .tps--spin::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 0 calc(var(--line-x) * (1 - var(--spin-open, 0)));
   z-index: -1;
   background: #000;
+}
+
+/* Hitam langsung penuh */
+@media (max-width: 1024px) {
+  body.is-type .tps--spin::before {
+    inset: 0;
+  }
 }
 
 .tps.tps--spin .tps__size {
