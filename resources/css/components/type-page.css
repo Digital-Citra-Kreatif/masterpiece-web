@@ -191,7 +191,7 @@ body.is-type .tps--spin::before {
 .tps .tps__tab-row {
   display: flex;
   flex-wrap: nowrap;
-  gap: 8px;
+  gap: 28px;
   overflow-x: auto;
   scrollbar-width: none;
   /* Ruang garis fokus */
@@ -207,26 +207,27 @@ body.is-type .tps--spin::before {
   flex: none;
 }
 
-.tps--spin .tps__tab-row .tph__tab {
-  padding: 8px 18px;
-  border: 1px solid rgb(255 255 255 / 0.4);
+/* Tab teks saja */
+.tps--spin .tps__tab-row .tph__tab,
+.tps--spin .tps__tab-row .tph__tab:hover {
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
   background: none;
   color: #fff;
   font-size: 15px;
   white-space: nowrap;
-  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+  opacity: 0.5;
+  transition: opacity 0.2s var(--ease);
 }
 
 .tps--spin .tps__tab-row .tph__tab:hover {
-  border-color: #fff;
-  background: none;
+  opacity: 0.8;
 }
 
-/* Tab aktif putih */
+/* Tab aktif penuh */
 .tps--spin .tps__tab-row .tph__tab[aria-pressed='true'] {
-  border-color: #fff;
-  background: #fff;
-  color: #000;
+  opacity: 1;
 }
 
 /* Deskripsi tab aktif */
@@ -985,7 +986,7 @@ body.is-type .tps--spin::before {
   }
 
   .tps--spin .tps__tab-row {
-    gap: 6px;
+    gap: 20px;
   }
 
   .tps--spin .tps__meta {
