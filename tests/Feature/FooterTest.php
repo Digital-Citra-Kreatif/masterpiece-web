@@ -4,7 +4,10 @@ use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Sunrice\Cms\Actions\Entries\CreateEntry;
+use Sunrice\Cms\Actions\Entries\PublishEntry;
 use Sunrice\Cms\Actions\Globals\SaveGlobals;
+use Sunrice\Cms\Models\Collection;
 use Sunrice\Cms\Models\GlobalSet;
 use Sunrice\Cms\Structure\StructureImporter;
 
@@ -69,4 +72,17 @@ test('the footer column headings come from Globals → Footer, or the defaults w
         ->assertSee('<h2 class="ft__head">Hubungi kami</h2>', false)
         ->assertSee('<h2 class="ft__head">Jam buka</h2>', false)
         ->assertDontSee('<h2 class="ft__head">Kontak</h2>', false);
+});
+
+test('a project page footer carries the project name in its copyright', function () {
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $translation = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
+        'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+        'hero' => ['heading' => 'Westlake'],
+    ]]);
+    app(PublishEntry::class)->handle($translation->fresh());
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('<p class="ft__meta">© '.date('Y').' Westlake</p>', false);
 });

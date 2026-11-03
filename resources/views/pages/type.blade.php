@@ -265,5 +265,5 @@
     <x-project.whatsapp :whatsapp="$pj['whatsapp']" :logo="$pj['style']['logo']" />
   @endif
 
-  <x-footer :logo="$pj['style']['logo'] ?? null" />
+  <x-footer :logo="$pj['style']['logo'] ?? null" :name="$pj['title'] ?? null" />
 </x-layouts.base>

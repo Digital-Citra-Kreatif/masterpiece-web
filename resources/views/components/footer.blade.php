@@ -1,9 +1,11 @@
 {{-- Footer situs --}}
-@props(['logo' => null])
+@props(['logo' => null, 'name' => null])
 
 @php
   $ft = \App\Support\Content::footer();
   $logo ??= $ft['logo'];
+  // Nama proyek bila ada
+  $copyright = filled($name) ? '© '.date('Y').' '.$name : $ft['copyright'];
 @endphp
 
 <footer class="ft">
@@ -48,7 +50,7 @@
 
   <div class="ft__bar">
     <div class="wrap">
-      <p class="ft__meta">{{ $ft['copyright'] }}</p>
+      <p class="ft__meta">{{ $copyright }}</p>
     </div>
   </div>
 </footer>
