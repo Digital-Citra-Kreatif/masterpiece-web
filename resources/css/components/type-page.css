@@ -430,7 +430,7 @@ body.is-type .tps--scroll::before {
 
 /* Indikator tanpa batang */
 .tps .tps__spot {
-  --head: 20px;
+  --head: 16px;
   --stem: 0px;
   left: var(--spot-x, 50%);
   top: var(--spot-y, 50%);
@@ -460,6 +460,28 @@ body.is-type .tps--scroll::before {
   filter: none;
   translate: none;
   pointer-events: auto;
+}
+
+/* Denyut bisa diklik */
+.tps .tps__spot .pj-marker:not(.pj-marker--image) {
+  animation: tps-pulse 1.8s ease-out infinite;
+}
+
+@keyframes tps-pulse {
+  0% {
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.35), 0 0 0 0 rgb(255 255 255 / 0.75);
+  }
+
+  70%,
+  100% {
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.35), 0 0 0 calc(var(--head) * 0.75) rgb(255 255 255 / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tps .tps__spot .pj-marker {
+    animation: none;
+  }
 }
 
 /* Titik kecil HP */
