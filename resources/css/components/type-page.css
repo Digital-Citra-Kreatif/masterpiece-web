@@ -111,6 +111,7 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   display: grid;
   align-content: center;
   min-height: 100svh;
+  min-height: 100dvh; /* Tanpa celah toolbar */
   padding-block: clamp(32px, 4vw, 56px);
 }
 
