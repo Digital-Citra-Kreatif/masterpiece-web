@@ -754,6 +754,17 @@ button.pj-frame:focus-visible {
   right: 16px;
 }
 
+/* Panah ke tepi HP */
+@media (max-width: 760px) {
+  .tph__nav--prev {
+    left: -4px;
+  }
+
+  .tph__nav--next {
+    right: -4px;
+  }
+}
+
 .tph__nav:hover {
   background: none;
 }
