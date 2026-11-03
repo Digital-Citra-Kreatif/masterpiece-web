@@ -183,8 +183,21 @@ body.is-type .tps--spin::before {
 /* Tab menyamping, nama saja */
 .tps .tps__tab-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Ruang garis fokus */
+  margin: -4px;
+  padding: 4px;
+}
+
+.tps .tps__tab-row::-webkit-scrollbar {
+  display: none;
+}
+
+.tps .tps__tab-row > li {
+  flex: none;
 }
 
 .tps--spin .tps__tab-row .tph__tab {
@@ -193,6 +206,7 @@ body.is-type .tps--spin::before {
   background: none;
   color: #fff;
   font-size: 15px;
+  white-space: nowrap;
   transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 
@@ -430,7 +444,7 @@ body.is-type .tps--spin::before {
   z-index: 1;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover; /* Penuh viewer */
   background: #000;
   opacity: 0;
   pointer-events: none;
