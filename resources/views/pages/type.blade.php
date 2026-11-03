@@ -113,7 +113,7 @@
                 {{-- Tombol kembali 360° --}}
                 <button class="hd__back tp-back tp-back--prev tps__back" type="button" data-spin-back>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
-                  <span class="tp-back__label">Kembali ke 360°</span>
+                  <span class="tp-back__label">Kembali</span>
                 </button>
               </div>
             @endif
