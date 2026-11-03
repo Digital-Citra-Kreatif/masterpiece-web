@@ -229,9 +229,19 @@
     pointer-events: none;
   }
 
-  .fac--split .fac__arrow {
-    background: var(--paper);
+  /* Panah tanpa kotak */
+  .fac--split .fac__arrow,
+  .fac--split .fac__arrow:not(:disabled):hover {
+    border: 0;
+    background: none;
+    color: #fff;
+    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.5)); /* Terbaca di foto */
     pointer-events: auto;
+  }
+
+  .fac--split .fac__arrow svg {
+    width: 24px;
+    height: 24px;
   }
 }
 
