@@ -797,3 +797,30 @@ test('the project hero places its content where the CMS says and falls back to t
     $this->get('/projects/westlake')->assertOk()->assertSee('<section class="hero hero--placed hero--y-top hero--x-center"', false);
     $this->get('/projects/odd')->assertOk()->assertSee('<section class="hero"', false)->assertDontSee('hero--placed', false);
 });
+
+test('the unit availability shows reserved and sold units with their colours and counts', function () {
+    $project = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'availability' => ['title' => 'Ketersediaan Unit', 'siteplan' => projectImage('siteplan.jpg')],
+    ]);
+    foreach (['A-1' => 'reserved', 'A-2' => 'sold', 'A-3' => 'sold', 'A-4' => 'available'] as $code => $status) {
+        $unit = publishUnit($code, ['project' => $project->entry_id, 'sale_status' => $status]);
+        UnitPoint::factory()->create(['project_id' => $project->entry_id, 'unit_id' => $unit->entry_id, 'x' => 10, 'y' => 20]);
+    }
+
+    $html = $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('class="dot dot--reserved"', false)
+        ->assertSee('title="A-1 · Dipesan"', false)
+        ->assertSee('class="dot dot--sold"', false)
+        ->assertSee('title="A-2 · Terjual"', false)
+        ->getContent();
+
+    // Jumlah per status
+    $legend = preg_replace('/\s+/', ' ', $html);
+    expect($legend)
+        ->toContain('<span class="units__label">Tersedia</span> <span class="units__count display">1</span>')
+        ->toContain('<span class="units__label">Dipesan</span> <span class="units__count display">1</span>')
+        ->toContain('<span class="units__label">Terjual</span> <span class="units__count display">2</span>');
+});
