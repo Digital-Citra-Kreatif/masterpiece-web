@@ -824,3 +824,24 @@ test('the unit availability shows reserved and sold units with their colours and
         ->toContain('<span class="units__label">Dipesan</span> <span class="units__count display">1</span>')
         ->toContain('<span class="units__label">Terjual</span> <span class="units__count display">2</span>');
 });
+
+test('a masterplan point carries its original zoom image and a quick large version to show first', function () {
+    $zoom = Media::query()->findOrFail(projectImage('zoom.jpg'));
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'masterplan' => ['title' => 'Masterplan', 'points' => [
+            ['name' => 'West Lakeside', 'image' => null, 'x' => 50, 'y' => 52, 'zoom_image' => $zoom->id],
+            ['name' => 'JX Hometown', 'image' => null, 'x' => 30, 'y' => 40],
+        ]],
+    ]);
+
+    $html = $this->get('/projects/westlake')->assertOk()->assertSee('data-scene-zoom', false)->getContent();
+
+    preg_match('/data-spots="([^"]+)"/', $html, $match);
+    $spots = json_decode(html_entity_decode($match[1]), true);
+    expect($spots['masterplan-1']['zoom'])->toBe($zoom->url())
+        ->and($spots['masterplan-1']['zoomFast'])->toBe($zoom->url('large'))
+        ->and($spots['masterplan-2']['zoom'])->toBeNull()
+        ->and($spots['masterplan-2']['zoomFast'])->toBeNull();
+});

@@ -445,9 +445,10 @@ async function init(root) {
   // Fade latar zoom
   const zoomLayer = root.querySelector('[data-scene-zoom]');
   const zoomCache = new Map();
-  const preloadZoom = (key) => {
-    const src = spots[key]?.zoom;
-    if (!zoomLayer || !src) return Promise.resolve(false);
+  // Versi cepat dulu
+  const fastSrc = (key) => spots[key]?.zoomFast || spots[key]?.zoom;
+  const preloadZoom = (key) => (zoomLayer && spots[key]?.zoom ? loadZoom(fastSrc(key)) : Promise.resolve(false));
+  const loadZoom = (src) => {
     if (!zoomCache.has(src)) {
       const img = new Image();
       img.decoding = 'async';
@@ -469,9 +470,15 @@ async function init(root) {
     zoomLayer.classList.remove('is-on');
     return new Promise((resolve) => setTimeout(resolve, reduced ? 0 : 400));
   };
-  const showZoom = (key) => {
-    zoomLayer.src = spots[key].zoom;
+  const showZoom = (key, id) => {
+    zoomLayer.src = fastSrc(key);
     zoomLayer.classList.add('is-on');
+    // Ganti ke versi asli
+    const full = spots[key].zoom;
+    if (full === fastSrc(key)) return;
+    loadZoom(full).then((ok) => {
+      if (ok && id === run && placeKey === key) zoomLayer.src = full;
+    });
   };
   // Pramuat saat hover
   if (zoomLayer) {
@@ -479,6 +486,18 @@ async function init(root) {
       const spot = e.target.closest('[data-spot], [data-spot-open]');
       if (spot) preloadZoom(spot.dataset.spot || spot.dataset.spotOpen);
     });
+    // Pramuat cepat bertahap
+    const zoomKeys = keys.filter((key) => spots[key].zoom);
+    const nearZoom = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      nearZoom.disconnect();
+      const next = () => {
+        const key = zoomKeys.shift();
+        if (key) preloadZoom(key).then(next);
+      };
+      (window.requestIdleCallback || setTimeout)(next);
+    }, { rootMargin: '50% 0px' });
+    nearZoom.observe(root);
   }
 
   const fillPanel = (key) => {
@@ -528,6 +547,7 @@ async function init(root) {
     const from = placeKey;
     placeKey = key;
     const zoomReady = preloadZoom(key);
+    if (zoomLayer && spots[key].zoom) loadZoom(spots[key].zoom); // Asli ikut diunduh
     // Pudar sebelum pindah
     if (from) {
       await hideZoom();
@@ -543,7 +563,7 @@ async function init(root) {
     const { done, ms } = travel(id, { fromKey: from, toKey: key, toFrame });
     const panelAt = setTimeout(() => id === run && showPanel(key), ms * 0.75);
     if (!(await done)) return clearTimeout(panelAt);
-    if ((await zoomReady) && id === run) showZoom(key);
+    if ((await zoomReady) && id === run) showZoom(key, id);
   }
 
   async function closePlace() {

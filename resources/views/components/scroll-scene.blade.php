@@ -15,6 +15,7 @@
           'text' => $h['text'],
           'image' => $h['image'] ?? null,
           'zoom' => $h['zoom'] ?? null,
+          'zoomFast' => $h['zoomFast'] ?? null,
       ],
   ])->values();
   $project = $variant === 'project';

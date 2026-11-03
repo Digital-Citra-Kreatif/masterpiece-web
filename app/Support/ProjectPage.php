@@ -308,7 +308,7 @@ final class ProjectPage
      * Titik Masterplan
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, zoom: ?string, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
+     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, zoom: ?string, zoomFast: ?string, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
      */
     private static function masterplan(array $section, int $project): ?array
     {
@@ -325,6 +325,7 @@ final class ProjectPage
                     'name' => (string) $row['name'],
                     'image' => self::image($row['image'] ?? null, 'medium'),
                     'zoom' => self::zoomImage($row['zoom_image'] ?? null),
+                    'zoomFast' => self::zoomPreview($row['zoom_image'] ?? null),
                     'x' => $x !== null && $y !== null ? $x : null,
                     'y' => $x !== null && $y !== null ? $y : null,
                 ];
@@ -355,7 +356,7 @@ final class ProjectPage
      * Orbit Cluster
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, description: ?string, image: ?array<string, mixed>, zoom: ?string, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
+     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, description: ?string, image: ?array<string, mixed>, zoom: ?string, zoomFast: ?string, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
      */
     private static function cluster(array $section, int $project): ?array
     {
@@ -373,6 +374,7 @@ final class ProjectPage
                     'description' => filled($row['description'] ?? null) ? (string) $row['description'] : null,
                     'image' => self::image($row['image'] ?? null, 'medium'),
                     'zoom' => self::zoomImage($row['zoom_image'] ?? null),
+                    'zoomFast' => self::zoomPreview($row['zoom_image'] ?? null),
                     'x' => $x !== null && $y !== null ? $x : null,
                     'y' => $x !== null && $y !== null ? $y : null,
                 ];
@@ -415,11 +417,17 @@ final class ProjectPage
         return $media instanceof Media && $media->isImage() ? $media->url() : null;
     }
 
+    /** Latar zoom cepat: versi large dulu */
+    private static function zoomPreview(mixed $media): ?string
+    {
+        return $media instanceof Media && $media->isImage() ? $media->url('large') : null;
+    }
+
     /**
      * Titik jadi hotspot
      *
      * @param  list<array<string, mixed>>  $points
-     * @return array<string, array{number: ?string, x: float, y: float, title: string, short: string, text: string, image: ?string, zoom: ?string}>
+     * @return array<string, array{number: ?string, x: float, y: float, title: string, short: string, text: string, image: ?string, zoom: ?string, zoomFast: ?string}>
      */
     private static function hotspots(array $points, string $prefix): array
     {
@@ -434,6 +442,7 @@ final class ProjectPage
                 'text' => (string) ($point['description'] ?? ''),
                 'image' => $point['image']['src'] ?? null,
                 'zoom' => $point['zoom'] ?? null,
+                'zoomFast' => $point['zoomFast'] ?? null,
             ]])
             ->all();
     }
