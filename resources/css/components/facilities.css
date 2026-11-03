@@ -204,9 +204,34 @@
     font-size: 15px;
   }
 
-  /* Panah di tengah */
-  .fac__arrows {
-    justify-content: center;
+  /* Panah di gambar */
+  .fac--split .fac__split {
+    gap: 0;
+  }
+
+  .fac--split .fac__head {
+    display: contents;
+  }
+
+  .fac--split .fac__rail.swiper {
+    grid-area: 3 / 1;
+    margin-top: 24px;
+  }
+
+  .fac--split .fac__arrows {
+    grid-area: 3 / 1;
+    z-index: 2;
+    align-self: start;
+    justify-content: space-between;
+    /* Tengah gambar 4:5 */
+    margin: calc(24px + clamp(240px, 24vw, 340px) * 5 / 8 - 22px) 8px 0;
+    padding-top: 0;
+    pointer-events: none;
+  }
+
+  .fac--split .fac__arrow {
+    background: var(--paper);
+    pointer-events: auto;
   }
 }
 
