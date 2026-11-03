@@ -400,3 +400,10 @@ h2.display {
   opacity: 1;
   transform: none;
 }
+
+/* Beranda tanpa fade up */
+.is-home [data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}

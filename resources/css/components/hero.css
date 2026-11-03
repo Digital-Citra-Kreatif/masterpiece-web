@@ -193,6 +193,11 @@ img.hero__media {
   animation: rise 1s 0.45s var(--ease) both;
 }
 
+/* Beranda tanpa fade up */
+.is-home :is(.hero__lead, .hero__scroll) {
+  animation: none;
+}
+
 .hero__lead {
   max-width: 250px;
   margin: 0 0 0 auto; /* Tetap kanan */
