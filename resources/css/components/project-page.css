@@ -541,6 +541,11 @@ button.pj-frame:focus-visible {
   background-color: var(--paper);
 }
 
+/* Jarak tidak dobel */
+.fac--split + .tph.tph--section {
+  padding-top: 0;
+}
+
 /* Jarak garis kanan */
 .tph__grid {
   display: grid;
@@ -753,6 +758,10 @@ button.pj-frame:focus-visible {
 @media (max-width: 1024px) {
   .tph.tph--section {
     padding-block: 72px;
+  }
+
+  .fac--split + .tph.tph--section {
+    padding-top: 0;
   }
 
   .tph__copy {
