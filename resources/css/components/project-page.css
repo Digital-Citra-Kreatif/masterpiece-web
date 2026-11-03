@@ -1105,6 +1105,24 @@ button.pj-frame:focus-visible {
   }
 }
 
+/* Daftar pendek HP */
+@media (max-width: 760px) {
+  .is-project .scene .scene__list {
+    max-height: calc(44px * 4.5 + 28px); /* Sisa baris terlihat */
+    padding-bottom: 28px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    /* Pudar bawah */
+    -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(180deg, #000 calc(100% - 40px), transparent);
+  }
+
+  .is-project .scene .scene__list::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .is-project .scene .scene__list button:hover,
 .is-project .scene .scene__list button:focus-visible {
   padding-left: 0;
