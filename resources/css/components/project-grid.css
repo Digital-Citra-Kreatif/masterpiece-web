@@ -124,6 +124,29 @@
   }
 }
 
+/* Kartu tablet ringkas */
+@media (min-width: 761px) and (max-width: 1024px) {
+  .prj__media {
+    margin-bottom: 14px;
+  }
+
+  .prj__media:has(.prj__logo) {
+    margin-bottom: 32px;
+  }
+
+  .prj__logo {
+    right: 12px;
+    bottom: -20px;
+    width: 56px;
+    height: 56px;
+    padding: 6px;
+  }
+
+  .prj__title {
+    font-size: 19px;
+  }
+}
+
 @media (max-width: 760px) {
   .prj__grid {
     grid-template-columns: minmax(0, 1fr);
