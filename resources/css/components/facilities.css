@@ -203,6 +203,11 @@
     padding-top: 10px;
     font-size: 15px;
   }
+
+  /* Panah di tengah */
+  .fac__arrows {
+    justify-content: center;
+  }
 }
 
 /* Kartu buka lightbox */
