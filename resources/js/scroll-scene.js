@@ -128,7 +128,9 @@ async function init(root) {
     text: root.querySelector('.scene__loc-text'),
   };
 
+  let ready = false; // Frame siap
   root.addEventListener('click', (e) => {
+    if (!ready) return;
     const spot = e.target.closest('[data-spot], [data-spot-open]');
     if (spot) return openPlace(spot.dataset.spot || spot.dataset.spotOpen);
     if (e.target.closest('.scene__back')) return closePlace();
@@ -449,10 +451,18 @@ async function init(root) {
     if (!zoomCache.has(src)) {
       const img = new Image();
       img.decoding = 'async';
+      // Termuat cukup, decode opsional
+      const ready = new Promise((resolve) => {
+        img.onload = () => img.decode().then(() => resolve(true), () => resolve(true));
+        img.onerror = () => resolve(false);
+      }).then((ok) => {
+        if (!ok) zoomCache.delete(src); // Coba lagi nanti
+        return ok;
+      });
       img.src = src;
-      zoomCache.set(src, img.decode().then(() => true, () => false));
+      zoomCache.set(src, { img, ready });
     }
-    return zoomCache.get(src);
+    return zoomCache.get(src).ready;
   };
   const hideZoom = () => {
     if (!zoomLayer?.classList.contains('is-on')) return Promise.resolve();
@@ -665,6 +675,7 @@ async function init(root) {
   });
   resize();
   warmUp();
+  ready = true;
 
   // Jeda video
   if (hasVideo) {

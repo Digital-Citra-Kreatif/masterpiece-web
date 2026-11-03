@@ -178,7 +178,8 @@
 }
 
 /* Transisi ke canvas */
-.scene.is-scrub .mp {
+.scene.is-scrub .mp,
+.scene:is(.is-place, .is-returning) .mp {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.5s ease, visibility 0s 0.5s;
