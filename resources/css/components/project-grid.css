@@ -68,11 +68,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 1s var(--ease);
-}
-
-.prj__card:hover .prj__frame img {
-  transform: scale(1.04);
 }
 
 /* Logo proyek */
@@ -123,11 +118,5 @@
 @media (max-width: 760px) {
   .prj__grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .prj__frame img {
-    transition: none;
   }
 }
