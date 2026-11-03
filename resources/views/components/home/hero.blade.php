@@ -47,7 +47,7 @@
       @foreach (preg_split('/\R/', (string) $hero['title']) as $line)
         @if (! $loop->first)<br>@endif
         @foreach (preg_split('/\s+/', trim($line), -1, PREG_SPLIT_NO_EMPTY) as $text)
-          <span class="hero__word" style="--i: {{ $word++ }}">{{ $text }}</span>
+          <span class="word-in" style="--i: {{ $word++ }}">{{ $text }}</span>
         @endforeach
       @endforeach
     </h1>

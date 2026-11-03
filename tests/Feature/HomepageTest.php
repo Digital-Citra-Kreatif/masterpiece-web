@@ -160,7 +160,7 @@ test('the projects grid takes its title and description from the CMS', function 
 test('a type page without a project shows its title, specs, floor plans, gallery and VR in one sheet, without the 360° viewer', function () {
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
-        ->assertSee('<h1 class="display tph__name" id="type-name">Tipe 6</h1>', false)
+        ->assertSee('<h1 class="display tph__name" id="type-name"><span class="word-in" style="--i: 0">Tipe</span> <span class="word-in" style="--i: 1">6</span></h1>', false)
         // Judul parallax ke section bawahnya
         ->assertSeeInOrder(['<div data-hero-parallax>', '<section class="tph tph--title" aria-labelledby="type-name" data-hero>'], false)
         ->assertDontSee('data-turntable', false)

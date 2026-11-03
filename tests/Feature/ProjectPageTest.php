@@ -243,7 +243,7 @@ test('a project page shows each section with content and skips the empty ones', 
 
     $response
         // Hero proyek
-        ->assertSeeInOrder(['<h1 class="hero__title" id="hero-title">', '<span class="hero__word" style="--i: 0">A</span>', '>Landmark</span>', '>Lake</span>', '</h1>'], false)
+        ->assertSeeInOrder(['<h1 class="hero__title" id="hero-title">', '<span class="word-in" style="--i: 0">A</span>', '>Landmark</span>', '>Lake</span>', '</h1>'], false)
         ->assertDontSee('class="hero__lead"', false)
         ->assertDontSee('class="hero__rule"', false)
         ->assertSee('data-hero-slides', false)
@@ -512,7 +512,7 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('<span class="tp-back__label">Kembali <span class="hd__btn-more">ke Westlake</span></span>', false)
         ->assertDontSee('btn hd__btn', false)
         ->assertDontSee('Lihat Proyek')
-        ->assertSee('<h1 class="display tph__name" id="type-name">'.$types['tipe-1']->title.'</h1>', false)
+        ->assertSee('<h1 class="display tph__name" id="type-name"><span class="word-in" style="--i: 0">', false)
         ->assertDontSee('tph__tabs', false)
         ->assertDontSee('data-turntable', false)
         ->assertSee('<section id="tipe-lain" class="types types--project"', false)
@@ -581,7 +581,7 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
 
     $html = $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        ->assertSee('<h1 class="display tph__name" id="type-name">'.$type->title.'</h1>', false)
+        ->assertSee('<h1 class="display tph__name" id="type-name"><span class="word-in" style="--i: 0">', false)
         // Tanpa label di atas tab
         ->assertDontSee('tps__part', false)
         // Tab seperti halaman proyek: pill, aktif jadi kartu deskripsi

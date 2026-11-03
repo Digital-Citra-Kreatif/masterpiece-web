@@ -106,7 +106,6 @@ img.hero__media {
   font-weight: 200;
   line-height: 1.11;
   letter-spacing: -0.02em;
-  animation: rise 1.1s 0.2s var(--ease) both;
 }
 
 /* Desktop */

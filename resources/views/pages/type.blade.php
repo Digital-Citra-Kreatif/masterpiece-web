@@ -41,7 +41,8 @@
       <section class="tph tph--title" aria-labelledby="type-name" data-hero>
         {{-- Judul dan kembali --}}
         <div class="wrap tph__head">
-          <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
+          {{-- Animasi per kata --}}
+          <h1 class="display tph__name" id="type-name">@foreach (preg_split('/\s+/', trim($t['name']), -1, PREG_SPLIT_NO_EMPTY) as $text)@if (! $loop->first) @endif<span class="word-in" style="--i: {{ $loop->index }}">{{ $text }}</span>@endforeach</h1>
           @if ($pj)
             <a class="hd__back tp-back" href="{{ $pj['url'] }}">
               <span class="tp-back__label">Kembali <span class="hd__btn-more">ke {{ $pj['title'] }}</span></span>
