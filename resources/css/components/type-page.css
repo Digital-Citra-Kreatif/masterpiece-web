@@ -884,6 +884,47 @@ body.is-type .tps--scroll::before {
   }
 }
 
+/* 360° muat layar HP */
+@media (max-width: 760px) {
+  .tps--scroll {
+    height: calc(100svh + var(--spin-tabs, 1) * 50svh); /* Gulir lebih pendek */
+  }
+
+  .tps--scroll .tps__pin {
+    padding-block: 12px;
+  }
+
+  .tps--scroll .tps__info > .tph__tabs,
+  .tps--scroll .tps__info > .tps__detail {
+    margin-top: 16px;
+  }
+
+  .tps--scroll .tph__tabs {
+    gap: 6px;
+  }
+
+  .tps--scroll .tps__meta {
+    margin-top: 16px;
+    padding-top: 0;
+  }
+
+  .tps--scroll .tps__side {
+    margin-top: 12px;
+  }
+
+  .tps--scroll .tps__facts div {
+    padding: 10px 12px;
+  }
+
+  .tps--scroll .tps__facts dd {
+    margin-top: 4px;
+  }
+
+  .tps--scroll .tps__side .tps__actions {
+    margin-top: 12px;
+  }
+}
+
 @media (max-width: 760px) {
   /* Spesifikasi tanpa garis */
   .tpb .tpb__list div {
