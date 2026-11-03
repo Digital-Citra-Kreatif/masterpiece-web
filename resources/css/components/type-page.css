@@ -461,6 +461,18 @@ body.is-type .tps--scroll::before {
   pointer-events: auto;
 }
 
+/* Titik kecil HP */
+@media (max-width: 760px) {
+  .tps .tps__spot {
+    --head: 14px;
+  }
+
+  /* Sentuh tetap 44px */
+  .tps .tps__spot.spot--marker .spot__dot::before {
+    inset: -15px;
+  }
+}
+
 .tps__spot[hidden] {
   display: none;
 }
