@@ -43,8 +43,8 @@
         <div class="wrap tph__head">
           <h1 class="display tph__name" id="type-name">{{ $t['name'] }}</h1>
           @if ($pj)
-            <a class="hd__back roll-host" href="{{ $pj['url'] }}">
-              <span><x-roll-text text="Kembali" /><span class="hd__btn-more"><x-roll-text :text="'ke '.$pj['title']" /></span></span>
+            <a class="hd__back tp-back" href="{{ $pj['url'] }}">
+              <span class="tp-back__label">Kembali <span class="hd__btn-more">ke {{ $pj['title'] }}</span></span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
@@ -110,9 +110,9 @@
                 <h3 class="display tps__detail-title" id="type-360-detail-title" tabindex="-1" data-spin-detail-title></h3>
                 <p class="tps__detail-text" data-spin-detail-text></p>
                 {{-- Tombol kembali 360° --}}
-                <button class="hd__back roll-host tps__back" type="button" data-spin-back>
+                <button class="hd__back tp-back tp-back--prev tps__back" type="button" data-spin-back>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
-                  <x-roll-text text="Kembali ke 360°" />
+                  <span class="tp-back__label">Kembali ke 360°</span>
                 </button>
               </div>
             @endif

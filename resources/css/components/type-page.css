@@ -510,6 +510,38 @@ body.is-type .tps--scroll::before {
   }
 }
 
+/* Hover tombol kembali */
+.tp-back__label {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  transition: text-decoration-color 0.25s var(--ease);
+}
+
+.tp-back svg {
+  transition: transform 0.3s var(--ease);
+}
+
+.tp-back:is(:hover, :focus-visible) .tp-back__label {
+  text-decoration-color: currentColor;
+}
+
+.tp-back:is(:hover, :focus-visible) svg {
+  transform: translateX(4px);
+}
+
+/* Panah ke kiri */
+.tp-back--prev:is(:hover, :focus-visible) svg {
+  transform: translateX(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-back svg {
+    transition: none;
+  }
+}
+
 /* Kembali ke 360° */
 .tps__back {
   margin-top: 20px;
