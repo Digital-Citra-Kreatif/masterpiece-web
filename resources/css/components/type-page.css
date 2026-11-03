@@ -215,7 +215,7 @@ body.is-type .tps--spin::before {
   border-radius: 0;
   background: none;
   color: #fff;
-  font-size: 15px;
+  font-size: 18px;
   white-space: nowrap;
   opacity: 0.5;
   transition: opacity 0.2s var(--ease);
@@ -987,6 +987,10 @@ body.is-type .tps--spin::before {
 
   .tps--spin .tps__tab-row {
     gap: 20px;
+  }
+
+  .tps--spin .tps__tab-row .tph__tab {
+    font-size: 16px;
   }
 
   .tps--spin .tps__meta {
