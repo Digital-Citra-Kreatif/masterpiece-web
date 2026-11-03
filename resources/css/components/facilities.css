@@ -224,7 +224,8 @@
     align-self: start;
     justify-content: space-between;
     /* Tengah gambar 4:5 */
-    margin: calc(24px + clamp(240px, 24vw, 340px) * 5 / 8 - 22px) 8px 0;
+    /* Ikon 18px dari layar */
+    margin: calc(24px + clamp(240px, 24vw, 340px) * 5 / 8 - 22px) calc(6px - var(--gutter)) 0;
     padding-top: 0;
     pointer-events: none;
   }
@@ -235,13 +236,12 @@
     border: 0;
     background: none;
     color: #fff;
-    filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.5)); /* Terbaca di foto */
     pointer-events: auto;
   }
 
   .fac--split .fac__arrow svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
   }
 }
 
