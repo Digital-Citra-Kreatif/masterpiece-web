@@ -132,3 +132,10 @@ body:has(.wa) .ft__meta {
     text-align: left;
   }
 }
+
+/* Copyright penuh HP */
+@media (max-width: 760px) {
+  body:has(.wa) .ft__meta {
+    padding-inline: 0;
+  }
+}
