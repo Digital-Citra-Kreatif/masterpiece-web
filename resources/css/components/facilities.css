@@ -198,6 +198,11 @@
   .fac__split {
     grid-template-columns: 1fr;
   }
+
+  .fac--split .fac__slide figcaption {
+    padding-top: 10px;
+    font-size: 15px;
+  }
 }
 
 /* Kartu buka lightbox */
