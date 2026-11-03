@@ -556,16 +556,20 @@ body.is-type .tps--spin::before {
   opacity: 0;
 }
 
-/* Tab muncul lagi */
-.tps.is-returning .tps__tabs {
-  animation: tps-fade 0.4s var(--ease);
+/* Tab tetap tampil */
+.tps.is-returning .tps__tabs:not([hidden]) {
+  animation: none;
 }
 
-@keyframes tps-fade {
-  from {
-    opacity: 0;
-  }
+/* Hanya tombol kembali */
+.tps__detail[data-spin-keep] {
+  margin-bottom: 32px;
 }
+
+.tps__detail[data-spin-keep] .tps__back {
+  margin-top: 0;
+}
+
 
 /* Hover tombol kembali */
 .tp-back__label {
@@ -607,27 +611,6 @@ body.is-type .tps--spin::before {
   border: 0;
   background: none;
   color: #fff;
-}
-
-.tps .tps__detail-title {
-  margin: 0 0 12px;
-  color: #fff;
-  font-size: 40px;
-  font-weight: 300;
-  line-height: 1.1;
-  overflow-wrap: anywhere;
-  outline: none;
-}
-
-.tps__detail-text {
-  max-width: 46ch;
-  margin: 0;
-  color: rgb(255 255 255 / 0.85);
-  font-size: 17px;
-}
-
-.tps__detail-text[hidden] {
-  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -967,10 +950,6 @@ body.is-type .tps--spin::before {
   .tps__info > .tps__detail {
     order: -1;
     margin-top: 24px;
-  }
-
-  .tps .tps__detail-title {
-    font-size: 32px;
   }
 }
 

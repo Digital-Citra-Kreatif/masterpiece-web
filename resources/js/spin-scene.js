@@ -66,6 +66,7 @@ export function spin(root) {
   const zoomLayer = root.querySelector('[data-spin-zoom]');
   const detail = root.querySelector('[data-spin-detail]');
   const tabList = root.querySelector('[data-spin-tabs]');
+  const keepTabs = detail?.hasAttribute('data-spin-keep'); // Tab tetap saat zoom
   const ctx = canvas.getContext('2d');
   const same = (a, b) => a.frames.join('|') === b.frames.join('|');
   // Potongan jadi putaran
@@ -269,6 +270,7 @@ export function spin(root) {
     measure();
   };
   buttons.forEach((b, k) => b.addEventListener('click', () => {
+    if (zoomed !== null && k !== active) closeZoom();
     if (mode !== 'scroll') return show(k);
     // Gulir ke tab
     if (offset) glide();
@@ -376,7 +378,7 @@ export function spin(root) {
     const text = detail.querySelector('[data-spin-detail-text]');
     text.textContent = part.text;
     text.hidden = !part.text;
-    tabList.hidden = true;
+    if (!keepTabs) tabList.hidden = true;
     detail.classList.remove('is-leaving');
     detail.hidden = false;
     detail.querySelector('[data-spin-detail-title]').focus({ preventScroll: true });

@@ -106,9 +106,10 @@
 
             @if ($zooms)
               {{-- Detail tab terbuka --}}
-              <div class="tps__detail" role="group" aria-labelledby="type-360-detail-title" data-spin-detail hidden>
-                <h3 class="display tps__detail-title" id="type-360-detail-title" tabindex="-1" data-spin-detail-title></h3>
-                <p class="tps__detail-text" data-spin-detail-text></p>
+              {{-- Info kanan tetap, tambah kembali --}}
+              <div class="tps__detail" role="group" aria-labelledby="type-360-detail-title" data-spin-detail data-spin-keep hidden>
+                <h3 class="visually-hidden" id="type-360-detail-title" tabindex="-1" data-spin-detail-title></h3>
+                <p class="visually-hidden" data-spin-detail-text></p>
                 {{-- Tombol kembali 360° --}}
                 <button class="hd__back tp-back tp-back--prev tps__back" type="button" data-spin-back>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
