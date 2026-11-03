@@ -587,15 +587,15 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
         ->assertSee('<h1 class="display tph__name" id="type-name"><span class="word-in" style="--i: 0">', false)
         // Tanpa label di atas tab
         ->assertDontSee('tps__part', false)
-        // Tab seperti halaman proyek: pill, aktif jadi kartu deskripsi
-        ->assertSee('<p class="tph__desc" id="type-360-desc-0"><strong>Fasad.</strong> Tampak depan.</p>', false)
-        ->assertSeeInOrder(['data-spin-tab="0"', 'Fasad', 'data-spin-tab="1"', 'Lantai 1'], false)
-        // Diputar lewat gulir, geser, dan panah
-        ->assertSee('class="tps tps--scroll"', false)
-        ->assertSee('data-spin="scroll"', false)
-        ->assertSee('style="--spin-tabs: 2"', false)
-        ->assertSee('<div class="tps__pin"', false)
-        ->assertSee('data-spin-pin', false)
+        // Tab menyamping hanya nama, deskripsi di bawah tab
+        ->assertSeeInOrder(['class="tph__tabs tps__tab-row"', 'data-spin-tab="0">Fasad</button>', 'data-spin-tab="1">Lantai 1</button>', '</ul>', '<p class="tps__tab-text" id="type-360-text" aria-live="polite" data-spin-text>Tampak depan.</p>'], false)
+        ->assertDontSee('tph__desc', false)
+        // Diputar lewat panah, geser, dan tab, tanpa sticky gulir
+        ->assertSee('class="tps tps--spin"', false)
+        ->assertSee('data-spin="drag"', false)
+        ->assertDontSee('data-spin="scroll"', false)
+        ->assertDontSee('tps__pin', false)
+        ->assertDontSee('data-spin-pin', false)
         ->assertSee('data-spin-step="-1" aria-label="Putar ke kiri"', false)
         ->assertSee('data-spin-step="1" aria-label="Putar ke kanan"', false)
         ->assertDontSee('tps__no', false)
@@ -624,17 +624,17 @@ test('a type page\'s 360° section holds the viewer, tabs and tab text, unit lab
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'intro' => '<p>Ruko di tepi danau.</p>', 'summary_extra' => [['label' => 'Carport', 'value' => '1']]]]);
 
     $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
-    $viewer = substr($html, strpos($html, 'data-spin="scroll"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="scroll"'));
+    $viewer = substr($html, strpos($html, 'data-spin="drag"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="drag"'));
 
     expect($viewer)->toContain('data-spin-tab="1"')
-        ->and($viewer)->toContain('<strong>Fasad.</strong> Tampak depan.</p>')
+        ->and($viewer)->toContain('data-spin-text>Tampak depan.</p>')
         ->and($viewer)->not->toContain('tps__intro')
         // Ringkasan di 360°
         ->and($viewer)->toContain('<dt>Carport</dt>')
         ->and(substr_count($html, 'class="tps__facts"'))->toBe(1);
     $this->get('/westlake/tipe/tipe-1')
         // Label ruko dan ukuran di section 360, di bawah tab
-        ->assertSeeInOrder(['data-spin="scroll"', 'class="tph__tabs"', '<strong>Fasad.</strong> Tampak depan.', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<p class="eyebrow tps__mark">', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+        ->assertSeeInOrder(['data-spin="drag"', 'class="tph__tabs tps__tab-row"', 'Tampak depan.</p>', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<p class="eyebrow tps__mark">', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
     expect(substr_count($html, 'tps__label'))->toBe(1)
         ->and(substr_count($html, 'tps__size'))->toBe(1);
 });
@@ -731,7 +731,7 @@ test('a type page without zoom images has no tab indicator or detail panel', fun
 
     $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        ->assertSee('data-spin="scroll"', false)
+        ->assertSee('data-spin="drag"', false)
         ->assertDontSee('data-spin-spot', false)
         ->assertDontSee('data-spin-zoom', false)
         ->assertDontSee('data-spin-detail', false);

@@ -57,13 +57,12 @@
 
     @if ($parts !== [] || $t['image'])
     {{-- 360° tipe --}}
-    {{-- 360° ikut gulir --}}
+    {{-- Putar lewat panah, geser, tab --}}
     <section
-      @class(['tps', 'tps--scroll' => $parts !== []])
+      @class(['tps', 'tps--spin' => $parts !== []])
       aria-label="Detail {{ $t['name'] }}"
-      @if ($parts !== []) data-spin="scroll" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'zoom', 'x', 'y']))) }}" style="--spin-tabs: {{ count($parts) }}" @endif
+      @if ($parts !== []) data-spin="drag" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'zoom', 'x', 'y']))) }}" @endif
     >
-      <div @class(['tps__pin' => $parts !== []]) @if ($parts !== []) data-spin-pin @endif>
       <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === []])>
         @if ($parts !== [])
           {{-- Viewer 360° --}}
@@ -93,17 +92,17 @@
 
           {{-- Tab dan label --}}
           <div class="tps__info">
-            <ul class="tph__tabs" aria-label="Bagian 360°" data-spin-tabs>
-              @foreach ($parts as $part)
-                <li class="tph__part">
-                  <button class="tph__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-controls="type-360-desc-{{ $loop->index }}" data-spin-tab="{{ $loop->index }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></svg>
-                    {{ $part['name'] }}
-                  </button>
-                  <p class="tph__desc" id="type-360-desc-{{ $loop->index }}"><strong>{{ $part['name'] }}.</strong> {{ $part['text'] }}</p>
-                </li>
-              @endforeach
-            </ul>
+            {{-- Tab nama, deskripsi di bawah --}}
+            <div class="tps__tabs" data-spin-tabs>
+              <ul class="tph__tabs tps__tab-row" aria-label="Bagian 360°">
+                @foreach ($parts as $part)
+                  <li>
+                    <button class="tph__tab" type="button" aria-pressed="{{ $loop->first ? 'true' : 'false' }}" aria-controls="type-360-text" data-spin-tab="{{ $loop->index }}">{{ $part['name'] }}</button>
+                  </li>
+                @endforeach
+              </ul>
+              <p class="tps__tab-text" id="type-360-text" aria-live="polite" data-spin-text{{ $first['text'] === '' ? ' hidden' : '' }}>{{ $first['text'] }}</p>
+            </div>
 
             @if ($zooms)
               {{-- Detail tab terbuka --}}
@@ -141,7 +140,6 @@
             </div>
           </div>
         @endif
-      </div>
       </div>
     </section>
     @endif

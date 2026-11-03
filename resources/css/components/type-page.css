@@ -98,84 +98,65 @@ body.is-type :is(.tph, .tps, .tpd, .tpi, .tpb, .types, .ft) {
   padding-block: clamp(32px, 4vw, 56px) clamp(56px, 7vw, 112px);
 }
 
-/* 360° ikut gulir */
-.tps--scroll {
-  height: calc(100svh + var(--spin-tabs, 1) * 70svh);
-  padding-block: 0;
-}
-
-/* Isi tertahan */
-.tps__pin {
-  position: sticky;
-  top: 0;
-  display: grid;
-  align-content: center;
-  min-height: 100svh;
-  min-height: 100dvh; /* Tanpa celah toolbar */
-  padding-block: clamp(32px, 4vw, 56px);
+/* 360° tanpa sticky */
+.tps--spin {
+  padding-block: 72px;
 }
 
 /* 360° gelap */
-body.is-type .tps--scroll {
+body.is-type .tps--spin {
   --tps-edge: rgb(255 255 255 / 0.32);
   position: relative;
   isolation: isolate;
   color: #fff;
 }
 
-/* Hitam sejajar garis */
-body.is-type .tps--scroll::before {
+/* Latar hitam penuh */
+body.is-type .tps--spin::before {
   content: '';
   position: absolute;
-  inset: 0 calc(var(--line-x) * (1 - var(--spin-open, 0)));
+  inset: 0;
   z-index: -1;
   background: #000;
 }
 
-/* Hitam langsung penuh */
-@media (max-width: 1024px) {
-  body.is-type .tps--scroll::before {
-    inset: 0;
-  }
-}
-
-.tps.tps--scroll .tps__size {
+.tps.tps--spin .tps__size {
   color: #fff;
 }
 
-.tps--scroll .tps__label {
+.tps--spin .tps__label {
   color: rgb(255 255 255 / 0.72);
 }
 
 /* Spesifikasi di 360° */
-.tps--scroll .tps__side {
+.tps--spin .tps__side {
   margin-top: 24px;
 }
 
 /* Kotak garis tipis */
-.tps--scroll .tps__facts div {
+.tps--spin .tps__facts div {
   border: 1px solid rgb(255 255 255 / 0.32);
   background: none;
 }
 
-.tps--scroll .tps__facts dt {
+.tps--spin .tps__facts dt {
   color: rgb(255 255 255 / 0.72);
 }
 
-.tps--scroll .tps__facts dd {
+.tps--spin .tps__facts dd {
   color: #fff;
 }
 
 /* Tombol putih */
-.tps--scroll .tps__actions .btn,
-.tps--scroll .tps__actions .btn--solid {
+.tps--spin .tps__actions .btn,
+.tps--spin .tps__actions .btn--solid {
   background: #fff;
   border-color: #fff;
   color: #000;
 }
 
-.tps--scroll .tps__actions .btn:hover,
-.tps--scroll .tps__actions .btn--solid:hover {
+.tps--spin .tps__actions .btn:hover,
+.tps--spin .tps__actions .btn--solid:hover {
   background: var(--room);
   border-color: var(--room);
   color: var(--room-ink);
@@ -195,9 +176,54 @@ body.is-type .tps--scroll::before {
 }
 
 /* Fokus latar hitam */
-.tps--scroll .tph__tab:focus-visible,
-.tps--scroll .tph__part:has(.tph__tab:focus-visible) .tph__desc {
+.tps--spin .tph__tab:focus-visible {
   outline-color: #fff;
+}
+
+/* Tab menyamping, nama saja */
+.tps .tps__tab-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tps--spin .tps__tab-row .tph__tab {
+  padding: 8px 18px;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: none;
+  color: #fff;
+  font-size: 15px;
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.tps--spin .tps__tab-row .tph__tab:hover {
+  border-color: #fff;
+  background: none;
+}
+
+/* Tab aktif putih */
+.tps--spin .tps__tab-row .tph__tab[aria-pressed='true'] {
+  border-color: #fff;
+  background: #fff;
+  color: #000;
+}
+
+/* Deskripsi tab aktif */
+.tps__tab-text {
+  margin: 16px 0 0;
+  color: rgb(255 255 255 / 0.8);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.tps__tab-text[hidden] {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .tps__tab-text {
+    font-size: 14px;
+  }
 }
 
 /* Label ruko ukuran */
@@ -221,15 +247,8 @@ body.is-type .tps--scroll::before {
   max-width: none;
 }
 
-/* Tab aktif rapat */
-@media (max-width: 760px) {
-  .tps__info .tph__desc {
-    padding: 14px 16px;
-  }
-}
-
 /* Deskripsi 160/80px */
-.tps.tps--scroll + .tps--about {
+.tps.tps--spin + .tps--about {
   padding-top: 80px;
 }
 
@@ -238,7 +257,7 @@ body.is-type .tps--scroll::before {
 }
 
 @media (min-width: 1025px) {
-  .tps.tps--scroll + .tps--about {
+  .tps.tps--spin + .tps--about {
     padding-top: 160px;
   }
 
@@ -249,47 +268,28 @@ body.is-type .tps--scroll::before {
 
 /* Rasio 65:35 */
 @media (min-width: 961px) {
-  .tps--scroll .tps__grid {
+  .tps--spin .tps__grid {
     grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
     align-items: stretch;
   }
 
   /* Tab di atas */
-  .tps--scroll .tps__info {
+  .tps--spin .tps__info {
     display: flex;
     flex-direction: column;
   }
 
-  .tps--scroll .tps__info .tph__tabs {
+  .tps--spin .tps__info .tps__tabs {
     margin-bottom: 32px;
   }
 
-  .tps--scroll .tps__info .tps__meta {
+  .tps--spin .tps__info .tps__meta {
     margin-top: auto;
   }
 }
 
-.tps--scroll .tps__view {
+.tps--spin .tps__view {
   max-width: none;
-}
-
-/* Desktop jarak 72px */
-@media (min-width: 1025px) {
-  .tps--scroll {
-    height: auto;
-  }
-
-  /* Jarak putaran */
-  .tps--scroll::after {
-    content: '';
-    display: block;
-    height: calc(var(--spin-tabs, 1) * 70svh);
-  }
-
-  .tps__pin {
-    min-height: 0;
-    padding-block: 72px;
-  }
 }
 
 .tps__grid {
@@ -535,7 +535,7 @@ body.is-type .tps--scroll::before {
 }
 
 /* Tab muncul lagi */
-.tps.is-returning .tph__tabs {
+.tps.is-returning .tps__tabs {
   animation: tps-fade 0.4s var(--ease);
 }
 
@@ -616,7 +616,7 @@ body.is-type .tps--scroll::before {
   }
 
   .tps__detail,
-  .tps.is-returning .tph__tabs {
+  .tps.is-returning .tps__tabs {
     animation: none;
   }
 }
@@ -936,7 +936,7 @@ body.is-type .tps--scroll::before {
   }
 
   /* Tab bawah viewer */
-  .tps__info > .tph__tabs {
+  .tps__info > .tps__tabs {
     order: -1;
     margin-top: 24px;
   }
@@ -952,43 +952,39 @@ body.is-type .tps--scroll::before {
   }
 }
 
-/* 360° muat layar HP */
+/* 360° rapat di HP */
 @media (max-width: 760px) {
-  .tps--scroll {
-    height: calc(100svh + var(--spin-tabs, 1) * 50svh); /* Gulir lebih pendek */
+  .tps--spin {
+    padding-block: 40px;
   }
 
-  .tps--scroll .tps__pin {
-    padding-block: 12px;
-  }
-
-  .tps--scroll .tps__info > .tph__tabs,
-  .tps--scroll .tps__info > .tps__detail {
+  .tps--spin .tps__info > .tps__tabs,
+  .tps--spin .tps__info > .tps__detail {
     margin-top: 16px;
   }
 
-  .tps--scroll .tph__tabs {
+  .tps--spin .tps__tab-row {
     gap: 6px;
   }
 
-  .tps--scroll .tps__meta {
+  .tps--spin .tps__meta {
     margin-top: 16px;
     padding-top: 0;
   }
 
-  .tps--scroll .tps__side {
+  .tps--spin .tps__side {
     margin-top: 12px;
   }
 
-  .tps--scroll .tps__facts div {
+  .tps--spin .tps__facts div {
     padding: 10px 12px;
   }
 
-  .tps--scroll .tps__facts dd {
+  .tps--spin .tps__facts dd {
     margin-top: 4px;
   }
 
-  .tps--scroll .tps__side .tps__actions {
+  .tps--spin .tps__side .tps__actions {
     margin-top: 12px;
   }
 }
