@@ -17,6 +17,14 @@
   }
 }
 
+/* Tablet landscape */
+@media (min-width: 1025px) and (max-width: 1366px) and (hover: none) and (pointer: coarse) {
+  .hero {
+    height: max(70vh, 400px);
+    height: max(70svh, 400px);
+  }
+}
+
 .hero__video,
 .hero__media {
   position: absolute;
