@@ -181,6 +181,19 @@ body.is-type .tps--scroll::before {
   color: var(--room-ink);
 }
 
+/* Tombol VR abu */
+.tps .tps__actions .btn.btn--solid {
+  background: #5f666c;
+  border-color: #5f666c;
+  color: #fff;
+}
+
+.tps .tps__actions .btn.btn--solid:hover {
+  background: var(--room);
+  border-color: var(--room);
+  color: var(--room-ink);
+}
+
 /* Fokus latar hitam */
 .tps--scroll .tph__tab:focus-visible,
 .tps--scroll .tph__part:has(.tph__tab:focus-visible) .tph__desc {
