@@ -979,9 +979,26 @@ button.pj-frame:focus-visible {
   z-index: 2;
 }
 
-/* Titik terbuka */
-.scene[data-panel='zoom'] .scene__back {
-  display: none;
+/* Kembali seperti tipe */
+.scene[data-panel='zoom'] .scene__back--below,
+.scene[data-panel='zoom'] .scene__back--below:hover {
+  margin: 20px 0 0 -2px; /* Sejajar teks */
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+  .scene[data-panel='zoom'] .scene__back--below {
+    font-size: 14px;
+  }
 }
 
 /* Teks titik terbuka */

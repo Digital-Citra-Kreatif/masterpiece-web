@@ -108,10 +108,13 @@ test('the masterplan orbit carries the CMS points with a position as its hotspot
         // Pin penanda
         ->assertSee('class="spot spot--marker"', false)
         ->assertSee('pj-marker pj-marker--circle', false)
+        // Kembali di bawah panah
+        ->assertSeeInOrder(['data-loc-step="1"', 'scene__back scene__back--below', 'Kembali ke masterplan'], false)
         ->getContent();
 
     preg_match('/data-spots="([^"]+)"/', $html, $match);
     expect(json_decode(html_entity_decode($match[1]), true)['masterplan-1']['point'])->toBe([50, 52]);
+    expect(substr_count($html, 'class="scene__back"'))->toBe(0);
 });
 
 test('masterplan and cluster points are numbered by their order in the CMS, not by an old number field', function () {

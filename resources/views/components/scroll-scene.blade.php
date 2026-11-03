@@ -146,12 +146,14 @@
 
     <!-- Tampilan lokasi -->
     <div class="scene__loc wrap" role="group" aria-labelledby="{{ $id }}-loc-title" hidden>
-      <button class="scene__back" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-          <path d="M19 12H5M11 6l-6 6 6 6"></path>
-        </svg>
-        Kembali ke {{ Str::lower($title) }}
-      </button>
+      @unless ($zoom)
+        <button class="scene__back" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6"></path>
+          </svg>
+          Kembali ke {{ Str::lower($title) }}
+        </button>
+      @endunless
       @if ($project && ! $card)
         <img class="scene__loc-img" alt="" hidden />
       @endif
@@ -165,6 +167,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 5l7 7-7 7"></path></svg>
         </button>
       </div>
+      @if ($zoom)
+        {{-- Kembali di bawah panah --}}
+        <button class="hd__back tp-back tp-back--prev scene__back scene__back--below" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+          <span class="tp-back__label">Kembali ke {{ Str::lower($title) }}</span>
+        </button>
+      @endif
     </div>
   </div>
 </section>
