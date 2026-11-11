@@ -35,6 +35,13 @@
 }
 
 /* Slider hero */
+/* Lapisan slide sendiri */
+.hero__slides {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+}
+
 /* Tirai dari bawah */
 .hero__slide {
   position: absolute;
