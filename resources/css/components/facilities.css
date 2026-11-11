@@ -141,8 +141,16 @@
 
 .fac--split .fac__slide figcaption {
   padding-top: 12px;
-  color: var(--room);
+  color: #000;
   font-size: 15px;
+}
+
+/* Desktop lebih besar */
+@media (min-width: 1025px) {
+  .fac--split .fac__slide figcaption {
+    padding-top: 14px;
+    font-size: 18px;
+  }
 }
 
 /* Progres dan panah */
