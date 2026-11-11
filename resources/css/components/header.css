@@ -302,12 +302,8 @@
   opacity: 1;
 }
 
-/* Alas logo di gelap */
-.hd--type .hd__mark {
-  transition: background-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
-}
-
-.hd--type[data-tone='dark'] .hd__mark:has(.hd__logo--own) {
+/* Alas logo type */
+.hd--type .hd__mark:has(.hd__logo--own) {
   background: #fff;
-  box-shadow: 0 0 0 12px #fff;
+  box-shadow: 0 0 0 12px #fff, 0 2px 8px 12px rgb(0 0 0 / 0.1);
 }
