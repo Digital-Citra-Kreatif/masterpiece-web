@@ -27,7 +27,7 @@
 @endphp
 
 <section
-  @class(['scene', 'scene--masterplan' => $masterplan, 'scene--project' => $project, "scene--{$side}" => $project, 'theme_on-dark'])
+  @class(['scene', 'scene--masterplan' => $masterplan, 'scene--project' => $project, "scene--{$side}" => $project])
   data-scene
   @if ($tracks) data-tracks="{{ json_encode($tracks) }}" @endif
   @if ($zoom) data-panel="zoom" @endif
