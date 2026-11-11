@@ -604,23 +604,32 @@ async function init(root) {
   });
 
   let lastArea = '';
+  let areaShown = null; // Area dihaluskan
   function tick() {
     ticking = false;
     if (placeKey && Math.abs(window.scrollY - placeY) > 120) closePlace(); // Scroll menutup hotspot
     if (!onScreen()) return;
     const p = progress();
+    // Halus berbasis waktu
+    const now = performance.now();
+    const catchUp = 1 - Math.exp(-Math.min(now - lastTick, 100) / SMOOTH_MS);
+    lastTick = now;
 
     // Fase scene
     const intro = introLength();
     const from = panelFrom();
     const areaIn = hasIntro ? smooth(scrolled(), from, from + H * 0.3) : 1;
+    // Konten naik halus
+    areaShown = reduced || areaShown === null ? areaIn : areaShown + (areaIn - areaShown) * catchUp;
+    if (Math.abs(areaIn - areaShown) < 0.002) areaShown = areaIn;
     // Tulis bila berubah
-    const area = areaIn.toFixed(3);
+    const area = areaShown.toFixed(3);
     if (area !== lastArea) {
       lastArea = area;
       root.style.setProperty('--p-area', area);
-      root.style.setProperty('--v-area', areaIn > 0 ? 'visible' : 'hidden');
+      root.style.setProperty('--v-area', areaShown > 0 ? 'visible' : 'hidden');
     }
+    if (areaShown !== areaIn) requestTick();
     if (hasIntro && !hasVideo) root.classList.toggle('is-scrub', p > 0);
 
     if (hasVideo && p <= 0 && mode === 'scrub' && !placeKey && override === null && Math.abs(current - offset) < 0.05) {
@@ -647,10 +656,6 @@ async function init(root) {
     const idle = target === lastTarget;
     lastTarget = target;
     const goal = idle && p > 0 ? Math.round(target) : target;
-    // Halus berbasis waktu
-    const now = performance.now();
-    const catchUp = 1 - Math.exp(-Math.min(now - lastTick, 100) / SMOOTH_MS);
-    lastTick = now;
     current = reduced ? goal : current + (goal - current) * catchUp;
     if (Math.abs(goal - current) < 0.004) current = goal;
 
