@@ -881,3 +881,33 @@ test('the masterplan opening shows up to four collage images with their labels, 
         ->assertSee('class="mp"', false)
         ->assertDontSee('data-mp-tile', false);
 });
+
+test('a type card shows the first frame of the type\'s own 360° and falls back to its thumbnail without one', function () {
+    $types = EntryTranslation::query()->whereIn('slug', ['tipe-1', 'tipe-2', 'tipe-3'])->get()->keyBy('slug');
+    $facade = app(UploadMedia::class)->handle(UploadedFile::fake()->image('fasad-depan.jpg', 1600, 1200), []);
+    $thumbnail = app(UploadMedia::class)->handle(UploadedFile::fake()->image('denah-kecil.jpg', 1200, 900), []);
+    $project = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'types' => ['title' => 'Type', 'units' => $types->pluck('entry_id')->all()],
+    ]);
+    // Tipe 1: 360° dan thumbnail; tipe 2: thumbnail saja
+    $types['tipe-1']->update(['data' => [...$types['tipe-1']->fresh()->data, 'project' => $project->entry_id, 'image' => $thumbnail->id, 'turntable' => ['tabs' => [
+        ['name' => 'Fasad', 'images' => [$facade->id], 'frame' => null],
+    ]]]]);
+    $types['tipe-2']->update(['data' => [...$types['tipe-2']->fresh()->data, 'project' => $project->entry_id, 'image' => $thumbnail->id]]);
+    $types['tipe-3']->update(['data' => [...$types['tipe-3']->fresh()->data, 'project' => $project->entry_id]]);
+
+    $html = $this->get('/projects/westlake')->assertOk()->getContent();
+    preg_match_all('/class="card__img">\s*<img src="([^"]+)"/', $html, $cards);
+
+    expect($cards[1])->toHaveCount(3)
+        ->and($cards[1][0])->toContain('fasad-depan')
+        ->and($cards[1][1])->toContain('denah-kecil');
+
+    // Tipe lain di halaman tipe ikut
+    $other = $this->get('/westlake/tipe/tipe-2')->assertOk()->getContent();
+    preg_match_all('/class="card__img">\s*<img src="([^"]+)"/', $other, $others);
+
+    expect($others[1][0] ?? '')->toContain('fasad-depan');
+});
