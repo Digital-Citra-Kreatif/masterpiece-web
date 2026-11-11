@@ -357,6 +357,10 @@ class SiteContentSeeder extends Seeder
             ]]),
             $section('masterplan', 'Masterplan', [
                 $scene(),
+                $this->field('collage', 'repeater', ['max' => 4], ['label' => 'Gambar pembuka', 'instructions' => 'Maks 4 gambar, tampil sebagai kolase sebelum masterplan.', 'fields' => [
+                    $image('image', 'Gambar', ['required' => true, 'width' => 50]),
+                    $text('label', 'Label', ['width' => 50]),
+                ]]),
                 $points('Titik kawasan', [
                     $text('name', 'Nama', ['required' => true, 'width' => 33]),
                     $image('image', 'Gambar', ['width' => 33]),

@@ -845,3 +845,39 @@ test('a masterplan point carries its original zoom image and a quick large versi
         ->and($spots['masterplan-2']['zoom'])->toBeNull()
         ->and($spots['masterplan-2']['zoomFast'])->toBeNull();
 });
+
+test('the masterplan opening shows up to four collage images with their labels, and none without them', function () {
+    $rows = collect(['Balcony', 'Double Fasade', 'Plaza', 'Lake View', 'Extra'])
+        ->map(fn (string $label): array => ['image' => projectImage(Str::slug($label).'.jpg'), 'label' => $label])
+        ->all();
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'masterplan' => ['title' => 'Masterplan', 'collage' => array_slice($rows, 0, 4), 'points' => [
+            ['name' => 'West Lakeside', 'image' => null, 'x' => 50, 'y' => 52],
+        ]],
+    ]);
+
+    $html = $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('class="mp mp--collage"', false)
+        ->assertSeeInOrder(['<figcaption>Balcony</figcaption>', '<figcaption>Plaza</figcaption>', '<figcaption>Double Fasade</figcaption>', '<figcaption>Lake View</figcaption>'], false)
+        ->assertDontSee('Extra')
+        ->getContent();
+
+    expect(substr_count($html, 'data-mp-tile'))->toBe(4)
+        // Kiri atas, kiri bawah, kanan atas, kanan bawah
+        ->and(preg_match_all('/data-mp-tile data-x="(-?1)" data-y="(-?1)"/', $html, $found))->toBe(4)
+        ->and(array_map(null, $found[1], $found[2]))->toBe([['-1', '-1'], ['-1', '1'], ['1', '-1'], ['1', '1']]);
+
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'masterplan' => ['title' => 'Masterplan', 'points' => [['name' => 'West Lakeside', 'image' => null, 'x' => 50, 'y' => 52]]],
+    ], 'plain');
+
+    $this->get('/projects/plain')
+        ->assertOk()
+        ->assertSee('class="mp"', false)
+        ->assertDontSee('data-mp-tile', false);
+});

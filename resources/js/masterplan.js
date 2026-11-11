@@ -57,6 +57,26 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
     .to(title, { x: () => -window.innerWidth * 0.6, autoAlpha: 0, ease: 'power2.in', duration: 0.8 }, 0);
   if (text) timeline.to(text, { x: () => window.innerWidth * 0.6, autoAlpha: 0, ease: 'power2.in', duration: 0.8 }, 0);
 
+  // Kolase menyebar
+  for (const tile of root.querySelectorAll('[data-mp-tile]')) {
+    const [sx, sy] = [Number(tile.dataset.x), Number(tile.dataset.y)];
+    const caption = tile.querySelector('figcaption');
+    timeline
+      .to(
+        tile,
+        {
+          x: () => sx * ((stage.clientWidth - box.offsetWidth) / 2 + tile.offsetWidth * 0.5),
+          y: () => sy * ((stage.clientHeight - box.offsetHeight) / 2 + tile.offsetHeight * 0.5),
+          force3D: true,
+          ease: 'power2.inOut',
+          duration: 1,
+        },
+        0,
+      )
+      .to(tile, { autoAlpha: 0, ease: 'power1.in', duration: 0.3 }, sx || sy ? 0.6 : 0.15);
+    if (caption) timeline.to(caption, { autoAlpha: 0, duration: 0.2 }, 0);
+  }
+
   // Toolbar HP berubah
   let stageH = stage.clientHeight;
   new ResizeObserver(() => {

@@ -78,7 +78,8 @@
     @endif
 
     @if ($masterplan)
-      <div class="mp" data-masterplan>
+      @php($tiles = $masterplan['collage'] ?? [])
+      <div @class(['mp', 'mp--collage' => $tiles !== []]) data-masterplan>
         {{-- Rasio frame --}}
         <div class="mp__frame" data-mp-frame>
           @if ($masterplan['video'] ?? null)
@@ -99,6 +100,25 @@
             <img class="mp__img" src="{{ $firstFrame }}" alt="" width="{{ $frameW }}" height="{{ $frameH }}" data-mp-img data-w="{{ $frameW }}" data-h="{{ $frameH }}" />
           @endif
         </div>
+        @if ($tiles !== [])
+          {{-- Kolase pembuka --}}
+          <div class="mp__tiles">
+            @foreach ([[0, 2], [1, 3]] as $side => $column)
+              @php($rows = array_values(array_filter($column, fn (int $index): bool => isset($tiles[$index]))))
+              @continue($rows === [])
+              <div class="mp__col">
+                @foreach ($rows as $row => $index)
+                  <figure class="mp__tile" data-mp-tile data-x="{{ count($tiles) === 1 ? 0 : ($side === 0 ? -1 : 1) }}" data-y="{{ count($rows) === 1 ? 0 : ($row === 0 ? -1 : 1) }}">
+                    <x-project.img :image="$tiles[$index]['image']" sizes="(min-width: 761px) 20vw, 45vw" :alt="$tiles[$index]['label'] ?? $tiles[$index]['image']['alt']" :eager="true" />
+                    @if ($tiles[$index]['label'])
+                      <figcaption>{{ $tiles[$index]['label'] }}</figcaption>
+                    @endif
+                  </figure>
+                @endforeach
+              </div>
+            @endforeach
+          </div>
+        @endif
         <span class="mp__box" data-mp-box aria-hidden="true"></span>
         <h2 class="display mp__title" data-mp-title>{{ $masterplan['title'] }}</h2>
         @if ($masterplan['text'])

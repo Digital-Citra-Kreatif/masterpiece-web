@@ -308,7 +308,7 @@ final class ProjectPage
      * Titik Masterplan
      *
      * @param  array<string, mixed>  $section
-     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, zoom: ?string, zoomFast: ?string, x: ?float, y: ?float}>, scene: ?array<string, mixed>}|null
+     * @return array{title: string, intro: ?string, points: list<array{number: ?string, name: string, image: ?array<string, mixed>, zoom: ?string, zoomFast: ?string, x: ?float, y: ?float}>, scene: ?array<string, mixed>, collage: list<array{image: array<string, mixed>, label: ?string}>}|null
      */
     private static function masterplan(array $section, int $project): ?array
     {
@@ -336,7 +336,17 @@ final class ProjectPage
         $hotspots = self::hotspots($points, 'masterplan');
         $scene = $points === [] ? null : self::frames([...Content::sampleArea(), 'hotspots' => $hotspots], $section['image'] ?? null, $project, 'masterplan');
 
-        return self::section($section, ['points' => $points, 'scene' => $scene], $points !== []);
+        // Kolase pembuka
+        $collage = collect($section['collage'] ?? [])
+            ->map(fn (mixed $row): ?array => is_array($row) && ($image = self::image($row['image'] ?? null, 'medium')) !== null
+                ? ['image' => $image, 'label' => filled($row['label'] ?? null) ? (string) $row['label'] : null]
+                : null)
+            ->filter()
+            ->take(4)
+            ->values()
+            ->all();
+
+        return self::section($section, ['points' => $points, 'scene' => $scene, 'collage' => $collage], $points !== []);
     }
 
     /**

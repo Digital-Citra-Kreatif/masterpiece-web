@@ -38,7 +38,7 @@
           :scene="$mp['scene']['scene']"
           :hotspots="$mp['scene']['hotspots']"
           :tracks="$mp['scene']['tracks'] ?? null"
-          :masterplan="['title' => $mp['title'], 'text' => $mp['intro'], 'video' => $mp['scene']['video'] ?? null, 'panel' => 'zoom']"
+          :masterplan="['title' => $mp['title'], 'text' => $mp['intro'], 'video' => $mp['scene']['video'] ?? null, 'panel' => 'zoom', 'collage' => $mp['collage']]"
           :marker="$marker"
         />
       @else
