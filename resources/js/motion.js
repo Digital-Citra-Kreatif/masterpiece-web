@@ -1,51 +1,51 @@
 // Transisi teks dan gambar
-const TITLES = 'h2.display:not(.mp__title, .scene__area-title, .ov__info-title, .pj-sheet__name)';
-const INTROS = '.sheet__intro, .fac__intro, .pj-loc__intro';
+import { gsap } from 'gsap';
+import { SplitText } from 'gsap/SplitText';
+
+const TEXTS = [
+  'h2.display:not(.mp__title, .scene__area-title, .ov__info-title, .pj-sheet__name)',
+  '.prj__title',
+  '.card__name',
+  '.sheet__intro',
+  '.fac__intro',
+  '.pj-loc__intro',
+  '.units__intro',
+  '.prj__desc',
+  '.ft__text',
+].join(', ');
 const IMAGES = '.prj__frame img, .card__img img, .fac__img img, .pj-band img, .tps__stage--image img';
 // Karusel muncul bersama
 const GROUPS = '.fac__rail';
 const STEP = 0.12;
 const MAX_STEP = 5;
 
-/** Pecah judul per kata */
-const split = (title) => {
-  const words = title.textContent.trim().split(/\s+/);
-  title.textContent = '';
-  words.forEach((word, index) => {
-    if (index) title.append(' ');
-    const mask = document.createElement('span');
-    const inner = document.createElement('span');
-    mask.className = 'mo-word';
-    inner.textContent = word;
-    inner.style.setProperty('--i', index);
-    mask.append(inner);
-    title.append(mask);
-  });
-};
-
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+  gsap.registerPlugin(SplitText);
+
   // Target per elemen pantau
   const targets = new Map();
-  const add = (root, el) => {
+  const add = (root, item) => {
     if (!targets.has(root)) targets.set(root, []);
-    targets.get(root).push(el);
+    targets.get(root).push(item);
   };
 
-  for (const title of document.querySelectorAll(TITLES)) {
-    if (title.children.length || !title.textContent.trim()) continue;
-    split(title);
-    title.classList.add('mo-text');
-    add(title, title);
-  }
-
-  for (const intro of document.querySelectorAll(INTROS)) {
-    intro.classList.add('mo-fade');
-    add(intro, intro);
+  for (const el of document.querySelectorAll(TEXTS)) {
+    if (!el.textContent.trim()) continue;
+    const item = { el, shown: false, split: null };
+    // Pecah ulang saat lebar berubah
+    item.split = SplitText.create(el, {
+      type: 'lines',
+      mask: 'lines',
+      linesClass: 'mo-line',
+      autoSplit: true,
+      onSplit: (self) => gsap.set(self.lines, { yPercent: item.shown ? 0 : 100 }),
+    });
+    add(el, item);
   }
 
   for (const img of document.querySelectorAll(IMAGES)) {
     img.classList.add('mo-img');
-    add(img.closest(GROUPS) ?? img, img);
+    add(img.closest(GROUPS) ?? img, { el: img });
   }
 
   const io = new IntersectionObserver(
@@ -55,11 +55,16 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         io.unobserve(entry.target);
-        for (const el of targets.get(entry.target) ?? []) {
+        for (const item of targets.get(entry.target) ?? []) {
           const delay = Math.min(step, MAX_STEP) * STEP;
-          if (el.classList.contains('mo-img')) step++;
-          el.style.setProperty('--mo-delay', `${delay}s`);
-          el.classList.add('is-in');
+          step++;
+          if (item.split) {
+            item.shown = true;
+            gsap.to(item.split.lines, { yPercent: 0, duration: 1.1, delay, stagger: 0.08, ease: 'expo.out' });
+          } else {
+            item.el.style.setProperty('--mo-delay', `${delay}s`);
+            item.el.classList.add('is-in');
+          }
         }
       }
     },
