@@ -9,7 +9,7 @@ const HEADINGS = [
   '.card__name',
 ].join(', ');
 // Paragraf per baris
-const TEXTS = ['.sheet__intro', '.fac__intro', '.pj-loc__intro', '.units__intro', '.prj__desc', '.ft__text'].join(', ');
+const TEXTS = ['.sheet__intro', '.pj-loc__intro', '.units__intro', '.prj__desc', '.ft__text'].join(', ');
 const IMAGES = '.prj__frame img, .card__img img, .fac__img img, .pj-band img, .tps__stage--image img';
 // Karusel muncul bersama
 const GROUPS = '.fac__rail';

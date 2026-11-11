@@ -17,9 +17,6 @@
     @if ($split)
       <div class="fac__head">
         <h2 class="display fac__title" id="{{ $id }}-title">{{ $heading['title'] }}</h2>
-        @if ($heading['intro'])
-          <p class="fac__intro">{{ $heading['intro'] }}</p>
-        @endif
       </div>
     @else
       <x-sheet-header

@@ -103,12 +103,8 @@
   overflow: hidden;
 }
 
-/* Judul dan intro */
+/* Judul */
 .fac__head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px 48px;
   margin-bottom: clamp(24px, 3vw, 40px);
 }
 
@@ -118,14 +114,6 @@
   font-size: clamp(40px, 4.6vw, 64px);
   font-weight: 400;
   line-height: 1.05;
-}
-
-.fac__intro {
-  max-width: 46ch;
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 15px;
-  line-height: 1.6;
 }
 
 /* Lewat tepi layar */
@@ -175,7 +163,7 @@
   background: var(--room);
   transform: scaleX(0);
   transform-origin: 0 50%;
-  transition: transform 0.4s var(--ease);
+  transition: transform 0.9s var(--ease-expo);
 }
 
 .fac__arrows {
@@ -218,11 +206,6 @@
 }
 
 @media (max-width: 760px) {
-  .fac__head {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .fac--split .fac__slide {
     width: min(72vw, 300px);
   }
