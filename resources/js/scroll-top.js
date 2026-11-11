@@ -7,7 +7,8 @@ if (button) {
   update();
 
   button.addEventListener('click', () => {
-    window.scrollTo(0, 0);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
     // Fokus ke awal
     document.querySelector('header a, main')?.focus({ preventScroll: true });
   });
