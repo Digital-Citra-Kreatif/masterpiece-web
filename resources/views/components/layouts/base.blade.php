@@ -42,7 +42,9 @@
       <x-preload />
     @endif
     {{ $slot }}
-    <x-scroll-top />
+    @if ($site['scrollTop'])
+      <x-scroll-top />
+    @endif
     <x-overlay />
   </body>
 </html>

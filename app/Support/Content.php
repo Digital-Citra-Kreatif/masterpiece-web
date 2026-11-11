@@ -23,7 +23,7 @@ final class Content
     /**
      * Data situs bersama
      *
-     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, preload: array{active: bool, hours: int}, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
+     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, preload: array{active: bool, hours: int}, scrollTop: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
      */
     public static function site(): array
     {
@@ -42,6 +42,8 @@ final class Content
                     'active' => ($settings['preload_active'] ?? true) !== false,
                     'hours' => is_numeric($settings['preload_hours'] ?? null) && $settings['preload_hours'] >= 1 ? (int) $settings['preload_hours'] : 6,
                 ],
+                // Belum pernah disimpan: tersembunyi
+                'scrollTop' => (bool) ($settings['scroll_top_active'] ?? false),
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...self::headerLogo($settings), 'alt' => Cms::site()->name()],
                 'nav' => self::nav(),

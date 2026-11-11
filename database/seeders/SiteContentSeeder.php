@@ -159,6 +159,7 @@ class SiteContentSeeder extends Seeder
                     // Animasi pembuka, sekali per interval
                     $this->field('preload_active', 'toggle', ['default' => true], ['label' => 'Preload aktif', 'translatable' => false, 'width' => 50, 'instructions' => 'Animasi pembuka saat pengunjung pertama masuk.']),
                     $this->field('preload_hours', 'number', ['min' => 1, 'max' => 720], ['label' => 'Tampil lagi setelah (jam)', 'translatable' => false, 'width' => 50, 'instructions' => 'Kosong: 6 jam.']),
+                    $this->field('scroll_top_active', 'toggle', ['default' => false], ['label' => 'Tombol ke atas', 'translatable' => false, 'width' => 50, 'instructions' => 'Tombol kembali ke atas di kanan bawah.']),
                 ]],
                 $this->projectBlueprint(),
                 $this->footerBlueprint(),
