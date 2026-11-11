@@ -1,10 +1,10 @@
-/* Transisi teks dan gambar */
+/* Transisi masuk */
 
 :root {
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Judul tertahan sampai terlihat */
+/* Judul tertahan */
 .mo-wait .word-in {
   animation-play-state: paused;
 }
@@ -16,7 +16,7 @@
   margin-bottom: -0.1em;
 }
 
-/* Gambar terbuka dari bawah */
+/* Gambar terbuka */
 .mo-img:not(.is-in) {
   clip-path: inset(100% 0 0 0);
 }

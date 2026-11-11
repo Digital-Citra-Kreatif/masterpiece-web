@@ -56,7 +56,7 @@
   clip-path: inset(0);
 }
 
-/* Slide lama di bawah */
+/* Slide lama */
 .hero__slide.is-prev {
   z-index: 1;
   clip-path: inset(0);

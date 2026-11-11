@@ -212,7 +212,7 @@ button {
 /* Judul per kata */
 .word-in {
   display: inline-block;
-  /* Masuk dari kanan, tersapu */
+  /* Dari kanan */
   animation: word-in 1.3s calc(0.3s + var(--i, 0) * 0.1s) cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 

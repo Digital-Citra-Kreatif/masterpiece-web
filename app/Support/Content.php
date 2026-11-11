@@ -42,7 +42,7 @@ final class Content
                     'active' => ($settings['preload_active'] ?? true) !== false,
                     'hours' => is_numeric($settings['preload_hours'] ?? null) && $settings['preload_hours'] >= 1 ? (int) $settings['preload_hours'] : 6,
                 ],
-                // Belum pernah disimpan: tersembunyi
+                // Default tersembunyi
                 'scrollTop' => (bool) ($settings['scroll_top_active'] ?? false),
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...self::headerLogo($settings), 'alt' => Cms::site()->name()],

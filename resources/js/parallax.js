@@ -15,12 +15,19 @@ const TARGETS = [
 ];
 
 /**
- * Pasang parallax di dalam scope
+ * Pasang parallax
  *
  * @returns {gsap.Context|null}
  */
 export function initParallax(scope = document) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+
+  // Tinggi halaman berubah
+  let timer;
+  new ResizeObserver(() => {
+    clearTimeout(timer);
+    timer = setTimeout(() => ScrollTrigger.refresh(), 200);
+  }).observe(document.body);
 
   return gsap.context(() => {
     for (const [selector, from, to, scale] of TARGETS) {

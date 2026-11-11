@@ -1,21 +1,15 @@
-// Transisi teks dan gambar
+// Transisi masuk
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 
-// Judul seperti h1 beranda
+// Judul per kata
 const HEADINGS = [
   'h2.display:not(.mp__title, .scene__area-title, .ov__info-title, .pj-sheet__name)',
   '.prj__title',
   '.card__name',
 ].join(', ');
-const TEXTS = [
-  '.sheet__intro',
-  '.fac__intro',
-  '.pj-loc__intro',
-  '.units__intro',
-  '.prj__desc',
-  '.ft__text',
-].join(', ');
+// Paragraf per baris
+const TEXTS = ['.sheet__intro', '.fac__intro', '.pj-loc__intro', '.units__intro', '.prj__desc', '.ft__text'].join(', ');
 const IMAGES = '.prj__frame img, .card__img img, .fac__img img, .pj-band img, .tps__stage--image img';
 // Karusel muncul bersama
 const GROUPS = '.fac__rail';
@@ -25,7 +19,7 @@ const MAX_STEP = 5;
 if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
   gsap.registerPlugin(SplitText);
 
-  // Target per elemen pantau
+  // Target pantau
   const targets = new Map();
   const add = (root, item) => {
     if (!targets.has(root)) targets.set(root, []);
@@ -34,9 +28,9 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
 
   for (const el of document.querySelectorAll(HEADINGS)) {
     if (!el.textContent.trim()) continue;
-    // Kata pakai animasi word-in, tertahan sampai terlihat
     const { words } = SplitText.create(el, { type: 'words', wordsClass: 'word-in' });
     words.forEach((word, index) => word.style.setProperty('--i', index));
+    // Tahan animasi
     el.classList.add('mo-wait');
     add(el, { el, heading: true });
   }
@@ -44,7 +38,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
   for (const el of document.querySelectorAll(TEXTS)) {
     if (!el.textContent.trim()) continue;
     const item = { el, shown: false, split: null };
-    // Pecah ulang saat lebar berubah
+    // Pecah ulang
     item.split = SplitText.create(el, {
       type: 'lines',
       mask: 'lines',
@@ -57,13 +51,13 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
 
   for (const img of document.querySelectorAll(IMAGES)) {
     img.classList.add('mo-img');
-    // Pantau bingkai, bukan gambar terpotong
+    // Pantau bingkai
     add(img.closest(GROUPS) ?? img.parentElement, { el: img });
   }
 
   const io = new IntersectionObserver(
     (entries) => {
-      // Jeda bertahap per gelombang
+      // Jeda bertahap
       let step = 0;
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
@@ -86,7 +80,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     { rootMargin: '0px 0px -10% 0px' },
   );
 
-  // Decode selayar lebih awal
+  // Decode awal
   const near = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {

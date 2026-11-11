@@ -51,7 +51,7 @@ for (const root of document.querySelectorAll('[data-hero-slides]')) {
     const previous = slides[current];
     current = index % slides.length;
     if (previous !== slides[current]) {
-      // Slide lama tetap di bawah tirai
+      // Slide lama
       for (const slide of slides) slide.classList.remove('is-prev');
       previous.classList.add('is-prev');
       previous.classList.remove('is-active');
