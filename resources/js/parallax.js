@@ -11,7 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
  */
 const TARGETS = [
   ['.prj__frame img', -7, 7, 1.16],
-  ['.fac--split .fac__img img', -6, 6, 1.14],
 ];
 
 /**
