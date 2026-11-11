@@ -102,7 +102,7 @@
         </div>
         @if ($tiles !== [])
           {{-- Kolase pembuka --}}
-          <div class="mp__tiles">
+          <div class="mp__tiles" data-mp-tiles>
             @foreach ([[0, 2], [1, 3]] as $side => $column)
               @php($rows = array_values(array_filter($column, fn (int $index): bool => isset($tiles[$index]))))
               @continue($rows === [])
@@ -111,7 +111,7 @@
                   <figure class="mp__tile" data-mp-tile data-x="{{ count($tiles) === 1 ? 0 : ($side === 0 ? -1 : 1) }}" data-y="{{ count($rows) === 1 ? 0 : ($row === 0 ? -1 : 1) }}">
                     <x-project.img :image="$tiles[$index]['image']" sizes="(min-width: 761px) 20vw, 45vw" :alt="$tiles[$index]['label'] ?? $tiles[$index]['image']['alt']" :eager="true" />
                     @if ($tiles[$index]['label'])
-                      <figcaption>{{ $tiles[$index]['label'] }}</figcaption>
+                      <figcaption><span>{{ $tiles[$index]['label'] }}</span></figcaption>
                     @endif
                   </figure>
                 @endforeach

@@ -861,7 +861,7 @@ test('the masterplan opening shows up to four collage images with their labels, 
     $html = $this->get('/projects/westlake')
         ->assertOk()
         ->assertSee('class="mp mp--collage"', false)
-        ->assertSeeInOrder(['<figcaption>Balcony</figcaption>', '<figcaption>Plaza</figcaption>', '<figcaption>Double Fasade</figcaption>', '<figcaption>Lake View</figcaption>'], false)
+        ->assertSeeInOrder(['<figcaption><span>Balcony</span></figcaption>', '<figcaption><span>Plaza</span></figcaption>', '<figcaption><span>Double Fasade</span></figcaption>', '<figcaption><span>Lake View</span></figcaption>'], false)
         ->assertDontSee('Extra')
         ->getContent();
 

@@ -77,6 +77,20 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
     if (caption) timeline.to(caption, { autoAlpha: 0, duration: 0.2 }, 0);
   }
 
+  // Label saat terlihat
+  const tiles = root.querySelector('[data-mp-tiles]');
+  if (tiles) {
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        seen.disconnect();
+        tiles.classList.add('is-in');
+      },
+      { threshold: 0.6 },
+    );
+    seen.observe(tiles);
+  }
+
   // Toolbar HP berubah
   let stageH = stage.clientHeight;
   new ResizeObserver(() => {
