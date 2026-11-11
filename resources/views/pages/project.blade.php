@@ -109,9 +109,5 @@
     @endforeach
   @endisset
 
-  @if ($p['whatsapp'])
-    <x-project.whatsapp :whatsapp="$p['whatsapp']" :logo="$p['style']['logo']" />
-  @endif
-
   <x-footer :logo="$p['style']['logo']" :name="$p['title']" />
 </x-layouts.base>
