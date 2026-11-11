@@ -1,7 +1,7 @@
 {{-- Judul bagian --}}
 @props(['id' => null, 'title', 'intro' => null])
 
-<div class="sheet" data-reveal>
+<div class="sheet">
   <div>
     <h2 class="sheet__title display" @if ($id) id="{{ $id }}" @endif>{{ $title }}</h2>
   </div>

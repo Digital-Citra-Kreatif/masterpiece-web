@@ -2,6 +2,7 @@
 import './scroll-lock.js';
 import './scrollbar.js';
 import './reveal.js';
+import './motion.js';
 import './overlay.js';
 import './protect-media.js';
 import './menu.js';
