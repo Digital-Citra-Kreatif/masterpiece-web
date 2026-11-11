@@ -301,3 +301,13 @@
 .hd[data-tone='dark']:not(.is-menu-open) .hd__logo--light {
   opacity: 1;
 }
+
+/* Alas logo di gelap */
+.hd--type .hd__mark {
+  transition: background-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.hd--type[data-tone='dark'] .hd__mark:has(.hd__logo--own) {
+  background: #fff;
+  box-shadow: 0 0 0 12px #fff;
+}
