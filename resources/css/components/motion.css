@@ -4,6 +4,11 @@
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Judul tertahan sampai terlihat */
+.mo-wait .word-in {
+  animation-play-state: paused;
+}
+
 /* Masker baris SplitText */
 .mo-line-mask {
   /* Ekor huruf aman */

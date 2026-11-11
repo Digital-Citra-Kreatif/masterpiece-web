@@ -2,10 +2,13 @@
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 
-const TEXTS = [
+// Judul seperti h1 beranda
+const HEADINGS = [
   'h2.display:not(.mp__title, .scene__area-title, .ov__info-title, .pj-sheet__name)',
   '.prj__title',
   '.card__name',
+].join(', ');
+const TEXTS = [
   '.sheet__intro',
   '.fac__intro',
   '.pj-loc__intro',
@@ -28,6 +31,15 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     if (!targets.has(root)) targets.set(root, []);
     targets.get(root).push(item);
   };
+
+  for (const el of document.querySelectorAll(HEADINGS)) {
+    if (!el.textContent.trim()) continue;
+    // Kata pakai animasi word-in, tertahan sampai terlihat
+    const { words } = SplitText.create(el, { type: 'words', wordsClass: 'word-in' });
+    words.forEach((word, index) => word.style.setProperty('--i', index));
+    el.classList.add('mo-wait');
+    add(el, { el, heading: true });
+  }
 
   for (const el of document.querySelectorAll(TEXTS)) {
     if (!el.textContent.trim()) continue;
@@ -59,7 +71,9 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
         for (const item of targets.get(entry.target) ?? []) {
           const delay = Math.min(step, MAX_STEP) * STEP;
           step++;
-          if (item.split) {
+          if (item.heading) {
+            item.el.classList.remove('mo-wait');
+          } else if (item.split) {
             item.shown = true;
             gsap.to(item.split.lines, { yPercent: 0, duration: 1.1, delay, stagger: 0.08, ease: 'expo.out' });
           } else {
