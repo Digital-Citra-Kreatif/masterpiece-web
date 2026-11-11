@@ -299,7 +299,7 @@ class SiteContentSeeder extends Seeder
             $this->field('footer', 'group', [], ['label' => 'Footer', 'instructions' => 'Kosong: mengikuti Globals → Footer.', 'fields' => [
                 $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat']),
                 $this->field('address', 'textarea', [], ['label' => 'Alamat', 'width' => 50]),
-                $this->field('hours', 'textarea', [], ['label' => 'Jam operasional', 'width' => 50, 'instructions' => 'Satu baris per jadwal, mis. Senin–Jumat, 09.00–17.00.']),
+                $this->field('hours', 'textarea', [], ['label' => 'Jam operasional', 'width' => 50]),
                 $text('phone', 'Telepon', ['translatable' => false, 'width' => 50]),
                 $text('email', 'Email', ['translatable' => false, 'width' => 50, 'validation' => ['email']]),
             ]]),
@@ -431,7 +431,7 @@ class SiteContentSeeder extends Seeder
             $text('contact_title', 'Judul kontak', ['width' => 50]),
             $text('hours_title', 'Judul jam operasional', ['width' => 50]),
             $this->field('address', 'textarea', [], ['label' => 'Alamat']),
-            $this->field('hours', 'textarea', [], ['label' => 'Jam operasional', 'instructions' => 'Satu baris per jadwal, mis. Senin–Jumat, 09.00–17.00.']),
+            $this->field('hours', 'textarea', [], ['label' => 'Jam operasional']),
             $text('phone', 'Telepon', ['translatable' => false, 'width' => 50]),
             $text('email', 'Email', ['translatable' => false, 'width' => 50, 'validation' => ['email']]),
         ]];
