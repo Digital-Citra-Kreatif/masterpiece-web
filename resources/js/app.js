@@ -3,6 +3,7 @@ import './scroll-lock.js';
 import './scrollbar.js';
 import './reveal.js';
 import './motion.js';
+import { initParallax } from './parallax.js';
 import './overlay.js';
 import './protect-media.js';
 import './menu.js';
@@ -17,3 +18,5 @@ if (document.querySelector('[data-countdown]')) {
 if (document.documentElement.classList.contains('is-preload')) {
   import('./preload.js');
 }
+
+initParallax();

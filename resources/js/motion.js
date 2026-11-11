@@ -45,7 +45,8 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
 
   for (const img of document.querySelectorAll(IMAGES)) {
     img.classList.add('mo-img');
-    add(img.closest(GROUPS) ?? img, { el: img });
+    // Pantau bingkai, bukan gambar terpotong
+    add(img.closest(GROUPS) ?? img.parentElement, { el: img });
   }
 
   const io = new IntersectionObserver(
