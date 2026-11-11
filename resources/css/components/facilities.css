@@ -96,22 +96,20 @@
   transition: width 0.2s linear;
 }
 
-/* Varian split */
+/* Varian proyek */
 
 .fac--split {
   padding-block: var(--section, clamp(64px, 9vw, 128px));
   overflow: hidden;
 }
 
-.fac__split {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-  gap: 24px;
-}
-
+/* Judul dan intro */
 .fac__head {
   display: flex;
-  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px 48px;
+  margin-bottom: clamp(24px, 3vw, 40px);
 }
 
 .fac__title {
@@ -123,41 +121,11 @@
 }
 
 .fac__intro {
-  margin: 16px 0 0;
+  max-width: 46ch;
+  margin: 0;
   color: var(--ink-2);
   font-size: 15px;
   line-height: 1.6;
-}
-
-.fac__arrows {
-  display: flex;
-  gap: 4px;
-  margin-top: auto;
-  padding-top: 24px;
-}
-
-.fac__arrow {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid var(--room);
-  border-radius: var(--radius, 0);
-  background: transparent;
-  color: var(--room);
-  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
-}
-
-.fac__arrow svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* Isi saat hover */
-.fac__arrow:not(:disabled):hover {
-  background: var(--room);
-  color: var(--room-ink);
 }
 
 /* Lewat tepi kanan */
@@ -168,7 +136,7 @@
 }
 
 .fac--split .fac__slide {
-  width: clamp(240px, 24vw, 340px);
+  width: clamp(240px, 24.5vw, 380px);
 }
 
 .fac--split .fac__track {
@@ -178,78 +146,95 @@
   overflow: visible;
 }
 
-
-.fac__arrow:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
 .fac--split .fac__img {
-  aspect-ratio: 4 / 5;
+  position: relative;
+  aspect-ratio: 6 / 7;
 }
 
 .fac--split .fac__slide figcaption {
-  padding-top: 14px;
+  padding-top: 12px;
   color: var(--room);
-  font-size: 18px;
+  font-size: 15px;
+}
+
+/* Progres dan panah */
+.fac__foot {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: clamp(24px, 3vw, 40px);
+}
+
+.fac--split .fac__progress {
+  margin-right: 0;
+  overflow: hidden;
+}
+
+.fac--split .fac__progress span {
+  width: 100%;
+  background: var(--room);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.4s var(--ease);
+}
+
+.fac__arrows {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+
+.fac__arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius, 0);
+  background: var(--room);
+  color: var(--room-ink);
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+.fac__arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fac__arrow:not(:disabled):hover {
+  background: var(--accent);
+}
+
+.fac__arrow:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 2px;
+}
+
+.fac__arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 @media (max-width: 760px) {
-  .fac__split {
-    grid-template-columns: 1fr;
+  .fac__head {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .fac--split .fac__slide figcaption {
-    padding-top: 10px;
-    font-size: 15px;
+  .fac--split .fac__slide {
+    width: min(72vw, 300px);
   }
+}
 
-  /* Panah di gambar */
-  .fac--split .fac__split {
-    gap: 0;
-  }
-
-  .fac--split .fac__head {
-    display: contents;
-  }
-
-  .fac--split .fac__rail.swiper {
-    grid-area: 3 / 1;
-    margin-top: 24px;
-  }
-
-  .fac--split .fac__arrows {
-    grid-area: 3 / 1;
-    z-index: 2;
-    align-self: start;
-    justify-content: space-between;
-    /* Tengah gambar 4:5 */
-    /* Ikon 18px dari layar */
-    margin: calc(24px + clamp(240px, 24vw, 340px) * 5 / 8 - 22px) calc(6px - var(--gutter)) 0;
-    padding-top: 0;
-    pointer-events: none;
-  }
-
-  /* Panah tanpa kotak */
-  .fac--split .fac__arrow,
-  .fac--split .fac__arrow:not(:disabled):hover {
-    border: 0;
-    background: none;
-    color: #fff;
-    pointer-events: auto;
-  }
-
-  .fac--split .fac__arrow svg {
-    width: 20px;
-    height: 20px;
+@media (prefers-reduced-motion: reduce) {
+  .fac--split .fac__progress span {
+    transition: none;
   }
 }
 
 /* Kartu buka lightbox */
-.fac--split .fac__img {
-  position: relative;
-}
-
 .fac__zoom {
   position: absolute;
   inset: 0;
