@@ -794,8 +794,8 @@ test('the project hero places its content where the CMS says and falls back to t
     publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake', 'align' => 'top-center']]);
     publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']], 'odd');
 
-    $this->get('/projects/westlake')->assertOk()->assertSee('<section class="hero hero--placed hero--y-top hero--x-center"', false);
-    $this->get('/projects/odd')->assertOk()->assertSee('<section class="hero"', false)->assertDontSee('hero--placed', false);
+    $this->get('/projects/westlake')->assertOk()->assertSee('<section class="hero theme_on-dark hero--placed hero--y-top hero--x-center"', false);
+    $this->get('/projects/odd')->assertOk()->assertSee('<section class="hero theme_on-dark"', false)->assertDontSee('hero--placed', false);
 });
 
 test('the unit availability shows reserved and sold units with their colours and counts', function () {

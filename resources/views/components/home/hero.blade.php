@@ -4,7 +4,7 @@
 {{-- Posisi konten CMS --}}
 @php([$alignY, $alignX] = ($hero['align'] ?? 'split') === 'split' ? [null, null] : explode('-', $hero['align']))
 
-<section @class(['hero', 'hero--placed' => $alignY, "hero--y-{$alignY}" => $alignY, "hero--x-{$alignX}" => $alignX]) @if (filled($hero['id'] ?? null)) id="{{ $hero['id'] }}" @endif aria-labelledby="hero-title">
+<section @class(['hero', 'theme_on-dark', 'hero--placed' => $alignY, "hero--y-{$alignY}" => $alignY, "hero--x-{$alignX}" => $alignX]) @if (filled($hero['id'] ?? null)) id="{{ $hero['id'] }}" @endif aria-labelledby="hero-title">
   @if ($hero['background'] === 'slider')
     <div class="hero__slides" data-hero-slides>
       @foreach ($hero['slides'] as $slide)

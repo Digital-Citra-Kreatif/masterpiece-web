@@ -1,7 +1,7 @@
 {{-- Daftar titik --}}
 @props(['section', 'id'])
 
-<section id="{{ $id }}" class="pj-points room" aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" class="pj-points room theme_on-dark" aria-labelledby="{{ $id }}-title">
   <div class="wrap">
     <x-sheet-header id="{{ $id }}-title" :title="$section['title']" :intro="$section['intro']" />
     <ol class="pj-points__list">
