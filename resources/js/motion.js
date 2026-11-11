@@ -50,10 +50,26 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
   }
 
   for (const img of document.querySelectorAll(IMAGES)) {
+    const frame = img.parentElement;
+    const cover = document.createElement('span');
+    cover.className = 'mo-cover';
+    cover.setAttribute('aria-hidden', 'true');
+    frame.classList.add('mo-frame');
+    frame.append(cover);
     img.classList.add('mo-img');
     // Pantau bingkai
-    add(img.closest(GROUPS) ?? img.parentElement, { el: img });
+    add(img.closest(GROUPS) ?? frame, { el: img, cover });
   }
+
+  /** Overlay naik lalu lepas */
+  const reveal = ({ el, cover }, delay) => {
+    gsap
+      .timeline({ delay, onComplete: () => cover.remove() })
+      .fromTo(cover, { scaleY: 0, transformOrigin: '50% 100%' }, { scaleY: 1, duration: 0.55, ease: 'power3.inOut' })
+      .add(() => el.classList.add('is-in'))
+      .set(cover, { transformOrigin: '50% 0%' })
+      .to(cover, { scaleY: 0, duration: 0.75, ease: 'power3.inOut' });
+  };
 
   const io = new IntersectionObserver(
     (entries) => {
@@ -71,8 +87,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
             item.shown = true;
             gsap.to(item.split.lines, { yPercent: 0, duration: 1.1, delay, stagger: 0.08, ease: 'expo.out' });
           } else {
-            item.el.style.setProperty('--mo-delay', `${delay}s`);
-            item.el.classList.add('is-in');
+            reveal(item, delay);
           }
         }
       }

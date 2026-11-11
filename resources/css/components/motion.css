@@ -16,18 +16,32 @@
   margin-bottom: -0.1em;
 }
 
-/* Gambar terbuka */
+/* Bingkai overlay */
+.mo-frame {
+  position: relative;
+}
+
+/* Overlay penutup */
+.mo-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--accent);
+  transform: scaleY(0);
+  pointer-events: none;
+}
+
+/* Gambar tertutup */
 .mo-img:not(.is-in) {
-  clip-path: inset(100% 0 0 0);
+  opacity: 0;
 }
 
 .mo-img.is-in {
-  animation: mo-unveil 1.5s var(--mo-delay, 0s) var(--ease-expo) backwards;
+  animation: mo-unveil 1.5s var(--ease-expo) backwards;
 }
 
 @keyframes mo-unveil {
   from {
-    clip-path: inset(100% 0 0 0);
     scale: 1.22;
   }
 }
