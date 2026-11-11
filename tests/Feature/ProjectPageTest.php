@@ -865,7 +865,7 @@ test('the masterplan opening shows up to four collage images with their labels, 
         ->assertDontSee('Extra')
         ->getContent();
 
-    expect(substr_count($html, 'data-mp-tile'))->toBe(4)
+    expect(substr_count($html, 'data-mp-tile '))->toBe(4)
         // Kiri atas, kiri bawah, kanan atas, kanan bawah
         ->and(preg_match_all('/data-mp-tile data-x="(-?1)" data-y="(-?1)"/', $html, $found))->toBe(4)
         ->and(array_map(null, $found[1], $found[2]))->toBe([['-1', '-1'], ['-1', '1'], ['1', '-1'], ['1', '1']]);
