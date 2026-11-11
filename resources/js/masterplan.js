@@ -53,7 +53,7 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
       { clipPath: () => clip(0, 0, true), ease: 'power2.inOut', duration: 1 },
       0,
     )
-    .fromTo(img, { scale: () => start().scale }, { scale: 1, force3D: false, ease: 'power2.inOut', duration: 1 }, 0)
+    .fromTo(img, { scale: () => start().scale }, { scale: 1, force3D: true, ease: 'power2.inOut', duration: 1 }, 0)
     .to(title, { x: () => -window.innerWidth * 0.6, autoAlpha: 0, ease: 'power2.in', duration: 0.8 }, 0);
   if (text) timeline.to(text, { x: () => window.innerWidth * 0.6, autoAlpha: 0, ease: 'power2.in', duration: 0.8 }, 0);
 

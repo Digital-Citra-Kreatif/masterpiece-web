@@ -175,6 +175,7 @@
   height: 100%;
   object-fit: cover;
   transform-origin: 50% 50%;
+  will-change: transform; /* Lapisan GPU */
 }
 
 /* Transisi ke canvas */
