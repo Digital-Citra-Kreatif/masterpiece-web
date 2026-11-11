@@ -9,6 +9,12 @@
   animation-play-state: paused;
 }
 
+/* Baris sebagai blok */
+.mo-line-mask,
+.mo-line {
+  display: block;
+}
+
 /* Masker baris SplitText */
 .mo-line-mask {
   /* Ekor huruf aman */
