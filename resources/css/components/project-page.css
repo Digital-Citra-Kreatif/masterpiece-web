@@ -546,6 +546,11 @@ button.pj-frame:focus-visible {
   padding-top: 0;
 }
 
+/* Jarak ke 360 lebih rapat */
+.fac--split:has(+ .tph.tph--section) {
+  padding-bottom: clamp(24px, 3vw, 48px);
+}
+
 /* Jarak garis kanan */
 .tph__grid {
   display: grid;
