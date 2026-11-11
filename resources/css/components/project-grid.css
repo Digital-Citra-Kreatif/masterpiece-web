@@ -107,7 +107,7 @@
 
 .prj__desc {
   max-width: 72ch; /* Deskripsi kartu */
-  margin: 8px 0 0;
+  margin: 12px 0 0;
   color: var(--ink-2);
   font-size: 15px;
   line-height: 1.6;
