@@ -580,7 +580,8 @@ final class ProjectPage
                     'label' => $unit['category'],
                     'url' => $unit['url'],
                     'sheet' => $unit['url'] === null ? $unit['id'] : null,
-                    'image' => $unit['image']['src'] ?? null,
+                    // Fasad 360° dulu
+                    'image' => $unit['facade'] ?? $unit['image']['src'] ?? null,
                     'size' => collect($unit['facts'])->firstWhere(0, 'Ukuran')[1] ?? null,
                     'specs' => collect($unit['facts'])->reject(fn (array $fact): bool => $fact[0] === 'Ukuran')->values()->all(),
                 ])
@@ -590,10 +591,29 @@ final class ProjectPage
     }
 
     /**
+     * Frame pertama 360° tipe
+     *
+     * @param  array<string, mixed>  $row
+     */
+    private static function facade(array $row): ?string
+    {
+        $tabs = is_array($row['turntable'] ?? null) ? ($row['turntable']['tabs'] ?? []) : [];
+        foreach (is_iterable($tabs) ? $tabs : [] as $tab) {
+            foreach (is_array($tab) && is_iterable($tab['images'] ?? null) ? $tab['images'] : [] as $media) {
+                if ($media instanceof Media && $media->isImage()) {
+                    return $media->url('medium');
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Satu tipe unit
      *
      * @param  array<string, mixed>  $row
-     * @return array{id: string, name: string, category: ?string, facts: list<array{0: string, 1: string}>, image: ?array<string, mixed>, plans: list<array<string, mixed>>, gallery: list<array<string, mixed>>, vr: ?string, url: ?string}
+     * @return array{id: string, name: string, category: ?string, facts: list<array{0: string, 1: string}>, image: ?array<string, mixed>, facade: ?string, plans: list<array<string, mixed>>, gallery: list<array<string, mixed>>, vr: ?string, url: ?string}
      */
     private static function unit(array $row, int $index): array
     {
@@ -617,6 +637,7 @@ final class ProjectPage
             'category' => filled($row['category'] ?? null) ? (string) $row['category'] : null,
             'facts' => $facts,
             'image' => self::image($row['image'] ?? null, 'medium'),
+            'facade' => self::facade($row),
             'plans' => collect($row['floor_plans'] ?? [])
                 ->filter(fn (mixed $plan): bool => is_array($plan) && self::image($plan['image'] ?? null) !== null)
                 ->map(fn (array $plan): array => [...self::image($plan['image']), 'label' => (string) ($plan['label'] ?? '')])
