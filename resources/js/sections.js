@@ -19,8 +19,8 @@ export function initSections(scope = document) {
     for (const section of scope.querySelectorAll('main > section')) {
       const next = section.nextElementSibling;
       if (section.matches(PINNED) || !next?.matches('section')) continue;
-      // Isi saja
-      gsap.to(section.children, {
+      // Isi saja, tanpa kursor
+      gsap.to(section.querySelectorAll(':scope > :not([data-view-cursor-el])'), {
         opacity: 0.2,
         y: -48,
         ease: 'none',
