@@ -95,6 +95,7 @@
   font-size: clamp(19px, 1.6vw, 22px);
   font-weight: 400;
   line-height: 1.2;
+  letter-spacing: -0.02em;
   overflow-wrap: anywhere;
 }
 
