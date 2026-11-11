@@ -285,10 +285,10 @@
 }
 
 .scene__list button span {
-  font-family: var(--label);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  /* Sama dengan label */
+  font: inherit;
+  font-variant-numeric: lining-nums;
+  letter-spacing: inherit;
   color: var(--accent-light);
 }
 
