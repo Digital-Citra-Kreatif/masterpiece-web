@@ -167,26 +167,65 @@ img.hero__media {
 .hero__scroll svg {
   width: 16px;
   height: 64px;
+  overflow: visible;
   transition: transform 0.3s var(--ease);
-  /* Garis berulang */
-  animation: scroll-draw 2.4s 1.5s var(--ease) infinite both;
 }
 
-@keyframes scroll-draw {
+/* Garis ditarik lalu lepas */
+.hero__scroll-line {
+  stroke-dasharray: 1;
+  animation: scroll-line 2.8s 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite both;
+}
+
+/* Kepala jatuh memantul */
+.hero__scroll-head {
+  animation: scroll-head 2.8s 1.2s linear infinite both;
+}
+
+@keyframes scroll-line {
   0% {
-    clip-path: inset(0 0 100% 0);
+    stroke-dashoffset: 1;
   }
-  45%,
-  60% {
-    clip-path: inset(0 0 0 0);
+  38%,
+  62% {
+    stroke-dashoffset: 0;
   }
   100% {
-    clip-path: inset(100% 0 0 0);
+    stroke-dashoffset: -1;
+  }
+}
+
+@keyframes scroll-head {
+  0%,
+  24% {
+    opacity: 0;
+    transform: translateY(-18px);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.6, 1);
+  }
+  38% {
+    opacity: 1;
+    transform: translateY(3px);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.3, 1);
+  }
+  46% {
+    transform: translateY(-2px);
+  }
+  54%,
+  66% {
+    opacity: 1;
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4);
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateY(12px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__scroll svg {
+  .hero__scroll-line,
+  .hero__scroll-head {
     animation: none;
   }
 }
