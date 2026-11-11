@@ -631,7 +631,7 @@ button.pj-frame:focus-visible {
 
 /* Beda latar putih */
 .tph--section :is(.tph__tab, .tph__desc) {
-  background: #fafafa;
+  background: #f5f5f5;
 }
 
 /* Kartu tab aktif */
