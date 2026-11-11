@@ -210,16 +210,15 @@ img.hero__media {
   46% {
     transform: translateY(-2px);
   }
+  /* Menempel di ujung garis */
   54%,
-  66% {
+  90% {
     opacity: 1;
     transform: translateY(0);
-    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4);
   }
-  92%,
   100% {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(0);
   }
 }
 
