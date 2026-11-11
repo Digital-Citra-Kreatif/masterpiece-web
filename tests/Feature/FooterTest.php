@@ -43,7 +43,6 @@ test('the footer shows the contacts and opening hours filled in under Globals �
         'hours' => "Senin–Jumat, 09.00–17.00\nSabtu, 10.00–14.00",
         'phone' => '+62 21 555 0100',
         'email' => 'info@example.com',
-        'whatsapp' => '6281234567890',
     ], 'id');
 
     $this->get('/')
@@ -54,7 +53,7 @@ test('the footer shows the contacts and opening hours filled in under Globals �
         ->assertSee('href="mailto:info@example.com"', false)
         ->assertSee('<h2 class="ft__head">Jam operasional</h2>', false)
         ->assertSee("Senin–Jumat, 09.00–17.00<br>\nSabtu, 10.00–14.00", false)
-        ->assertSee('href="https://wa.me/6281234567890" target="_blank" rel="noopener">WhatsApp +6281234567890</a>', false)
+        ->assertDontSee('wa.me')
         ->assertDontSee('ft__cta', false);
 });
 
@@ -85,4 +84,52 @@ test('a project page footer carries the project name in its copyright', function
     $this->get('/projects/westlake')
         ->assertOk()
         ->assertSee('<p class="ft__meta">© '.date('Y').' Westlake</p>', false);
+});
+
+test('a project footer uses the fields filled in on the project and falls back to Globals → Footer for the empty ones', function () {
+    app(SaveGlobals::class)->handle(GlobalSet::query()->where('handle', 'footer')->firstOrFail(), [
+        'description' => 'Deskripsi global.',
+        'address' => 'Alamat global',
+        'hours' => 'Jam global',
+        'phone' => '+62 21 555 0100',
+        'email' => 'global@example.com',
+    ], 'id');
+    $projects = Collection::query()->where('handle', 'projects')->firstOrFail();
+    $publish = function (string $slug, array $footer) use ($projects): void {
+        $translation = app(CreateEntry::class)->handle($projects, ['title' => 'Westlake', 'slug' => $slug, 'locale' => 'id', 'data' => [
+            'global_style' => ['active' => false, 'marker' => ['type' => 'shape', 'shape' => 'circle']],
+            'hero' => ['heading' => 'Westlake'],
+            'footer' => $footer,
+        ]]);
+        app(PublishEntry::class)->handle($translation->fresh());
+    };
+
+    $publish('sebagian', ['description' => 'Deskripsi proyek.', 'phone' => '+62 811 000 111']);
+    $this->get('/projects/sebagian')
+        ->assertOk()
+        ->assertSee('Deskripsi proyek.')
+        ->assertDontSee('Deskripsi global.')
+        ->assertSee('href="tel:+62811000111"', false)
+        ->assertDontSee('href="tel:+62215550100"', false)
+        // Kosong di proyek: global
+        ->assertSee('Alamat global')
+        ->assertSee('Jam global')
+        ->assertSee('href="mailto:global@example.com"', false);
+
+    $publish('penuh', ['description' => 'Deskripsi proyek.', 'address' => 'Alamat proyek', 'hours' => 'Jam proyek', 'phone' => '+62 811 000 111', 'email' => 'proyek@example.com']);
+    $this->get('/projects/penuh')
+        ->assertOk()
+        ->assertSee('Alamat proyek')
+        ->assertSee('Jam proyek')
+        ->assertSee('href="mailto:proyek@example.com"', false)
+        ->assertDontSee('Alamat global')
+        ->assertDontSee('Jam global')
+        ->assertDontSee('global@example.com');
+
+    // Beranda tetap global
+    $this->get('/')
+        ->assertOk()
+        ->assertSee('Deskripsi global.')
+        ->assertSee('Alamat global')
+        ->assertDontSee('Deskripsi proyek.');
 });

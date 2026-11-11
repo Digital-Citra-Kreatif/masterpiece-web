@@ -295,6 +295,14 @@ class SiteContentSeeder extends Seeder
                     $this->field('message', 'textarea', [], ['label' => 'Pesan']),
                 ]]),
             ]]),
+            // Kosong: ikut Globals → Footer
+            $this->field('footer', 'group', [], ['label' => 'Footer', 'instructions' => 'Kosong: mengikuti Globals → Footer.', 'fields' => [
+                $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat']),
+                $this->field('address', 'textarea', [], ['label' => 'Alamat', 'width' => 50]),
+                $this->field('hours', 'textarea', [], ['label' => 'Jam operasional', 'width' => 50, 'instructions' => 'Satu baris per jadwal, mis. Senin–Jumat, 09.00–17.00.']),
+                $text('phone', 'Telepon', ['translatable' => false, 'width' => 50]),
+                $text('email', 'Email', ['translatable' => false, 'width' => 50, 'validation' => ['email']]),
+            ]]),
             $globalStyle,
         ]];
     }
@@ -424,14 +432,8 @@ class SiteContentSeeder extends Seeder
             $text('hours_title', 'Judul jam operasional', ['width' => 50]),
             $this->field('address', 'textarea', [], ['label' => 'Alamat']),
             $this->field('hours', 'textarea', [], ['label' => 'Jam operasional', 'instructions' => 'Satu baris per jadwal, mis. Senin–Jumat, 09.00–17.00.']),
-            $text('phone', 'Telepon', ['translatable' => false, 'width' => 33]),
-            $text('email', 'Email', ['translatable' => false, 'width' => 33, 'validation' => ['email']]),
-            $text('whatsapp', 'WhatsApp', [
-                'translatable' => false,
-                'width' => 33,
-                'validation' => ['regex:/^[0-9]{8,15}$/'],
-                'instructions' => 'Contoh: 6281234567890',
-            ]),
+            $text('phone', 'Telepon', ['translatable' => false, 'width' => 50]),
+            $text('email', 'Email', ['translatable' => false, 'width' => 50, 'validation' => ['email']]),
         ]];
     }
 

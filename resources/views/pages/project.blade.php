@@ -113,5 +113,5 @@
     <x-project.whatsapp :whatsapp="$p['whatsapp']" :logo="$p['style']['logo']" />
   @endif
 
-  <x-footer :logo="$p['style']['logo']" :name="$p['title']" />
+  <x-footer :logo="$p['style']['logo']" :name="$p['title']" :project="$p['footer']" />
 </x-layouts.base>

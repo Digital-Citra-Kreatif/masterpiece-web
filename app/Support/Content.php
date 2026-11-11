@@ -128,36 +128,35 @@ final class Content
     }
 
     /**
-     * Isi footer
+     * Isi footer, isian proyek menimpa global
      *
-     * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, contactTitle: string, hoursTitle: string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, whatsapp: ?array{label: string, href: string}, copyright: string}
+     * @param  array<string, mixed>  $project
+     * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, contactTitle: string, hoursTitle: string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, copyright: string}
      */
-    public static function footer(): array
+    public static function footer(array $project = []): array
     {
-        return once(function (): array {
-            $values = Cms::global('footer');
-            $brand = app(BrandingSettings::class)->logo;
-            $brand = $brand === null ? null : Media::query()->find($brand);
-            $logo = $brand instanceof Media && $brand->isImage() ? $brand : ($values['logo'] ?? null);
-            $filled = fn (string $key): ?string => filled($values[$key] ?? null) ? trim((string) $values[$key]) : null;
-            $phone = $filled('phone');
-            $email = $filled('email');
-            $whatsapp = $filled('whatsapp');
+        $values = Cms::global('footer');
+        $brand = app(BrandingSettings::class)->logo;
+        $brand = $brand === null ? null : Media::query()->find($brand);
+        $logo = $brand instanceof Media && $brand->isImage() ? $brand : ($values['logo'] ?? null);
+        $global = fn (string $key): ?string => filled($values[$key] ?? null) ? trim((string) $values[$key]) : null;
+        // Isian proyek dulu
+        $filled = fn (string $key): ?string => is_string($project[$key] ?? null) && trim($project[$key]) !== '' ? trim($project[$key]) : $global($key);
+        $phone = $filled('phone');
+        $email = $filled('email');
 
-            return [
-                'logo' => $logo instanceof Media && $logo->isImage() ? ['src' => $logo->url('medium'), 'width' => $logo->width, 'height' => $logo->height] : null,
-                'description' => $filled('description'),
-                'address' => $filled('address'),
-                'hours' => $filled('hours'),
-                'contactTitle' => $filled('contact_title') ?? 'Kontak',
-                'hoursTitle' => $filled('hours_title') ?? 'Jam operasional',
-                'phone' => $phone ? ['label' => $phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $phone)] : null,
-                'email' => $email ? ['label' => $email, 'href' => 'mailto:'.$email] : null,
-                'whatsapp' => $whatsapp ? ['label' => '+'.$whatsapp, 'href' => 'https://wa.me/'.$whatsapp] : null,
-                // Tahun otomatis, nama dari Settings → Site
-                'copyright' => '© '.date('Y').' '.Cms::site()->name(),
-            ];
-        });
+        return [
+            'logo' => $logo instanceof Media && $logo->isImage() ? ['src' => $logo->url('medium'), 'width' => $logo->width, 'height' => $logo->height] : null,
+            'description' => $filled('description'),
+            'address' => $filled('address'),
+            'hours' => $filled('hours'),
+            'contactTitle' => $global('contact_title') ?? 'Kontak',
+            'hoursTitle' => $global('hours_title') ?? 'Jam operasional',
+            'phone' => $phone ? ['label' => $phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $phone)] : null,
+            'email' => $email ? ['label' => $email, 'href' => 'mailto:'.$email] : null,
+            // Tahun otomatis, nama dari Settings → Site
+            'copyright' => '© '.date('Y').' '.Cms::site()->name(),
+        ];
     }
 
     /**

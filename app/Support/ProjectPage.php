@@ -71,7 +71,7 @@ final class ProjectPage
 
     /**
      * @param  array<string, mixed>  $values
-     * @return array{title: string, description: ?string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>}
+     * @return array{title: string, description: ?string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>}
      */
     public static function page(EntryTranslation $entry, array $values): array
     {
@@ -94,13 +94,14 @@ final class ProjectPage
             'sections' => $sections,
             'nav' => self::nav($sections),
             'whatsapp' => self::whatsapp(self::group($values, 'whatsapp')),
+            'footer' => self::group($values, 'footer'),
         ];
     }
 
     /**
      * Proyek halaman tipe
      *
-     * @return array{title: string, url: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, turntable: ?array<string, mixed>, othersTitle: string, types: list<array<string, mixed>>}|null
+     * @return array{title: string, url: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>, turntable: ?array<string, mixed>, othersTitle: string, types: list<array<string, mixed>>}|null
      */
     public static function forType(EntryTranslation $type, mixed $project): ?array
     {
@@ -118,6 +119,7 @@ final class ProjectPage
             'style' => self::style(self::group($values, 'global_style')),
             'nav' => self::nav($sections, $url),
             'whatsapp' => self::whatsapp(self::group($values, 'whatsapp')),
+            'footer' => self::group($values, 'footer'),
             // Tab 360° proyek
             'turntable' => $sections['turntable'] ?? null,
             'othersTitle' => filled(self::group($values, 'types')['others_title'] ?? null) ? (string) self::group($values, 'types')['others_title'] : 'Tipe lain',

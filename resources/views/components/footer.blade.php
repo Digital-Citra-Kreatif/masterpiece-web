@@ -1,8 +1,9 @@
 {{-- Footer situs --}}
-@props(['logo' => null, 'name' => null])
+@props(['logo' => null, 'name' => null, 'project' => []])
 
 @php
-  $ft = \App\Support\Content::footer();
+  // Isian proyek dulu
+  $ft = \App\Support\Content::footer($project);
   $logo ??= $ft['logo'];
   // Nama proyek bila ada
   $copyright = filled($name) ? '© '.date('Y').' '.$name : $ft['copyright'];
@@ -21,7 +22,7 @@
       @endif
     </div>
 
-    @if ($ft['address'] || $ft['phone'] || $ft['email'] || $ft['whatsapp'])
+    @if ($ft['address'] || $ft['phone'] || $ft['email'])
       <div class="ft__col">
         <h2 class="ft__head">{{ $ft['contactTitle'] }}</h2>
         @if ($ft['address'])
@@ -33,9 +34,6 @@
               <li><a href="{{ $ft[$key]['href'] }}">{{ $ft[$key]['label'] }}</a></li>
             @endif
           @endforeach
-          @if ($ft['whatsapp'])
-            <li><a href="{{ $ft['whatsapp']['href'] }}" target="_blank" rel="noopener">WhatsApp {{ $ft['whatsapp']['label'] }}</a></li>
-          @endif
         </ul>
       </div>
     @endif
