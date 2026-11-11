@@ -78,7 +78,7 @@ button.pj-frame:focus-visible {
   border-radius: 0 0 min(var(--radius, 6px), 24px) min(var(--radius, 6px), 24px);
   clip-path: var(--logo-clip, none); /* Chamfer bawah */
   background: #fff;
-  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); /* Bayangan emblem */
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1); /* Bayangan emblem */
 }
 
 .hd--project .hd__logo--own {
