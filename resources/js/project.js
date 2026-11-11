@@ -7,7 +7,6 @@ import './view-cursor.js';
 import './lightbox.js';
 import './unit-filter.js';
 import './project-page.js';
-import './whatsapp.js';
 
 // 360° bila ada
 if (document.querySelector('[data-spin]')) {

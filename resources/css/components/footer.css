@@ -41,7 +41,6 @@
   line-height: 1.6;
 }
 
-
 .ft__list a:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
@@ -93,11 +92,6 @@
   border-top: 1px solid var(--rule);
 }
 
-/* Jarak tombol WhatsApp */
-body:has(.wa) .ft__meta {
-  padding-inline: 78px;
-}
-
 /* Copyright tengah */
 .ft__meta {
   margin: 0;
@@ -133,9 +127,3 @@ body:has(.wa) .ft__meta {
   }
 }
 
-/* Copyright penuh HP */
-@media (max-width: 760px) {
-  body:has(.wa) .ft__meta {
-    padding-inline: 0;
-  }
-}
