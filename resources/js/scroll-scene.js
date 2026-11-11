@@ -110,6 +110,9 @@ function stillSet(src) {
 }
 
 // Satu scene
+// Waktu kejar orbit
+const SMOOTH_MS = 180;
+
 async function init(root) {
   const stage = root.querySelector('.scene__stage');
   const introEnd = root.querySelector('[data-intro-end]');
@@ -200,6 +203,7 @@ async function init(root) {
   let shownF = 0; // Posisi tampil
   let shownIndex = 0; // Frame terdekat
   let lastTarget = NaN; // Target sebelumnya
+  let lastTick = 0; // Waktu tick
   let override = null; // Frame dari hotspot
   let painted = 0; // Frame di canvas
   let ticking = false;
@@ -643,7 +647,11 @@ async function init(root) {
     const idle = target === lastTarget;
     lastTarget = target;
     const goal = idle && p > 0 ? Math.round(target) : target;
-    current = reduced ? goal : current + (goal - current) * 0.25;
+    // Halus berbasis waktu
+    const now = performance.now();
+    const catchUp = 1 - Math.exp(-Math.min(now - lastTick, 100) / SMOOTH_MS);
+    lastTick = now;
+    current = reduced ? goal : current + (goal - current) * catchUp;
     if (Math.abs(goal - current) < 0.004) current = goal;
 
     const fw = showFrame(override ?? current);
