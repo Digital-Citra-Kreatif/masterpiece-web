@@ -1,14 +1,14 @@
-// Section keluar saat berikutnya masuk
+// Transisi section
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Section dengan pin sendiri, transform merusaknya
+// Section berpin
 const PINNED = '[data-scene], [data-spin], .hero';
 
 /**
- * Pasang transisi antar section
+ * Pasang transisi section
  *
  * @returns {gsap.Context|null}
  */
@@ -19,7 +19,8 @@ export function initSections(scope = document) {
     for (const section of scope.querySelectorAll('main > section')) {
       const next = section.nextElementSibling;
       if (section.matches(PINNED) || !next?.matches('section')) continue;
-      gsap.to(section, {
+      // Isi saja
+      gsap.to(section.children, {
         opacity: 0.2,
         y: -48,
         ease: 'none',
