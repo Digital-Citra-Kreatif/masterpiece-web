@@ -1,7 +1,7 @@
 /* Header situs */
 
 .hd {
-  position: absolute;
+  position: fixed;
   inset: 0 0 auto;
   z-index: 50;
   padding-top: env(safe-area-inset-top, 0px);
@@ -281,4 +281,23 @@
   .hd__menu-nav a {
     animation: none;
   }
+}
+
+/* Warna teks */
+.hd[data-tone='light']:not(.is-menu-open) {
+  color: var(--ink);
+}
+
+.hd[data-tone='dark']:not(.is-menu-open) {
+  color: #fff;
+}
+
+.hd[data-tone='light'] .hd__logo--light,
+.hd[data-tone='dark']:not(.is-menu-open) .hd__logo--dark {
+  opacity: 0;
+}
+
+.hd[data-tone='light'] .hd__logo--dark,
+.hd[data-tone='dark']:not(.is-menu-open) .hd__logo--light {
+  opacity: 1;
 }

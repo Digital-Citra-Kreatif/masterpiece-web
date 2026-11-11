@@ -8,6 +8,7 @@ import { initSections } from './sections.js';
 import './overlay.js';
 import './protect-media.js';
 import './menu.js';
+import './header.js';
 import './scroll-top.js';
 
 // Hitung mundur maintenance
