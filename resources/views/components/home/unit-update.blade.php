@@ -14,7 +14,7 @@
       @if ($siteplan)
       <div class="units__plan" data-reveal>
         <div class="units__frame" style="aspect-ratio: {{ $siteplan['width'] }} / {{ $siteplan['height'] }}">
-          <img src="{{ asset($siteplan['image']) }}" alt="Siteplan cluster" loading="lazy" />
+          <img src="{{ asset($siteplan['image']) }}" alt="Siteplan cluster" loading="lazy" decoding="async" />
           <ul class="units__dots" aria-label="Status unit">
             @foreach ($units as $u)
               <li

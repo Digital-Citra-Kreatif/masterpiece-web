@@ -137,7 +137,7 @@
           {{-- Gambar tipe --}}
           <div class="tps__view">
             <div class="tps__stage tps__stage--image">
-              <img src="{{ asset($t['image']) }}" alt="{{ $t['name'] }}" loading="lazy" />
+              <img src="{{ asset($t['image']) }}" alt="{{ $t['name'] }}" loading="lazy" decoding="async" />
             </div>
           </div>
         @endif
@@ -200,7 +200,7 @@
             @foreach ($t['denah'] as $d)
               <li @class(['swiper-slide' => $slidePlans])>
                 <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
-                  <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" />
+                  <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" decoding="async" />
                 </button>
               </li>
             @endforeach

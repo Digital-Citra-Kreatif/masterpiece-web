@@ -26,7 +26,7 @@
           <{{ isset($t['sheet']) ? 'article' : 'a' }} class="card" @if ($project) data-view-target @endif @unless (isset($t['sheet'])) href="{{ $t['url'] }}" @endunless>
             <div class="card__img">
               @if ($t['image'])
-                <img src="{{ asset($t['image']) }}" alt="{{ $t['name'] }}{{ $t['label'] ? ", {$t['label']}" : '' }}" loading="lazy" />
+                <img src="{{ asset($t['image']) }}" alt="{{ $t['name'] }}{{ $t['label'] ? ", {$t['label']}" : '' }}" loading="lazy" decoding="async" />
               @endif
               <span class="card__open" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M9 7h8v8" /></svg>

@@ -23,7 +23,7 @@ export function initSections(scope = document) {
         opacity: 0.2,
         y: -48,
         ease: 'none',
-        scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: true },
+        scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: 0.6 },
       });
     }
   }, scope);

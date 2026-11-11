@@ -49,7 +49,7 @@
               @if ($split)
                 <button class="fac__zoom" type="button" data-view-target data-open="gallery" data-payload="{{ $lightbox($loop->index) }}" @if ($loop->index >= count($facilities)) tabindex="-1" @endif aria-label="Perbesar {{ $f['title'] }}"></button>
               @endif
-              <img src="{{ asset($f['image']) }}" alt="{{ $f['title'] }}" loading="lazy" />
+              <img src="{{ asset($f['image']) }}" alt="{{ $f['title'] }}" loading="lazy" decoding="async" />
               @if ($site['showPlaceholderBadges'] && $loop->first)
                 <span class="badge fac__badge">Gambar contoh</span>
               @endif

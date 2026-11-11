@@ -86,5 +86,24 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     { rootMargin: '0px 0px -10% 0px' },
   );
 
-  targets.forEach((_, root) => io.observe(root));
+  // Decode selayar lebih awal
+  const near = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        near.unobserve(entry.target);
+        for (const { el } of targets.get(entry.target) ?? []) {
+          if (el.tagName !== 'IMG') continue;
+          el.loading = 'eager';
+          el.decode?.().catch(() => {});
+        }
+      }
+    },
+    { rootMargin: '100% 0px' },
+  );
+
+  targets.forEach((items, root) => {
+    io.observe(root);
+    if (items.some(({ el }) => el.tagName === 'IMG')) near.observe(root);
+  });
 }

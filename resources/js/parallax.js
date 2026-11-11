@@ -31,7 +31,7 @@ export function initParallax(scope = document) {
           {
             yPercent: to,
             ease: 'none',
-            scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true },
+            scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
           },
         );
       }
