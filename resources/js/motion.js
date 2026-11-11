@@ -7,10 +7,26 @@ const HEADINGS = [
   'h2.display:not(.mp__title, .scene__area-title, .ov__info-title, .pj-sheet__name)',
   '.prj__title',
   '.card__name',
+  '.tps__size',
 ].join(', ');
 // Paragraf per baris
-const TEXTS = ['.sheet__intro', '.pj-loc__intro', '.units__intro', '.prj__desc', '.ft__text'].join(', ');
-const IMAGES = '.prj__frame img, .card__img img, .fac__img img, .pj-band img, .tps__stage--image img';
+const TEXTS = [
+  '.sheet__intro',
+  '.pj-loc__intro',
+  '.units__intro',
+  '.prj__desc',
+  '.ft__text',
+  // Halaman type
+  '.tps__label',
+  '.tps__mark',
+  '.tps__intro p',
+  '.tps__uses-title',
+  '.tps__uses li',
+  '.tps__specs :is(dt, dd)',
+  '.tpb__list :is(dt, dd)',
+  '.tpb__note',
+].join(', ');
+const IMAGES = '.prj__frame img, .card__img img, .fac__img img, .pj-band img, .tps__stage--image img, .tpd__plan img';
 // Karusel muncul bersama
 const GROUPS = '.fac__rail';
 const STEP = 0.12;
@@ -28,7 +44,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
 
   for (const el of document.querySelectorAll(HEADINGS)) {
     if (!el.textContent.trim()) continue;
-    const { words } = SplitText.create(el, { type: 'words', wordsClass: 'word-in' });
+    const { words } = SplitText.create(el, { type: 'words', wordsClass: 'word-in', tag: 'span' });
     words.forEach((word, index) => word.style.setProperty('--i', index));
     // Tahan animasi
     el.classList.add('mo-wait');
@@ -42,6 +58,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     item.split = SplitText.create(el, {
       type: 'lines',
       mask: 'lines',
+      tag: 'span',
       linesClass: 'mo-line',
       autoSplit: true,
       onSplit: (self) => gsap.set(self.lines, { yPercent: item.shown ? 0 : 100 }),

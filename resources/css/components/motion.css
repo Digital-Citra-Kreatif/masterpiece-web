@@ -19,6 +19,7 @@
 /* Bingkai overlay */
 .mo-frame {
   position: relative;
+  overflow: hidden;
 }
 
 /* Overlay penutup */
