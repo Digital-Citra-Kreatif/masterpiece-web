@@ -124,7 +124,7 @@
 }
 
 .fac--split .fac__slide {
-  width: clamp(240px, 24.5vw, 380px);
+  width: clamp(280px, 34vw, 520px);
 }
 
 .fac--split .fac__track {
@@ -136,7 +136,7 @@
 
 .fac--split .fac__img {
   position: relative;
-  aspect-ratio: 6 / 7;
+  aspect-ratio: 4 / 3;
 }
 
 .fac--split .fac__slide figcaption {
@@ -206,7 +206,7 @@
 
 @media (max-width: 760px) {
   .fac--split .fac__slide {
-    width: min(72vw, 300px);
+    width: min(80vw, 340px);
   }
 }
 
