@@ -7,7 +7,7 @@
 
 .ft__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.2fr) minmax(0, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 40px clamp(32px, 4vw, 64px);
   padding-block: 72px 48px;
 }
@@ -16,7 +16,13 @@
 .ft__brand {
   display: grid;
   justify-items: start;
+  align-content: start;
   gap: 20px;
+}
+
+/* Baris deskripsi pendek */
+.ft__brand .ft__text {
+  max-width: 38ch;
 }
 
 .ft__logo {
