@@ -472,7 +472,7 @@ test('an inactive Global Style leaves the homepage look', function () {
         ->assertSee('masterpiece-logo.png', false);
 });
 
-test('the floating WhatsApp button is hidden, with or without contacts', function () {
+test('the WhatsApp button shows only with contacts', function () {
     publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake'], 'whatsapp' => ['contacts' => []]]);
 
     $this->get('/projects/westlake')
@@ -488,8 +488,8 @@ test('the floating WhatsApp button is hidden, with or without contacts', functio
 
     $this->get('/projects/westlake-wa')
         ->assertOk()
-        ->assertDontSee('data-wa', false)
-        ->assertDontSee('Chat with us');
+        ->assertSee('Chat with us')
+        ->assertSee('https://wa.me/6281234567890?text=Halo%2C%20saya%20tertarik', false);
 });
 
 test('a project\'s type page has the project\'s logo, a button back to the project and lists the other types', function () {
@@ -521,7 +521,7 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('<section id="tipe-lain" class="types types--project"', false)
         ->assertSee('Tipe lainnya di Westlake')
         ->assertSee('href="'.url('/westlake/tipe/tipe-2').'"', false)
-        ->assertDontSee('data-wa', false);
+        ->assertSee('data-wa', false);
 });
 
 test('a project lists its chosen types in the Types collection order, not the order they were picked', function () {
