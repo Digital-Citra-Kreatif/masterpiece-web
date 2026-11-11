@@ -132,4 +132,74 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     io.observe(root);
     if (items.some(({ el }) => el.tagName === 'IMG')) near.observe(root);
   });
+
+  // Deskripsi 360
+  const lineSplit = (el) => SplitText.create(el, { type: 'lines', mask: 'lines', tag: 'span', linesClass: 'mo-line' });
+  const rise = (lines) => gsap.fromTo(lines, { yPercent: 100 }, { yPercent: 0, duration: 1, stagger: 0.07, ease: 'expo.out' });
+  /** Sekali saat terlihat */
+  const whenSeen = (el, run) => {
+    const seen = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      seen.disconnect();
+      run();
+    });
+    seen.observe(el);
+  };
+  /** Pecah ulang saat lebar berubah */
+  const onResize = (run) => {
+    let timer;
+    let width = innerWidth;
+    addEventListener('resize', () => {
+      if (innerWidth === width) return;
+      width = innerWidth;
+      clearTimeout(timer);
+      timer = setTimeout(run, 200);
+    });
+  };
+
+  // Teks diganti skrip
+  for (const el of document.querySelectorAll('[data-spin-text]')) {
+    let shown = '';
+    let ready = false;
+    const watcher = new MutationObserver(() => ready && el.textContent !== shown && play(true));
+    const play = (animate) => {
+      watcher.disconnect();
+      shown = el.textContent;
+      if (!el.hidden && shown.trim()) {
+        el.textContent = shown;
+        const { lines } = lineSplit(el);
+        if (animate) rise(lines);
+      }
+      watcher.observe(el, { childList: true });
+    };
+    whenSeen(el, () => {
+      ready = true;
+      play(true);
+    });
+    onResize(() => ready && play(false));
+  }
+
+  // Paragraf per tab
+  for (const tabs of document.querySelectorAll('.tph__tabs')) {
+    const active = () => tabs.querySelector('.tph__tab[aria-pressed="true"] + .tph__desc');
+    if (!active()) continue;
+    const splits = new Map();
+    let shown = null;
+    let ready = false;
+    const play = (animate) => {
+      const desc = active();
+      if (!desc) return;
+      shown = desc;
+      splits.get(desc)?.revert();
+      const split = lineSplit(desc);
+      splits.set(desc, split);
+      if (animate) rise(split.lines);
+    };
+    new MutationObserver(() => ready && active() !== shown && play(true)).observe(tabs, { attributes: true, attributeFilter: ['aria-pressed'], subtree: true });
+    whenSeen(tabs, () => {
+      ready = true;
+      play(true);
+    });
+    onResize(() => ready && play(false));
+  }
 }
