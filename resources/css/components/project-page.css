@@ -652,7 +652,7 @@ button.pj-frame:focus-visible {
 
 .tph__part:has(.tph__tab[aria-pressed='true']) .tph__desc {
   display: block;
-  animation: part-open 0.3s var(--ease);
+  animation: part-open 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .tph__part:has(.tph__tab:focus-visible) .tph__desc {

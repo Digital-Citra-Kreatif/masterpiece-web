@@ -205,9 +205,34 @@ export function spin(root) {
     requestAnimationFrame(step);
   };
 
+  // Gambar lama memudar
+  let ghost = null;
+  const crossfade = () => {
+    if (reduced || !canvas.width || !canvas.animate) return;
+    ghost ??= document.createElement('canvas');
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.width = canvas.width;
+    ghost.height = canvas.height;
+    ghost.getContext('2d').drawImage(canvas, 0, 0);
+    ghost.style.cssText = `position:absolute;left:${canvas.offsetLeft}px;top:${canvas.offsetTop}px;width:${canvas.clientWidth}px;height:${canvas.clientHeight}px;pointer-events:none;`;
+    canvas.after(ghost);
+    const layer = ghost;
+    layer.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'ease' }).finished.then(() => layer.remove(), () => {});
+  };
+
+  // Kartu tab bergeser halus
+  const parts = buttons.map((b) => b.closest('.tph__part')).filter(Boolean);
+  let pressed = active;
+
   // Teks tab aktif
   const label = () => {
+    const tops = pressed !== active && !reduced ? parts.map((part) => part.getBoundingClientRect().top) : null;
+    pressed = active;
     buttons.forEach((b, k) => b.setAttribute('aria-pressed', String(k === active)));
+    tops?.forEach((top, k) => {
+      const shift = top - parts[k].getBoundingClientRect().top;
+      if (shift) parts[k].animate([{ transform: `translateY(${shift}px)` }, { transform: 'none' }], { duration: 550, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+    });
     if (text) {
       text.textContent = tab().text;
       text.hidden = !tab().text;
@@ -265,6 +290,7 @@ export function spin(root) {
       glide();
     } else {
       glideId++;
+      crossfade();
     }
     label();
     measure();
