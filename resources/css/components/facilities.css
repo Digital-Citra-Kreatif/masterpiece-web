@@ -128,11 +128,11 @@
   line-height: 1.6;
 }
 
-/* Lewat tepi kanan */
+/* Lewat tepi layar */
 .fac--split .fac__rail.swiper {
   min-width: 0;
   margin: 0 calc(-1 * max(var(--gutter), (100vw - var(--max)) / 2 + var(--gutter))) 0 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .fac--split .fac__slide {
@@ -204,7 +204,7 @@
 }
 
 .fac__arrow:not(:disabled):hover {
-  background: var(--accent);
+  background: #000;
 }
 
 .fac__arrow:focus-visible {

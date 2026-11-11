@@ -3,7 +3,8 @@
 
 @php
   $split = $variant === 'split';
-  $slides = $facilities;
+  // Cukup kartu untuk loop
+  $slides = $split && count($facilities) > 0 && count($facilities) < 8 ? [...$facilities, ...$facilities] : $facilities;
   $lightbox = fn (int $index): string => json_encode([
       'title' => $heading['title'],
       'items' => array_map(fn (array $f): array => ['src' => asset($f['image']), 'alt' => $f['title'], 'caption' => $f['title']], $facilities),
@@ -32,7 +33,7 @@
   </div>
   @endunless
 
-  <div @class(['fac__rail', 'swiper' => $split]) @if ($split) data-fac-swiper @else data-carousel @endif>
+  <div @class(['fac__rail', 'swiper' => $split]) @if ($split) data-fac-swiper data-fac-count="{{ count($facilities) }}" @else data-carousel @endif>
     <ul @class(['fac__track', 'swiper-wrapper' => $split]) @unless ($split) data-track tabindex="0" @endunless aria-label="Galeri fasilitas">
       @foreach ($slides as $f)
         <li @class(['fac__slide', 'swiper-slide' => $split])@if ($split && $loop->index >= count($facilities)) aria-hidden="true"@endif>
