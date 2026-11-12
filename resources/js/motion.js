@@ -47,7 +47,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     const { words } = SplitText.create(el, { type: 'words', wordsClass: 'word-in', tag: 'span' });
     words.forEach((word, index) => word.style.setProperty('--i', index));
     // Tahan animasi
-    el.classList.add('mo-wait');
+    el.classList.add('mo-words', 'mo-wait');
     add(el, { el, heading: true });
   }
 

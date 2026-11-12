@@ -217,9 +217,10 @@ button {
 }
 
 /* Geser tanpa melebar */
-:has(> .word-in) {
+.mo-words,
+.hero__title,
+.tph__name {
   overflow-x: clip;
-  overflow-clip-margin: 1.2em;
 }
 
 @keyframes word-in {
