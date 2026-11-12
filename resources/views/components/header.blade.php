@@ -3,7 +3,8 @@
 
 @php($items = $nav ?? $site['nav'])
 
-<header @class(['hd', "hd--{$variant}"])>
+{{-- Emblem logo proyek --}}
+<header @class(['hd', "hd--{$variant}", 'hd--emblem' => $variant === 'project' || ($variant === 'type' && $logo)])>
   <div class="hd__inner wrap">
     {{-- Logo ke proyek --}}
     <a class="hd__mark" href="{{ $mark['href'] ?? url('/') }}" aria-label="{{ $mark['label'] ?? $site['logo']['alt'].', beranda' }}">

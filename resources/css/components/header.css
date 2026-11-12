@@ -45,12 +45,6 @@
   opacity: 1;
 }
 
-/* Logo proyek */
-.hd--type .hd__logo--own {
-  height: 64px;
-  object-fit: contain;
-}
-
 .hd__nav {
   display: flex;
   gap: clamp(20px, 4vw, 48px);
@@ -102,10 +96,6 @@
 @media (max-width: 760px) {
   .hd__logo {
     height: 28px;
-  }
-
-  .hd--type .hd__logo--own {
-    height: 56px;
   }
 }
 
@@ -300,10 +290,4 @@
 .hd[data-tone='light'] .hd__logo--dark,
 .hd[data-tone='dark']:not(.is-menu-open) .hd__logo--light {
   opacity: 1;
-}
-
-/* Alas logo type */
-.hd--type .hd__mark:has(.hd__logo--own) {
-  background: #fff;
-  box-shadow: 0 0 0 12px #fff, 0 2px 8px 12px rgb(0 0 0 / 0.1);
 }

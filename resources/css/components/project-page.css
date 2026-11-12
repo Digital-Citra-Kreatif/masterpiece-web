@@ -67,11 +67,11 @@ button.pj-frame:focus-visible {
 
 /* Header transparan */
 
-.hd--project .hd__inner {
+.hd--emblem .hd__inner {
   align-items: flex-start;
 }
 
-.hd--project .hd__mark {
+.hd--emblem .hd__mark {
   align-self: flex-start;
   padding: 14px 16px 16px;
   margin-top: calc(-1 * env(safe-area-inset-top, 0px)); /* Rata atas layar */
@@ -81,7 +81,7 @@ button.pj-frame:focus-visible {
   box-shadow: 0 2px 8px rgb(0 0 0 / 0.1); /* Bayangan emblem */
 }
 
-.hd--project .hd__logo--own {
+.hd--emblem .hd__logo--own {
   height: 64px;
   width: auto;
   object-fit: contain;
@@ -112,7 +112,7 @@ button.pj-frame:focus-visible {
     gap: 16px;
   }
 
-  .hd--project .hd__mark {
+  .hd--emblem .hd__mark {
     padding: 10px 12px 12px;
   }
 
@@ -124,7 +124,7 @@ button.pj-frame:focus-visible {
     font-size: 14px;
   }
 
-  .hd--project .hd__logo--own {
+  .hd--emblem .hd__logo--own {
     height: 44px;
   }
 }
