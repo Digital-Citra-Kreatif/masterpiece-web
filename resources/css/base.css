@@ -216,6 +216,12 @@ button {
   animation: word-in 1.3s calc(0.3s + var(--i, 0) * 0.1s) cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Geser tanpa melebar */
+:has(> .word-in) {
+  overflow-x: clip;
+  overflow-clip-margin: 1.2em;
+}
+
 @keyframes word-in {
   from {
     opacity: 0;
