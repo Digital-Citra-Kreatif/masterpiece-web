@@ -659,8 +659,11 @@ body.is-type .tps--spin::before {
   color: #fff;
 }
 
+/* Hover sama Galeri */
 .tps .tps__actions .tps__back:hover {
-  background: rgb(255 255 255 / 0.12);
+  background: var(--room);
+  border-color: var(--room);
+  color: var(--room-ink);
 }
 
 .tps__back[hidden] {
