@@ -18,10 +18,6 @@ const TEXTS = [
   '.ft__text',
   // Halaman type
   '.tps__label',
-  '.tps__mark',
-  '.tps__intro p',
-  '.tps__uses-title',
-  '.tps__uses li',
   '.tps__specs :is(dt, dd)',
   '.tpb__list :is(dt, dd)',
   '.tpb__note',

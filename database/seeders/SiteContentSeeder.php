@@ -99,12 +99,6 @@ class SiteContentSeeder extends Seeder
                         'label' => 'Data ringkasan lain',
                         'fields' => [$text('label', ['label' => 'Label singkat', 'required' => true, 'width' => 50]), $text('value', ['label' => 'Nilai', 'required' => true, 'width' => 50])],
                     ]),
-                    $this->field('intro', 'rich_text', [], ['label' => 'Short Description']),
-                    $text('suitable_title', ['label' => 'Label rekomendasi', 'instructions' => 'Contoh: "Cocok untuk usaha yang butuh eksposur maksimal".']),
-                    $this->field('suitable_for', 'repeater', [], [
-                        'label' => 'Rekomendasi jenis usaha',
-                        'fields' => [$text('name', ['label' => 'Jenis usaha', 'required' => true])],
-                    ]),
                     $this->field('info_rows', 'repeater', [], [
                         'instructions' => 'Info selain luas, lantai, dan kamar.',
                         'fields' => [$text('label', ['required' => true, 'width' => 50]), $text('value', ['required' => true, 'width' => 50])],
@@ -538,7 +532,6 @@ class SiteContentSeeder extends Seeder
                 'bedrooms' => $type[5],
                 'bathrooms' => $type[6],
                 'floors' => $type[7],
-                'intro' => 'Ruko dua lantai dengan area usaha di lantai dasar dan ruang hunian di atasnya. Teras depan terbuka ke jalan cluster.',
                 'floor_plans' => $floorPlans,
                 'gallery' => $gallery,
                 'vr_url' => '/vr/placeholder/index.html',

@@ -146,75 +146,28 @@
     @endif
 
     {{-- Label tanpa 360° --}}
-    @php($aboutHead = $parts === [])
-    @if (($aboutHead && ($t['label'] || $t['dimensions'] || $hasSide)) || $t['intro'] || $t['suitable']['items'] !== [])
+    @if ($parts === [] && ($t['label'] || $t['dimensions'] || $hasSide))
       {{-- Keterangan tipe --}}
       <section class="tps tps--about" aria-label="Keterangan {{ $t['name'] }}">
         <div class="wrap">
           <div class="tps__about">
-            @if (($aboutHead && ($t['label'] || $t['dimensions'])) || $t['intro'])
-              {{-- Kolom kiri: deskripsi --}}
+            @if ($t['label'] || $t['dimensions'])
               <div class="tps__lead">
-                @if ($aboutHead && $t['label'])
+                @if ($t['label'])
                   <p class="eyebrow tps__label">{{ $t['label'] }}</p>
                 @endif
-                @if ($aboutHead && $t['dimensions'])
+                @if ($t['dimensions'])
                   <p class="display tps__size">{{ $t['dimensions'] }}</p>
                 @endif
-
-                @if ($t['intro'])
-                  {{-- Penanda ikut deskripsi --}}
-                  <p class="eyebrow tps__mark">{{ $t['name'] }}</p>
-                  <div class="tps__intro">{!! $t['intro'] !!}</div>
-                @endif
               </div>
             @endif
 
-            @if ($t['suitable']['items'] !== [])
-              {{-- Cocok untuk usaha --}}
-              <div class="tps__uses">
-                <p class="tps__uses-title" id="uses-title">{{ $t['suitable']['title'] }}</p>
-                <ul aria-labelledby="uses-title">
-                  @foreach ($t['suitable']['items'] as $use)
-                    <li>{{ $use }}</li>
-                  @endforeach
-                </ul>
-              </div>
-            @endif
-
-            @if ($aboutHead && $hasSide)
+            @if ($hasSide)
               {{-- Tanpa 360°: kolom kanan --}}
               <x-type-side :facts="$t['facts']" :gallery="$sideGallery" :vr="$vrUrl" />
             @endif
           </div>
         </div>
-      </section>
-    @endif
-
-    @if ($t['denah'] !== [])
-      {{-- Denah slide opsional --}}
-      @php($slidePlans = count($t['denah']) > 1)
-      <section class="tpd" aria-label="Denah" data-view-cursor>
-        <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
-          <ul @class(['tpd__plans', 'swiper-wrapper' => $slidePlans])>
-            @foreach ($t['denah'] as $d)
-              <li @class(['swiper-slide' => $slidePlans])>
-                <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
-                  <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" decoding="async" />
-                </button>
-              </li>
-            @endforeach
-          </ul>
-          @if ($slidePlans)
-            <button class="icon-btn tpd__nav tpd__nav--prev" type="button" data-plans-prev aria-label="Denah sebelumnya">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-            </button>
-            <button class="icon-btn tpd__nav tpd__nav--next" type="button" data-plans-next aria-label="Denah berikutnya">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
-            </button>
-          @endif
-        </div>
-        <x-view-cursor />
       </section>
     @endif
 
@@ -253,6 +206,33 @@
             @endif
           </div>
         </div>
+      </section>
+    @endif
+
+    @if ($t['denah'] !== [])
+      {{-- Denah slide opsional --}}
+      @php($slidePlans = count($t['denah']) > 1)
+      <section class="tpd" aria-label="Denah" data-view-cursor>
+        <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
+          <ul @class(['tpd__plans', 'swiper-wrapper' => $slidePlans])>
+            @foreach ($t['denah'] as $d)
+              <li @class(['swiper-slide' => $slidePlans])>
+                <button class="tpd__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
+                  <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" decoding="async" />
+                </button>
+              </li>
+            @endforeach
+          </ul>
+          @if ($slidePlans)
+            <button class="icon-btn tpd__nav tpd__nav--prev" type="button" data-plans-prev aria-label="Denah sebelumnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <button class="icon-btn tpd__nav tpd__nav--next" type="button" data-plans-next aria-label="Denah berikutnya">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+            </button>
+          @endif
+        </div>
+        <x-view-cursor />
       </section>
     @endif
 

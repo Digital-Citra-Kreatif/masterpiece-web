@@ -621,10 +621,10 @@ test('a type page\'s 360° section holds the viewer, tabs and tab text, unit lab
             ['name' => 'Lantai 1', 'description' => 'Area usaha.', 'images' => [projectImage('floor.jpg')]],
         ]],
     ]);
-    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'intro' => '<p>Ruko di tepi danau.</p>', 'summary_extra' => [['label' => 'Carport', 'value' => '1']]]]);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'summary_extra' => [['label' => 'Carport', 'value' => '1']]]]);
 
     $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
-    $viewer = substr($html, strpos($html, 'data-spin="drag"'), strpos($html, 'tps--about') - strpos($html, 'data-spin="drag"'));
+    $viewer = substr($html, strpos($html, 'data-spin="drag"'), strpos($html, '<section class="tpd"') - strpos($html, 'data-spin="drag"'));
 
     expect($viewer)->toContain('data-spin-tab="1"')
         ->and($viewer)->toContain('data-spin-text>Tampak depan.</p>')
@@ -634,26 +634,23 @@ test('a type page\'s 360° section holds the viewer, tabs and tab text, unit lab
         ->and(substr_count($html, 'class="tps__facts"'))->toBe(1);
     $this->get('/westlake/tipe/tipe-1')
         // Label ruko dan ukuran di section 360, di bawah tab
-        ->assertSeeInOrder(['data-spin="drag"', 'class="tph__tabs tps__tab-row"', 'Tampak depan.</p>', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>', 'class="tps tps--about"', '<p class="eyebrow tps__mark">', '<div class="tps__intro"><p>Ruko di tepi danau.</p></div>'], false);
+        ->assertSeeInOrder(['data-spin="drag"', 'class="tph__tabs tps__tab-row"', 'Tampak depan.</p>', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>'], false)
+        // Dengan 360°: tanpa section keterangan
+        ->assertDontSee('tps--about', false);
     expect(substr_count($html, 'tps__label'))->toBe(1)
         ->and(substr_count($html, 'tps__size'))->toBe(1);
 });
 
-test('a type page marks the description with the type name and hides the mark without a description', function () {
+test('a project\'s type page no longer shows a description or its mark, even with old data', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
     $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'intro' => '<p>Ruko di tepi danau.</p>']]);
 
     $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        ->assertSeeInOrder(['<p class="eyebrow tps__mark">'.e($type->title).'</p>', '<div class="tps__intro">'], false);
-
-    $type->update(['data' => [...$type->fresh()->data, 'intro' => '']]);
-
-    $this->get('/westlake/tipe/tipe-1')
-        ->assertOk()
         ->assertDontSee('tps__mark', false)
-        ->assertDontSee('tps__intro', false);
+        ->assertDontSee('tps__intro', false)
+        ->assertDontSee('Ruko di tepi danau.');
 });
 
 test('a type with its own 360° tabs shows them on its page instead of the project\'s', function () {

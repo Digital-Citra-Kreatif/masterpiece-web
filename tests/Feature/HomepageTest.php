@@ -224,26 +224,28 @@ test('a type page without floors leaves the floor count out', function () {
         ->assertDontSee('Jumlah lantai');
 });
 
-test('a type page lists the businesses its view suits, under the intro', function () {
+test('a type page no longer shows the businesses its view suits, even with old data', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
     $type->update(['data' => [...$type->data, 'suitable_title' => 'Cocok untuk usaha yang butuh eksposur maksimal', 'suitable_for' => [['name' => 'Klinik'], ['name' => 'Apotek']]]]);
 
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
-        ->assertSeeInOrder(['class="tps__intro"', '<p class="tps__uses-title" id="uses-title">Cocok untuk usaha yang butuh eksposur maksimal</p>', '<li>Klinik</li>', '<li>Apotek</li>'], false);
+        ->assertDontSee('tps__uses', false)
+        ->assertDontSee('Cocok untuk usaha yang butuh eksposur maksimal')
+        ->assertDontSee('Klinik');
 });
 
 test('a type page without businesses has no suitable list', function () {
     $this->get('/-/tipe/tipe-6')->assertOk()->assertDontSee('tps__uses', false);
 });
 
-test('a type page shows its building specs and note in their own section after the floor plans', function () {
+test('a type page shows its building specs and note in their own section before the floor plans', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
     $type->update(['data' => [...$type->data, 'building_specs' => [['label' => 'Pondasi', 'value' => 'Mini pile'], ['label' => 'Listrik', 'value' => '3500 VA']], 'building_specs_note' => '*Spesifikasi dapat berubah.']]);
 
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
-        ->assertSeeInOrder(['<section class="tpd"', '<section class="tpb" aria-labelledby="build-title">', '>Spesifikasi bangunan</h2>', '<dt>Pondasi</dt>', '<dd>Mini pile</dd>', '<dt>Listrik</dt>', '<dd>3500 VA</dd>', '<p class="tpb__note">*Spesifikasi dapat berubah.</p>'], false);
+        ->assertSeeInOrder(['<section class="tpb" aria-labelledby="build-title">', '>Spesifikasi bangunan</h2>', '<dt>Pondasi</dt>', '<dd>Mini pile</dd>', '<dt>Listrik</dt>', '<dd>3500 VA</dd>', '<p class="tpb__note">*Spesifikasi dapat berubah.</p>', '<section class="tpd"'], false);
 });
 
 test('the building specs heading comes from the CMS, or Spesifikasi bangunan without one', function () {
@@ -283,24 +285,25 @@ test('a type page with one floor plan shows it without a slider', function () {
         ->assertDontSee('data-plans-prev', false);
 });
 
-test('a type page renders its intro as rich text with headings and lists, without scripts', function () {
+test('a type page no longer shows an old rich text intro', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
     $type->update(['data' => [...$type->data, 'intro' => '<h2>Keunggulan</h2><ul><li>Dua akses</li></ul><ol><li>Satu</li></ol><script>alert(1)</script>']]);
 
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
-        ->assertSee('<div class="tps__intro"><h2>Keunggulan</h2><ul><li>Dua akses</li></ul><ol><li>Satu</li></ol></div>', false)
+        ->assertDontSee('tps__intro', false)
+        ->assertDontSee('Keunggulan')
         ->assertDontSee('alert(1)', false);
 });
 
-test('a type page shows an old plain text intro as a paragraph', function () {
+test('a type page no longer shows an old plain text intro', function () {
     $type = EntryTranslation::query()->where('slug', 'tipe-6')->firstOrFail();
     $type->update(['data' => [...$type->data, 'intro' => "Baris satu\nBaris dua & tiga"]]);
 
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
-        ->assertSee('<div class="tps__intro"><p>Baris satu<br />', false)
-        ->assertSee('Baris dua &amp; tiga</p></div>', false);
+        ->assertDontSee('tps__intro', false)
+        ->assertDontSee('Baris satu');
 });
 
 test('a type page adds the extra summary data after the rooms', function () {

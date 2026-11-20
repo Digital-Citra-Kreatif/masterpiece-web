@@ -10,7 +10,6 @@ use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Content as Cms;
 use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Models\Taxonomy;
-use Sunrice\Cms\Support\HtmlSanitizer;
 
 /** Konten CMS situs */
 final class Content
@@ -317,7 +316,6 @@ final class Content
         return [
             ...$card,
             'dimensions' => filled($values['dimensions'] ?? null) ? (string) $values['dimensions'] : null,
-            'intro' => self::richText($values['intro'] ?? null),
             // Ringkasan atas
             'facts' => [
                 // LT dan LB boleh kosong
@@ -330,11 +328,6 @@ final class Content
             ],
             // Hanya info tambahan; luas, lantai, kamar sudah di ringkasan
             'info' => collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
-            // Usaha sesuai view
-            'suitable' => [
-                'title' => filled($values['suitable_title'] ?? null) ? (string) $values['suitable_title'] : 'Cocok untuk',
-                'items' => collect($values['suitable_for'] ?? [])->pluck('name')->filter()->values()->all(),
-            ],
             'denah' => $denah->all(),
             'buildingSpecs' => collect($values['building_specs'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
             'specsTitle' => filled($values['building_specs_title'] ?? null) ? (string) $values['building_specs_title'] : 'Spesifikasi bangunan',
@@ -485,16 +478,6 @@ final class Content
         $id = Str::slug(ltrim(trim((string) $value), '#'));
 
         return $id === '' ? null : $id;
-    }
-
-    /** HTML rich text, teks lama jadi paragraf */
-    private static function richText(?string $value): ?string
-    {
-        if (blank($value)) {
-            return null;
-        }
-
-        return HtmlSanitizer::sanitize(str_contains($value, '<') ? $value : '<p>'.nl2br(e($value), false).'</p>');
     }
 
     private static function url(?Media $media): ?string
