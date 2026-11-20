@@ -836,9 +836,9 @@ body.is-type .tps--spin::before {
   min-width: 160px;
 }
 
-/* Tiga tombol sebaris */
-.tps__side .tps__actions:has(.tps__back:not([hidden])) .btn {
-  flex: 1;
+/* Kembali isi sisa kanan */
+.tps__side .tps__actions .tps__back {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
