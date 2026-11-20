@@ -10,7 +10,7 @@
   $sectionId = fn (string $handle): string => \App\Support\ProjectPage::SECTIONS[$handle]['id'];
 @endphp
 
-<x-layouts.base :favicon="$p['style']['favicon']" :title="$p['title']" :description="$p['description']" :body-class="$p['pageBackground'] ? 'is-project has-page-bg' : 'is-project'" entry="resources/js/project.js">
+<x-layouts.base :favicon="$p['style']['favicon']" :title="$p['title']" :description="$p['description']" body-class="is-project" entry="resources/js/project.js">
   @if ($p['style']['css'] !== '')
     <x-slot:head>
       <style>{!! $p['style']['css'] !!}</style>
@@ -74,6 +74,7 @@
         :id="$sectionId('facilities')"
         :facilities="$s['facilities']['items']"
         :heading="['title' => $s['facilities']['title'], 'intro' => $s['facilities']['intro']]"
+        :background="$s['facilities']['background']"
       />
     @endisset
 
@@ -83,7 +84,7 @@
 
     @isset($s['types'])
       @php($ty = $s['types'])
-      <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]">
+      <x-home.type-grid variant="project" :id="$sectionId('types')" :types="$ty['cards']" :heading="['title' => $ty['title'], 'intro' => null]" :background="$ty['background']">
         {{-- Gambar potongan --}}
         @if ($ty['heroImage'])
           <x-slot:top>
@@ -96,6 +97,7 @@
     @isset($s['availability'])
       {{-- Ketersediaan unit --}}
       <x-home.unit-update :id="$sectionId('availability')" :units="$s['availability']['units']" :counts="$s['availability']['counts']" :heading="['title' => $s['availability']['title'], 'intro' => $s['availability']['intro']]"
+        :background="$s['availability']['background']"
         :siteplan="$s['availability']['siteplan'] ? ['image' => $s['availability']['siteplan']['full'], 'width' => $s['availability']['siteplan']['width'] ?: 1600, 'height' => $s['availability']['siteplan']['height'] ?: 1000, 'placeholder' => false] : null"
       />
     @endisset

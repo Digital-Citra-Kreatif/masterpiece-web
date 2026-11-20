@@ -56,12 +56,15 @@ final class ProjectPage
         'button' => '--button',
     ];
 
-    /** Pilihan background halaman */
-    public const PAGE_BACKGROUNDS = [
-        ['value' => 'default', 'label' => 'Bawaan (putih)'],
+    /** Pilihan background section */
+    public const SECTION_BACKGROUNDS = [
+        ['value' => 'default', 'label' => 'Bawaan'],
         ['value' => 'color', 'label' => 'Warna'],
         ['value' => 'image', 'label' => 'Gambar'],
     ];
+
+    /** Section dengan background */
+    public const BACKGROUND_SECTIONS = ['location', 'facilities', 'types', 'availability'];
 
     /** Urutan section */
     public const SECTIONS = [
@@ -78,13 +81,12 @@ final class ProjectPage
 
     /**
      * @param  array<string, mixed>  $values
-     * @return array{title: string, description: ?string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, pageBackground: bool, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>}
+     * @return array{title: string, description: ?string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>}
      */
     public static function page(EntryTranslation $entry, array $values): array
     {
         $sections = self::sections($values, $entry->entry_id);
         $style = self::style(self::group($values, 'global_style'));
-        $background = self::pageBackground(self::group($values, 'page_background'));
 
         // Jalur titik orbit
         foreach (array_keys(ProjectTracks::sections()) as $handle) {
@@ -98,9 +100,7 @@ final class ProjectPage
             'title' => (string) $entry->title,
             // Meta deskripsi kartu
             'description' => filled($values['card']['description'] ?? null) ? (string) $values['card']['description'] : null,
-            // Background ikut tema
-            'style' => [...$style, 'css' => $style['css'].$background],
-            'pageBackground' => $background !== '',
+            'style' => $style,
             'hero' => self::hero(self::group($values, 'hero'), (string) $entry->title),
             'sections' => $sections,
             'nav' => self::nav($sections),
@@ -735,6 +735,7 @@ final class ProjectPage
         return [
             'title' => $title ?? '',
             'intro' => filled($section['description'] ?? null) ? (string) $section['description'] : null,
+            'background' => self::sectionBackground(is_array($section['background'] ?? null) ? $section['background'] : []),
             ...$content,
         ];
     }
@@ -763,19 +764,47 @@ final class ProjectPage
     }
 
     /**
-     * Token background halaman
+     * Style background section, null: bawaan
      *
      * @param  array<string, mixed>  $background
      */
-    private static function pageBackground(array $background): string
+    private static function sectionBackground(array $background): ?string
     {
         $image = $background['image'] ?? null;
 
         return match ($background['type'] ?? 'default') {
-            'color' => self::isHex($background['color'] ?? null) ? ':root{--page-bg:'.strtolower($background['color']).';}' : '',
-            'image' => $image instanceof Media && $image->isImage() ? ':root{--page-bg-image:url('.self::cssString($image->url('large')).');}' : '',
-            default => '',
+            'color' => self::isHex($background['color'] ?? null) ? '--sec-bg:'.strtolower($background['color']) : null,
+            'image' => $image instanceof Media && $image->isImage() ? '--sec-bg-image:url('.self::cssString($image->url('large')).')' : null,
+            default => null,
         };
+    }
+
+    /**
+     * Field background section
+     *
+     * @return array<string, mixed>
+     */
+    public static function backgroundField(): array
+    {
+        $field = fn (string $handle, string $type, string $label, array $config = [], array $extra = []): array => [
+            'handle' => $handle,
+            'type' => $type,
+            'label' => $label,
+            'required' => false,
+            'instructions' => '',
+            'translatable' => false,
+            'validation' => [],
+            'config' => $config,
+            'fields' => [],
+            ...$extra,
+        ];
+        $when = fn (string $value): array => ['condition' => ['field' => 'type', 'operator' => 'equals', 'value' => $value], 'width' => 33];
+
+        return $field('background', 'group', 'Background', [], ['fields' => [
+            $field('type', 'select', 'Jenis', ['options' => self::SECTION_BACKGROUNDS, 'default' => 'default'], ['width' => 33]),
+            $field('color', 'text', 'Warna', ['placeholder' => '#000000'], ['validation' => ['regex:/^#[0-9A-Fa-f]{6}$/'], ...$when('color')]),
+            $field('image', 'media', 'Gambar', ['types' => ['image']], $when('image')),
+        ]]);
     }
 
     /**

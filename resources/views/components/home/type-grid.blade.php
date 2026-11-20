@@ -1,10 +1,10 @@
 {{-- Grid tipe unit --}}
-@props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'top' => null, 'before' => null, 'after' => null])
+@props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'top' => null, 'before' => null, 'after' => null, 'background' => null])
 
 @php($project = $variant === 'project')
 @php($cursor = $project ? $site['cardCursor']['type'] : null)
 
-<section id="{{ $id }}" @class(['types', 'types--project' => $project]) @if ($cursor) data-card-cursor="{{ $cursor }}" @endif @if ($cursor && $cursor !== 'default') data-view-cursor @endif aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" @class(['types', 'types--project' => $project, 'has-sec-bg' => $background]) @if ($background) style="{{ $background }}" @endif @if ($cursor) data-card-cursor="{{ $cursor }}" @endif @if ($cursor && $cursor !== 'default') data-view-cursor @endif aria-labelledby="{{ $id }}-title">
   @if ($top)
     <div class="types__top">
       <div class="wrap">{{ $top }}</div>

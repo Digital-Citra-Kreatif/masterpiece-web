@@ -1,7 +1,7 @@
 {{-- Section lokasi --}}
 @props(['loc', 'id'])
 
-<section id="{{ $id }}" class="pj-loc" aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" @class(['pj-loc', 'has-sec-bg' => $loc['background'] ?? null]) @if ($loc['background'] ?? null) style="{{ $loc['background'] }}" @endif aria-labelledby="{{ $id }}-title">
   <div class="pj-loc__inner wrap">
     <div class="pj-loc__copy">
       <h2 class="pj-title display" id="{{ $id }}-title">{{ $loc['title'] }}</h2>

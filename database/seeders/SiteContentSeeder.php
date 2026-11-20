@@ -317,12 +317,6 @@ class SiteContentSeeder extends Seeder
                 $text('email', 'Email', ['translatable' => false, 'width' => 50, 'validation' => ['email']]),
             ]]),
             $globalStyle,
-            // Latar halaman proyek
-            $this->field('page_background', 'group', [], ['label' => 'Background halaman', 'fields' => [
-                $this->field('type', 'select', ['options' => ProjectPage::PAGE_BACKGROUNDS, 'default' => 'default'], ['label' => 'Jenis', 'translatable' => false, 'width' => 33]),
-                $hex('color', 'Warna', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'equals', 'value' => 'color']]),
-                $image('image', 'Gambar', ['width' => 33, 'instructions' => 'Menutupi layar, diam saat digulir.', 'condition' => ['field' => 'type', 'operator' => 'equals', 'value' => 'image']]),
-            ]]),
         ]];
     }
 
@@ -398,6 +392,7 @@ class SiteContentSeeder extends Seeder
             ]),
             $section('location', 'Lokasi', [
                 $gallery('maps', 'Peta'),
+                ProjectPage::backgroundField(),
             ]),
             $section('cluster', 'Cluster', [
                 $scene(),
@@ -416,6 +411,7 @@ class SiteContentSeeder extends Seeder
                     $image('image', 'Gambar', ['required' => true, 'width' => 50]),
                     $text('name', 'Nama', ['required' => true, 'width' => 50]),
                 ]]),
+                ProjectPage::backgroundField(),
             ]),
             $section('turntable', '360°', [
                 $this->field('tabs', 'repeater', [], ['label' => 'Tab', 'fields' => [
@@ -428,9 +424,11 @@ class SiteContentSeeder extends Seeder
                 $image('hero_image', 'Gambar potongan'),
                 $this->field('units', 'entries', ['collections' => ['types'], 'multiple' => true], ['label' => 'Tipe unit', 'translatable' => false]),
                 $text('others_title', 'Judul tipe lain di halaman unit'),
+                ProjectPage::backgroundField(),
             ], description: false),
             $section('availability', 'Ketersediaan unit', [
                 $image('siteplan', 'Siteplan'),
+                ProjectPage::backgroundField(),
             ]),
         ];
     }

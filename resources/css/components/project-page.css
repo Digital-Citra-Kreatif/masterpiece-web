@@ -4,27 +4,13 @@ body.is-project {
   background-color: var(--paper);
 }
 
-/* Background halaman */
-body.is-project.has-page-bg {
-  background-color: var(--page-bg, var(--paper));
-}
-
-/* Gambar latar diam */
-body.is-project.has-page-bg::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background-image: var(--page-bg-image, none);
+/* Background per section */
+section.has-sec-bg {
+  background-color: var(--sec-bg, transparent);
+  background-image: var(--sec-bg-image, none);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  pointer-events: none;
-}
-
-/* Section ikut background */
-.is-project.has-page-bg :is(.pj-loc, .tph.tph--section) {
-  background: transparent;
 }
 
 /* Spasi judul proyek */

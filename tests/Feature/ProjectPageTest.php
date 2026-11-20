@@ -10,6 +10,7 @@ use Sunrice\Admin\Actions\Media\UploadMedia;
 use Sunrice\Admin\Media\Media;
 use Sunrice\Cms\Actions\Entries\CreateEntry;
 use Sunrice\Cms\Actions\Entries\PublishEntry;
+use Sunrice\Cms\Models\Blueprint;
 use Sunrice\Cms\Models\Collection;
 use Sunrice\Cms\Models\EntryTranslation;
 
@@ -943,51 +944,73 @@ test('a type card shows the first frame of the type\'s own 360° and falls back 
     expect($others[1][0] ?? '')->toContain('fasad-depan');
 });
 
-test('a project page keeps its default white background when no page background is chosen', function () {
-    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+test('a project section keeps its default background when none is chosen', function () {
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake'], 'location' => ['title' => 'Lokasi']]);
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSee('<body class="is-project"', false)
-        ->assertDontSee('--page-bg', false);
+        ->assertSee('<section id="location" class="pj-loc"', false)
+        ->assertDontSee('has-sec-bg', false);
 });
 
-test('a project page background color from the CMS applies even with Global Style off', function () {
+test('a project section background color from the CMS applies to that section only', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
-        'page_background' => ['type' => 'color', 'color' => '#F3EFE6'],
+        'location' => ['title' => 'Lokasi', 'background' => ['type' => 'color', 'color' => '#F3EFE6']],
     ]);
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSee('<body class="is-project has-page-bg"', false)
-        ->assertSee(':root{--page-bg:#f3efe6;}', false);
+        ->assertSee('<section id="location" class="pj-loc has-sec-bg"', false)
+        ->assertSee('style="--sec-bg:#f3efe6"', false)
+        ->assertSee('<body class="is-project"', false);
 });
 
-test('a project page background image from the CMS covers the page', function () {
+test('a project section background image from the CMS covers that section', function () {
     $image = app(UploadMedia::class)->handle(UploadedFile::fake()->image('latar.jpg', 1600, 900), []);
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
-        'page_background' => ['type' => 'image', 'image' => $image->id],
+        'location' => ['title' => 'Lokasi', 'background' => ['type' => 'image', 'image' => $image->id]],
     ]);
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSee('<body class="is-project has-page-bg"', false)
-        ->assertSee('--page-bg-image:url(', false);
+        ->assertSee('class="pj-loc has-sec-bg"', false)
+        ->assertSee('--sec-bg-image:url(', false);
 });
 
-test('a project page background without a valid color or image stays default', function () {
+test('a project section background without a valid color or image stays default', function () {
     publishProject($this->projects, [
         'global_style' => inactiveStyle(),
         'hero' => ['heading' => 'Westlake'],
-        'page_background' => ['type' => 'image', 'color' => '#F3EFE6'],
+        'location' => ['title' => 'Lokasi', 'background' => ['type' => 'image', 'color' => '#F3EFE6']],
     ]);
 
     $this->get('/projects/westlake')
         ->assertOk()
-        ->assertSee('<body class="is-project"', false)
-        ->assertDontSee('--page-bg', false);
+        ->assertDontSee('has-sec-bg', false);
+});
+
+test('an old page background moves into the white sections and the field is removed', function () {
+    $entry = publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'types' => ['background' => ['type' => 'color', 'color' => '#000000']],
+    ]);
+    DB::table('sunrice_entry_translations')->where('id', $entry->id)->update(['data' => json_encode([...$entry->data, 'page_background' => ['type' => 'color', 'color' => '#F3EFE6']])]);
+
+    (require database_path('migrations/2026_11_20_085656_move_page_background_to_sections.php'))->up();
+
+    $data = json_decode(DB::table('sunrice_entry_translations')->where('id', $entry->id)->value('data'), true);
+    $fields = collect(Blueprint::query()->where('handle', 'project')->firstOrFail()->fields);
+    expect($data)->not->toHaveKey('page_background')
+        ->and($data['location']['background'])->toBe(['type' => 'color', 'color' => '#F3EFE6'])
+        ->and($data['facilities']['background'])->toBe(['type' => 'color', 'color' => '#F3EFE6'])
+        // Isian section tetap
+        ->and($data['types']['background'])->toBe(['type' => 'color', 'color' => '#000000'])
+        ->and($data['availability']['background']['type'] ?? 'default')->toBe('default')
+        ->and($fields->pluck('handle'))->not->toContain('page_background')
+        ->and(array_column($fields->firstWhere('handle', 'availability')['fields'], 'handle'))->toContain('background');
 });

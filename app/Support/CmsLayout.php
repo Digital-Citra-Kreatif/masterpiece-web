@@ -99,7 +99,6 @@ final class CmsLayout
             'global_style.fonts.description_embed' => ['instructions' => 'Tempel kode @import'],
             'global_style.fonts.button_embed' => ['instructions' => 'Tempel kode @import'],
             'global_style.corner.size' => ['label' => 'Ukuran (px)', 'width' => 50],
-            'page_background.image' => ['instructions' => 'Diam saat digulir'],
         ],
         'footer' => [
             'address' => ['width' => 50],

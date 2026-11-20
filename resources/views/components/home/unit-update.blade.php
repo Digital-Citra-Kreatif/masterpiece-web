@@ -1,7 +1,7 @@
 {{-- Update unit --}}
-@props(['units', 'counts', 'heading', 'id' => 'unit-update', 'siteplan' => null])
+@props(['units', 'counts', 'heading', 'id' => 'unit-update', 'siteplan' => null, 'background' => null])
 
-<section id="{{ $id }}" class="units" data-unit-filter aria-labelledby="unit-title">
+<section id="{{ $id }}" @class(['units', 'has-sec-bg' => $background]) @if ($background) style="{{ $background }}" @endif data-unit-filter aria-labelledby="unit-title">
   <div class="wrap">
     <div class="units__layout">
       <header class="units__head" data-reveal>

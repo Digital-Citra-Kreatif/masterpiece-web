@@ -1,5 +1,5 @@
 {{-- Karusel fasilitas --}}
-@props(['facilities', 'heading', 'id' => 'fasilitas', 'variant' => 'default'])
+@props(['facilities', 'heading', 'id' => 'fasilitas', 'variant' => 'default', 'background' => null])
 
 @php
   $split = $variant === 'split';
@@ -12,7 +12,7 @@
   ]);
 @endphp
 
-<section id="{{ $id }}" @class(['fac', 'fac--split' => $split]) @if ($split && $site['cardCursor']['type'] !== 'default') data-view-cursor @endif aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" @class(['fac', 'fac--split' => $split, 'has-sec-bg' => $background]) @if ($background) style="{{ $background }}" @endif @if ($split && $site['cardCursor']['type'] !== 'default') data-view-cursor @endif aria-labelledby="{{ $id }}-title">
   <div @class(['wrap', 'fac__split' => $split])>
     @if ($split)
       <div class="fac__head">
