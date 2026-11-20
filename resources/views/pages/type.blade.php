@@ -44,7 +44,7 @@
           {{-- Animasi per kata --}}
           <h1 class="display tph__name" id="type-name">@foreach (preg_split('/\s+/', trim($t['name']), -1, PREG_SPLIT_NO_EMPTY) as $text)@if (! $loop->first) @endif<span class="word-in" style="--i: {{ $loop->index }}">{{ $text }}</span>@endforeach</h1>
           @if ($pj)
-            <a class="hd__back tp-back" href="{{ $pj['url'] }}">
+            <a class="hd__back tp-back" href="{{ $pj['backUrl'] }}">
               <span class="tp-back__label">Kembali <span class="hd__btn-more">ke {{ $pj['title'] }}</span></span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                 <path d="M5 12h14M13 6l6 6-6 6" />

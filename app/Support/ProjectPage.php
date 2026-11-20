@@ -101,7 +101,7 @@ final class ProjectPage
     /**
      * Proyek halaman tipe
      *
-     * @return array{title: string, url: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>, turntable: ?array<string, mixed>, othersTitle: string, types: list<array<string, mixed>>}|null
+     * @return array{title: string, url: string, backUrl: string, style: array<string, mixed>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>, turntable: ?array<string, mixed>, othersTitle: string, types: list<array<string, mixed>>}|null
      */
     public static function forType(EntryTranslation $type, mixed $project): ?array
     {
@@ -116,6 +116,8 @@ final class ProjectPage
         return [
             'title' => (string) $project->title,
             'url' => $url,
+            // Kembali ke section tipe
+            'backUrl' => isset($sections['types']) ? $url.'#'.self::SECTIONS['types']['id'] : $url,
             'style' => self::style(self::group($values, 'global_style')),
             'nav' => self::nav($sections, $url),
             'whatsapp' => self::whatsapp(self::group($values, 'whatsapp')),
