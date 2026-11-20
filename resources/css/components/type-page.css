@@ -249,11 +249,6 @@ body.is-type .tps--spin::before {
 }
 
 /* Denah kolom kanan */
-.tps__plans-title {
-  margin: 0 0 12px;
-  color: rgb(255 255 255 / 0.72);
-}
-
 .tps__plan-list {
   list-style: none;
   display: grid;

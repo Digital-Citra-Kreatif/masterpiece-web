@@ -34,7 +34,7 @@
   @endif
 
   @if ($pj)
-    <x-header variant="type" :logo="$pj['style']['logo']" :back="false" :mark="['href' => $pj['url'], 'label' => $pj['title'].', halaman proyek']" />
+    <x-header variant="type" :logo="$pj['style']['logo']" :back="false" :mark="['href' => $pj['url'], 'label' => $pj['title'].', halaman proyek']" :stuck-back="['href' => $pj['backUrl'], 'label' => $pj['title']]" />
   @else
     <x-header variant="type" />
   @endif
@@ -126,7 +126,6 @@
             @if ($t['denah'] !== [] || $tabPlans->isNotEmpty())
               {{-- Denah per tab --}}
               <div class="tps__plans" @if (! $tabPlans->has(0) && $t['denah'] === []) hidden @endif data-spin-plans>
-                <p class="eyebrow tps__plans-title">Denah</p>
                 @foreach ($tabPlans as $k => $plan)
                   <div class="tps__plan-list" data-spin-plan="{{ $k }}" {{ $k !== 0 ? 'hidden' : '' }}>
                     <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ json_encode(['title' => "{$t['name']}: Denah", 'items' => [['src' => $plan, 'caption' => $parts[$k]['name'], 'alt' => "Denah {$parts[$k]['name']}"]], 'index' => 0]) }}" aria-label="Perbesar denah {{ $parts[$k]['name'] }}" data-view-target>

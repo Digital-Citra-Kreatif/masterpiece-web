@@ -162,6 +162,18 @@
   box-shadow: none;
 }
 
+/* Kembali saat menempel */
+.hd__back--stuck {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s var(--ease), visibility 0.2s;
+}
+
+.hd.is-stuck .hd__back--stuck {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* Menu terbuka tetap solid */
 .hd.is-stuck.is-menu-open {
   background: #fff;

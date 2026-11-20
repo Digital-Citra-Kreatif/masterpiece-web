@@ -512,6 +512,8 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('<a class="hd__mark" href="'.url('/projects/westlake').'" aria-label="Westlake, halaman proyek">', false)
         // Kembali kanan judul
         ->assertSeeInOrder(['</header>', '<div class="wrap tph__head">', 'id="type-name"', '<a class="hd__back tp-back" href="'.url('/projects/westlake').'#type-title">'], false)
+        // Kembali di header menempel
+        ->assertSee('<a class="hd__back tp-back hd__back--stuck" href="'.url('/projects/westlake').'#type-title">', false)
         // Tanpa huruf bergulir
         ->assertSee('<span class="tp-back__label">Kembali <span class="hd__btn-more">ke Westlake</span></span>', false)
         ->assertDontSee('btn hd__btn', false)

@@ -1,5 +1,5 @@
 {{-- Header situs --}}
-@props(['variant' => 'home', 'nav' => null, 'logo' => null, 'back' => null, 'mark' => null])
+@props(['variant' => 'home', 'nav' => null, 'logo' => null, 'back' => null, 'mark' => null, 'stuckBack' => null])
 
 @php($items = $nav ?? $site['nav'])
 
@@ -22,6 +22,16 @@
       @endforeach
       @endif
     </a>
+
+    @if ($stuckBack)
+      {{-- Kembali saat menempel --}}
+      <a class="hd__back tp-back hd__back--stuck" href="{{ $stuckBack['href'] }}">
+        <span class="tp-back__label">Kembali <span class="hd__btn-more">ke {{ $stuckBack['label'] }}</span></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    @endif
 
     @if ($variant === 'home' || $variant === 'project')
       {{-- Menu dari CMS --}}
