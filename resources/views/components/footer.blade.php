@@ -5,7 +5,7 @@
   // Isian proyek dulu
   $ft = \App\Support\Content::footer($project);
   $logo ??= $ft['logo'];
-  // Nama proyek bila ada
+  // Copyright nama proyek
   $copyright = filled($name) ? '© '.date('Y').' '.$name : $ft['copyright'];
 @endphp
 

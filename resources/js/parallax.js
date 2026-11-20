@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Gambar, yPercent awal dan akhir, skala
+ * Target parallax
  *
  * @type {Array<[string, number, number, number]>}
  */

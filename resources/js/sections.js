@@ -19,7 +19,7 @@ export function initSections(scope = document) {
     for (const section of scope.querySelectorAll('main > section')) {
       const next = section.nextElementSibling;
       if (section.matches(PINNED) || !next?.matches('section')) continue;
-      // Isi saja, tanpa kursor
+      // Isi tanpa kursor
       gsap.to(section.querySelectorAll(':scope > :not([data-view-cursor-el])'), {
         opacity: 0.2,
         y: -48,

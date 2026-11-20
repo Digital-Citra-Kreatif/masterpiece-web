@@ -59,7 +59,7 @@
 
     @if ($parts !== [] || $t['image'])
     {{-- 360° tipe --}}
-    {{-- Putar lewat panah, geser, tab --}}
+    {{-- Section 360° --}}
     <section
       @class(['tps', 'tps--spin' => $parts !== []])
       aria-label="Detail {{ $t['name'] }}"
@@ -94,7 +94,7 @@
 
           {{-- Tab dan label --}}
           <div class="tps__info">
-            {{-- Tab nama, deskripsi di bawah --}}
+            {{-- Tab nama --}}
             <div class="tps__tabs" data-spin-tabs>
               <ul class="tph__tabs tps__tab-row" aria-label="Bagian 360°">
                 @foreach ($parts as $part)
@@ -108,7 +108,7 @@
 
             @if ($zooms)
               {{-- Detail tab terbuka --}}
-              {{-- Info kanan tetap, tambah kembali --}}
+              {{-- Info kanan tetap --}}
               <div class="tps__detail" role="group" aria-labelledby="type-360-detail-title" data-spin-detail data-spin-keep hidden>
                 <h3 class="visually-hidden" id="type-360-detail-title" tabindex="-1" data-spin-detail-title></h3>
                 <p class="visually-hidden" data-spin-detail-text></p>
@@ -121,7 +121,7 @@
             @endif
 
             @if ($t['denah'] !== [] || $tabPlans->isNotEmpty())
-              {{-- Denah ikut tab, cadangan denah tipe --}}
+              {{-- Denah per tab --}}
               <div class="tps__plans" @if (! $tabPlans->has(0) && $t['denah'] === []) hidden @endif data-spin-plans>
                 <p class="eyebrow tps__plans-title">Denah</p>
                 @foreach ($tabPlans as $k => $plan)
@@ -193,7 +193,7 @@
             @endif
 
             @if ($hasSide)
-              {{-- Tanpa 360°: kolom kanan --}}
+              {{-- Kolom kanan --}}
               <x-type-side :facts="$t['facts']" :gallery="$sideGallery" :vr="$vrUrl" />
             @endif
           </div>
@@ -240,7 +240,7 @@
     @endif
 
     @if ($t['denah'] !== [] && $parts === [])
-      {{-- Denah tanpa 360°, slide opsional --}}
+      {{-- Denah tanpa 360° --}}
       @php($slidePlans = count($t['denah']) > 1)
       <section class="tpd" aria-label="Denah" data-view-cursor>
         <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>

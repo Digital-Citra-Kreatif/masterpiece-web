@@ -67,7 +67,7 @@ export function spin(root) {
   const zoomLayer = root.querySelector('[data-spin-zoom]');
   const detail = root.querySelector('[data-spin-detail]');
   const tabList = root.querySelector('[data-spin-tabs]');
-  const keepTabs = detail?.hasAttribute('data-spin-keep'); // Tab tetap saat zoom
+  const keepTabs = detail?.hasAttribute('data-spin-keep'); // Tab tetap zoom
   const ctx = canvas.getContext('2d');
   const same = (a, b) => a.frames.join('|') === b.frames.join('|');
   // Potongan jadi putaran
@@ -221,7 +221,7 @@ export function spin(root) {
     layer.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'ease' }).finished.then(() => layer.remove(), () => {});
   };
 
-  // Kartu tab bergeser halus
+  // Kartu tab bergeser
   const parts = buttons.map((b) => b.closest('.tph__part')).filter(Boolean);
   let pressed = active;
 

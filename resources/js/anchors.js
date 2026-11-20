@@ -1,4 +1,4 @@
-// Gulir halus ke jangkar
+// Gulir ke jangkar
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -22,7 +22,7 @@ document.addEventListener('click', (event) => {
   target.focus({ preventScroll: true });
 });
 
-// Jangkar dari halaman lain
+// Jangkar halaman lain
 const landing = location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
 if (landing) {
   let held = true;
@@ -35,7 +35,7 @@ if (landing) {
   const jump = () => {
     if (held) window.scrollTo({ top: top(), behavior: 'instant' });
   };
-  // Lepas saat pengunjung menggulir
+  // Lepas saat gulir
   const release = () => {
     held = false;
     ScrollTrigger.removeEventListener('refresh', jump);
@@ -43,7 +43,7 @@ if (landing) {
   for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown']) {
     addEventListener(type, release, { once: true, passive: true });
   }
-  // Pin menambah tinggi halaman
+  // Pin tambah tinggi
   ScrollTrigger.addEventListener('refresh', jump);
   addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(jump)), { once: true });
 }

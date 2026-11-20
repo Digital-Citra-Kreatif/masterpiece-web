@@ -456,7 +456,7 @@ async function init(root) {
     if (!zoomCache.has(src)) {
       const img = new Image();
       img.decoding = 'async';
-      // Termuat cukup, decode opsional
+      // Tunggu gambar termuat
       const ready = new Promise((resolve) => {
         img.onload = () => img.decode().then(() => resolve(true), () => resolve(true));
         img.onerror = () => resolve(false);
@@ -477,7 +477,7 @@ async function init(root) {
   const showZoom = (key, id) => {
     zoomLayer.src = fastSrc(key);
     zoomLayer.classList.add('is-on');
-    // Ganti ke versi asli
+    // Ganti versi asli
     const full = spots[key].zoom;
     if (full === fastSrc(key)) return;
     loadZoom(full).then((ok) => {

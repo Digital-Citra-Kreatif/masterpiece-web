@@ -5,7 +5,7 @@
   $tabs = $section['tabs'];
   $first = $tabs[0];
   $label = $section['title'] ?: 'Tampilan 360°';
-  // Ada tab yang berputar
+  // Tab berputar
   $spins = collect($tabs)->contains(fn (array $tab): bool => count($tab['frames']) > 1);
 @endphp
 

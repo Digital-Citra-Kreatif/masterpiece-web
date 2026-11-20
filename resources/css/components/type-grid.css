@@ -158,7 +158,7 @@ article.card {
 
 .types--project .sheet__title {
   color: var(--ink);
-  scroll-margin-top: calc(var(--header-h, 88px) + 32px); /* Jangkar di bawah header */
+  scroll-margin-top: calc(var(--header-h, 88px) + 32px); /* Jangkar bawah header */
 }
 
 .types--project .types__grid {

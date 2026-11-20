@@ -171,7 +171,7 @@ img.hero__media {
   transition: transform 0.3s var(--ease);
 }
 
-/* Garis ditarik lalu lepas */
+/* Garis tarik lepas */
 .hero__scroll-line {
   stroke-dasharray: 1;
   animation: scroll-line 2.8s 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite both;
@@ -210,7 +210,7 @@ img.hero__media {
   46% {
     transform: translateY(-2px);
   }
-  /* Menempel di ujung garis */
+  /* Ujung garis */
   54%,
   90% {
     opacity: 1;
@@ -251,7 +251,7 @@ img.hero__media {
   animation: rise 1s 0.45s var(--ease) both;
 }
 
-/* Beranda tanpa fade up */
+/* Beranda tanpa fade */
 .is-home :is(.hero__lead, .hero__scroll) {
   animation: none;
 }

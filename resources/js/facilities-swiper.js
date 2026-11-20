@@ -17,7 +17,7 @@ for (const el of document.querySelectorAll('[data-fac-swiper]')) {
   const at = (index) => -(1 - (index + 1) / count) * 100;
   let last = null;
   let run = 0;
-  /** Tembus tepi lalu masuk lagi */
+  /** Tembus tepi loop */
   const wrap = (out, from, to) => {
     const turn = ++run;
     place(out, 'transform 0.45s cubic-bezier(0.5, 0, 0.75, 0)');

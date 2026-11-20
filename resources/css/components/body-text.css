@@ -1,6 +1,6 @@
-/* Teks bacaan tablet HP */
+/* Teks bacaan responsif */
 
-/* Dimuat terakhir; :root agar menang */
+/* Override :root terakhir */
 @media (max-width: 1024px) {
   body,
   :root body :is(

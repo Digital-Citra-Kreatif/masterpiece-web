@@ -111,7 +111,7 @@ body.is-type .tps--spin {
   color: #fff;
 }
 
-/* Hitam melebar saat gulir */
+/* Hitam melebar gulir */
 body.is-type .tps--spin::before {
   content: '';
   position: absolute;
@@ -187,7 +187,7 @@ body.is-type .tps--spin::before {
   outline-color: #fff;
 }
 
-/* Tab menyamping, nama saja */
+/* Tab menyamping */
 .tps .tps__tab-row {
   display: flex;
   flex-wrap: nowrap;
@@ -298,7 +298,7 @@ body.is-type .tps--spin::before {
   font-size: 13px;
 }
 
-/* Bertumpuk: jarak dari tab */
+/* Jarak tab bertumpuk */
 @media (max-width: 960px) {
   .tps__plans {
     margin-top: 24px;
@@ -905,7 +905,7 @@ body.is-type .tps--spin::before {
   }
 }
 
-/* 360° rapat di HP */
+/* 360° HP */
 @media (max-width: 760px) {
   .tps--spin {
     padding-block: 40px;

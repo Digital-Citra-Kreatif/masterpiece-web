@@ -50,7 +50,7 @@
   height: 22px;
 }
 
-/* Ikon upload jadi putih */
+/* Ikon upload putih */
 .view-cursor__img {
   object-fit: contain;
   filter: brightness(0) invert(1);

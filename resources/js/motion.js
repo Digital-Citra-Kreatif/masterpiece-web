@@ -74,7 +74,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     add(img.closest(GROUPS) ?? frame, { el: img, cover });
   }
 
-  /** Overlay naik lalu lepas */
+  /** Overlay naik lepas */
   const reveal = ({ el, cover }, delay) => {
     gsap
       .timeline({ delay, onComplete: () => cover.remove() })
@@ -129,7 +129,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     if (items.some(({ el }) => el.tagName === 'IMG')) near.observe(root);
   });
 
-  // Teks naik per baris
+  // Teks per baris
   const lineSplit = (el) => SplitText.create(el, { type: 'lines', mask: 'lines', tag: 'span', linesClass: 'mo-line' });
   const rise = (lines) => gsap.fromTo(lines, { yPercent: 100 }, { yPercent: 0, duration: 1, stagger: 0.07, ease: 'expo.out' });
   /** Sekali saat terlihat */
@@ -141,7 +141,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     });
     seen.observe(el);
   };
-  /** Pecah ulang saat lebar berubah */
+  /** Pecah ulang resize */
   const onResize = (run) => {
     let timer;
     let width = innerWidth;

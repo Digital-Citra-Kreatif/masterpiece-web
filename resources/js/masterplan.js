@@ -77,7 +77,7 @@ for (const root of document.querySelectorAll('.scene--masterplan')) {
     if (caption) timeline.to(caption, { autoAlpha: 0, duration: 0.2 }, 0);
   }
 
-  // Label saat section naik 90%
+  // Label section 90%
   const tiles = root.querySelector('[data-mp-tiles]');
   if (tiles) {
     ScrollTrigger.create({ trigger: root, start: 'top 10%', once: true, onEnter: () => tiles.classList.add('is-in') });

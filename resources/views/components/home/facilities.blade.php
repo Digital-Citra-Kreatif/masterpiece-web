@@ -3,7 +3,7 @@
 
 @php
   $split = $variant === 'split';
-  // Cukup kartu untuk loop
+  // Gandakan kartu loop
   $slides = $split && count($facilities) > 0 && count($facilities) < 8 ? [...$facilities, ...$facilities] : $facilities;
   $lightbox = fn (int $index): string => json_encode([
       'title' => $heading['title'],

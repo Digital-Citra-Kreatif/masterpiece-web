@@ -132,7 +132,7 @@
   line-height: 1.6;
 }
 
-/* Logo kecil tablet HP */
+/* Logo kecil responsif */
 @media (max-width: 1024px) {
   /* Jarak kartu 32px */
   .prj .sheet {

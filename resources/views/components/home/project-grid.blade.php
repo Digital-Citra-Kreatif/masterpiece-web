@@ -2,7 +2,7 @@
 @props(['groups', 'heading', 'id' => 'projects'])
 
 @php($cursor = $site['cardCursor']['type'])
-{{-- Ada judul kategori: judul kartu h4 --}}
+{{-- Level judul kartu --}}
 @php($titled = collect($groups)->whereNotNull('title')->isNotEmpty())
 
 <section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-card-cursor="{{ $cursor }}" @if ($cursor !== 'default') data-view-cursor @endif>

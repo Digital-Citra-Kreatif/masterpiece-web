@@ -412,7 +412,7 @@ h2.display {
   transform: none;
 }
 
-/* Beranda tanpa fade up */
+/* Beranda tanpa fade */
 .is-home [data-reveal] {
   opacity: 1;
   transform: none;
