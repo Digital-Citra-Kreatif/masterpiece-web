@@ -65,6 +65,6 @@
   </div>
 
   @if ($cursor && $cursor !== 'default')
-    <x-view-cursor :icon="$cursor === 'zoom'" :image="$site['cardCursor']['icon']" :text="$site['cardCursor']['text']" />
+    <x-view-cursor />
   @endif
 </section>

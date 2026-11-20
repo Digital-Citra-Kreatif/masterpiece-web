@@ -12,7 +12,7 @@
   ]);
 @endphp
 
-<section id="{{ $id }}" @class(['fac', 'fac--split' => $split]) @if ($split) data-view-cursor @endif aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" @class(['fac', 'fac--split' => $split]) @if ($split && $site['cardCursor']['type'] !== 'default') data-view-cursor @endif aria-labelledby="{{ $id }}-title">
   <div @class(['wrap', 'fac__split' => $split])>
     @if ($split)
       <div class="fac__head">

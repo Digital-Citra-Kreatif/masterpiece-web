@@ -60,7 +60,7 @@ final class CmsLayout
             'preload_active' => ['label' => 'Preload', 'instructions' => 'Animasi pembuka', 'width' => 33],
             'preload_hours' => ['label' => 'Ulang preload (jam)', 'instructions' => 'Kosong: 6 jam', 'width' => 33],
             'scroll_top_active' => ['instructions' => 'Kanan bawah'],
-            'card_cursor' => ['instructions' => 'Kartu proyek, tipe'],
+            'card_cursor' => ['label' => 'Kursor lihat', 'instructions' => 'Kartu, fasilitas, denah'],
             'card_cursor_icon' => ['instructions' => 'Tampil putih'],
             'card_cursor_text' => ['instructions' => 'Bila ikon kosong'],
         ],

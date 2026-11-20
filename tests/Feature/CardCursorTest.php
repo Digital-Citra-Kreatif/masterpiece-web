@@ -95,3 +95,28 @@ test('an empty custom cursor falls back to the magnifier', function () {
         ->assertSee('data-card-cursor="zoom"', false)
         ->assertSee('view-cursor--icon', false);
 });
+
+test('a type page floor plan uses the same magnifier cursor by default', function () {
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSee('<section class="tpd" aria-label="Denah" data-view-cursor>', false)
+        ->assertSeeInOrder(['<span class="view-cursor view-cursor--icon" data-view-cursor-el aria-hidden="true">', '<svg'], false)
+        ->assertDontSee('Lihat</span>', false);
+});
+
+test('the view circle text applies to the type page floor plan too', function () {
+    saveCardCursor('view');
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertSeeInOrder(['<span class="view-cursor" data-view-cursor-el aria-hidden="true">', 'Lihat', '</span>'], false);
+});
+
+test('the normal cursor removes the view circle everywhere', function () {
+    saveCardCursor('default');
+
+    $this->get('/-/tipe/tipe-6')
+        ->assertOk()
+        ->assertDontSee('data-view-cursor', false)
+        ->assertDontSee('class="view-cursor', false);
+});

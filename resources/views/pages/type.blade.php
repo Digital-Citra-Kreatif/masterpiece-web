@@ -16,6 +16,8 @@
   $marker = ($pj['style']['marker'] ?? null) ?: ['shape' => 'circle', 'image' => null];
   // Denah per tab
   $tabPlans = collect($parts)->map(fn (array $part): ?string => $part['plan'] ?? null)->filter();
+  // Kursor dari Globals
+  $hasCursor = $site['cardCursor']['type'] !== 'default';
 @endphp
 
 <x-layouts.base
@@ -63,6 +65,7 @@
     <section
       @class(['tps', 'tps--spin' => $parts !== []])
       aria-label="Detail {{ $t['name'] }}"
+      @if ($hasCursor && $parts !== [] && ($t['denah'] !== [] || $tabPlans->isNotEmpty())) data-view-cursor @endif
       @if ($parts !== []) data-spin="drag" data-tabs="{{ json_encode(collect($parts)->map(fn (array $part): array => Arr::only($part, ['name', 'text', 'frames', 'width', 'height', 'frame', 'zoom', 'x', 'y']))) }}" @endif
     >
       <div @class(['wrap', 'tps__grid', 'tps__grid--solo' => $parts === []])>
@@ -126,7 +129,7 @@
                 <p class="eyebrow tps__plans-title">Denah</p>
                 @foreach ($tabPlans as $k => $plan)
                   <div class="tps__plan-list" data-spin-plan="{{ $k }}" {{ $k !== 0 ? 'hidden' : '' }}>
-                    <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ json_encode(['title' => "{$t['name']}: Denah", 'items' => [['src' => $plan, 'caption' => $parts[$k]['name'], 'alt' => "Denah {$parts[$k]['name']}"]], 'index' => 0]) }}" aria-label="Perbesar denah {{ $parts[$k]['name'] }}">
+                    <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ json_encode(['title' => "{$t['name']}: Denah", 'items' => [['src' => $plan, 'caption' => $parts[$k]['name'], 'alt' => "Denah {$parts[$k]['name']}"]], 'index' => 0]) }}" aria-label="Perbesar denah {{ $parts[$k]['name'] }}" data-view-target>
                       <img src="{{ $plan }}" alt="Denah {{ $parts[$k]['name'] }}" loading="lazy" decoding="async" />
                     </button>
                   </div>
@@ -135,7 +138,7 @@
                   <ul @class(['tps__plan-list', 'tps__plan-list--many' => count($t['denah']) > 1]) data-spin-plan-rest {{ $tabPlans->has(0) ? 'hidden' : '' }}>
                     @foreach ($t['denah'] as $d)
                       <li>
-                        <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                        <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}" data-view-target>
                           <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" decoding="async" />
                         </button>
                         @if (count($t['denah']) > 1 && $d['label'])
@@ -172,6 +175,9 @@
           </div>
         @endif
       </div>
+      @if ($parts !== [] && ($t['denah'] !== [] || $tabPlans->isNotEmpty()))
+        <x-view-cursor />
+      @endif
     </section>
     @endif
 
@@ -242,7 +248,7 @@
     @if ($t['denah'] !== [] && $parts === [])
       {{-- Denah tanpa 360° --}}
       @php($slidePlans = count($t['denah']) > 1)
-      <section class="tpd" aria-label="Denah" data-view-cursor>
+      <section class="tpd" aria-label="Denah" {{ $hasCursor ? 'data-view-cursor' : '' }}>
         <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
           <ul @class(['tpd__plans', 'swiper-wrapper' => $slidePlans])>
             @foreach ($t['denah'] as $d)
