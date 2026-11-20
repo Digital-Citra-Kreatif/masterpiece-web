@@ -64,7 +64,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field grup Masterplan
+     * Ubah grup Masterplan
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */

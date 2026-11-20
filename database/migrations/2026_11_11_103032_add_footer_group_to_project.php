@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Footer per proyek, tanpa WhatsApp footer */
+/** Footer per proyek */
 return new class extends Migration
 {
     private const WHATSAPP = [

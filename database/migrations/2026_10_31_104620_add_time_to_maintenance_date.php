@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Maintenance Mode: tanggal dengan jam */
+/** Maintenance: tanggal berjam */
 return new class extends Migration
 {
     public function up(): void
@@ -34,7 +34,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field `date` blueprint Maintenance Mode
+     * Ubah field tanggal
      *
      * @param  callable(array<string, mixed>): array<string, mixed>  $change
      */
@@ -49,7 +49,7 @@ return new class extends Migration
         $fields = array_map(fn (mixed $field): mixed => is_array($field) && ($field['handle'] ?? null) === 'date' ? $change($field) : $field, $fields);
 
         DB::table('sunrice_blueprints')->where('id', $blueprint->id)->update(['fields' => json_encode($fields)]);
-        // Form CMS membaca blueprint dari cache situs
+        // Segarkan cache
         app(SiteCache::class)->changed('blueprint maintenance_mode date');
     }
 };

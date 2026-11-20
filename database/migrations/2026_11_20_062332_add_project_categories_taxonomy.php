@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Sudah ada atau belum ada Projects: lewati
+        // Lewati bila ada
         if (Taxonomy::withTrashed()->where('handle', 'project_categories')->exists() || ! Collection::query()->where('handle', 'projects')->exists()) {
             return;
         }
@@ -20,7 +20,7 @@ return new class extends Migration
                 'handle' => 'project_categories',
                 'title' => 'Kategori Proyek',
                 'collections' => ['projects'],
-                // Satu kategori, tanpa halaman kategori
+                // Satu kategori
                 'collection_pages' => ['projects' => ['single' => true, 'pages' => false, 'index' => false]],
             ]],
             'terms' => [
@@ -29,6 +29,6 @@ return new class extends Migration
         ]);
     }
 
-    /** Kategori milik CMS, tidak dihapus */
+    /** Kategori tetap */
     public function down(): void {}
 };

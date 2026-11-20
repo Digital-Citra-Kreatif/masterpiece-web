@@ -50,7 +50,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field blueprint Proyek
+     * Ubah field Proyek
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */

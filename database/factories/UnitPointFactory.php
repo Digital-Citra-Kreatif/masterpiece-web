@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class UnitPointFactory extends Factory
 {
     /**
-     * Define the model's default state.
+     * State bawaan
      *
      * @return array<string, mixed>
      */

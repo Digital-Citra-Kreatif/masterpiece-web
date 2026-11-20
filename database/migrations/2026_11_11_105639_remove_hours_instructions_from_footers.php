@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Footer: petunjuk jam operasional dihapus */
+/** Hapus petunjuk jam */
 return new class extends Migration
 {
     private const TEXT = 'Satu baris per jadwal, mis. Senin–Jumat, 09.00–17.00.';
@@ -19,7 +19,7 @@ return new class extends Migration
         $this->instructions(self::TEXT);
     }
 
-    /** Petunjuk field hours di footer global dan proyek */
+    /** Petunjuk jam footer */
     private function instructions(string $text): void
     {
         foreach (['footer', 'project'] as $handle) {

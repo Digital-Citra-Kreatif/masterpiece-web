@@ -120,11 +120,11 @@ class SiteContentSeeder extends Seeder
                             $text('name', ['label' => 'Nama', 'required' => true]),
                             $textarea('description', ['label' => 'Deskripsi']),
                             $this->field('images', 'media', ['types' => ['image'], 'multiple' => true], ['label' => 'Gambar', 'translatable' => false]),
-                            // Tampil saat indikator diklik
+                            // Tampil saat diklik
                             $image('zoom_image', ['label' => 'Gambar zoom', 'translatable' => false, 'instructions' => 'Gambar dan deskripsi tab ini tampil saat indikatornya diklik.']),
                             // Ganti ikut tab
                             $image('floor_plan', ['label' => 'Denah', 'translatable' => false, 'instructions' => 'Tampil di kanan saat tab ini aktif. Kosong: denah tipe.']),
-                            // Diisi dari panel di bawah tab
+                            // Panel bawah tab
                             ...array_map(fn (string $axis): array => $this->field($axis, 'number', ['min' => 0, 'max' => 100], [
                                 'label' => 'Posisi '.strtoupper($axis).' (%)', 'translatable' => false, 'width' => 50,
                             ]), ['x', 'y']),
@@ -153,7 +153,7 @@ class SiteContentSeeder extends Seeder
                         $text('available', ['required' => true, 'width' => 33]),
                     ]]),
                     $this->field('protect_media', 'toggle', [], ['instructions' => 'Nonaktifkan fitur simpan gambar/video di browser']),
-                    // Animasi pembuka, sekali per interval
+                    // Animasi pembuka
                     $this->field('preload_active', 'toggle', ['default' => true], ['label' => 'Preload aktif', 'translatable' => false, 'width' => 50, 'instructions' => 'Animasi pembuka saat pengunjung pertama masuk.']),
                     $this->field('preload_hours', 'number', ['min' => 1, 'max' => 720], ['label' => 'Tampil lagi setelah (jam)', 'translatable' => false, 'width' => 50, 'instructions' => 'Kosong: 6 jam.']),
                     $this->field('scroll_top_active', 'toggle', ['default' => false], ['label' => 'Tombol ke atas', 'translatable' => false, 'width' => 50, 'instructions' => 'Tombol kembali ke atas di kanan bawah.']),
@@ -238,7 +238,7 @@ class SiteContentSeeder extends Seeder
                 ...$whenActive,
                 'fields' => [
                     $font('heading', 'Heading'), $font('description', 'Deskripsi'), $font('button', 'Tombol'),
-                    // Google Font menimpa file di atas
+                    // Google Font prioritas
                     ...collect(['heading' => 'Heading', 'description' => 'Deskripsi', 'button' => 'Tombol'])->map(fn (string $label, string $handle): array => $this->field("{$handle}_embed", 'textarea', [], [
                         'label' => "Google Font {$label}", 'translatable' => false, 'width' => 33,
                         'instructions' => 'Tempel kode @import Google Font. Font pertama di kode yang dipakai.',
@@ -277,7 +277,7 @@ class SiteContentSeeder extends Seeder
             $image('background', 'Background tema', $whenActive),
         ]]);
 
-        // Kartu proyek tepat di bawah Hero
+        // Kartu bawah Hero
         $sections = $this->projectSections();
 
         return ['handle' => 'project', 'title' => 'Project', 'fields' => [
@@ -305,7 +305,7 @@ class SiteContentSeeder extends Seeder
                     $this->field('message', 'textarea', [], ['label' => 'Pesan']),
                 ]]),
             ]]),
-            // Kosong: ikut Globals → Footer
+            // Cadangan Footer global
             $this->field('footer', 'group', [], ['label' => 'Footer', 'instructions' => 'Kosong: mengikuti Globals → Footer.', 'fields' => [
                 $this->field('description', 'textarea', [], ['label' => 'Deskripsi singkat']),
                 $this->field('address', 'textarea', [], ['label' => 'Alamat', 'width' => 50]),
@@ -343,17 +343,17 @@ class SiteContentSeeder extends Seeder
             ...($description ? [$textarea('description', 'Deskripsi')] : []),
             ...$fields,
         ]]);
-        // Diisi dari panel di bawah gambar
+        // Panel bawah gambar
         $percent = fn (string $handle, string $label): array => $this->field($handle, 'number', ['min' => 0, 'max' => 100], [
             'label' => $label, 'translatable' => false, 'width' => 50,
         ]);
-        // Gambar diam atau ZIP frame 360°
+        // Gambar atau ZIP
         $scene = fn (): array => $this->field('image', 'media', ['types' => ['image', 'document']], [
             'label' => 'Gambar atau ZIP 360°',
             'translatable' => false,
             'instructions' => 'Gambar diam, atau ZIP frame 360° (urut nama file).',
         ]);
-        // Latar tajam saat titik di-zoom
+        // Latar saat zoom
         $zoom = fn (): array => $this->field('zoom_image', 'media', ['types' => ['image']], [
             'label' => 'Gambar zoom',
             'translatable' => false,
@@ -365,7 +365,7 @@ class SiteContentSeeder extends Seeder
         return [
             $this->field('hero', 'group', [], ['label' => 'Hero', 'fields' => [
                 $text('heading', 'Heading', ['width' => 50]),
-                // Letak nama, judul, dan tombol
+                // Letak teks
                 $this->field('align', 'select', ['options' => collect(ProjectPage::HERO_ALIGN)->map(fn (string $label, string $value): array => ['value' => $value, 'label' => $label])->values()->all(), 'default' => 'split'], [
                     'label' => 'Posisi konten', 'translatable' => false, 'width' => 50,
                 ]),
@@ -408,7 +408,7 @@ class SiteContentSeeder extends Seeder
                 ]),
             ], description: false),
             $section('facilities', 'Fasilitas', [
-                // Label baris tanpa akhiran "s"
+                // Label baris tunggal
                 $this->field('items', 'repeater', [], ['label' => 'Fasilitas proyek', 'fields' => [
                     $image('image', 'Gambar', ['required' => true, 'width' => 50]),
                     $text('name', 'Nama', ['required' => true, 'width' => 50]),

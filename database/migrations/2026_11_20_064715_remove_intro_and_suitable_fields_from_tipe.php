@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Tipe: hapus deskripsi dan rekomendasi usaha */
+/** Hapus field Tipe */
 return new class extends Migration
 {
     private const HANDLES = ['intro', 'suitable_title', 'suitable_for'];
@@ -27,6 +27,6 @@ return new class extends Migration
         app(SiteCache::class)->changed('blueprint tipe tanpa deskripsi');
     }
 
-    /** Isian lama tetap di entri, field tidak dikembalikan */
+    /** Tidak dikembalikan */
     public function down(): void {}
 };

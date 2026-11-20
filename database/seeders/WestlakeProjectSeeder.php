@@ -21,7 +21,7 @@ class WestlakeProjectSeeder extends Seeder
 
     private const SOURCE = 'project-one/Data & Image';
 
-    /** Field tipe yang diisi bila kosong */
+    /** Field tipe kosong */
     private const TYPE_DETAILS = ['suitable_title', 'suitable_for', 'building_specs', 'building_specs_note'];
 
     /** @var array<string, int> file content hash => media id */
@@ -149,7 +149,7 @@ class WestlakeProjectSeeder extends Seeder
         return collect($views)
             ->flatMap(fn (string $prefix, string $view): array => collect($sizes)->map(fn (array $size, string $type): array => self::entry(
                 'types',
-                // Slug dari judul, seperti CMS
+                // Slug dari judul
                 str(self::typeTitle($prefix, $type))->slug()->toString(),
                 self::typeTitle($prefix, $type),
                 [
@@ -171,7 +171,7 @@ class WestlakeProjectSeeder extends Seeder
     }
 
     /**
-     * Spesifikasi bangunan, presentasi hal. 54
+     * Spesifikasi bangunan
      *
      * @return list<array{label: string, value: string}>
      */
@@ -196,7 +196,7 @@ class WestlakeProjectSeeder extends Seeder
         ])->map(fn (string $value, string $label): array => ['label' => $label, 'value' => $value])->values()->all();
     }
 
-    /** Isi field tipe yang masih kosong */
+    /** Lengkapi field tipe */
     private function fillTypeDetails(SaveDraft $saveDraft, PublishEntry $publish): void
     {
         foreach ($this->typeEntries() as $type) {
@@ -223,7 +223,7 @@ class WestlakeProjectSeeder extends Seeder
         }
     }
 
-    /** Judul tipe, misalnya "Streetview Tipe B/C/D" */
+    /** Judul tipe */
     private static function typeTitle(string $prefix, string $type): string
     {
         return $prefix.' '.($type === 'BCD' ? 'Tipe B/C/D' : "Tipe {$type}");

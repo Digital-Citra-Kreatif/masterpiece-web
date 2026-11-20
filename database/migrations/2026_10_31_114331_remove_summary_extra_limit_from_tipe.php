@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Tipe: Data ringkasan lain tanpa batas */
+/** Ringkasan tanpa batas */
 return new class extends Migration
 {
     public function up(): void
@@ -22,7 +22,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah config field `summary_extra` blueprint Tipe
+     * Ubah config ringkasan
      *
      * @param  callable(array<string, mixed>): array<string, mixed>  $change
      */
@@ -44,7 +44,7 @@ return new class extends Migration
         }, $fields);
 
         DB::table('sunrice_blueprints')->where('id', $blueprint->id)->update(['fields' => json_encode($fields)]);
-        // Form CMS membaca blueprint dari cache situs
+        // Segarkan cache
         app(SiteCache::class)->changed('blueprint tipe summary_extra');
     }
 };

@@ -55,7 +55,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field blueprint Situs
+     * Ubah field Situs
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */
@@ -68,7 +68,7 @@ return new class extends Migration
         }
 
         DB::table('sunrice_blueprints')->where('id', $blueprint->id)->update(['fields' => json_encode($change($fields))]);
-        // Form CMS membaca blueprint dari cache situs
+        // Segarkan cache
         app(SiteCache::class)->changed('blueprint situs preload');
     }
 };

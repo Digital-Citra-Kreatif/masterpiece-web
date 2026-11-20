@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Situs: kursor kartu custom */
+/** Kursor kartu custom */
 return new class extends Migration
 {
     private const CUSTOM = ['value' => 'custom', 'label' => 'Custom (ikon atau teks)'];
@@ -75,7 +75,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field blueprint Situs
+     * Ubah field Situs
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */

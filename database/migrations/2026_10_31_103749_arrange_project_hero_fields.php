@@ -4,13 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Hero proyek: heading sebaris posisi, media sebaris video */
+/** Tata hero proyek */
 return new class extends Migration
 {
-    /** Urutan baru => lebar */
+    /** Urutan baru */
     private const LAYOUT = ['heading' => 50, 'align' => 50, 'media' => 33, 'video_file' => 33, 'video_url' => 33];
 
-    /** Urutan dan lebar lama */
+    /** Urutan lama */
     private const BEFORE = ['heading' => null, 'media' => null, 'align' => null, 'video_file' => 50, 'video_url' => 50];
 
     public function up(): void
@@ -24,7 +24,7 @@ return new class extends Migration
     }
 
     /**
-     * Susun ulang field hero, field lain tetap di belakang
+     * Susun field hero
      *
      * @param  array<string, int|null>  $layout
      */
@@ -59,7 +59,7 @@ return new class extends Migration
         unset($group);
 
         DB::table('sunrice_blueprints')->where('id', $blueprint->id)->update(['fields' => json_encode($fields)]);
-        // Form CMS membaca blueprint dari cache situs
+        // Segarkan cache
         app(SiteCache::class)->changed('blueprint project hero');
     }
 };

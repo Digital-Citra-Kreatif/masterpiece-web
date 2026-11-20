@@ -36,7 +36,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field blueprint Situs
+     * Ubah field Situs
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */

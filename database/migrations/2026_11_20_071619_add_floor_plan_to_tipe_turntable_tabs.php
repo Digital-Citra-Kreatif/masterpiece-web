@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Tipe: denah per tab 360° */
+/** Denah tab 360° */
 return new class extends Migration
 {
     private const FIELD = [
@@ -39,7 +39,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field tab 360° Tipe
+     * Ubah tab 360°
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */

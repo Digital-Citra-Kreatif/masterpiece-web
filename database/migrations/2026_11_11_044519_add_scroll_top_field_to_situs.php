@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Situs: tombol ke atas */
+/** Situs: tombol atas */
 return new class extends Migration
 {
     private const FIELD = [
@@ -37,7 +37,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field blueprint Situs
+     * Ubah field Situs
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */

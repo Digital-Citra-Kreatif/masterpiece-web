@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Support\SiteCache;
 
-/** Posisi X/Y indikator per tab 360° Tipe */
+/** Posisi indikator 360° */
 return new class extends Migration
 {
     private const AXES = ['x', 'y'];
@@ -40,7 +40,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah field repeater `turntable.tabs` blueprint Tipe
+     * Ubah tab 360°
      *
      * @param  callable(list<array<string, mixed>>): list<array<string, mixed>>  $change
      */
@@ -65,7 +65,7 @@ return new class extends Migration
         unset($group, $repeater);
 
         DB::table('sunrice_blueprints')->where('id', $blueprint->id)->update(['fields' => json_encode($fields)]);
-        // Form CMS membaca blueprint dari cache situs
+        // Segarkan cache
         app(SiteCache::class)->changed('blueprint tipe turntable');
     }
 };

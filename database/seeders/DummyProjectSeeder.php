@@ -10,30 +10,30 @@ use Sunrice\Cms\Actions\Entries\SaveDraft;
 use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Structure\StructureImporter;
 
-/** Isi lorem ipsum project dummy, tiap project punya tipe sendiri */
+/** Project dummy lorem */
 class DummyProjectSeeder extends Seeder
 {
-    /** Slug project dummy => posisi hero */
+    /** Posisi hero dummy */
     private const PROJECTS = [
         'lorem-ipsum-residence' => 'top-left',
         'dolor-sit-park' => 'middle-center',
         'amet-consectetur-hills' => 'bottom-right',
     ];
 
-    /** Tipe Westlake sebagai cetakan, huruf => slug */
+    /** Cetakan tipe Westlake */
     private const BASE_TYPES = [
         'A' => 'streetview-tipe-a',
         'B' => 'lakeview-tipe-bcd',
         'C' => 'streetview-tipe-e',
     ];
 
-    /** Key teks pendek => jumlah kata */
+    /** Teks pendek */
     private const SHORT = ['heading' => 5, 'title' => 2, 'name' => 3, 'label' => 2, 'value' => 3];
 
-    /** Key teks kalimat => jumlah kata */
+    /** Teks kalimat */
     private const SENTENCE = ['description' => 16, 'message' => 8, 'suitable_title' => 6, 'building_specs_note' => 10];
 
-    /** Section yang bukan teks konten */
+    /** Section non-teks */
     private const SKIP = ['global_style', 'seo'];
 
     private const WORDS = [
@@ -61,7 +61,7 @@ class DummyProjectSeeder extends Seeder
     }
 
     /**
-     * Tiga tipe milik project
+     * Tipe milik project
      *
      * @return list<int>
      */
@@ -82,7 +82,7 @@ class DummyProjectSeeder extends Seeder
                 'translations' => ['id' => ['title' => $title, 'slug' => $slug, 'published' => true, 'data' => $data]],
             ]]]);
 
-            // Sudah ada: perbarui isinya
+            // Perbarui bila ada
             $type = self::translation('types', $slug);
             $publish->handle($saveDraft->handle($type, ['data' => $data, 'version' => $type->version]));
             $ids[] = $type->entry_id;
@@ -101,7 +101,7 @@ class DummyProjectSeeder extends Seeder
             ->firstOrFail();
     }
 
-    /** Ganti teks konten jadi lorem, selain itu tetap */
+    /** Teks jadi lorem */
     private function lorem(mixed $value, string $path, int|string|null $key = null): mixed
     {
         if (is_array($value)) {
@@ -125,7 +125,7 @@ class DummyProjectSeeder extends Seeder
         return ucfirst($this->words($count, $seed)).'.';
     }
 
-    /** Kata lorem tetap per seed */
+    /** Lorem per seed */
     private function words(int $count, string $seed): string
     {
         $random = new Randomizer(new Mt19937(crc32($seed)));

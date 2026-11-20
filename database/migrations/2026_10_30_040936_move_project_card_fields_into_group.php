@@ -3,10 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-/** Kartu Beranda proyek jadi group `card` */
+/** Grup kartu proyek */
 return new class extends Migration
 {
-    /** Lama ke baru: handle atas => handle di group */
+    /** Peta handle */
     private const FIELDS = ['card_image' => 'image', 'card_description' => 'description'];
 
     public function up(): void
@@ -40,7 +40,7 @@ return new class extends Migration
     }
 
     /**
-     * Ubah data dan draf tiap terjemahan proyek
+     * Ubah terjemahan proyek
      *
      * @param  callable(array<string, mixed>): array<string, mixed>  $change
      */
