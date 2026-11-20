@@ -164,6 +164,7 @@
 
 /* Kembali saat menempel */
 .hd__back--stuck {
+  align-self: center; /* Sejajar logo */
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s var(--ease), visibility 0.2s;
