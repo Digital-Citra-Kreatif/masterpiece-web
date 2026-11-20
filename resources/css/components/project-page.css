@@ -2,15 +2,11 @@
 
 body.is-project {
   background-color: var(--paper);
-  background-image: var(--theme-bg, none);
-  background-size: 100% auto;
-  background-repeat: repeat-y;
 }
 
 /* Background halaman */
 body.is-project.has-page-bg {
   background-color: var(--page-bg, var(--paper));
-  background-image: none;
 }
 
 /* Gambar latar diam */

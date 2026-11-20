@@ -274,7 +274,6 @@ class SiteContentSeeder extends Seeder
                     $this->field('size', 'number', ['min' => 0, 'step' => 1, 'suffix' => 'px'], ['label' => 'Ukuran', 'translatable' => false]),
                 ],
             ]),
-            $image('background', 'Background tema', $whenActive),
         ]]);
 
         // Kartu bawah Hero

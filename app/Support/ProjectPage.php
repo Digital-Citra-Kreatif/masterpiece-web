@@ -242,11 +242,6 @@ final class ProjectPage
             $tokens['--chamfer'] = $cut;
         }
 
-        $background = $style['background'] ?? null;
-        if ($background instanceof Media && $background->isImage()) {
-            $tokens['--theme-bg'] = 'url('.self::cssString($background->url('large')).')';
-        }
-
         // @import paling awal
         $css = implode('', $imports).implode('', $faces);
         if ($tokens !== []) {
