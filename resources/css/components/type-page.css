@@ -1115,7 +1115,7 @@ body.is-type .tps--spin::before {
 .tpb__note {
   margin: 20px 0 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 @media (max-width: 960px) {
