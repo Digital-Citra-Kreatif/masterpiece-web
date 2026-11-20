@@ -153,6 +153,13 @@
   color: var(--ink);
 }
 
+/* Header menempel */
+.hd.is-stuck,
+.is-type .hd--type.is-stuck {
+  background: #fff;
+  box-shadow: 0 1px 0 var(--rule);
+}
+
 .hd.is-menu-open .hd__logo--light {
   opacity: 0;
 }

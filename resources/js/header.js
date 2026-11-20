@@ -17,7 +17,10 @@ if (header) {
 
   const update = () => {
     queued = false;
-    header.dataset.tone = toneAt(header.offsetHeight / 2);
+    // Menempel: latar putih
+    const stuck = scrollY > 8;
+    header.classList.toggle('is-stuck', stuck);
+    header.dataset.tone = stuck ? 'light' : toneAt(header.offsetHeight / 2);
   };
 
   const request = () => {
