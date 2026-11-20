@@ -68,6 +68,7 @@ export function spin(root) {
   const detail = root.querySelector('[data-spin-detail]');
   const tabList = root.querySelector('[data-spin-tabs]');
   const keepTabs = detail?.hasAttribute('data-spin-keep'); // Tab tetap zoom
+  const back = root.querySelector('[data-spin-back]');
   const ctx = canvas.getContext('2d');
   const same = (a, b) => a.frames.join('|') === b.frames.join('|');
   // Potongan jadi putaran
@@ -416,6 +417,7 @@ export function spin(root) {
     if (!keepTabs) tabList.hidden = true;
     detail.classList.remove('is-leaving');
     detail.hidden = false;
+    if (back) back.hidden = false;
     detail.querySelector('[data-spin-detail-title]').focus({ preventScroll: true });
   }
 
@@ -435,6 +437,7 @@ export function spin(root) {
     await wait(300);
     if (id !== zoomRun) return;
     detail.hidden = true;
+    if (back) back.hidden = true;
     detail.classList.remove('is-leaving');
     tabList.hidden = false;
     if (focused) buttons[active]?.focus({ preventScroll: true });
@@ -446,7 +449,7 @@ export function spin(root) {
   if (spot) {
     spot.addEventListener('click', openZoom);
     for (const ev of ['pointerover', 'focus']) spot.addEventListener(ev, () => preloadZoom(tab().zoom));
-    detail.querySelector('[data-spin-back]').addEventListener('click', closeZoom);
+    back?.addEventListener('click', closeZoom);
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && zoomed !== null && !document.querySelector('dialog[open]')) closeZoom();
     });

@@ -340,10 +340,10 @@ body.is-type .tps--spin::before {
   }
 }
 
-/* Rasio 65:35 */
+/* Rasio 60:40 */
 @media (min-width: 961px) {
   .tps--spin .tps__grid {
-    grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+    grid-template-columns: minmax(0, 60fr) minmax(0, 40fr);
     align-items: stretch;
   }
 
@@ -613,13 +613,9 @@ body.is-type .tps--spin::before {
   animation: none;
 }
 
-/* Hanya tombol kembali */
+/* Detail untuk pembaca layar */
 .tps__detail[data-spin-keep] {
-  margin-bottom: 32px;
-}
-
-.tps__detail[data-spin-keep] .tps__back {
-  margin-top: 0;
+  margin-bottom: 0;
 }
 
 
@@ -656,13 +652,25 @@ body.is-type .tps--spin::before {
 }
 
 /* Kembali ke 360° */
-.tps__back {
-  margin-top: 20px;
-  margin-left: -2px; /* Sejajar teks */
-  padding: 0;
-  border: 0;
-  background: none;
+.tps .tps__actions .tps__back {
+  gap: 8px;
+  border: 1px solid #fff;
+  background: transparent;
   color: #fff;
+}
+
+.tps .tps__actions .tps__back:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+.tps__back[hidden] {
+  display: none;
+}
+
+.tps__back svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -826,6 +834,12 @@ body.is-type .tps--spin::before {
 
 .tps__side .tps__actions .btn {
   min-width: 160px;
+}
+
+/* Tiga tombol sebaris */
+.tps__side .tps__actions:has(.tps__back:not([hidden])) .btn {
+  flex: 1;
+  min-width: 0;
 }
 
 /* Tombol selebar layar */

@@ -727,7 +727,7 @@ test('a type tab\'s zoom image goes to the 360° tabs as the original file and a
 
     $html = $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        ->assertSeeInOrder(['data-spin-canvas', 'data-spin-zoom', 'data-spin-spot', 'data-spin-tabs', 'data-spin-detail data-spin-keep hidden', 'data-spin-detail-text', 'data-spin-back', '<span class="tp-back__label">Kembali</span>'], false)
+        ->assertSeeInOrder(['data-spin-canvas', 'data-spin-zoom', 'data-spin-spot', 'data-spin-tabs', 'data-spin-detail data-spin-keep hidden', 'data-spin-detail-text', 'class="tps__actions"', '<button class="btn tps__back" type="button" data-spin-back hidden>', 'Kembali', 'Galeri'], false)
         ->getContent();
     // Indikator zoom tersembunyi
     expect($html)->toMatch('/aria-label="Lihat Fasad" data-spin-spot\s+hidden/');
