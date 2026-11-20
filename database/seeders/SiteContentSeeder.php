@@ -180,7 +180,7 @@ class SiteContentSeeder extends Seeder
                 'handle' => Content::PROJECT_CATEGORIES,
                 'title' => 'Kategori Proyek',
                 'collections' => ['projects'],
-                'collection_pages' => ['projects' => ['single' => true, 'pages' => false, 'index' => false]],
+                'collection_pages' => ['projects' => ['single' => false, 'pages' => false, 'index' => false]],
             ]],
             'terms' => [
                 ['taxonomy' => Content::PROJECT_CATEGORIES, 'slug' => 'commercial', 'translations' => ['id' => ['title' => 'Commercial', 'slug' => 'commercial']]],

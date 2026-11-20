@@ -349,11 +349,15 @@ final class Content
     {
         $taxonomy = Taxonomy::query()->where('handle', self::PROJECT_CATEGORIES)->first();
         $terms = $taxonomy?->terms()->orderBy('sort_order')->orderBy('id')->get()->keyBy('id') ?? collect();
-        // Kategori tiap proyek
-        $byTerm = collect($projects)->groupBy(function (EntryTranslation $project) use ($taxonomy, $terms): int {
-            $id = $taxonomy === null ? 0 : (int) $project->entry->terms()->where('taxonomy_id', $taxonomy->id)->value('sunrice_terms.id');
+        // Bisa banyak kategori
+        $byTerm = collect($projects)->groupBy(function (EntryTranslation $project) use ($taxonomy, $terms): array {
+            $ids = $taxonomy === null ? [] : $project->entry->terms()->where('taxonomy_id', $taxonomy->id)->pluck('sunrice_terms.id')
+                ->map(fn (mixed $id): int => (int) $id)
+                ->filter(fn (int $id): bool => $terms->has($id))
+                ->values()
+                ->all();
 
-            return $terms->has($id) ? $id : 0;
+            return $ids === [] ? [0] : $ids;
         });
         $cards = fn (int $id): array => $byTerm[$id]->map(self::projectCard(...))->values()->all();
 

@@ -2,6 +2,7 @@
 
 use Database\Seeders\SiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Sunrice\Cms\Actions\Entries\CreateEntry;
 use Sunrice\Cms\Actions\Entries\PublishEntry;
@@ -20,8 +21,10 @@ beforeEach(function () {
 
 /**
  * Proyek berkategori
+ *
+ * @param  string|list<string>|null  $category
  */
-function publishCategorizedProject(string $title, ?string $category): void
+function publishCategorizedProject(string $title, string|array|null $category): void
 {
     $entry = app(CreateEntry::class)->handle(Collection::query()->where('handle', 'projects')->firstOrFail(), [
         'title' => $title,
@@ -68,4 +71,21 @@ test('projects without any category show without a category heading', function (
         ->assertOk()
         ->assertSee('<h3 class="prj__title">Westlake</h3>', false)
         ->assertDontSee('prj__cat', false);
+});
+
+test('a project in two categories shows under both', function () {
+    publishCategorizedProject('Westlake', ['commercial', 'residential']);
+    publishCategorizedProject('Green Park', 'residential');
+
+    $this->get('/')
+        ->assertOk()
+        ->assertSeeInOrder([
+            '<h3 class="prj__cat">Commercial</h3>', '<h4 class="prj__title">Westlake</h4>',
+            '<h3 class="prj__cat">Residential</h3>', '<h4 class="prj__title">Westlake</h4>', '<h4 class="prj__title">Green Park</h4>',
+        ], false)
+        ->assertDontSee('Lainnya');
+});
+
+test('project categories allow more than one term in the CMS', function () {
+    expect(DB::table('sunrice_collection_taxonomy')->value('single'))->toBe(0);
 });
