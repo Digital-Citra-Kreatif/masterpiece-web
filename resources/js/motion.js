@@ -129,7 +129,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
     if (items.some(({ el }) => el.tagName === 'IMG')) near.observe(root);
   });
 
-  // Deskripsi 360
+  // Teks naik per baris
   const lineSplit = (el) => SplitText.create(el, { type: 'lines', mask: 'lines', tag: 'span', linesClass: 'mo-line' });
   const rise = (lines) => gsap.fromTo(lines, { yPercent: 100 }, { yPercent: 0, duration: 1, stagger: 0.07, ease: 'expo.out' });
   /** Sekali saat terlihat */
@@ -152,28 +152,6 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObse
       timer = setTimeout(run, 200);
     });
   };
-
-  // Teks diganti skrip
-  for (const el of document.querySelectorAll('[data-spin-text]')) {
-    let shown = '';
-    let ready = false;
-    const watcher = new MutationObserver(() => ready && el.textContent !== shown && play(true));
-    const play = (animate) => {
-      watcher.disconnect();
-      shown = el.textContent;
-      if (!el.hidden && shown.trim()) {
-        el.textContent = shown;
-        const { lines } = lineSplit(el);
-        if (animate) rise(lines);
-      }
-      watcher.observe(el, { childList: true });
-    };
-    whenSeen(el, () => {
-      ready = true;
-      play(true);
-    });
-    onResize(() => ready && play(false));
-  }
 
   // Paragraf per tab
   for (const tabs of document.querySelectorAll('.tph__tabs')) {
