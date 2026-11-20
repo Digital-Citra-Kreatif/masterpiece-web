@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\CmsLayout;
 use App\Support\Content;
 use App\Support\ProjectPage;
 use Illuminate\Database\Seeder;
@@ -47,6 +48,9 @@ class SiteContentSeeder extends Seeder
                 'description' => 'Kawasan ruko dan hunian. Jelajahi kawasan, cluster, fasilitas, dan tipe unit dalam 360°.',
             ]],
         ]);
+
+        // Rapikan form CMS
+        CmsLayout::apply();
 
         $home = Collection::query()->where('handle', 'pages')->firstOrFail()
             ->entries()->whereHas('translations', fn ($query) => $query->where('slug', 'home'))->firstOrFail();
