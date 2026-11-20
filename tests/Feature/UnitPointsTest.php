@@ -150,7 +150,7 @@ test('the type form gets each 360° tab\'s first frame in repeater order for pla
         ->assertJsonPath('1.height', 600)
         ->json();
 
-    // Urut nama file; tab kosong pakai gambar tab pertama di sudutnya sendiri
+    // Urut nama file
     expect($frames[0]['src'])->toContain('-a.jpg')
         ->and($frames[2]['src'])->toContain('-b.jpg');
 });

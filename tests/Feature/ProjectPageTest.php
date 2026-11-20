@@ -108,7 +108,7 @@ test('the masterplan orbit carries the CMS points with a position as its hotspot
         // Pin penanda
         ->assertSee('class="spot spot--marker"', false)
         ->assertSee('pj-marker pj-marker--circle', false)
-        // Kembali di bawah panah
+        // Kembali bawah panah
         ->assertSeeInOrder(['data-loc-step="1"', 'scene__back scene__back--below', 'Kembali ke masterplan'], false)
         ->getContent();
 
@@ -322,9 +322,9 @@ test('the 360° section sits above Type as a contained section with pill tabs, s
     expect($tabs)->toHaveCount(3)
         ->and($names($tabs[0]['frames']))->toBe(['frame-1', 'frame-2', 'frame-10'])
         ->and($tabs[1]['frames'])->toHaveCount(1)
-        // Tab tanpa gambar memutar gambar Fasad
+        // Cadangan gambar Fasad
         ->and($tabs[2]['frames'])->toBe($tabs[0]['frames'])
-        // Sudut dibagi rata antar tab segambar, Frame awal lama diabaikan
+        // Sudut dibagi rata
         ->and([$tabs[0]['frame'], $tabs[1]['frame'], $tabs[2]['frame']])->toBe([0, 0, 1])
         ->and($tabs[0])->not->toHaveKey('config');
 });
@@ -509,7 +509,7 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
         ->assertSee('<header class="hd hd--type">', false)
         ->assertDontSee('hd__nav', false)
         ->assertSee('<a class="hd__mark" href="'.url('/projects/westlake').'" aria-label="Westlake, halaman proyek">', false)
-        // Kembali ke proyek di kanan judul, bukan di header
+        // Kembali kanan judul
         ->assertSeeInOrder(['</header>', '<div class="wrap tph__head">', 'id="type-name"', '<a class="hd__back tp-back" href="'.url('/projects/westlake').'#type-title">'], false)
         // Tanpa huruf bergulir
         ->assertSee('<span class="tp-back__label">Kembali <span class="hd__btn-more">ke Westlake</span></span>', false)
@@ -526,7 +526,7 @@ test('a project\'s type page has the project\'s logo, a button back to the proje
 
 test('a project lists its chosen types in the Types collection order, not the order they were picked', function () {
     $types = EntryTranslation::query()->whereIn('slug', ['tipe-1', 'tipe-2', 'tipe-3'])->get()->keyBy('slug');
-    // Panah CMS: tipe-3, tipe-1, tipe-2
+    // Urutan panah CMS
     foreach (['tipe-3' => 1, 'tipe-1' => 2, 'tipe-2' => 3] as $slug => $order) {
         $types[$slug]->entry->update(['sort_order' => $order]);
     }
@@ -543,7 +543,7 @@ test('a project lists its chosen types in the Types collection order, not the or
         ->assertOk()
         ->assertSeeInOrder([url('/westlake/tipe/tipe-3'), url('/westlake/tipe/tipe-1'), url('/westlake/tipe/tipe-2')], false);
 
-    // Tipe lain ikut urutan yang sama
+    // Urutan tipe sama
     $this->get('/westlake/tipe/tipe-2')
         ->assertOk()
         ->assertSeeInOrder(['id="tipe-lain"', url('/westlake/tipe/tipe-3'), url('/westlake/tipe/tipe-1')], false);
@@ -585,12 +585,12 @@ test('a project\'s type page shows the project\'s 360° tabs beside the type she
     $html = $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name"><span class="word-in" style="--i: 0">', false)
-        // Tanpa label di atas tab
+        // Tanpa label tab
         ->assertDontSee('tps__part', false)
-        // Tab menyamping hanya nama, deskripsi di bawah tab
+        // Tab hanya nama
         ->assertSeeInOrder(['class="tph__tabs tps__tab-row"', 'data-spin-tab="0">Fasad</button>', 'data-spin-tab="1">Lantai 1</button>', '</ul>', '<p class="tps__tab-text" id="type-360-text" aria-live="polite" data-spin-text>Tampak depan.</p>'], false)
         ->assertDontSee('tph__desc', false)
-        // Diputar lewat panah, geser, dan tab, tanpa sticky gulir
+        // Tanpa sticky gulir
         ->assertSee('class="tps tps--spin"', false)
         ->assertSee('data-spin="drag"', false)
         ->assertDontSee('data-spin="scroll"', false)
@@ -631,14 +631,14 @@ test('a type page\'s 360° section holds the viewer, tabs and tab text, unit lab
         ->and($viewer)->not->toContain('tps__intro')
         // Ringkasan di 360°
         ->and($viewer)->toContain('<dt>Carport</dt>')
-        // Denah di kolom kanan 360°, tanpa section denah
+        // Denah kanan 360°
         ->and($viewer)->toContain('class="tps__plans"')
         ->and($html)->not->toContain('<section class="tpd"')
         ->and(substr_count($html, 'class="tps__facts"'))->toBe(1);
     $this->get('/westlake/tipe/tipe-1')
-        // Label ruko dan ukuran di section 360, di bawah tab
+        // Label ruko 360
         ->assertSeeInOrder(['data-spin="drag"', 'class="tph__tabs tps__tab-row"', 'Tampak depan.</p>', '<div class="tps__meta">', '<p class="eyebrow tps__label">Ruko Hook</p>', '<p class="display tps__size">4,5 x 10 m</p>'], false)
-        // Dengan 360°: tanpa section keterangan
+        // Tanpa section keterangan
         ->assertDontSee('tps--about', false);
     expect(substr_count($html, 'tps__label'))->toBe(1)
         ->and(substr_count($html, 'tps__size'))->toBe(1);
@@ -693,7 +693,7 @@ test('a type tab\'s own floor plan shows in the 360° column for that tab, and t
 
     $this->get('/westlake/tipe/tipe-1')
         ->assertOk()
-        // Tab pertama tanpa denah: denah tipe tampil
+        // Cadangan denah tipe
         ->assertSeeInOrder(['data-spin-plans', 'data-spin-plan="1" hidden', 'src="'.$plan->url().'"', 'alt="Denah Lantai 1"', 'data-spin-plan-rest'], false)
         ->assertDontSee('data-spin-plan="0"', false)
         ->assertDontSee('data-spin-plan-rest hidden', false);
@@ -726,12 +726,12 @@ test('a type tab\'s zoom image goes to the 360° tabs as the original file and a
         ->assertOk()
         ->assertSeeInOrder(['data-spin-canvas', 'data-spin-zoom', 'data-spin-spot', 'data-spin-tabs', 'data-spin-detail data-spin-keep hidden', 'data-spin-detail-text', 'data-spin-back', '<span class="tp-back__label">Kembali</span>'], false)
         ->getContent();
-    // Tab pertama tanpa zoom: indikator tersembunyi
+    // Indikator zoom tersembunyi
     expect($html)->toMatch('/aria-label="Lihat Fasad" data-spin-spot\s+hidden/');
     preg_match('/data-tabs="([^"]+)"/', $html, $match);
     $parts = json_decode(html_entity_decode($match[1]), true);
 
-    // File asli, bukan konversi kecil
+    // File asli
     expect(array_column($parts, 'zoom'))->toBe([null, $zoom->url()]);
 });
 
@@ -745,7 +745,7 @@ test('a type tab\'s X/Y places its indicator and zoom target, and a tab without 
     ]]]]);
 
     $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
-    // Tab pertama: posisi awal di gambar
+    // Posisi awal gambar
     expect($html)->toContain('--spot-x: 30%; --spot-y: 72.5%');
     preg_match('/data-tabs="([^"]+)"/', $html, $match);
     $parts = json_decode(html_entity_decode($match[1]), true);
@@ -815,7 +815,7 @@ test('the project hero swaps the scroll cue for a play button that opens an uplo
         ->assertSee('data-open="iframe"', false)
         ->assertSee(e(json_encode(['src' => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0', 'title' => 'Westlake'])), false);
 
-    // Link selain YouTube: tetap petunjuk gulir
+    // Non-YouTube: petunjuk gulir
     $this->get('/projects/none')->assertOk()
         ->assertDontSee('hero__play', false)
         ->assertSee('<p class="hero__cue" aria-hidden="true">Gulir ke bawah</p>', false);
@@ -897,7 +897,7 @@ test('the masterplan opening shows up to four collage images with their labels, 
         ->getContent();
 
     expect(substr_count($html, 'data-mp-tile '))->toBe(4)
-        // Kiri atas, kiri bawah, kanan atas, kanan bawah
+        // Empat sudut
         ->and(preg_match_all('/data-mp-tile data-x="(-?1)" data-y="(-?1)"/', $html, $found))->toBe(4)
         ->and(array_map(null, $found[1], $found[2]))->toBe([['-1', '-1'], ['-1', '1'], ['1', '-1'], ['1', '1']]);
 
@@ -922,7 +922,7 @@ test('a type card shows the first frame of the type\'s own 360° and falls back 
         'hero' => ['heading' => 'Westlake'],
         'types' => ['title' => 'Type', 'units' => $types->pluck('entry_id')->all()],
     ]);
-    // Tipe 1: 360° dan thumbnail; tipe 2: thumbnail saja
+    // Thumbnail per tipe
     $types['tipe-1']->update(['data' => [...$types['tipe-1']->fresh()->data, 'project' => $project->entry_id, 'image' => $thumbnail->id, 'turntable' => ['tabs' => [
         ['name' => 'Fasad', 'images' => [$facade->id], 'frame' => null],
     ]]]]);
@@ -936,7 +936,7 @@ test('a type card shows the first frame of the type\'s own 360° and falls back 
         ->and($cards[1][0])->toContain('fasad-depan')
         ->and($cards[1][1])->toContain('denah-kecil');
 
-    // Tipe lain di halaman tipe ikut
+    // Tipe lain ikut
     $other = $this->get('/westlake/tipe/tipe-2')->assertOk()->getContent();
     preg_match_all('/class="card__img">\s*<img src="([^"]+)"/', $other, $others);
 

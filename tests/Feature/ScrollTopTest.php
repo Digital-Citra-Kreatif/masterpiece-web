@@ -14,7 +14,7 @@ beforeEach(function () {
 });
 
 /**
- * Simpan tombol ke atas di Globals → Situs
+ * Simpan tombol atas
  */
 function saveScrollTop(bool $active): void
 {

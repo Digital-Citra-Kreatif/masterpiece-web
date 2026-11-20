@@ -1,3 +1,3 @@
 <?php
 
-// Rute situs dari CMS
+// Rute situs CMS

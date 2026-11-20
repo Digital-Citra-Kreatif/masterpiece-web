@@ -14,7 +14,7 @@ beforeEach(function () {
 });
 
 /**
- * Simpan pengaturan preload di Globals → Situs
+ * Simpan pengaturan preload
  *
  * @param  array<string, mixed>  $values
  */

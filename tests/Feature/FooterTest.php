@@ -111,7 +111,7 @@ test('a project footer uses the fields filled in on the project and falls back t
         ->assertDontSee('Deskripsi global.')
         ->assertSee('href="tel:+62811000111"', false)
         ->assertDontSee('href="tel:+62215550100"', false)
-        // Kosong di proyek: global
+        // Cadangan global
         ->assertSee('Alamat global')
         ->assertSee('Jam global')
         ->assertSee('href="mailto:global@example.com"', false);

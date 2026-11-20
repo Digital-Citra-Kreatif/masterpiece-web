@@ -35,7 +35,7 @@ beforeEach(function () {
     $this->project = orbitProject();
 });
 
-/** Proyek terbit dengan satu titik */
+/** Proyek satu titik */
 function orbitProject(): EntryTranslation
 {
     $translation = app(CreateEntry::class)->handle(Collection::query()->where('handle', 'projects')->firstOrFail(), ['title' => 'Westlake', 'slug' => 'westlake', 'locale' => 'id', 'data' => [
@@ -73,7 +73,7 @@ function frameZip(array $names, int $width = 320, int $height = 180): string
 }
 
 /**
- * Kirim ZIP per potongan
+ * Kirim ZIP terpotong
  *
  * @return list<TestResponse>
  */
@@ -116,7 +116,7 @@ test('chunks out of order are refused', function () {
 });
 
 test('processing makes both sizes in file name order with a manifest, then retracks the points', function () {
-    // Urut alami: f_2 sebelum f_10
+    // Urut alami
     $names = array_map(fn (int $n): string => "f_{$n}.jpg", [10, 2, 1, 3, 4, 5, 6, 7, 8, 9]);
     Storage::disk('local')->put(OrbitFrames::upload($this->project->entry_id, 'masterplan').'.zip', (string) file_get_contents(frameZip($names)));
 
@@ -137,7 +137,7 @@ test('processing makes both sizes in file name order with a manifest, then retra
 test('a ZIP with too few or mixed size frames fails with a message for the admin', function (array $names, int $height, string $message) {
     $zip = frameZip($names);
     if ($height !== 180) {
-        // Satu frame beda ukuran
+        // Frame beda ukuran
         $other = new ZipArchive;
         $other->open($zip);
         $image = imagecreatetruecolor(320, $height);
@@ -181,7 +181,7 @@ test('points are tracked on the uploaded frames, and sample frame tracks are not
     (new ProcessOrbitFrames($this->project->entry_id, 'masterplan'))->handle();
     $base = OrbitFrames::base($this->project->entry_id, 'masterplan');
     $placed = ['masterplan-1' => [50.0, 50.0]];
-    // Jalur lama dari frame contoh
+    // Jalur frame lama
     Storage::put('tracks/entry-'.$this->project->entry_id.'.json', json_encode(['masterplan' => ['hash' => md5('lama'), 'tracker' => 2, 'points' => $placed, 'tracks' => ['masterplan-1' => [[1, 1]]]]]));
 
     expect(ProjectTracks::for($this->project->entry_id, 'masterplan', $placed))->toBeNull();
@@ -216,7 +216,7 @@ test('guests and editors without update access cannot upload frames', function (
         ->assertNotFound();
 });
 
-/** Isi field Gambar Masterplan lalu simpan */
+/** Simpan Gambar Masterplan */
 function saveSceneMedia(EntryTranslation $translation, ?int $mediaId): void
 {
     $fresh = $translation->fresh();
@@ -225,7 +225,7 @@ function saveSceneMedia(EntryTranslation $translation, ?int $mediaId): void
     $fresh->forceFill(['draft_data' => $data])->save();
 }
 
-/** ZIP frame di media library */
+/** ZIP media library */
 function zipMedia(): Media
 {
     return app(UploadMedia::class)->handle(new UploadedFile(frameZip(array_map(fn (int $n): string => "f_{$n}.jpg", range(1, 8))), 'masterplan-orbit.zip', 'application/zip', null, true), []);
@@ -241,7 +241,7 @@ test('a ZIP chosen in the masterplan image field is queued once as the frames so
     expect(OrbitFrames::status($this->project->entry_id, 'masterplan'))->toMatchArray(['state' => 'queued', 'source' => $zip->id])
         ->and(Storage::disk('local')->size(OrbitFrames::upload($this->project->entry_id, 'masterplan').'.zip'))->toBe($zip->size);
 
-    // Diproses, lalu tampil di halaman
+    // Proses lalu tampil
     (new ProcessOrbitFrames($this->project->entry_id, 'masterplan'))->handle();
     expect(OrbitFrames::status($this->project->entry_id, 'masterplan'))->toMatchArray(['state' => 'ready', 'count' => 8, 'source' => $zip->id]);
     $this->get('/projects/westlake')->assertSee('data-base="'.rtrim(asset(OrbitFrames::base($this->project->entry_id, 'masterplan')), '/').'/"', false);
@@ -279,6 +279,6 @@ test('a point\'s zoom image goes to its hotspot and adds the zoom layer, points 
     preg_match('/data-spots="([^"]+)"/', $html, $match);
     $spots = json_decode(html_entity_decode($match[1]), true);
 
-    // File asli, bukan konversi kecil
+    // File asli
     expect(array_values($spots)[0]['zoom'])->toBe($zoom->url());
 });

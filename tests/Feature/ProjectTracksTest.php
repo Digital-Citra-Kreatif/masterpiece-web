@@ -96,7 +96,7 @@ test('while a moved point waits for tracking, unchanged points keep their path a
         'masterplan-2' => [[128, 72], [130, 72]],
     ]]]));
 
-    // Manifest Kawasan 1280 x 720: 10% = 128 x 72 px
+    // Manifest Kawasan
     $tracks = ProjectTracks::for(7, 'masterplan', ['masterplan-1' => [60.0, 60.0], 'masterplan-2' => [10.0, 10.0], 'masterplan-3' => [5.0, 5.0]]);
 
     expect($tracks)->toBe([

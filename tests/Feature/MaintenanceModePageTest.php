@@ -16,7 +16,7 @@ beforeEach(function () {
 });
 
 /**
- * Simpan global Maintenance Mode
+ * Simpan Maintenance Mode
  *
  * @param  array<string, mixed>  $values
  */
@@ -35,7 +35,7 @@ test('an active maintenance mode shows its title, description and a countdown on
             ->assertSee('<main class="nf nf--mt">', false)
             ->assertSee('<h1 class="nf__title">Kami sedang berbenah</h1>', false)
             ->assertSee('Situs dibuka lagi segera.')
-            // 1 hari 4 jam 30 menit, jam CMS dalam WIB
+            // Jam CMS WIB
             ->assertSee('aria-label="Dibuka kembali 2 November 2026 pukul 14.30 WIB" data-countdown="102600"', false)
             ->assertSeeInOrder(['>01<', 'Hari', '>04<', 'Jam', '>30<', 'Menit', '>00<', 'Detik'], false)
             ->assertDontSee('Perkiraan kembali')

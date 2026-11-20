@@ -25,7 +25,7 @@ beforeEach(function () {
 });
 
 /**
- * Simpan kursor kartu di Globals → Situs
+ * Simpan kursor kartu
  *
  * @param  array<string, mixed>  $extra
  */

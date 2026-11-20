@@ -161,12 +161,12 @@ test('a type page without a project shows its title, specs, floor plans, gallery
     $this->get('/-/tipe/tipe-6')
         ->assertOk()
         ->assertSee('<h1 class="display tph__name" id="type-name"><span class="word-in" style="--i: 0">Tipe</span> <span class="word-in" style="--i: 1">6</span></h1>', false)
-        // Judul parallax ke section bawahnya
+        // Judul parallax
         ->assertSeeInOrder(['<div data-hero-parallax>', '<section class="tph tph--title" aria-labelledby="type-name" data-hero>'], false)
         ->assertDontSee('data-turntable', false)
         ->assertDontSee('data-parts', false)
         ->assertSeeInOrder(['<dl class="tps__facts">', '<dt>LT</dt>', '140 m²', '<dt>LB</dt>', '240 m²'], false)
-        // Tanpa info tambahan, tidak ada tabel info
+        // Tanpa tabel info
         ->assertDontSee('tps__specs', false)
         ->assertSee('<section class="tpd" aria-label="Denah" data-view-cursor>', false)
         ->assertSee('data-view-target', false)

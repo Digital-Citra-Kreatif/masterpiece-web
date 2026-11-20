@@ -19,7 +19,7 @@ beforeEach(function () {
 });
 
 /**
- * Proyek terbit dengan kategori
+ * Proyek berkategori
  */
 function publishCategorizedProject(string $title, ?string $category): void
 {

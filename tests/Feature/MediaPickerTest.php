@@ -21,7 +21,7 @@ beforeEach(function () {
 test('the media picker returns the chosen files for more than 100 ids, in their order', function () {
     $first = app(UploadMedia::class)->handle(UploadedFile::fake()->image('f_001.jpg', 40, 30), []);
     $second = app(UploadMedia::class)->handle(UploadedFile::fake()->image('f_002.jpg', 40, 30), []);
-    // 150 id, sebagian tidak ada
+    // 150 id campuran
     $ids = [$second->id, ...range(900001, 900148), $first->id];
 
     $response = $this->actingAs($this->admin)->getJson('/admin/media/picker?'.http_build_query(['ids' => $ids]));
