@@ -156,8 +156,15 @@
 /* Header menempel */
 .hd.is-stuck,
 .is-type .hd--type.is-stuck {
+  background: rgb(255 255 255 / 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px); /* Teks tetap terbaca */
+  box-shadow: none;
+}
+
+/* Menu terbuka tetap solid */
+.hd.is-stuck.is-menu-open {
   background: #fff;
-  box-shadow: 0 1px 0 var(--rule);
 }
 
 .hd__inner {

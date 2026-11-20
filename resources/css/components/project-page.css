@@ -116,6 +116,7 @@ button.pj-frame:focus-visible {
 .hd--emblem.is-stuck .hd__mark {
   height: var(--header-stuck-h);
   padding-block: 6px;
+  background: transparent;
   box-shadow: none;
 }
 
