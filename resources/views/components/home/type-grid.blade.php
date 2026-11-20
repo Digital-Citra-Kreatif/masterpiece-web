@@ -2,9 +2,9 @@
 @props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'top' => null, 'before' => null, 'after' => null])
 
 @php($project = $variant === 'project')
-@php($cursor = $project ? $site['cardCursor'] : null)
+@php($cursor = $project ? $site['cardCursor']['type'] : null)
 
-<section id="{{ $id }}" @class(['types', 'types--project' => $project]) @if ($cursor) data-card-cursor="{{ $cursor }}" @endif @if (in_array($cursor, ['zoom', 'view'], true)) data-view-cursor @endif aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" @class(['types', 'types--project' => $project]) @if ($cursor) data-card-cursor="{{ $cursor }}" @endif @if ($cursor && $cursor !== 'default') data-view-cursor @endif aria-labelledby="{{ $id }}-title">
   @if ($top)
     <div class="types__top">
       <div class="wrap">{{ $top }}</div>
@@ -64,7 +64,7 @@
     {{ $after }}
   </div>
 
-  @if (in_array($cursor, ['zoom', 'view'], true))
-    <x-view-cursor :icon="$cursor === 'zoom'" />
+  @if ($cursor && $cursor !== 'default')
+    <x-view-cursor :icon="$cursor === 'zoom'" :image="$site['cardCursor']['icon']" :text="$site['cardCursor']['text']" />
   @endif
 </section>

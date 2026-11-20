@@ -1,9 +1,9 @@
 {{-- Grid proyek --}}
 @props(['projects', 'heading', 'id' => 'projects'])
 
-@php($cursor = $site['cardCursor'])
+@php($cursor = $site['cardCursor']['type'])
 
-<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-card-cursor="{{ $cursor }}" @if (in_array($cursor, ['zoom', 'view'], true)) data-view-cursor @endif>
+<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-card-cursor="{{ $cursor }}" @if ($cursor !== 'default') data-view-cursor @endif>
   <div class="prj__head">
     <div class="wrap">
       <x-sheet-header id="{{ $id }}-title" :title="$heading['title']" :intro="$heading['intro']" />
@@ -34,7 +34,7 @@
       @endforeach
     </ul>
   </div>
-  @if (in_array($cursor, ['zoom', 'view'], true))
-    <x-view-cursor :icon="$cursor === 'zoom'" />
+  @if ($cursor !== 'default')
+    <x-view-cursor :icon="$cursor === 'zoom'" :image="$site['cardCursor']['icon']" :text="$site['cardCursor']['text']" />
   @endif
 </section>

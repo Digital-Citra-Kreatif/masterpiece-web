@@ -25,12 +25,13 @@ final class Content
         ['value' => 'zoom', 'label' => 'Kaca pembesar'],
         ['value' => 'view', 'label' => 'Lingkaran "Lihat"'],
         ['value' => 'default', 'label' => 'Kursor biasa'],
+        ['value' => 'custom', 'label' => 'Custom (ikon atau teks)'],
     ];
 
     /**
      * Data situs bersama
      *
-     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, preload: array{active: bool, hours: int}, scrollTop: bool, cardCursor: 'zoom'|'view'|'default',showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
+     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, preload: array{active: bool, hours: int}, scrollTop: bool, cardCursor: array{type: 'zoom'|'view'|'default'|'custom', icon: ?string, text: ?string}, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
      */
     public static function site(): array
     {
@@ -51,8 +52,7 @@ final class Content
                 ],
                 // Default tersembunyi
                 'scrollTop' => (bool) ($settings['scroll_top_active'] ?? false),
-                // Default kaca pembesar
-                'cardCursor' => in_array($settings['card_cursor'] ?? null, array_column(self::CARD_CURSOR_OPTIONS, 'value'), true) ? $settings['card_cursor'] : 'zoom',
+                'cardCursor' => self::cardCursor($settings),
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...self::headerLogo($settings), 'alt' => Cms::site()->name()],
                 'nav' => self::nav(),
@@ -63,6 +63,28 @@ final class Content
                 ],
             ];
         });
+    }
+
+    /**
+     * Kursor kartu, custom kosong: kaca pembesar
+     *
+     * @param  array<string, mixed>  $settings
+     * @return array{type: 'zoom'|'view'|'default'|'custom', icon: ?string, text: ?string}
+     */
+    private static function cardCursor(array $settings): array
+    {
+        $type = in_array($settings['card_cursor'] ?? null, array_column(self::CARD_CURSOR_OPTIONS, 'value'), true) ? $settings['card_cursor'] : 'zoom';
+        if ($type !== 'custom') {
+            return ['type' => $type, 'icon' => null, 'text' => null];
+        }
+
+        $icon = $settings['card_cursor_icon'] ?? null;
+        $icon = $icon instanceof Media && $icon->isImage() ? $icon->url() : null;
+        $text = filled($settings['card_cursor_text'] ?? null) ? trim((string) $settings['card_cursor_text']) : null;
+
+        return $icon === null && $text === null
+            ? ['type' => 'zoom', 'icon' => null, 'text' => null]
+            : ['type' => 'custom', 'icon' => $icon, 'text' => $icon === null ? $text : null];
     }
 
     /**

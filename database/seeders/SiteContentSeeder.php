@@ -162,6 +162,8 @@ class SiteContentSeeder extends Seeder
                     $this->field('preload_hours', 'number', ['min' => 1, 'max' => 720], ['label' => 'Tampil lagi setelah (jam)', 'translatable' => false, 'width' => 50, 'instructions' => 'Kosong: 6 jam.']),
                     $this->field('scroll_top_active', 'toggle', ['default' => false], ['label' => 'Tombol ke atas', 'translatable' => false, 'width' => 50, 'instructions' => 'Tombol kembali ke atas di kanan bawah.']),
                     $this->field('card_cursor', 'select', ['options' => Content::CARD_CURSOR_OPTIONS, 'default' => 'zoom'], ['label' => 'Kursor kartu', 'translatable' => false, 'width' => 50, 'instructions' => 'Kursor di atas kartu proyek dan tipe unit.']),
+                    $image('card_cursor_icon', ['label' => 'Ikon kursor', 'width' => 50, 'instructions' => 'SVG atau PNG transparan, tampil putih. Diisi: teks diabaikan.', 'condition' => ['field' => 'card_cursor', 'operator' => 'equals', 'value' => 'custom']]),
+                    $text('card_cursor_text', ['label' => 'Teks kursor', 'translatable' => false, 'width' => 50, 'instructions' => 'Dipakai bila ikon kosong.', 'condition' => ['field' => 'card_cursor', 'operator' => 'equals', 'value' => 'custom']]),
                 ]],
                 $this->projectBlueprint(),
                 $this->footerBlueprint(),
