@@ -11,7 +11,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Support\Access;
 use Sunrice\Cms\Support\Locales;
 
-/** Gambar awal tiap tab 360° Tipe untuk picker titik */
+/** Gambar awal tab */
 class TypeFramesController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
@@ -23,9 +23,9 @@ class TypeFramesController extends Controller
             ->where('entry_id', $request->integer('type'))
             ->where('locale', Locales::default())
             ->first();
-        // Draf bila ada, media sudah jadi objek
+        // Draf diutamakan
         $data = $translation ? $translation->values(new HydrationContext($translation->locale, preview: filled($translation->draft_data))) : [];
-        // Nama kosong tetap dihitung agar urutan sama dengan repeater
+        // Urutan ikut repeater
         $tabs = ProjectPage::turntableTabs(['tabs' => collect($data['turntable']['tabs'] ?? [])
             ->filter(fn (mixed $row): bool => is_array($row))
             ->map(fn (array $row): array => blank($row['name'] ?? null) ? [...$row, 'name' => '-'] : $row)

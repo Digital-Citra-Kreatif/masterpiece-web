@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Storage;
 use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Support\Access;
 
-/** Unggah ZIP frame orbit per potongan */
+/** Unggah ZIP bertahap */
 class OrbitUploadController extends Controller
 {
-    /** Ukuran potongan dari browser */
+    /** Ukuran potongan */
     public const CHUNK_BYTES = 1024 * 1024;
 
     /** Batas ZIP */
@@ -85,7 +85,7 @@ class OrbitUploadController extends Controller
     }
 
     /**
-     * Status dan frame aktif
+     * Status frame aktif
      *
      * @return array{state: string, message: ?string, count: ?int, active: bool}
      */

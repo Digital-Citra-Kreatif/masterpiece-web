@@ -20,7 +20,7 @@ final class Content
     /** Taxonomy kategori proyek */
     public const PROJECT_CATEGORIES = 'project_categories';
 
-    /** Jam Maintenance Mode di CMS dibaca sebagai WIB */
+    /** Zona waktu maintenance */
     public const MAINTENANCE_TIMEZONE = 'Asia/Jakarta';
 
     /** Pilihan kursor kartu */
@@ -48,7 +48,7 @@ final class Content
                 'description' => Cms::site()->descriptionIn(),
                 'favicon' => self::favicon(),
                 'protectMedia' => (bool) ($settings['protect_media'] ?? false),
-                // Belum pernah disimpan: aktif, 6 jam
+                // Bawaan 6 jam
                 'preload' => [
                     'active' => ($settings['preload_active'] ?? true) !== false,
                     'hours' => is_numeric($settings['preload_hours'] ?? null) && $settings['preload_hours'] >= 1 ? (int) $settings['preload_hours'] : 6,
@@ -69,7 +69,7 @@ final class Content
     }
 
     /**
-     * Kursor kartu, custom kosong: kaca pembesar
+     * Kursor kartu
      *
      * @param  array<string, mixed>  $settings
      * @return array{type: 'zoom'|'view'|'default'|'custom', icon: ?string, text: ?string}
@@ -129,7 +129,7 @@ final class Content
     }
 
     /**
-     * Isi halaman maintenance, null bila tidak aktif
+     * Isi halaman maintenance
      *
      * @return array{title: string, description: ?string, countdown: ?array{left: int, label: string, parts: array{days: int, hours: int, minutes: int, seconds: int}}}|null
      */
@@ -140,7 +140,7 @@ final class Content
             return null;
         }
 
-        // Waktu kembali; sudah lewat: tanpa hitung mundur
+        // Waktu kembali
         $date = filled($values['date'] ?? null) ? rescue(fn (): Carbon => Carbon::parse((string) $values['date'], self::MAINTENANCE_TIMEZONE), null, false) : null;
         $left = $date ? max(0, (int) now()->diffInSeconds($date, false)) : 0;
 
@@ -148,7 +148,7 @@ final class Content
             'title' => filled($values['heading'] ?? null) ? (string) $values['heading'] : 'Situs sedang dalam perbaikan',
             'description' => filled($values['description'] ?? null) ? (string) $values['description'] : null,
             'countdown' => $left > 0 ? [
-                'left' => $left, // Detik, lepas dari jam perangkat
+                'left' => $left, // Sisa detik
                 // Untuk pembaca layar
                 'label' => $date->locale('id')->translatedFormat('j F Y').($date->isStartOfDay() ? '' : ' pukul '.$date->format('H.i').' WIB'),
                 'parts' => [
@@ -162,7 +162,7 @@ final class Content
     }
 
     /**
-     * Isi footer, isian proyek menimpa global
+     * Isi footer
      *
      * @param  array<string, mixed>  $project
      * @return array{logo: ?array{src: string, width: ?int, height: ?int}, description: ?string, address: ?string, hours: ?string, contactTitle: string, hoursTitle: string, phone: ?array{label: string, href: string}, email: ?array{label: string, href: string}, copyright: string}
@@ -188,13 +188,13 @@ final class Content
             'hoursTitle' => $global('hours_title') ?? 'Jam operasional',
             'phone' => $phone ? ['label' => $phone, 'href' => 'tel:'.preg_replace('/[^0-9+]/', '', $phone)] : null,
             'email' => $email ? ['label' => $email, 'href' => 'mailto:'.$email] : null,
-            // Tahun otomatis, nama dari Settings → Site
+            // Teks hak cipta
             'copyright' => '© '.date('Y').' '.Cms::site()->name(),
         ];
     }
 
     /**
-     * Link header dari CMS → Menus
+     * Link header
      *
      * @return list<array{href: string, label: string, active: bool, newTab: bool}>
      */
@@ -229,11 +229,11 @@ final class Content
             'hero' => [
                 ...$hero,
                 'id' => self::cssId($cmsHero['css_id'] ?? null),
-                // Panah ke grid proyek
+                // Panah grid proyek
                 'scrollTo' => $cards !== [] ? "#{$projectsId}" : null,
                 'title' => filled($cmsHero['heading'] ?? null) ? $cmsHero['heading'] : $hero['title'],
                 'subtitle' => $cmsHero === [] ? $hero['subtitle'] : ($cmsHero['description'] ?? ''),
-                // Video di atas gambar
+                // Video utama
                 ...match (true) {
                     $video !== null => ['background' => 'video', 'teaser' => $video->url(), 'cover' => $image?->url()],
                     $image !== null => ['background' => 'slider', 'slides' => [['type' => 'image', 'src' => $image->url(), 'alt' => $image->altIn() ?? '']]],
@@ -304,7 +304,7 @@ final class Content
         $floors = is_numeric($values['floors'] ?? null) && $values['floors'] > 0 ? (string) (int) $values['floors'] : null;
         $card = self::card($entry, $values);
         $project = ProjectPage::forType($entry, $values['project'] ?? null);
-        // 360° tipe, kosong: 360° proyek
+        // 360° tipe
         $turntable = collect(ProjectPage::turntableTabs(is_array($values['turntable'] ?? null) ? $values['turntable'] : []))
             ->map(fn (array $tab): array => Arr::except($tab, 'source'))
             ->all();
@@ -318,7 +318,7 @@ final class Content
             'dimensions' => filled($values['dimensions'] ?? null) ? (string) $values['dimensions'] : null,
             // Ringkasan atas
             'facts' => [
-                // LT dan LB boleh kosong
+                // LT/LB opsional
                 ...$card['lt'] !== null ? [['LT', "{$card['lt']} m²"]] : [],
                 ...$card['lb'] !== null ? [['LB', "{$card['lb']} m²"]] : [],
                 ...$floors !== null ? [['Lantai', $floors]] : [],
@@ -326,7 +326,7 @@ final class Content
                 ...filled($values['bathrooms'] ?? null) ? [['KM', (string) $card['bathrooms']]] : [],
                 ...collect($values['summary_extra'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->all(),
             ],
-            // Hanya info tambahan; luas, lantai, kamar sudah di ringkasan
+            // Info tambahan
             'info' => collect($values['info_rows'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
             'denah' => $denah->all(),
             'buildingSpecs' => collect($values['building_specs'] ?? [])->map(fn (array $row): array => [$row['label'], $row['value']])->values()->all(),
@@ -340,7 +340,7 @@ final class Content
     }
 
     /**
-     * Kartu proyek per kategori, tanpa kategori di akhir
+     * Proyek per kategori
      *
      * @param  list<EntryTranslation>  $projects
      * @return list<array{title: ?string, cards: list<array{name: string, url: string, image: ?string, logo: ?string, description: ?string}>}>
@@ -349,7 +349,7 @@ final class Content
     {
         $taxonomy = Taxonomy::query()->where('handle', self::PROJECT_CATEGORIES)->first();
         $terms = $taxonomy?->terms()->orderBy('sort_order')->orderBy('id')->get()->keyBy('id') ?? collect();
-        // Kategori tiap proyek, 0: tanpa kategori
+        // Kategori tiap proyek
         $byTerm = collect($projects)->groupBy(function (EntryTranslation $project) use ($taxonomy, $terms): int {
             $id = $taxonomy === null ? 0 : (int) $project->entry->terms()->where('taxonomy_id', $taxonomy->id)->value('sunrice_terms.id');
 
@@ -361,7 +361,7 @@ final class Content
             ->filter(fn ($term): bool => $byTerm->has($term->id))
             ->map(fn ($term): array => ['title' => $term->title(), 'cards' => $cards($term->id)])
             ->values()
-            // Semua tanpa kategori: tanpa judul
+            // Tanpa judul kategori
             ->when($byTerm->has(0), fn ($groups) => $groups->push(['title' => $groups->isEmpty() ? null : 'Lainnya', 'cards' => $cards(0)]))
             ->all();
     }
@@ -433,7 +433,7 @@ final class Content
     }
 
     /**
-     * Logo header dari Globals Situs, cadangan config
+     * Logo header
      *
      * @param  array<string, mixed>  $settings
      * @return array{light: string, dark: string, width: int, height: int}
@@ -457,7 +457,7 @@ final class Content
     }
 
     /**
-     * Ukuran varian large (lebar maks 1600)
+     * Varian large
      *
      * @return array{w: ?int, h: ?int}
      */
@@ -472,7 +472,7 @@ final class Content
         return $w > 1600 ? ['w' => 1600, 'h' => (int) round($h * 1600 / $w)] : ['w' => $w, 'h' => $h];
     }
 
-    /** CSS ID dari CMS, tanpa # */
+    /** CSS ID */
     private static function cssId(?string $value): ?string
     {
         $id = Str::slug(ltrim(trim((string) $value), '#'));

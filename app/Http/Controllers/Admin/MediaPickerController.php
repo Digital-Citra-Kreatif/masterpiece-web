@@ -9,15 +9,15 @@ use Illuminate\Http\Request;
 use Sunrice\Admin\Http\Controllers\MediaController;
 use Sunrice\Admin\Media\Media;
 
-/** Media picker tanpa batas 100 id */
+/** Media picker lengkap */
 class MediaPickerController extends Controller
 {
-    /** Batas id per permintaan */
+    /** Batas id */
     public const MAX_IDS = 500;
 
     public function __invoke(Request $request): JsonResponse
     {
-        // Selain daftar id: bawaan Sunrice
+        // Bawaan Sunrice
         if (! $request->has('ids')) {
             return app(MediaController::class)->picker($request);
         }

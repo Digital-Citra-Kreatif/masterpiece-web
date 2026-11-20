@@ -11,7 +11,7 @@ use Sunrice\Cms\Models\Entry;
 use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Support\Locales;
 
-/** ZIP di field Gambar jadi frame 360° */
+/** ZIP jadi frame */
 final class OrbitZips
 {
     /** Setelah simpan draft */
@@ -56,7 +56,7 @@ final class OrbitZips
                 OrbitFrames::setStatus($entryId, $section, 'queued');
                 ProcessOrbitFrames::dispatch($entryId, $section);
             } elseif ($zip === null && $source !== null) {
-                // ZIP dilepas dari field
+                // ZIP dilepas
                 OrbitFrames::clear($entryId, $section);
                 ProcessOrbitFrames::retrack($entryId);
             }

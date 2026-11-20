@@ -10,7 +10,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 /** Jalur titik proyek */
 final class ProjectTracks
 {
-    /** Versi pelacak; naikkan agar semua titik dilacak ulang */
+    /** Versi pelacak */
     private const TRACKER = 4;
 
     /** @var array<string, array<string, mixed>> manifest per folder frame */
@@ -30,7 +30,7 @@ final class ProjectTracks
     }
 
     /**
-     * Folder frame proyek: unggahan ZIP, atau contoh
+     * Folder frame proyek
      *
      * @return array<string, string> section handle => frame folder under public/
      */
@@ -78,19 +78,19 @@ final class ProjectTracks
         if (($stored['hash'] ?? null) === self::hash($section, $placed, $base)) {
             return $stored['tracks'];
         }
-        // Frame lain, jalur tak berlaku
+        // Frame berbeda
         if (! self::sameFrames($section, $stored, $base)) {
             return null;
         }
 
-        // Per titik sambil menunggu pelacakan ulang
+        // Jalur sementara
         $tracks = self::reuse($base, $placed, $stored);
 
         return $tracks === [] ? null : $tracks;
     }
 
     /**
-     * Jalur lama yang masih bisa dipakai: titik sama dipakai utuh, titik geser ikut digeser
+     * Jalur lama terpakai
      *
      * @param  array<string, array{0: float, 1: float}>  $placed
      * @param  array{tracks?: array<string, list<array{0: int, 1: int}|null>>, points?: array<string, array{0: float, 1: float}>}  $stored
@@ -124,18 +124,18 @@ final class ProjectTracks
     {
         $file = self::file($translation->entry_id);
         $stored = self::stored($translation->entry_id, (string) $translation->slug);
-        // File lama per slug
+        // Cadangan per slug
         $changed = ! Storage::exists($file);
 
         foreach (self::bases($translation->entry_id) as $section => $base) {
-            // Gambar diam tanpa jalur
+            // Gambar diam
             if ($base === self::sections()[$section] && filled($translation->data[$section]['image'] ?? null)) {
                 continue;
             }
             $placed = self::placed($translation->data[$section]['points'] ?? [], $section);
             $hash = self::hash($section, $placed, $base);
             if (($stored[$section]['hash'] ?? null) === $hash) {
-                // File lama tanpa posisi titik
+                // File tanpa posisi
                 if (! isset($stored[$section]['points'])) {
                     $stored[$section]['points'] = $placed;
                     $changed = true;
@@ -143,7 +143,7 @@ final class ProjectTracks
 
                 continue;
             }
-            // Lacak ulang hanya titik yang berubah
+            // Lacak titik berubah
             $fresh = ($stored[$section]['tracker'] ?? 1) === self::TRACKER && self::sameFrames($section, $stored[$section] ?? [], $base);
             $old = $fresh ? ($stored[$section]['points'] ?? []) : [];
             $kept = [];
@@ -190,7 +190,7 @@ final class ProjectTracks
     }
 
     /**
-     * Posisi sama (JSON menyimpan 50.0 sebagai 50)
+     * Posisi sama
      *
      * @param  array{0: float|int, 1: float|int}|null  $a
      * @param  array{0: float, 1: float}  $b
@@ -227,7 +227,7 @@ final class ProjectTracks
     }
 
     /**
-     * Jalur dari frame yang sama (file lama: frame contoh)
+     * Frame jalur sama
      *
      * @param  array{base?: string}  $stored
      */
@@ -237,7 +237,7 @@ final class ProjectTracks
     }
 
     /**
-     * Per entri, cadangan file lama per slug
+     * Jalur per entri
      *
      * @return array<string, array{hash: string, tracker?: int, points?: array<string, array{0: float, 1: float}>, tracks: array<string, list<array{0: float, 1: float}|null>>}>
      */
@@ -282,7 +282,7 @@ final class ProjectTracks
         return true;
     }
 
-    /** Tetap walau slug proyek diganti */
+    /** Tetap antar slug */
     private static function file(int $entryId): string
     {
         return "tracks/entry-{$entryId}.json";

@@ -7,10 +7,10 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/** Halaman maintenance dari global CMS */
+/** Halaman maintenance */
 class MaintenanceMode
 {
-    /** Tetap jalan saat maintenance */
+    /** Pengecualian maintenance */
     private const OPEN = ['admin', 'admin/*', 'up'];
 
     /**
@@ -18,7 +18,7 @@ class MaintenanceMode
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Admin login tetap melihat situs
+        // Admin tetap masuk
         if ($request->is(...self::OPEN) || $request->user() !== null) {
             return $next($request);
         }

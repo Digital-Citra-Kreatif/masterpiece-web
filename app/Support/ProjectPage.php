@@ -12,7 +12,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 final class ProjectPage
 {
     /**
-     * Peta warna Global Style
+     * Peta warna global
      *
      * @var array<string, string>
      */
@@ -46,7 +46,7 @@ final class ProjectPage
     ];
 
     /**
-     * Peta font Global Style
+     * Peta font global
      *
      * @var array<string, string>
      */
@@ -96,9 +96,9 @@ final class ProjectPage
 
         return [
             'title' => (string) $entry->title,
-            // Meta dari deskripsi kartu
+            // Meta deskripsi kartu
             'description' => filled($values['card']['description'] ?? null) ? (string) $values['card']['description'] : null,
-            // Background halaman ikut CSS tema
+            // Background ikut tema
             'style' => [...$style, 'css' => $style['css'].$background],
             'pageBackground' => $background !== '',
             'hero' => self::hero(self::group($values, 'hero'), (string) $entry->title),
@@ -127,7 +127,7 @@ final class ProjectPage
         return [
             'title' => (string) $project->title,
             'url' => $url,
-            // Kembali ke judul tipe, lewati gambar
+            // Kembali judul tipe
             'backUrl' => isset($sections['types']) ? $url.'#'.self::SECTIONS['types']['id'].'-title' : $url,
             'style' => self::style(self::group($values, 'global_style')),
             'nav' => self::nav($sections, $url),
@@ -172,7 +172,7 @@ final class ProjectPage
     {
         return collect(self::SECTIONS)
             ->filter(fn (array $section, string $handle): bool => isset($sections[$handle]))
-            // Judul section dari CMS
+            // Judul section CMS
             ->map(fn (array $section, string $handle): array => [
                 'href' => $base.'#'.$section['id'],
                 'label' => filled($sections[$handle]['title'] ?? null) ? (string) $sections[$handle]['title'] : $section['label'],
@@ -200,7 +200,7 @@ final class ProjectPage
         $tokens = [];
         $fonts = is_array($style['fonts'] ?? null) ? $style['fonts'] : [];
         foreach (self::FONTS as $field => $token) {
-            // Google Font menimpa file upload
+            // Google Font utama
             $google = self::googleFont($fonts["{$field}_embed"] ?? null);
             if ($google !== null) {
                 $imports[$google['url']] = '@import url('.self::cssString($google['url']).');';
@@ -231,13 +231,13 @@ final class ProjectPage
         $corner = is_array($style['corner'] ?? null) ? $style['corner'] : [];
         $size = is_numeric($corner['size'] ?? null) ? max(0, (int) $corner['size']) : 0;
         $chamfer = ($corner['style'] ?? 'rounded') === 'chamfer';
-        // Selalu tertulis: 0 atau chamfer berarti tanpa lengkung
+        // Radius selalu tertulis
         $tokens['--radius'] = $chamfer ? '0px' : "{$size}px";
         if ($chamfer && $size > 0) {
-            // Kartu dan gambar: potongan maks 24px
+            // Potongan maks 24px
             $cut = min($size, 24).'px';
             $tokens['--frame-clip'] = "polygon({$cut} 0, calc(100% - {$cut}) 0, 100% {$cut}, 100% calc(100% - {$cut}), calc(100% - {$cut}) 100%, {$cut} 100%, 0 calc(100% - {$cut}), 0 {$cut})";
-            // Logo: sudut bawah saja
+            // Logo sudut bawah
             $tokens['--logo-clip'] = "polygon(0 0, 100% 0, 100% calc(100% - {$cut}), calc(100% - {$cut}) 100%, {$cut} 100%, 0 calc(100% - {$cut}))";
             $tokens['--chamfer'] = $cut;
         }
@@ -247,7 +247,7 @@ final class ProjectPage
             $tokens['--theme-bg'] = 'url('.self::cssString($background->url('large')).')';
         }
 
-        // @import harus paling awal
+        // @import paling awal
         $css = implode('', $imports).implode('', $faces);
         if ($tokens !== []) {
             $css .= ':root{'.collect($tokens)->map(fn (string $value, string $token): string => "{$token}:{$value};")->implode('').'}';
@@ -298,7 +298,7 @@ final class ProjectPage
     }
 
     /**
-     * Video popup hero: upload diutamakan, lalu link YouTube
+     * Video popup hero
      *
      * @param  array<string, mixed>  $hero
      * @return array{kind: 'video'|'iframe', src: string}|null
@@ -310,7 +310,7 @@ final class ProjectPage
             return ['kind' => 'video', 'src' => $file->url()];
         }
 
-        // ID dari watch, youtu.be, shorts, embed, live
+        // ID video YouTube
         $url = trim((string) ($hero['video_url'] ?? ''));
         if (preg_match('~^https?://(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:.*&)?v=|shorts/|embed/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~', $url, $match) === 1) {
             return ['kind' => 'iframe', 'src' => "https://www.youtube-nocookie.com/embed/{$match[1]}?autoplay=1&rel=0"];
@@ -413,7 +413,7 @@ final class ProjectPage
     }
 
     /**
-     * Gambar scene: frame ZIP, gambar diam CMS, atau frame contoh
+     * Gambar scene proyek
      *
      * @param  array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video?: string}  $scene
      * @return array{scene: array<string, mixed>, hotspots: array<string, array<string, mixed>>, video?: ?string}
@@ -436,13 +436,13 @@ final class ProjectPage
         ];
     }
 
-    /** Latar zoom titik: file asli, bukan konversi kecil */
+    /** Latar zoom asli */
     private static function zoomImage(mixed $media): ?string
     {
         return $media instanceof Media && $media->isImage() ? $media->url() : null;
     }
 
-    /** Latar zoom cepat: versi large dulu */
+    /** Latar zoom cepat */
     private static function zoomPreview(mixed $media): ?string
     {
         return $media instanceof Media && $media->isImage() ? $media->url('large') : null;
@@ -484,12 +484,12 @@ final class ProjectPage
             ->map(fn (array $tab): array => Arr::except($tab, 'source'))
             ->all();
 
-        // Tanpa tab tidak tampil
+        // Wajib ada tab
         return $tabs === [] ? null : self::section($section, ['tabs' => $tabs], true);
     }
 
     /**
-     * Tab 360° dengan gambarnya
+     * Tab 360° bergambar
      *
      * @param  array<string, mixed>  $section
      * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int, frame: int, zoom: ?string, plan: ?string, x: float, y: float, source: int}>
@@ -509,24 +509,24 @@ final class ProjectPage
                     ->values(),
             ]);
 
-        // Tab kosong pakai gambar tab pertama
+        // Cadangan tab pertama
         $first = $rows->search(fn (array $item): bool => $item['frames']->isNotEmpty());
         if ($first === false) {
             return [];
         }
 
-        // Tab dengan gambar sama dianggap satu sumber
+        // Kelompok gambar sama
         $keys = $rows->map(fn (array $item): string => $item['frames']->map(fn (Media $media): int => $media->id)->implode(','));
         $sources = $keys->map(fn (string $key): int => $key === '' ? $first : (int) $keys->search($key));
 
         return $rows
             ->map(function (array $item, int $index) use ($rows, $sources, $percent): array {
                 $source = $sources[$index];
-                // Indikator di tengah bila X/Y belum lengkap
+                // Indikator tengah cadangan
                 [$x, $y] = [$percent($item['row']['x'] ?? null), $percent($item['row']['y'] ?? null)];
                 $placed = $x !== null && $y !== null;
                 $frames = $rows[$source]['frames'];
-                // Sudut dibagi rata antar tab segambar
+                // Sudut dibagi rata
                 $sharing = $sources->filter(fn (int $other): bool => $other === $source)->keys()->values();
                 $frame = intdiv($sharing->search($index) * $frames->count(), $sharing->count());
 
@@ -538,7 +538,7 @@ final class ProjectPage
                     'height' => (int) ($frames->first()->height ?: 1200),
                     'frame' => $frame,
                     'zoom' => self::zoomImage($item['row']['zoom_image'] ?? null),
-                    // Denah tab, hanya di tipe
+                    // Denah tab tipe
                     'plan' => ($item['row']['floor_plan'] ?? null) instanceof Media && $item['row']['floor_plan']->isImage() ? $item['row']['floor_plan']->url() : null,
                     'x' => $placed ? $x : 50.0,
                     'y' => $placed ? $y : 50.0,
@@ -577,7 +577,7 @@ final class ProjectPage
     private static function types(array $section): ?array
     {
         $units = collect($section['units'] ?? [])
-            // Urutan panah koleksi Types
+            // Urutan panah tipe
             ->sortBy(fn (mixed $item): array => $item instanceof EntryTranslation ? [(int) $item->entry->sort_order, $item->entry_id] : [PHP_INT_MAX, PHP_INT_MAX])
             ->values()
             ->map(fn (mixed $item): ?array => self::row($item, ['label' => 'category']))
@@ -608,7 +608,7 @@ final class ProjectPage
     }
 
     /**
-     * Frame pertama 360° tipe
+     * Frame awal tipe
      *
      * @param  array<string, mixed>  $row
      */
@@ -640,7 +640,7 @@ final class ProjectPage
             is_numeric($row['lb'] ?? null) && $row['lb'] > 0 ? ['LB', self::number($row['lb']).' m²'] : null,
             is_numeric($row['floors'] ?? null) && $row['floors'] > 0 ? ['Lantai', (string) (int) $row['floors']] : null,
         ]));
-        // Data ringkasan lain dari CMS
+        // Ringkasan tambahan CMS
         $extra = collect($row['summary_extra'] ?? [])
             ->filter(fn (mixed $item): bool => is_array($item) && filled($item['label'] ?? null) && filled($item['value'] ?? null) && ($item['_hidden'] ?? false) !== true)
             ->map(fn (array $item): array => [(string) $item['label'], (string) $item['value']])
@@ -668,7 +668,7 @@ final class ProjectPage
     }
 
     /**
-     * Siteplan dan titik unit
+     * Siteplan titik unit
      *
      * @param  array<string, mixed>  $section
      * @return array{title: string, intro: ?string, siteplan: ?array<string, mixed>, units: list<array{id: string, x: float, y: float, status: string}>, counts: array<string, int>}|null
@@ -768,7 +768,7 @@ final class ProjectPage
     }
 
     /**
-     * Token background halaman, kosong: bawaan
+     * Token background halaman
      *
      * @param  array<string, mixed>  $background
      */
@@ -845,7 +845,7 @@ final class ProjectPage
 
     /** String CSS aman */
     /**
-     * Font pertama dari kode embed Google Font; selain fonts.googleapis.com diabaikan
+     * Font embed Google
      *
      * @return array{url: string, family: string}|null
      */

@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
-/** Ekspor SQLite lokal jadi file .sql MySQL */
+/** Ekspor dump MySQL */
 #[Signature('db:export-mysql {path=database.sql : File tujuan, relatif ke root project}')]
 #[Description('Ekspor database ke file .sql siap import MySQL/MariaDB (phpMyAdmin)')]
 class ExportMysqlDump extends Command
 {
-    /** Tabel sementara: struktur saja */
+    /** Tabel tanpa data */
     private const STRUCTURE_ONLY = ['cache', 'cache_locks', 'sessions', 'jobs', 'job_batches', 'failed_jobs'];
 
-    /** Batas ukuran satu INSERT */
+    /** Batas ukuran INSERT */
     private const CHUNK_BYTES = 1_000_000;
 
     public function handle(): int
@@ -57,7 +57,7 @@ class ExportMysqlDump extends Command
         return self::SUCCESS;
     }
 
-    /** DDL MySQL satu tabel */
+    /** DDL tabel MySQL */
     private function createTable(string $table): string
     {
         $lines = collect(Schema::getColumns($table))->map(fn (array $column): string => '  '.$this->columnDefinition($column));
@@ -87,7 +87,7 @@ class ExportMysqlDump extends Command
     }
 
     /**
-     * Kolom SQLite ke MySQL
+     * Konversi kolom MySQL
      *
      * @param  array{name: string, type: string, type_name: string, nullable: bool, default: mixed, auto_increment: bool}  $column
      */
@@ -113,7 +113,7 @@ class ExportMysqlDump extends Command
         if ($column['auto_increment']) {
             return $definition.' AUTO_INCREMENT';
         }
-        // Default teks/blob tidak didukung MySQL lama
+        // Tanpa default teks/blob
         if ($column['default'] !== null && ! in_array($mysql, ['LONGTEXT', 'LONGBLOB'], true)) {
             $definition .= ' DEFAULT '.$column['default'];
         }
@@ -121,7 +121,7 @@ class ExportMysqlDump extends Command
         return $definition;
     }
 
-    /** INSERT bertahap, kembalikan jumlah baris */
+    /** INSERT bertahap */
     private function insertRows($file, string $table): int
     {
         $columns = collect(Schema::getColumns($table))->pluck('name');
@@ -151,7 +151,7 @@ class ExportMysqlDump extends Command
         return $count;
     }
 
-    /** Nilai aman untuk MySQL */
+    /** Nilai aman MySQL */
     private static function value(mixed $value): string
     {
         return match (true) {
@@ -167,7 +167,7 @@ class ExportMysqlDump extends Command
         return '`'.str_replace('`', '``', $name).'`';
     }
 
-    /** Nama index maks 64 karakter */
+    /** Nama index pendek */
     private static function indexName(string $table, string $name): string
     {
         $name = str_starts_with($name, 'sqlite_autoindex_') ? "{$table}_unique_".substr(md5($name), 0, 6) : $name;

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use ZipArchive;
 
-/** Frame orbit unggahan per proyek */
+/** Frame orbit proyek */
 final class OrbitFrames
 {
     /** Lebar tiap ukuran */
@@ -32,7 +32,7 @@ final class OrbitFrames
     }
 
     /**
-     * Folder frame aktif, relatif public/
+     * Folder frame aktif
      */
     public static function base(int $entryId, string $section): ?string
     {
@@ -45,7 +45,7 @@ final class OrbitFrames
         return $versions->isEmpty() ? null : '/storage/'.$versions->first().'/';
     }
 
-    /** Folder di disk untuk base frame (unggahan atau public/) */
+    /** Folder disk frame */
     public static function directory(string $base): string
     {
         $path = trim($base, '/');
@@ -54,7 +54,7 @@ final class OrbitFrames
     }
 
     /**
-     * Ekstrak, ubah ukuran, tulis manifest
+     * Proses frame ZIP
      *
      * @throws RuntimeException with a message for the admin
      */
@@ -68,7 +68,7 @@ final class OrbitFrames
 
         $disk = Storage::disk('public');
         $root = self::root($entryId, $section);
-        // Aktif setelah manifest ditulis
+        // Aktifkan setelah manifest
         $tmp = "{$root}/v".now()->format('YmdHisv');
 
         try {
@@ -101,7 +101,7 @@ final class OrbitFrames
                 foreach (self::SIZES as $size => $w) {
                     $h = (int) round($w * $ratio);
                     $out = imagecreatetruecolor($w, $h);
-                    // Latar putih untuk PNG transparan
+                    // Latar putih PNG
                     imagefill($out, 0, 0, (int) imagecolorallocate($out, 255, 255, 255));
                     imagecopyresampled($out, $image, 0, 0, 0, 0, $w, $h, $width, $height);
                     imagejpeg($out, $disk->path(sprintf('%s/%s/f_%03d.jpg', $tmp, $size, $n)), 82);
@@ -144,7 +144,7 @@ final class OrbitFrames
         Storage::disk('local')->delete(self::upload($entryId, $section).'.json');
     }
 
-    /** ZIP dan status, disk privat */
+    /** Folder ZIP privat */
     public static function upload(int $entryId, string $section): string
     {
         return "orbit-uploads/entry-{$entryId}-{$section}";
@@ -162,21 +162,21 @@ final class OrbitFrames
         return is_array($status) ? [...$status, 'source' => $status['source'] ?? null] : ['state' => 'idle', 'message' => null, 'count' => null, 'source' => null];
     }
 
-    /** Status baru, sumber ZIP tetap */
+    /** Perbarui status */
     public static function setStatus(int $entryId, string $section, string $state, ?string $message = null, ?int $count = null): void
     {
         $source = self::status($entryId, $section)['source'];
         Storage::disk('local')->put(self::upload($entryId, $section).'.json', json_encode(['state' => $state, 'message' => $message, 'count' => $count, 'source' => $source]));
     }
 
-    /** Media ZIP asal frame; null untuk unggahan panel */
+    /** Media ZIP asal */
     public static function setSource(int $entryId, string $section, ?int $mediaId): void
     {
         Storage::disk('local')->put(self::upload($entryId, $section).'.json', json_encode([...self::status($entryId, $section), 'source' => $mediaId]));
     }
 
     /**
-     * Gambar di ZIP, urut nama
+     * Gambar ZIP terurut
      *
      * @return array<string, array{0: int, 1: string}> path => [zip index, file name]
      *

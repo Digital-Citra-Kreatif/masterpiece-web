@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/** Halaman selalu dicek ulang */
+/** Validasi ulang halaman */
 class RevalidatePages
 {
     /**

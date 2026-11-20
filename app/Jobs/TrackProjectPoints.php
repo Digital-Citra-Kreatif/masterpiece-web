@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Sunrice\Cms\Models\EntryTranslation;
 use Throwable;
 
-/** Lacak ulang titik; simpanan saat job jalan tetap diantrekan */
+/** Lacak ulang titik */
 class TrackProjectPoints implements ShouldBeUniqueUntilProcessing, ShouldQueue
 {
     use Queueable;
@@ -32,7 +32,7 @@ class TrackProjectPoints implements ShouldBeUniqueUntilProcessing, ShouldQueue
         }
     }
 
-    /** Langsung bila cache siap */
+    /** Cache siap */
     public static function afterSave(EntryTranslation $translation): void
     {
         $id = $translation->id;
@@ -44,7 +44,7 @@ class TrackProjectPoints implements ShouldBeUniqueUntilProcessing, ShouldQueue
 
         DB::afterCommit(function () use ($id): void {
             try {
-                // Naikkan batas web saja
+                // Batas waktu web
                 $limit = (int) ini_get('max_execution_time');
                 if ($limit > 0 && $limit < 120) {
                     set_time_limit(120);

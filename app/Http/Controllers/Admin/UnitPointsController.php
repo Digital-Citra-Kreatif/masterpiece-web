@@ -14,7 +14,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Support\Access;
 use Sunrice\Cms\Support\Locales;
 
-/** Peta titik unit di form proyek */
+/** Peta titik unit */
 class UnitPointsController extends Controller
 {
     public function show(Request $request, int $project): JsonResponse

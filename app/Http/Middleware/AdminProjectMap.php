@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response as HtmlResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-/** Peta titik unit di form proyek */
+/** Peta titik unit */
 class AdminProjectMap
 {
     public const SCRIPT = 'cms/project-map.js';
@@ -19,7 +19,7 @@ class AdminProjectMap
     {
         $response = $next($request);
 
-        // Hanya muatan halaman penuh
+        // Halaman penuh saja
         if (! $response instanceof HtmlResponse || $request->header('X-Inertia') || ! str_contains((string) $response->headers->get('Content-Type'), 'text/html')) {
             return $response;
         }

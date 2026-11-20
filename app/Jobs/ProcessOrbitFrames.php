@@ -11,7 +11,7 @@ use RuntimeException;
 use Sunrice\Cms\Models\EntryTranslation;
 use Throwable;
 
-/** Proses ZIP frame orbit, lalu lacak ulang titik */
+/** Proses ZIP orbit */
 class ProcessOrbitFrames implements ShouldQueue
 {
     use Queueable;
@@ -56,7 +56,7 @@ class ProcessOrbitFrames implements ShouldQueue
         OrbitFrames::setStatus($this->entryId, $this->section, 'failed', 'ZIP gagal diproses. Coba unggah ulang.');
     }
 
-    /** Lacak ulang titik proyek */
+    /** Lacak ulang titik */
     public static function retrack(int $entryId): void
     {
         foreach (EntryTranslation::query()->where('entry_id', $entryId)->pluck('id') as $id) {

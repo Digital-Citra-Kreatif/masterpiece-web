@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/** Titik unit di siteplan proyek */
+/** Titik unit siteplan */
 #[Fillable(['project_id', 'unit_id', 'x', 'y'])]
 class UnitPoint extends Model
 {

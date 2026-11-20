@@ -12,7 +12,7 @@ use Sunrice\Cms\Models\EntryTranslation;
 use Sunrice\Cms\Support\Access;
 use Sunrice\Cms\Support\Locales;
 
-/** Gambar pertama orbit untuk picker titik */
+/** Gambar awal orbit */
 class OrbitFramesController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
@@ -23,7 +23,7 @@ class OrbitFramesController extends Controller
         $data = self::draft($project);
         $frames = [];
         foreach ($project > 0 ? ProjectTracks::bases($project) : ProjectTracks::sections() as $section => $base) {
-            // Gambar diam dari CMS, kalah oleh frame ZIP
+            // Gambar diam CMS
             $uploaded = $base !== ProjectTracks::sections()[$section];
             $media = ! $uploaded && is_int($data[$section]['image'] ?? null) ? Media::query()->find($data[$section]['image']) : null;
             if ($media instanceof Media && $media->isImage()) {
@@ -36,7 +36,7 @@ class OrbitFramesController extends Controller
             if (! is_array($manifest)) {
                 continue;
             }
-            // Acuan X/Y: frame 0
+            // Acuan frame 0
             $file = str_replace(['{size}', '{n}'], [array_key_first($manifest['sizes'] ?? ['lg' => 0]), '000'], (string) $manifest['pattern']);
             $frames[$section] = ['src' => asset("{$dir}/{$file}"), 'width' => (int) $manifest['width'], 'height' => (int) $manifest['height']];
         }
