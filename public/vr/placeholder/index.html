@@ -2,20 +2,182 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tur virtual</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0d0f">
+<title>Tur virtual segera hadir</title>
 <style>
-  html,body{height:100%;margin:0}
-  body{display:grid;place-items:center;background:#12120f;color:#ece6da;font:15px/1.6 "Helvetica Neue",Arial,sans-serif;text-align:center;padding:24px;box-sizing:border-box}
-  h1{font:400 40px/1.1 Georgia,serif;margin:0 0 12px}
-  p{max-width:44ch;margin:0 auto;color:#8f887b}
-  code{color:#f0c9a4}
+  /* Token situs */
+  :root {
+    --room: #0b0d0f;
+    --room-2: #14171a;
+    --room-ink: #eef0f1;
+    --room-muted: #8a9199; /* Kontras 6:1 */
+    --rule: rgb(238 240 241 / 0.16);
+    --sans: 'DM Sans Variable', 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+    --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+    --gutter: clamp(20px, 6vw, 88px);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body { height: 100%; margin: 0; }
+
+  body {
+    min-height: 100svh;
+    display: grid;
+    background: var(--room);
+    color: var(--room-ink);
+    font: 400 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Komposisi kiri bawah */
+  .vr {
+    position: relative;
+    display: grid;
+    align-content: end;
+    gap: 40px;
+    padding: var(--gutter);
+    padding-bottom: max(var(--gutter), env(safe-area-inset-bottom));
+    overflow: hidden;
+  }
+
+  /* Motif orbit 360° */
+  .vr__orbit {
+    position: absolute;
+    top: 50%;
+    right: -12vw;
+    width: min(78vw, 980px);
+    height: auto;
+    translate: 0 -58%;
+    color: var(--rule);
+    pointer-events: none;
+  }
+
+  .vr__orbit .dot { fill: var(--room-ink); }
+
+  .vr__copy {
+    position: relative;
+    max-width: 640px;
+  }
+
+  /* Label seperti situs */
+  .vr__label {
+    margin: 0 0 20px;
+    color: var(--room-muted);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .vr__title {
+    margin: 0;
+    font-size: clamp(44px, 8vw, 96px);
+    font-weight: 300;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+  }
+
+  .vr__text {
+    max-width: 46ch;
+    margin: 24px 0 0;
+    color: var(--room-muted);
+    font-size: clamp(15px, 1.4vw, 17px);
+  }
+
+  .vr__text strong {
+    color: var(--room-ink);
+    font-weight: 500;
+  }
+
+  /* Tombol putih situs */
+  .vr__back {
+    position: relative;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 12px 24px;
+    border: 1px solid var(--room-ink);
+    background: var(--room-ink);
+    color: var(--room);
+    font: 500 12px/1 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+
+  .vr__back svg {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    transition: translate 0.3s var(--ease);
+  }
+
+  .vr__back:hover {
+    background: transparent;
+    color: var(--room-ink);
+  }
+
+  .vr__back:hover svg { translate: -4px 0; }
+
+  .vr__back:active { translate: 0 1px; }
+
+  .vr__back:focus-visible {
+    outline: 2px solid var(--room-ink);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 640px) {
+    .vr { gap: 32px; }
+    .vr__orbit { top: 30%; right: -40vw; width: 150vw; }
+    .vr__back { justify-self: stretch; justify-content: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vr__back, .vr__back svg { transition: none; }
+  }
 </style>
 </head>
 <body>
-  <div>
-    <h1>Tur virtual</h1>
-    <p>Tur 360° untuk tipe ini akan segera tersedia.</p>
-  </div>
+  <main class="vr">
+    <!-- Orbit 360° -->
+    <svg class="vr__orbit" viewBox="0 0 1000 560" fill="none" aria-hidden="true">
+      <ellipse cx="500" cy="280" rx="480" ry="150" stroke="currentColor" stroke-width="1.5" />
+      <ellipse cx="500" cy="280" rx="330" ry="96" stroke="currentColor" stroke-width="1" stroke-dasharray="2 8" />
+      <circle class="dot" cx="225" cy="157" r="7" />
+    </svg>
+
+    <div class="vr__copy">
+      <p class="vr__label">Tur virtual</p>
+      <h1 class="vr__title">Sedang<br>disiapkan</h1>
+      <p class="vr__text">Tur virtual untuk tipe ini belum tersedia. Sementara itu, <strong>putar unit di tampilan 360°</strong>, buka galeri, atau lihat denahnya di halaman tipe.</p>
+    </div>
+
+    <a class="vr__back" href="/" data-back>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
+      <span data-back-label>Ke beranda</span>
+    </a>
+  </main>
+
+  <script>
+    // Kembali ke halaman asal
+    (() => {
+      const back = document.querySelector('[data-back]');
+      let from = null;
+      try {
+        from = document.referrer ? new URL(document.referrer) : null;
+      } catch (e) {}
+      if (from && from.origin === location.origin && from.pathname !== location.pathname) {
+        back.href = from.href;
+        back.querySelector('[data-back-label]').textContent = 'Kembali ke halaman tipe';
+      }
+    })();
+  </script>
 </body>
 </html>
