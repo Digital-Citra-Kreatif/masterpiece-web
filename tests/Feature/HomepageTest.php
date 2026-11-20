@@ -129,7 +129,7 @@ test('the hero and projects grid take their CSS IDs from the CMS, with or withou
     $this->get('/')
         ->assertOk()
         ->assertSee('<section class="hero"  id="beranda-utama"', false)
-        ->assertSee('<section id="proyek" class="prj" aria-labelledby="proyek-title" data-view-cursor>', false)
+        ->assertSee('<section id="proyek" class="prj" aria-labelledby="proyek-title" data-card-cursor="zoom" >', false)
         ->assertSee('href="#proyek" aria-label="Gulir ke bagian berikutnya"', false)
         ->assertDontSee('id="projects"', false);
 });

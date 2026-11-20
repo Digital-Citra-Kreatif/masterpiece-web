@@ -2,8 +2,9 @@
 @props(['types', 'heading', 'id' => 'tipe', 'variant' => 'default', 'top' => null, 'before' => null, 'after' => null])
 
 @php($project = $variant === 'project')
+@php($cursor = $project ? $site['cardCursor'] : null)
 
-<section id="{{ $id }}" @class(['types', 'types--project' => $project]) @if ($project) data-view-cursor @endif aria-labelledby="{{ $id }}-title">
+<section id="{{ $id }}" @class(['types', 'types--project' => $project]) @if ($cursor) data-card-cursor="{{ $cursor }}" @endif @if ($cursor === 'view') data-view-cursor @endif aria-labelledby="{{ $id }}-title">
   @if ($top)
     <div class="types__top">
       <div class="wrap">{{ $top }}</div>
@@ -63,7 +64,7 @@
     {{ $after }}
   </div>
 
-  @if ($project)
+  @if ($cursor === 'view')
     <x-view-cursor />
   @endif
 </section>

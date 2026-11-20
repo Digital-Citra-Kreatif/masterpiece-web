@@ -256,7 +256,7 @@ test('a project page shows each section with content and skips the empty ones', 
         ->assertDontSee('cluster-plaza', false)
         ->assertDontSee('Lakefront Pods')
         ->assertSee('<section id="facility" class="fac fac--split"', false)
-        ->assertSee('<section id="type" class="types types--project"', false)
+        ->assertSeeInOrder(['<section id="type" class="types types--project"', 'data-card-cursor="zoom"', 'aria-labelledby="type-title"'], false)
         ->assertSee('href="'.url('/westlake/tipe/tipe-1').'"', false)
         ->assertDontSee('data-sheet=', false)
         ->assertSee('Lakeside Social Deck')

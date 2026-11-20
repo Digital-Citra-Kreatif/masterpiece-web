@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\Content;
 use App\Support\ProjectPage;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -160,6 +161,7 @@ class SiteContentSeeder extends Seeder
                     $this->field('preload_active', 'toggle', ['default' => true], ['label' => 'Preload aktif', 'translatable' => false, 'width' => 50, 'instructions' => 'Animasi pembuka saat pengunjung pertama masuk.']),
                     $this->field('preload_hours', 'number', ['min' => 1, 'max' => 720], ['label' => 'Tampil lagi setelah (jam)', 'translatable' => false, 'width' => 50, 'instructions' => 'Kosong: 6 jam.']),
                     $this->field('scroll_top_active', 'toggle', ['default' => false], ['label' => 'Tombol ke atas', 'translatable' => false, 'width' => 50, 'instructions' => 'Tombol kembali ke atas di kanan bawah.']),
+                    $this->field('card_cursor', 'select', ['options' => Content::CARD_CURSOR_OPTIONS, 'default' => 'zoom'], ['label' => 'Kursor kartu', 'translatable' => false, 'width' => 50, 'instructions' => 'Kursor di atas kartu proyek dan tipe unit.']),
                 ]],
                 $this->projectBlueprint(),
                 $this->footerBlueprint(),

@@ -33,3 +33,8 @@
 .has-view-cursor :is([data-view-target], [data-view-target] *) {
   cursor: none;
 }
+
+/* Kaca pembesar */
+[data-card-cursor='zoom'] :is([data-view-target], [data-view-target] *) {
+  cursor: zoom-in;
+}

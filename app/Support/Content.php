@@ -20,10 +20,17 @@ final class Content
     /** Jam Maintenance Mode di CMS dibaca sebagai WIB */
     public const MAINTENANCE_TIMEZONE = 'Asia/Jakarta';
 
+    /** Pilihan kursor kartu */
+    public const CARD_CURSOR_OPTIONS = [
+        ['value' => 'zoom', 'label' => 'Kaca pembesar'],
+        ['value' => 'view', 'label' => 'Lingkaran "Lihat"'],
+        ['value' => 'default', 'label' => 'Kursor biasa'],
+    ];
+
     /**
      * Data situs bersama
      *
-     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, preload: array{active: bool, hours: int}, scrollTop: bool, showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
+     * @return array{lang: string, fullName: string, description: string, favicon: ?array{href: string, type: string}, protectMedia: bool, preload: array{active: bool, hours: int}, scrollTop: bool, cardCursor: 'zoom'|'view'|'default',showPlaceholderBadges: bool, logo: array{light: string, dark: string, alt: string, width: int, height: int}, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, statusLabels: array<string, string>}
      */
     public static function site(): array
     {
@@ -44,6 +51,8 @@ final class Content
                 ],
                 // Default tersembunyi
                 'scrollTop' => (bool) ($settings['scroll_top_active'] ?? false),
+                // Default kaca pembesar
+                'cardCursor' => in_array($settings['card_cursor'] ?? null, array_column(self::CARD_CURSOR_OPTIONS, 'value'), true) ? $settings['card_cursor'] : 'zoom',
                 'showPlaceholderBadges' => (bool) config('site.placeholder_badges'),
                 'logo' => [...self::headerLogo($settings), 'alt' => Cms::site()->name()],
                 'nav' => self::nav(),

@@ -1,7 +1,9 @@
 {{-- Grid proyek --}}
 @props(['projects', 'heading', 'id' => 'projects'])
 
-<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-view-cursor>
+@php($cursor = $site['cardCursor'])
+
+<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-card-cursor="{{ $cursor }}" @if ($cursor === 'view') data-view-cursor @endif>
   <div class="prj__head">
     <div class="wrap">
       <x-sheet-header id="{{ $id }}-title" :title="$heading['title']" :intro="$heading['intro']" />
@@ -32,5 +34,7 @@
       @endforeach
     </ul>
   </div>
-  <x-view-cursor />
+  @if ($cursor === 'view')
+    <x-view-cursor />
+  @endif
 </section>
