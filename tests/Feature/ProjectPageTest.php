@@ -624,13 +624,16 @@ test('a type page\'s 360° section holds the viewer, tabs and tab text, unit lab
     $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'label' => 'Ruko Hook', 'dimensions' => '4,5 x 10 m', 'summary_extra' => [['label' => 'Carport', 'value' => '1']]]]);
 
     $html = $this->get('/westlake/tipe/tipe-1')->assertOk()->getContent();
-    $viewer = substr($html, strpos($html, 'data-spin="drag"'), strpos($html, '<section class="tpd"') - strpos($html, 'data-spin="drag"'));
+    $viewer = substr($html, strpos($html, 'data-spin="drag"'), strpos($html, '</section>', strpos($html, 'data-spin="drag"')) - strpos($html, 'data-spin="drag"'));
 
     expect($viewer)->toContain('data-spin-tab="1"')
         ->and($viewer)->toContain('data-spin-text>Tampak depan.</p>')
         ->and($viewer)->not->toContain('tps__intro')
         // Ringkasan di 360°
         ->and($viewer)->toContain('<dt>Carport</dt>')
+        // Denah di kolom kanan 360°, tanpa section denah
+        ->and($viewer)->toContain('<div class="tps__plans">')
+        ->and($html)->not->toContain('<section class="tpd"')
         ->and(substr_count($html, 'class="tps__facts"'))->toBe(1);
     $this->get('/westlake/tipe/tipe-1')
         // Label ruko dan ukuran di section 360, di bawah tab

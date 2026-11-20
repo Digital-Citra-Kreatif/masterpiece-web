@@ -248,6 +248,63 @@ body.is-type .tps--spin::before {
   }
 }
 
+/* Denah kolom kanan */
+.tps__plans-title {
+  margin: 0 0 12px;
+  color: rgb(255 255 255 / 0.72);
+}
+
+.tps__plan-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.tps__plan-list--many {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tps__plan {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 0.32);
+  background: #fff;
+  cursor: zoom-in;
+  transition: border-color 0.2s;
+}
+
+.tps__plan:hover {
+  border-color: #fff;
+}
+
+.tps__plan:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.tps__plan img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tps__plan-label {
+  display: block;
+  margin-top: 6px;
+  color: rgb(255 255 255 / 0.72);
+  font-size: 13px;
+}
+
+/* Bertumpuk: jarak dari tab */
+@media (max-width: 960px) {
+  .tps__plans {
+    margin-top: 24px;
+  }
+}
+
 /* Label ruko ukuran */
 .tps__meta {
   display: flex;

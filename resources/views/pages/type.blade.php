@@ -118,6 +118,25 @@
               </div>
             @endif
 
+            @if ($t['denah'] !== [])
+              {{-- Denah di kolom kanan --}}
+              <div class="tps__plans">
+                <p class="eyebrow tps__plans-title" id="type-plans-title">Denah</p>
+                <ul @class(['tps__plan-list', 'tps__plan-list--many' => count($t['denah']) > 1]) aria-labelledby="type-plans-title">
+                  @foreach ($t['denah'] as $d)
+                    <li>
+                      <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                        <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" decoding="async" />
+                      </button>
+                      @if (count($t['denah']) > 1 && $d['label'])
+                        <span class="tps__plan-label">{{ $d['label'] }}</span>
+                      @endif
+                    </li>
+                  @endforeach
+                </ul>
+              </div>
+            @endif
+
             @if ($t['label'] || $t['dimensions'])
               <div class="tps__meta">
                 @if ($t['label'])
@@ -209,8 +228,8 @@
       </section>
     @endif
 
-    @if ($t['denah'] !== [])
-      {{-- Denah slide opsional --}}
+    @if ($t['denah'] !== [] && $parts === [])
+      {{-- Denah tanpa 360°, slide opsional --}}
       @php($slidePlans = count($t['denah']) > 1)
       <section class="tpd" aria-label="Denah" data-view-cursor>
         <div @class(['tpd__frame', 'swiper' => $slidePlans]) @if ($slidePlans) data-plans-swiper @endif>
