@@ -58,6 +58,7 @@ export function spin(root) {
   const poster = root.querySelector('[data-spin-poster]');
   const text = root.querySelector('[data-spin-text]');
   const name = root.querySelector('[data-spin-name]');
+  const plans = root.querySelector('[data-spin-plans]');
   const buttons = [...root.querySelectorAll('[data-spin-tab]')];
   const steps = [...root.querySelectorAll('[data-spin-step]')];
   const pin = root.querySelector('[data-spin-pin]'); // Isi tertahan gulir
@@ -238,6 +239,14 @@ export function spin(root) {
       text.hidden = !tab().text;
     }
     if (name) name.textContent = tab().name;
+    // Denah ikut tab
+    if (plans) {
+      const own = plans.querySelector(`[data-spin-plan="${active}"]`);
+      const rest = plans.querySelector('[data-spin-plan-rest]');
+      plans.querySelectorAll('[data-spin-plan]').forEach((plan) => { plan.hidden = plan !== own; });
+      if (rest) rest.hidden = Boolean(own);
+      plans.hidden = !own && !rest;
+    }
     canvas.setAttribute('aria-label', canvas.getAttribute('aria-label').replace(/, [^:]+:/, `, ${tab().name}:`));
     still();
   };

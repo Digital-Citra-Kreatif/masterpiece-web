@@ -122,6 +122,8 @@ class SiteContentSeeder extends Seeder
                             $this->field('images', 'media', ['types' => ['image'], 'multiple' => true], ['label' => 'Gambar', 'translatable' => false]),
                             // Tampil saat indikator diklik
                             $image('zoom_image', ['label' => 'Gambar zoom', 'translatable' => false, 'instructions' => 'Gambar dan deskripsi tab ini tampil saat indikatornya diklik.']),
+                            // Ganti ikut tab
+                            $image('floor_plan', ['label' => 'Denah', 'translatable' => false, 'instructions' => 'Tampil di kanan saat tab ini aktif. Kosong: denah tipe.']),
                             // Diisi dari panel di bawah tab
                             ...array_map(fn (string $axis): array => $this->field($axis, 'number', ['min' => 0, 'max' => 100], [
                                 'label' => 'Posisi '.strtoupper($axis).' (%)', 'translatable' => false, 'width' => 50,

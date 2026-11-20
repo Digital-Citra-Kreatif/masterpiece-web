@@ -14,6 +14,8 @@
   // Ada gambar zoom
   $zooms = collect($parts)->contains(fn (array $part): bool => ($part['zoom'] ?? null) !== null);
   $marker = ($pj['style']['marker'] ?? null) ?: ['shape' => 'circle', 'image' => null];
+  // Denah per tab
+  $tabPlans = collect($parts)->map(fn (array $part): ?string => $part['plan'] ?? null)->filter();
 @endphp
 
 <x-layouts.base
@@ -118,22 +120,31 @@
               </div>
             @endif
 
-            @if ($t['denah'] !== [])
-              {{-- Denah di kolom kanan --}}
-              <div class="tps__plans">
-                <p class="eyebrow tps__plans-title" id="type-plans-title">Denah</p>
-                <ul @class(['tps__plan-list', 'tps__plan-list--many' => count($t['denah']) > 1]) aria-labelledby="type-plans-title">
-                  @foreach ($t['denah'] as $d)
-                    <li>
-                      <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
-                        <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" decoding="async" />
-                      </button>
-                      @if (count($t['denah']) > 1 && $d['label'])
-                        <span class="tps__plan-label">{{ $d['label'] }}</span>
-                      @endif
-                    </li>
-                  @endforeach
-                </ul>
+            @if ($t['denah'] !== [] || $tabPlans->isNotEmpty())
+              {{-- Denah ikut tab, cadangan denah tipe --}}
+              <div class="tps__plans" @if (! $tabPlans->has(0) && $t['denah'] === []) hidden @endif data-spin-plans>
+                <p class="eyebrow tps__plans-title">Denah</p>
+                @foreach ($tabPlans as $k => $plan)
+                  <div class="tps__plan-list" data-spin-plan="{{ $k }}" {{ $k !== 0 ? 'hidden' : '' }}>
+                    <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ json_encode(['title' => "{$t['name']}: Denah", 'items' => [['src' => $plan, 'caption' => $parts[$k]['name'], 'alt' => "Denah {$parts[$k]['name']}"]], 'index' => 0]) }}" aria-label="Perbesar denah {{ $parts[$k]['name'] }}">
+                      <img src="{{ $plan }}" alt="Denah {{ $parts[$k]['name'] }}" loading="lazy" decoding="async" />
+                    </button>
+                  </div>
+                @endforeach
+                @if ($t['denah'] !== [])
+                  <ul @class(['tps__plan-list', 'tps__plan-list--many' => count($t['denah']) > 1]) data-spin-plan-rest {{ $tabPlans->has(0) ? 'hidden' : '' }}>
+                    @foreach ($t['denah'] as $d)
+                      <li>
+                        <button class="tps__plan" type="button" data-open="gallery" data-payload="{{ $denahPayload($loop->index) }}" aria-label="Perbesar denah {{ $d['label'] }}">
+                          <img src="{{ asset($d['image']) }}" alt="Denah {{ $d['label'] }}" loading="lazy" decoding="async" />
+                        </button>
+                        @if (count($t['denah']) > 1 && $d['label'])
+                          <span class="tps__plan-label">{{ $d['label'] }}</span>
+                        @endif
+                      </li>
+                    @endforeach
+                  </ul>
+                @endif
               </div>
             @endif
 

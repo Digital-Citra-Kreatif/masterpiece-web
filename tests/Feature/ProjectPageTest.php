@@ -632,7 +632,7 @@ test('a type page\'s 360° section holds the viewer, tabs and tab text, unit lab
         // Ringkasan di 360°
         ->and($viewer)->toContain('<dt>Carport</dt>')
         // Denah di kolom kanan 360°, tanpa section denah
-        ->and($viewer)->toContain('<div class="tps__plans">')
+        ->and($viewer)->toContain('class="tps__plans"')
         ->and($html)->not->toContain('<section class="tpd"')
         ->and(substr_count($html, 'class="tps__facts"'))->toBe(1);
     $this->get('/westlake/tipe/tipe-1')
@@ -680,6 +680,37 @@ test('a type with its own 360° tabs shows them on its page instead of the proje
     preg_match('/data-tabs="([^"]+)"/', $html, $match);
     $parts = json_decode(html_entity_decode($match[1]), true);
     expect(array_map('count', array_column($parts, 'frames')))->toBe([3, 1]);
+});
+
+test('a type tab\'s own floor plan shows in the 360° column for that tab, and tabs without one fall back to the type\'s floor plans', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+    $plan = app(UploadMedia::class)->handle(UploadedFile::fake()->image('denah-lantai-1.jpg', 40, 30), []);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'turntable' => ['tabs' => [
+        ['name' => 'Fasad', 'description' => '', 'images' => [projectImage('fasad.jpg')]],
+        ['name' => 'Lantai 1', 'description' => '', 'images' => [projectImage('lantai-1.jpg')], 'floor_plan' => $plan->id],
+    ]]]]);
+
+    $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        // Tab pertama tanpa denah: denah tipe tampil
+        ->assertSeeInOrder(['data-spin-plans', 'data-spin-plan="1" hidden', 'src="'.$plan->url().'"', 'alt="Denah Lantai 1"', 'data-spin-plan-rest'], false)
+        ->assertDontSee('data-spin-plan="0"', false)
+        ->assertDontSee('data-spin-plan-rest hidden', false);
+});
+
+test('a type whose first 360° tab has a floor plan shows it first and hides the type\'s floor plans', function () {
+    $type = EntryTranslation::query()->where('slug', 'tipe-1')->firstOrFail();
+    $project = publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+    $plan = app(UploadMedia::class)->handle(UploadedFile::fake()->image('denah-fasad.jpg', 40, 30), []);
+    $type->update(['data' => [...$type->fresh()->data, 'project' => $project->entry_id, 'turntable' => ['tabs' => [
+        ['name' => 'Fasad', 'description' => '', 'images' => [projectImage('fasad.jpg')], 'floor_plan' => $plan->id],
+    ]]]]);
+
+    $this->get('/westlake/tipe/tipe-1')
+        ->assertOk()
+        ->assertSeeInOrder(['data-spin-plan="0"', 'src="'.$plan->url().'"', 'data-spin-plan-rest hidden'], false)
+        ->assertDontSee('data-spin-plan="0" hidden', false);
 });
 
 test('a type tab\'s zoom image goes to the 360° tabs as the original file and adds the indicator, zoom layer and detail panel', function () {

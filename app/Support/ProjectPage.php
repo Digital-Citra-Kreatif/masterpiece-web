@@ -481,7 +481,7 @@ final class ProjectPage
      * Tab 360° dengan gambarnya
      *
      * @param  array<string, mixed>  $section
-     * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int, frame: int, zoom: ?string, x: float, y: float, source: int}>
+     * @return list<array{name: string, text: string, frames: list<string>, width: int, height: int, frame: int, zoom: ?string, plan: ?string, x: float, y: float, source: int}>
      */
     public static function turntableTabs(array $section): array
     {
@@ -527,6 +527,8 @@ final class ProjectPage
                     'height' => (int) ($frames->first()->height ?: 1200),
                     'frame' => $frame,
                     'zoom' => self::zoomImage($item['row']['zoom_image'] ?? null),
+                    // Denah tab, hanya di tipe
+                    'plan' => ($item['row']['floor_plan'] ?? null) instanceof Media && $item['row']['floor_plan']->isImage() ? $item['row']['floor_plan']->url() : null,
                     'x' => $placed ? $x : 50.0,
                     'y' => $placed ? $y : 50.0,
                     'source' => $source,
