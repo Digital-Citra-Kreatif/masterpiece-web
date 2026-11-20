@@ -34,7 +34,14 @@
   cursor: none;
 }
 
-/* Kaca pembesar */
-[data-card-cursor='zoom'] :is([data-view-target], [data-view-target] *) {
-  cursor: zoom-in;
+/* Ikon kaca pembesar */
+.view-cursor--icon {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+}
+
+.view-cursor--icon svg {
+  width: 22px;
+  height: 22px;
 }

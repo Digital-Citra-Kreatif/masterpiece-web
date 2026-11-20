@@ -3,7 +3,7 @@
 
 @php($cursor = $site['cardCursor'])
 
-<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-card-cursor="{{ $cursor }}" @if ($cursor === 'view') data-view-cursor @endif>
+<section id="{{ $id }}" class="prj" aria-labelledby="{{ $id }}-title" data-card-cursor="{{ $cursor }}" @if (in_array($cursor, ['zoom', 'view'], true)) data-view-cursor @endif>
   <div class="prj__head">
     <div class="wrap">
       <x-sheet-header id="{{ $id }}-title" :title="$heading['title']" :intro="$heading['intro']" />
@@ -34,7 +34,7 @@
       @endforeach
     </ul>
   </div>
-  @if ($cursor === 'view')
-    <x-view-cursor />
+  @if (in_array($cursor, ['zoom', 'view'], true))
+    <x-view-cursor :icon="$cursor === 'zoom'" />
   @endif
 </section>

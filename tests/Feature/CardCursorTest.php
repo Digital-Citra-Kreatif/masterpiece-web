@@ -33,12 +33,13 @@ function saveCardCursor(string $cursor): void
     ], 'id');
 }
 
-test('project cards use the magnifier cursor by default', function () {
+test('project cards show a magnifier inside the view circle by default', function () {
     $this->get('/')
         ->assertOk()
         ->assertSee('data-card-cursor="zoom"', false)
-        ->assertDontSee('data-view-cursor', false)
-        ->assertDontSee('class="view-cursor"', false);
+        ->assertSee('data-view-cursor', false)
+        ->assertSeeInOrder(['<span class="view-cursor view-cursor--icon" data-view-cursor-el aria-hidden="true">', '<svg', '</span>'], false)
+        ->assertDontSee('Lihat');
 });
 
 test('project cards show the view circle when chosen in Globals → Situs', function () {
@@ -48,7 +49,8 @@ test('project cards show the view circle when chosen in Globals → Situs', func
         ->assertOk()
         ->assertSee('data-card-cursor="view"', false)
         ->assertSee('data-view-cursor', false)
-        ->assertSee('<span class="view-cursor" data-view-cursor-el aria-hidden="true">Lihat</span>', false);
+        ->assertSeeInOrder(['<span class="view-cursor" data-view-cursor-el aria-hidden="true">', 'Lihat', '</span>'], false)
+        ->assertDontSee('view-cursor--icon', false);
 });
 
 test('project cards keep the normal cursor when chosen in Globals → Situs', function () {
