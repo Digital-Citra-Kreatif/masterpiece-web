@@ -1,4 +1,6 @@
 // Gulir halus ke jangkar
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.addEventListener('click', (event) => {
@@ -19,3 +21,29 @@ document.addEventListener('click', (event) => {
   if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
   target.focus({ preventScroll: true });
 });
+
+// Jangkar dari halaman lain
+const landing = location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+if (landing) {
+  let held = true;
+  // Posisi tanpa transform
+  const top = () => {
+    let y = 0;
+    for (let el = landing; el; el = el.offsetParent) y += el.offsetTop;
+    return y;
+  };
+  const jump = () => {
+    if (held) window.scrollTo({ top: top(), behavior: 'instant' });
+  };
+  // Lepas saat pengunjung menggulir
+  const release = () => {
+    held = false;
+    ScrollTrigger.removeEventListener('refresh', jump);
+  };
+  for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown']) {
+    addEventListener(type, release, { once: true, passive: true });
+  }
+  // Pin menambah tinggi halaman
+  ScrollTrigger.addEventListener('refresh', jump);
+  addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(jump)), { once: true });
+}
