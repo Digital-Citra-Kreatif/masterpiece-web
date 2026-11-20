@@ -36,6 +36,25 @@
   padding: clamp(32px, 4vw, 48px) 0 0;
 }
 
+/* Kategori proyek */
+.prj__group + .prj__group {
+  margin-top: clamp(56px, 7vw, 96px);
+}
+
+.prj__cat {
+  margin: clamp(32px, 4vw, 48px) 0 0;
+  font-family: var(--display);
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.prj__cat + .prj__grid {
+  padding-top: clamp(20px, 2.4vw, 28px);
+}
+
 .prj__card {
   display: block;
   color: var(--ink);

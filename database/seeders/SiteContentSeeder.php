@@ -175,6 +175,16 @@ class SiteContentSeeder extends Seeder
                 ['handle' => 'units', 'title' => 'Units', 'blueprint' => 'unit'],
                 ['handle' => 'projects', 'title' => 'Projects', 'blueprint' => 'project', 'ordered' => true, 'route' => '/projects/{slug}'],
             ],
+            // Kategori di beranda
+            'taxonomies' => [[
+                'handle' => Content::PROJECT_CATEGORIES,
+                'title' => 'Kategori Proyek',
+                'collections' => ['projects'],
+                'collection_pages' => ['projects' => ['single' => true, 'pages' => false, 'index' => false]],
+            ]],
+            'terms' => [
+                ['taxonomy' => Content::PROJECT_CATEGORIES, 'slug' => 'commercial', 'translations' => ['id' => ['title' => 'Commercial', 'slug' => 'commercial']]],
+            ],
         ];
     }
 

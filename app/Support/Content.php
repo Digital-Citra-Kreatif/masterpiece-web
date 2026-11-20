@@ -9,6 +9,7 @@ use Sunrice\Admin\Media\Media;
 use Sunrice\Admin\Settings\BrandingSettings;
 use Sunrice\Cms\Content as Cms;
 use Sunrice\Cms\Models\EntryTranslation;
+use Sunrice\Cms\Models\Taxonomy;
 use Sunrice\Cms\Support\HtmlSanitizer;
 
 /** Konten CMS situs */
@@ -16,6 +17,9 @@ final class Content
 {
     /** Urutan status unit */
     public const STATUSES = ['available', 'reserved', 'sold'];
+
+    /** Taxonomy kategori proyek */
+    public const PROJECT_CATEGORIES = 'project_categories';
 
     /** Jam Maintenance Mode di CMS dibaca sebagai WIB */
     public const MAINTENANCE_TIMEZONE = 'Asia/Jakarta';
@@ -218,7 +222,8 @@ final class Content
         $image = ($cmsHero['image'] ?? null) instanceof Media ? $cmsHero['image'] : null;
         $heading = fn (string $handle, array $fallback): array => self::heading($entryValues[$handle] ?? [], $fallback);
 
-        $cards = Cms::entries('projects')->ordered()->get()->map(self::projectCard(...))->values()->all();
+        $groups = self::projectGroups(Cms::entries('projects')->ordered()->get()->all());
+        $cards = array_merge(...array_column($groups, 'cards'));
         $projectsId = self::cssId($entryValues['projects']['css_id'] ?? null) ?? 'projects';
 
         return [
@@ -241,6 +246,7 @@ final class Content
                 'id' => $projectsId,
                 'heading' => $heading('projects', ['title' => 'Proyek', 'intro' => null]),
                 'cards' => $cards,
+                'groups' => $groups,
             ],
         ];
     }
@@ -338,6 +344,33 @@ final class Content
             'turntable' => $turntable !== [] ? $turntable : ($project['turntable']['tabs'] ?? []),
             'project' => $project,
         ];
+    }
+
+    /**
+     * Kartu proyek per kategori, tanpa kategori di akhir
+     *
+     * @param  list<EntryTranslation>  $projects
+     * @return list<array{title: ?string, cards: list<array{name: string, url: string, image: ?string, logo: ?string, description: ?string}>}>
+     */
+    private static function projectGroups(array $projects): array
+    {
+        $taxonomy = Taxonomy::query()->where('handle', self::PROJECT_CATEGORIES)->first();
+        $terms = $taxonomy?->terms()->orderBy('sort_order')->orderBy('id')->get()->keyBy('id') ?? collect();
+        // Kategori tiap proyek, 0: tanpa kategori
+        $byTerm = collect($projects)->groupBy(function (EntryTranslation $project) use ($taxonomy, $terms): int {
+            $id = $taxonomy === null ? 0 : (int) $project->entry->terms()->where('taxonomy_id', $taxonomy->id)->value('sunrice_terms.id');
+
+            return $terms->has($id) ? $id : 0;
+        });
+        $cards = fn (int $id): array => $byTerm[$id]->map(self::projectCard(...))->values()->all();
+
+        return $terms
+            ->filter(fn ($term): bool => $byTerm->has($term->id))
+            ->map(fn ($term): array => ['title' => $term->title(), 'cards' => $cards($term->id)])
+            ->values()
+            // Semua tanpa kategori: tanpa judul
+            ->when($byTerm->has(0), fn ($groups) => $groups->push(['title' => $groups->isEmpty() ? null : 'Lainnya', 'cards' => $cards(0)]))
+            ->all();
     }
 
     /**

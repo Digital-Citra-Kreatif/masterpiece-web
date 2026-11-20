@@ -9,7 +9,7 @@
 
     @if ($projects['cards'] !== [])
       <!-- Grid proyek -->
-      <x-home.project-grid :id="$projects['id']" :projects="$projects['cards']" :heading="$projects['heading']" />
+      <x-home.project-grid :id="$projects['id']" :groups="$projects['groups']" :heading="$projects['heading']" />
     @endif
   </main>
 
