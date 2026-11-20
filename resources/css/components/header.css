@@ -160,6 +160,14 @@
   box-shadow: 0 1px 0 var(--rule);
 }
 
+.hd__inner {
+  transition: height 0.2s var(--ease);
+}
+
+.hd.is-stuck .hd__inner {
+  height: var(--header-stuck-h);
+}
+
 .hd.is-menu-open .hd__logo--light {
   opacity: 0;
 }

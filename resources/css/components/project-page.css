@@ -114,13 +114,13 @@ button.pj-frame:focus-visible {
 }
 
 .hd--emblem.is-stuck .hd__mark {
-  height: var(--header-h);
-  padding-block: 8px;
+  height: var(--header-stuck-h);
+  padding-block: 6px;
   box-shadow: none;
 }
 
 .hd--emblem.is-stuck .hd__logo--own {
-  height: calc(var(--header-h) - 16px);
+  height: calc(var(--header-stuck-h) - 12px);
 }
 
 .hd--project .hd__nav {

@@ -27,6 +27,7 @@
   --gutter: clamp(16px, 4vw, 56px);
   --max: 1440px;
   --header-h: 88px;
+  --header-stuck-h: 64px; /* Header menempel */
   /* Ukuran judul section */
   --h2: clamp(36px, 4.4vw, 64px);
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
@@ -45,6 +46,7 @@
   :root {
     --gutter: 16px;
     --header-h: 64px;
+    --header-stuck-h: 52px;
   }
 }
 
