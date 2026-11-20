@@ -116,8 +116,8 @@ final class ProjectPage
         return [
             'title' => (string) $project->title,
             'url' => $url,
-            // Kembali ke section tipe
-            'backUrl' => isset($sections['types']) ? $url.'#'.self::SECTIONS['types']['id'] : $url,
+            // Kembali ke judul tipe, lewati gambar
+            'backUrl' => isset($sections['types']) ? $url.'#'.self::SECTIONS['types']['id'].'-title' : $url,
             'style' => self::style(self::group($values, 'global_style')),
             'nav' => self::nav($sections, $url),
             'whatsapp' => self::whatsapp(self::group($values, 'whatsapp')),

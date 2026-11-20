@@ -30,7 +30,7 @@ if (landing) {
   const top = () => {
     let y = 0;
     for (let el = landing; el; el = el.offsetParent) y += el.offsetTop;
-    return y;
+    return y - (parseFloat(getComputedStyle(landing).scrollMarginTop) || 0);
   };
   const jump = () => {
     if (held) window.scrollTo({ top: top(), behavior: 'instant' });
