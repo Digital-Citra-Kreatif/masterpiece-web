@@ -56,6 +56,13 @@ final class ProjectPage
         'button' => '--button',
     ];
 
+    /** Pilihan background halaman */
+    public const PAGE_BACKGROUNDS = [
+        ['value' => 'default', 'label' => 'Bawaan (putih)'],
+        ['value' => 'color', 'label' => 'Warna'],
+        ['value' => 'image', 'label' => 'Gambar'],
+    ];
+
     /** Urutan section */
     public const SECTIONS = [
         'masterplan' => ['id' => 'masterplan', 'label' => 'Masterplan'],
@@ -71,11 +78,13 @@ final class ProjectPage
 
     /**
      * @param  array<string, mixed>  $values
-     * @return array{title: string, description: ?string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>}
+     * @return array{title: string, description: ?string, style: array{css: string, logo: ?array<string, mixed>, favicon: ?array{href: string, type: string}, marker: ?array{shape: ?string, image: ?string}}, pageBackground: bool, hero: array<string, mixed>, sections: array<string, array<string, mixed>>, nav: list<array{href: string, label: string, active: bool, newTab: bool}>, whatsapp: ?array<string, mixed>, footer: array<string, mixed>}
      */
     public static function page(EntryTranslation $entry, array $values): array
     {
         $sections = self::sections($values, $entry->entry_id);
+        $style = self::style(self::group($values, 'global_style'));
+        $background = self::pageBackground(self::group($values, 'page_background'));
 
         // Jalur titik orbit
         foreach (array_keys(ProjectTracks::sections()) as $handle) {
@@ -89,7 +98,9 @@ final class ProjectPage
             'title' => (string) $entry->title,
             // Meta dari deskripsi kartu
             'description' => filled($values['card']['description'] ?? null) ? (string) $values['card']['description'] : null,
-            'style' => self::style(self::group($values, 'global_style')),
+            // Background halaman ikut CSS tema
+            'style' => [...$style, 'css' => $style['css'].$background],
+            'pageBackground' => $background !== '',
             'hero' => self::hero(self::group($values, 'hero'), (string) $entry->title),
             'sections' => $sections,
             'nav' => self::nav($sections),
@@ -754,6 +765,22 @@ final class ProjectPage
         }
 
         return [...$values, 'name' => $item->title, 'url' => $item->url()];
+    }
+
+    /**
+     * Token background halaman, kosong: bawaan
+     *
+     * @param  array<string, mixed>  $background
+     */
+    private static function pageBackground(array $background): string
+    {
+        $image = $background['image'] ?? null;
+
+        return match ($background['type'] ?? 'default') {
+            'color' => self::isHex($background['color'] ?? null) ? ':root{--page-bg:'.strtolower($background['color']).';}' : '',
+            'image' => $image instanceof Media && $image->isImage() ? ':root{--page-bg-image:url('.self::cssString($image->url('large')).');}' : '',
+            default => '',
+        };
     }
 
     /**

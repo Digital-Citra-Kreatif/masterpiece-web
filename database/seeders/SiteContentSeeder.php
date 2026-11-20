@@ -314,6 +314,12 @@ class SiteContentSeeder extends Seeder
                 $text('email', 'Email', ['translatable' => false, 'width' => 50, 'validation' => ['email']]),
             ]]),
             $globalStyle,
+            // Latar halaman proyek
+            $this->field('page_background', 'group', [], ['label' => 'Background halaman', 'fields' => [
+                $this->field('type', 'select', ['options' => ProjectPage::PAGE_BACKGROUNDS, 'default' => 'default'], ['label' => 'Jenis', 'translatable' => false, 'width' => 33]),
+                $hex('color', 'Warna', ['width' => 33, 'condition' => ['field' => 'type', 'operator' => 'equals', 'value' => 'color']]),
+                $image('image', 'Gambar', ['width' => 33, 'instructions' => 'Menutupi layar, diam saat digulir.', 'condition' => ['field' => 'type', 'operator' => 'equals', 'value' => 'image']]),
+            ]]),
         ]];
     }
 

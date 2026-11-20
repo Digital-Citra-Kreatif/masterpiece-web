@@ -942,3 +942,52 @@ test('a type card shows the first frame of the type\'s own 360° and falls back 
 
     expect($others[1][0] ?? '')->toContain('fasad-depan');
 });
+
+test('a project page keeps its default white background when no page background is chosen', function () {
+    publishProject($this->projects, ['global_style' => inactiveStyle(), 'hero' => ['heading' => 'Westlake']]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('<body class="is-project"', false)
+        ->assertDontSee('--page-bg', false);
+});
+
+test('a project page background color from the CMS applies even with Global Style off', function () {
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'page_background' => ['type' => 'color', 'color' => '#F3EFE6'],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('<body class="is-project has-page-bg"', false)
+        ->assertSee(':root{--page-bg:#f3efe6;}', false);
+});
+
+test('a project page background image from the CMS covers the page', function () {
+    $image = app(UploadMedia::class)->handle(UploadedFile::fake()->image('latar.jpg', 1600, 900), []);
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'page_background' => ['type' => 'image', 'image' => $image->id],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('<body class="is-project has-page-bg"', false)
+        ->assertSee('--page-bg-image:url(', false);
+});
+
+test('a project page background without a valid color or image stays default', function () {
+    publishProject($this->projects, [
+        'global_style' => inactiveStyle(),
+        'hero' => ['heading' => 'Westlake'],
+        'page_background' => ['type' => 'image', 'color' => '#F3EFE6'],
+    ]);
+
+    $this->get('/projects/westlake')
+        ->assertOk()
+        ->assertSee('<body class="is-project"', false)
+        ->assertDontSee('--page-bg', false);
+});

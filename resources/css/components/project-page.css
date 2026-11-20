@@ -7,6 +7,30 @@ body.is-project {
   background-repeat: repeat-y;
 }
 
+/* Background halaman dari CMS */
+body.is-project.has-page-bg {
+  background-color: var(--page-bg, var(--paper));
+  background-image: none;
+}
+
+/* Gambar diam di belakang, aman di HP */
+body.is-project.has-page-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--page-bg-image, none);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+/* Section putih ikut background, footer tetap putih */
+.is-project.has-page-bg :is(.pj-loc, .tph.tph--section) {
+  background: transparent;
+}
+
 /* Spasi judul proyek */
 .is-project :is(h1, h2, h3, h4, .display, .mp__title) {
   letter-spacing: normal;
