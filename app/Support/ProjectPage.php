@@ -58,7 +58,7 @@ final class ProjectPage
 
     /** Pilihan background section */
     public const SECTION_BACKGROUNDS = [
-        ['value' => 'default', 'label' => 'Bawaan'],
+        ['value' => 'default', 'label' => 'Bawaan (White)'],
         ['value' => 'color', 'label' => 'Warna'],
         ['value' => 'image', 'label' => 'Gambar'],
     ];
